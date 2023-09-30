@@ -1,0 +1,60 @@
+/* Dashboard.css */
+
+.dashboard {
+    padding: 20px;
+    background-color: #f4f4f4;
+  }
+  
+  .summary-boxes {
+    display: flex;
+    justify-content: space-between;
+  }
+  
+  .loading {
+    text-align: center;
+    font-size: 18px;
+    margin-top: 20px;
+  }
+  
+  /* Styling for TicketSummaryBox */
+  .ticket-summary-box {
+    border: 1px solid #ddd;
+    padding: 20px;
+    background-color: #fff;
+    box-shadow: 0 0 5px rgba(0, 0, 0, 0.1);
+    border-radius: 5px;
+  }
+  
+  .ticket-summary-box h2 {
+    font-size: 24px;
+    margin: 0;
+  }
+  /* Dashboard.css */
+
+.summary-box {
+    margin-bottom: 40px; /* Adjust the margin as needed */
+  }
+  
+  .table {
+    margin-top: 40px; /* Adjust the margin as needed */
+  }
+  
+  .ticket-summary-box .count {
+    font-size: 36px;
+    font-weight: bold;
+    margin-top: 10px;
+  }
+  
+  /* Additional styling for TicketSummaryBox cards */
+  .ticket-summary-box.new {
+    border-color: #4caf50; /* Green border for "New Tickets" */
+  }
+  
+  .ticket-summary-box.open {
+    border-color: #ffc107; /* Yellow border for "Open Tickets" */
+  }
+  
+  .ticket-summary-box.closed {
+    border-color: #f44336; /* Red border for "Closed Tickets" */
+  }
+  
