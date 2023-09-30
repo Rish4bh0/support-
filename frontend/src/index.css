@@ -339,6 +339,43 @@ h3 {
   margin-top: 30px;
 }
 
+/* Add this CSS to your stylesheet */
+
+.pagination-row {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin-top: 20px; /* Add margin or adjust as needed */
+}
+
+.pagination-buttons {
+  display: flex;
+  align-items: center;
+  gap: 10px; /* Adjust the gap between buttons as needed */
+}
+
+.page-buttons-row {
+  display: flex;
+  align-items: center;
+  gap: 10px; /* Adjust the gap between buttons as needed */
+}
+
+.page-buttons-row button {
+  /* Add any additional button styling here */
+  padding: 5px 10px;
+  border: 1px solid #ccc;
+  background-color: #fff;
+  color: #333;
+  cursor: pointer;
+}
+
+.page-buttons-row button.active {
+  /* Style for the active page button */
+  background-color: #007bff;
+  color: #fff;
+}
+
+
 .ticket-desc {
   margin: 20px 0;
   font-size: 17px;
