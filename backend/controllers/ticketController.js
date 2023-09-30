@@ -342,6 +342,11 @@ const updateTicket = asyncHandler(async (req, res) => {
     updatedTicketData.media = existingTicket.media;
   }
 
+  // Check if the request includes a status update
+  if (req.body.status === 'close') {
+    // Set the 'closedAt' field to the current date and time
+    req.body.closedAt = new Date();
+  }
   // Use findByIdAndUpdate to update the ticket with the new data
   const updatedTicket = await Ticket.findByIdAndUpdate(
     ticketId,
