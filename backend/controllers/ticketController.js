@@ -26,6 +26,20 @@ const getTickets = asyncHandler(async (req, res) => {
   res.status(200).json(tickets);
 });
 
+const getTicketss = asyncHandler(async (req, res) => {
+  // Get user using the id and JWT
+  const user = await User.findById(req.user.id);
+
+  if (!user) {
+    res.status(401);
+    throw new Error("User not found");
+  }
+
+  const tickets = await Ticket.find({ user: req.user._id });
+
+  res.status(200).json(tickets);
+});
+
 // @desc    Get all tickets
 // @route   GET /api/tickets/all
 // @access  Private (assuming this route is also protected)
@@ -328,12 +342,6 @@ const updateTicket = asyncHandler(async (req, res) => {
     updatedTicketData.media = existingTicket.media;
   }
 
-    // Check if the request includes a status update
-    if (req.body.status === 'close') {
-      // Set the 'closedAt' field to the current date and time
-      req.body.closedAt = new Date();
-    }
-
   // Use findByIdAndUpdate to update the ticket with the new data
   const updatedTicket = await Ticket.findByIdAndUpdate(
     ticketId,
@@ -354,6 +362,7 @@ const updateTicket = asyncHandler(async (req, res) => {
 
 module.exports = {
   getTickets,
+  getTicketss,
   getAllTickets,
   createTicket,
   getTicket,

@@ -3,6 +3,7 @@ import ticketService from './ticketService'
 
 const initialState = {
   tickets: [],
+  ticketss: [],
   ticket: {},
   allTickets: [],
   isError: false,
@@ -62,6 +63,31 @@ export const getTickets = createAsyncThunk(
       // Token is required for authentication
       const token = thunkAPI.getState().auth.user.token
       return await ticketService.getTickets(token)
+    } catch (error) {
+      const message =
+        (error.response &&
+          error.response.data &&
+          error.response.data.message) ||
+        error.message ||
+        error.toString()
+
+      return thunkAPI.rejectWithValue(message)
+    }
+  }
+)
+// Get user tickets
+export const getTicketss = createAsyncThunk(
+  'tickets/getAlls',
+  async (_, thunkAPI) => {
+    /**
+     * thunkAPI: an object containing all of the parameters
+     * that are normally passed to a Redux thunk function,
+     * as well as additional options: https://redux-toolkit.js.org/api/createAsyncThunk
+     */
+    try {
+      // Token is required for authentication
+      const token = thunkAPI.getState().auth.user.token
+      return await ticketService.getTicketss(token)
     } catch (error) {
       const message =
         (error.response &&
@@ -218,6 +244,19 @@ export const ticketSlice = createSlice({
         state.tickets = action.payload
       })
       .addCase(getTickets.rejected, (state, action) => {
+        state.isLoading = false
+        state.isError = true
+        state.message = action.payload
+      })
+      .addCase(getTicketss.pending, state => {
+        state.isLoading = true
+      })
+      .addCase(getTicketss.fulfilled, (state, action) => {
+        state.isLoading = false
+        state.isSuccess = true
+        state.ticketss = action.payload
+      })
+      .addCase(getTicketss.rejected, (state, action) => {
         state.isLoading = false
         state.isError = true
         state.message = action.payload

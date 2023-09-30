@@ -22,6 +22,9 @@ function Home() {
       <Link to="/allticket" className="btn btn-reverse btn-block">
         <FaList /> View All Tickets
       </Link>
+      <Link to="/ticketss" className="btn btn-reverse btn-block">
+        <FaTicketAlt /> View My Tickets 
+      </Link>
       <Link to="/issues" className="btn btn-reverse btn-block">
         <FaInfo /> Issues
       </Link>

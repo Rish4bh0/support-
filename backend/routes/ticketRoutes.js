@@ -8,6 +8,7 @@ const {
   updateTicket,
   deleteTicket,
   getAllTickets,
+  getTicketss,
   
  
 } = require('../controllers/ticketController')
@@ -24,6 +25,8 @@ router
   .route('/')
   .get(protect, getTickets)
   .post( protect, createTicket)
+
+  router.route('/my').get(protect, getTicketss);
 
 router.route('/all').get(getAllTickets);
 
