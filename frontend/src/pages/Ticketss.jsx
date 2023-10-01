@@ -131,7 +131,7 @@ function Ticketss() {
           <div>Priority</div>
           <div>Issue Type</div>
           <div>Status</div>
-          <div></div>
+          <div>Actions</div>
         </div>
         {paginatedTickets.map((ticket) => (
           <TicketItem key={ticket._id} ticket={ticket} />

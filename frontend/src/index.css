@@ -375,6 +375,14 @@ h3 {
   color: #fff;
 }
 
+.icon-buttons {
+  display: flex;          /* Use flexbox to align items horizontally */
+  gap: 10px;              /* Add spacing between icons */
+}
+
+.icon-buttons > button {
+  flex: 1;                /* Make the icons share equal space within the container */
+}
 
 .ticket-desc {
   margin: 20px 0;
@@ -449,6 +457,7 @@ p.status-ready {
 p.status-complete {
   color: green;
 }
+
 
 footer {
   position: sticky;

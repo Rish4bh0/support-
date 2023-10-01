@@ -1,6 +1,9 @@
 import React from "react";
 import { useSelector } from "react-redux";
 import { Link } from "react-router-dom";
+import IconButton from "@mui/material/IconButton";
+import VisibilityIcon from "@mui/icons-material/Visibility";
+import EditIcon from "@mui/icons-material/Edit";
 
 function TicketItem({ ticket }) {
   const options = {
@@ -27,13 +30,14 @@ function TicketItem({ ticket }) {
       <div className={`priority priority-${ticket.priority}`}>{ticket.priority}</div>
       <div>{ticket.issueType}</div>
       <div className={`status status-${ticket.status}`}>{ticket.status}</div>
-      
-      <Link to={`/ticket/${ticket._id}`} className="btn btn-reverse btn-sm">
-        View
-      </Link>
-      <Link to={`/ticket/${ticket._id}/update`} className="btn btn-reverse btn-sm">
-        Update
-      </Link>
+      <div className="icon-buttons">
+        <IconButton component={Link} to={`/ticket/${ticket._id}`} className="btn btn-reverse btn-sm">
+          <VisibilityIcon />
+        </IconButton>
+        <IconButton component={Link} to={`/ticket/${ticket._id}/update`} className="btn btn-reverse btn-sm">
+          <EditIcon />
+        </IconButton>
+      </div>
     </div>
   );
 }

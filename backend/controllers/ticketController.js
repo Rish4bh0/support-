@@ -3,6 +3,7 @@ const asyncHandler = require("express-async-handler");
 const User = require("../models/userModel");
 const Ticket = require("../models/ticketModel");
 const cloudinary = require("../config/cloudinary");
+const transporter = require ('../middleware/nodeMailer')
 // @desc    Get user tickets
 // @route   GET /api/tickets
 // @access  Private
@@ -63,6 +64,8 @@ const getTicket = asyncHandler(async (req, res) => {
     throw new Error("User not found");
   }
 
+  
+
   const ticket = await Ticket.findById(req.params.id);
 
   if (!ticket) {
@@ -73,9 +76,9 @@ const getTicket = asyncHandler(async (req, res) => {
   res.status(200).json(ticket);
 });
 
-// @desc    Create new ticket
-// @route   POST /api/ticket
-// @access  Private
+
+
+
 const createTicket = asyncHandler(async (req, res) => {
   const {
     product,
@@ -153,13 +156,40 @@ const createTicket = asyncHandler(async (req, res) => {
       media: mediaPromises, // Store the array of media data (images and videos)
     });
 
+    // Send email to logged-in user
+    const userEmail = user.email; // Assuming you have an 'email' field in your User model
+    const ticketId = ticket._id; // Retrieve the ticket ID
+    await transporter.sendMail({
+      from: 'helpdeskx1122@gmail.com', // Replace with your Gmail email address
+      to: userEmail,
+      subject: 'Ticket Created',
+      text: `Dear ${user.name},\n\nYour ticket (ID: ${ticketId}) has been created successfully.\n\nBest Regards`,
+    });
+
+    // Retrieve the email address of the assignedTo user
+    const assignedToUser = await User.findById(assignedTo);
+
+    if (!assignedToUser) {
+      res.status(400);
+      throw new Error('Assigned user not found');
+    }
+
+    const assignedToEmail = assignedToUser.email; // Assuming you have an 'email' field in your User model
+
+    // Send email to assignedTo user
+    await transporter.sendMail({
+      from: 'helpdeskx1122@gmail.com', // Replace with your Gmail email address
+      to: assignedToEmail,
+      subject: 'New Ticket Assignment',
+      text: `Dear ${assignedToUser.name},\n\nYou have been assigned a new ticket (ID: ${ticketId}).\n\nBest Regards`,
+    });
+
     res.status(201).json(ticket);
   } catch (error) {
     // Handle any errors that occur during user, media, or ticket creation
     res.status(500).json({ error: "Ticket creation failed" });
   }
 });
-
 
 
 
