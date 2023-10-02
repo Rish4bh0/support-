@@ -464,6 +464,23 @@ footer {
   top: 95vh;
   text-align: center;
 }
+/* Assuming you have a CSS file for this component, you can add these styles there */
+.media-item {
+  margin-bottom: 50px; /* Add some spacing between media items */
+}
+
+.media-image,
+.media-video {
+  max-width: 100%;
+  height: auto;
+  display: block;
+  margin: 0 auto; /* Center the media horizontally */
+  border-radius: 10px; /* Add rounded borders */
+  overflow: hidden; /* Ensure content within rounded borders is clipped */
+  border: 1px solid #ccc; /* Add a 1px border with a light gray color */
+}
+
+
 
 .loadingSpinnerContainer {
   position: fixed;

@@ -22,13 +22,22 @@ function TicketItem({ ticket }) {
   // Extract the name of the assigned user (if found)
   const assignedToName = assignedUser ? assignedUser.name : "Unassigned";
 
+  // Access the issueTypes array from the Redux state (assuming you have it there)
+  const issueTypes = useSelector((state) => state.issueTypes.issueTypes);
+
+  // Find the issueType object with the same ID as the ticket's issueType ID
+  const ticketIssueType = issueTypes.find((issueType) => issueType._id === ticket.issueType);
+
+  // Extract the name of the issueType (if found)
+  const issueTypeName = ticketIssueType ? ticketIssueType.name : "Unknown Issue Type";
+
   return (
     <div className="ticket">
       <div>{new Date(ticket.createdAt).toLocaleString("en-US", options)}</div>
       <div>{ticket.product}</div>
-      <div>{assignedToName}</div> {/* Display the user's name */}
+      <div>{assignedToName}</div>
       <div className={`priority priority-${ticket.priority}`}>{ticket.priority}</div>
-      <div>{ticket.issueType}</div>
+      <div>{issueTypeName}</div> {/* Display the issue type's name */}
       <div className={`status status-${ticket.status}`}>{ticket.status}</div>
       <div className="icon-buttons">
         <IconButton component={Link} to={`/ticket/${ticket._id}`} className="btn btn-reverse btn-sm">

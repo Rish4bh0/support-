@@ -1,8 +1,9 @@
 const asyncHandler = require('express-async-handler') // Simple middleware for handling exceptions inside of async express routes and passing them to your express error handlers.
 const jwt = require('jsonwebtoken') // JSON Web Token for authentication and authorization
 const bcrypt = require('bcryptjs') // A library to help you hash passwords.
-
+const crypto = require('crypto');
 const User = require('../models/userModel')
+const transporter = require ('../middleware/nodeMailer')
 
 // @desc    Register a new user
 // @route   /api/users
@@ -107,9 +108,11 @@ generateToken = id => {
   })
 }
 
+
 module.exports = {
   registerUser,
   loginUser,
   getAllUsers,
-  getMe
+  getMe,
+
 }

@@ -1,3 +1,4 @@
+
 import { useDispatch, useSelector } from "react-redux";
 import BackButton from "../components/BackButton";
 import { getTicket, closeTicket } from "../features/tickets/ticketSlice";
@@ -134,7 +135,10 @@ function Ticket() {
         <button onClick={openModal} className="btn">
           <FaPlus /> Add Note
         </button>
+        
       )}
+
+
 
       <Modal
         isOpen={modalIsOpen}
@@ -171,6 +175,36 @@ function Ticket() {
   ))
 ) : (
   <p>No notes available</p>
+)}
+
+{ticket.media && ticket.media.length > 0 ? (
+  <div className="media-container">
+    {ticket.media.map((mediaItem) => (
+      <div key={mediaItem.public_id} className="media-item">
+        {mediaItem.url.startsWith("https://res.cloudinary.com") ? (
+          mediaItem.url.endsWith(".mp4") ? (
+            <video
+              src={mediaItem.url}
+              controls // This adds video controls (play, pause, volume, etc.)
+              className="media-video" // Apply the media-video style
+            >
+              Your browser does not support the video tag.
+            </video>
+          ) : (
+            <img
+              src={mediaItem.url}
+              alt={`Image ${mediaItem.public_id}`}
+              className="media-image" // Apply the media-image style
+            />
+          )
+        ) : (
+          <p>Unsupported media format</p>
+        )}
+      </div>
+    ))}
+  </div>
+) : (
+  <p>No media available</p>
 )}
 
       {ticket.status !== "close" && (

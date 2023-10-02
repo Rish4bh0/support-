@@ -15,8 +15,7 @@ import Dashboard from './pages/Dashboard'
 import IssueTypeList from './pages/issues'
 import IssueTypeid from './pages/issueaction'
 import UpdateTicket from './pages/updateTicket.jsx'
-import TicketHistory from './pages/ticketHistory'
-import New from './pages/new'
+
 
 function App () {
   return (

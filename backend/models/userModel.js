@@ -19,7 +19,9 @@ const userSchema = mongoose.Schema(
       type: Boolean,
       required: true,
       default: false
-    }
+    },
+    resetPasswordToken: String, // New field for password reset
+    resetPasswordExpires: Date, // New field for password reset
   },
   {
     timestamps: true
