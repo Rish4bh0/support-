@@ -15,7 +15,8 @@ import Dashboard from './pages/Dashboard'
 import IssueTypeList from './pages/issues'
 import IssueTypeid from './pages/issueaction'
 import UpdateTicket from './pages/updateTicket.jsx'
-
+import ForgotPassword from './pages/Forgotpassword'
+import ResetPassword from './pages/Resetpassword'
 
 function App () {
   return (
@@ -53,6 +54,12 @@ function App () {
             </Route>
             <Route path='/ticket/:ticketId/update' element={<PrivateRoute />}>
               <Route path='/ticket/:ticketId/update' element={<UpdateTicket />} />
+            </Route>
+            <Route path='/forgot-password' element={<PrivateRoute />}>
+              <Route path='/forgot-password' element={<ForgotPassword />} />
+            </Route>
+            <Route path='/reset-password/:token' element={<PrivateRoute />}>
+              <Route path='/reset-password/:token' element={<ResetPassword />} />
             </Route>
           </Routes>
         </div>

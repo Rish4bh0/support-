@@ -108,11 +108,72 @@ generateToken = id => {
   })
 }
 
+const forgotPassword = asyncHandler(async (req, res) => {
+  const { email } = req.body;
+
+  // Find the user with the given email
+  const user = await User.findOne({ email });
+
+  if (!user) {
+    res.status(404);
+    throw new Error('User not found');
+  }
+
+  // Generate a password reset token
+  const resetToken = crypto.randomBytes(20).toString('hex');
+  user.resetPasswordToken = resetToken;
+  user.resetPasswordExpire = Date.now() + 3600000; // Token expires in 1 hour
+
+  await user.save();
+
+  // Send an email with a password reset link
+  const resetLink = `http://localhost:5000/reset-password/${resetToken}`;
+  const mailOptions = {
+    from: 'helpdeskx1122@gmail.com',
+    to: user.email,
+    subject: 'Password Reset Request',
+    html: `Please click this <a href="${resetLink}">link</a> to reset your password.`,
+  };
+
+  await transporter.sendMail(mailOptions);
+
+  res.status(200).json({ message: 'Password reset email sent' });
+});
+
+const resetPassword = asyncHandler(async (req, res) => {
+  const resetToken = req.params.token;
+  const { newPassword } = req.body;
+
+  // Find the user by the reset token and check if it's still valid
+  const user = await User.findOne({
+    resetPasswordToken: resetToken,
+    resetPasswordExpire: { $gt: Date.now() },
+  });
+
+  if (!user) {
+    res.status(400);
+    throw new Error('Invalid or expired reset token');
+  }
+
+  // Hash the new password and save it
+  const salt = await bcrypt.genSalt(10);
+  const hashedPassword = await bcrypt.hash(newPassword, salt);
+
+  user.password = hashedPassword;
+  user.resetPasswordToken = undefined;
+  user.resetPasswordExpire = undefined;
+
+  await user.save();
+
+  res.status(200).json({ message: 'Password reset successful' });
+});
+
 
 module.exports = {
   registerUser,
   loginUser,
   getAllUsers,
   getMe,
-
+  forgotPassword,
+  resetPassword
 }
