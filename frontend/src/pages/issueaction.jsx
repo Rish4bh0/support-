@@ -29,13 +29,6 @@ function IssueDetail() {
     setUpdatedName('');
   };
 
-  const handleDelete = async () => {
-    const token = ''; // Retrieve the user token from your authentication system
-    await dispatch(deleteIssueType(id, token));
-    // After deletion, you can redirect the user to a different page, such as the issue list.
-    navigate('/issues'); // Redirect to the issue list page
-  };
-
   return (
     <div style={{ textAlign: 'center' }}>
       <h1>Issue Details</h1>

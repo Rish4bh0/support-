@@ -1,4 +1,3 @@
-
 import { useDispatch, useSelector } from "react-redux";
 import BackButton from "../components/BackButton";
 import { getTicket, closeTicket } from "../features/tickets/ticketSlice";
@@ -14,6 +13,8 @@ import { toast } from "react-toastify";
 import NoteItem from "../components/NoteItem";
 import Modal from "react-modal";
 import { FaPlus } from "react-icons/fa";
+import { fetchAllUsers } from "../features/auth/authSlice";
+import { getAllIssueTypes } from "../features/issues/issueSlice";
 
 const customStyles = {
   content: {
@@ -31,7 +32,6 @@ const customStyles = {
 Modal.setAppElement("#root");
 
 function Ticket() {
-
   const options = {
     weekday: "long",
     year: "numeric",
@@ -72,6 +72,31 @@ function Ticket() {
     // eslint-disable-next-line
   }, [isError, message, ticketId]);
 
+  useEffect(() => {
+    // Fetch the list of registered users when the component loads
+    dispatch(fetchAllUsers());
+    // Load the initial issue list when the component mounts
+    dispatch(getAllIssueTypes());
+  }, [dispatch]);
+
+  // Access user data from the Redux store
+  const userss = useSelector((state) => state.auth.users);
+
+  // Function to get the user's name based on their ID
+  const getUserNameById = (userId) => {
+    const user = userss.find((user) => user._id === userId);
+    return user ? user.name : "Unknown User";
+  };
+
+  // Access user data from the Redux store
+  const issues = useSelector((state) => state.issueTypes.issueTypes);
+
+  // Function to get the user's name based on their ID
+  const issueById = (issueId) => {
+    const issue = issues.find((issue) => issue._id === issueId);
+    return issue ? issue.name : "Unknown User";
+  };
+
   if (isLoading || notesIsLoading) return <Spinner />;
 
   if (isError) {
@@ -100,8 +125,6 @@ function Ticket() {
     closeModal();
   };
 
-  
-
   return (
     <div className="ticket-page">
       <header className="ticket-header">
@@ -117,12 +140,15 @@ function Ticket() {
           {new Date(ticket.createdAt).toLocaleString("en-US", options)}
         </h3>
         <h3>Product: {ticket.product}</h3>
-        <h3>Assigned To: {assignedToName}</h3>
+        <h3>Assigned To: {getUserNameById(ticket.assignedTo)}</h3>
         <h3>Priority: {ticket.priority}</h3>
-        <h3>Issue Type: {ticket.issueType}</h3>
+        <h3>Issue Type: {issueById(ticket.issueType)}</h3>
         {ticket.status === "close" && (
-  <h3>Closed At: {new Date(ticket.closedAt).toLocaleString("en-US", options)}</h3>
-)}
+          <h3>
+            Closed At:{" "}
+            {new Date(ticket.closedAt).toLocaleString("en-US", options)}
+          </h3>
+        )}
         <hr />
         <div className="ticket-desc">
           <h3>Description of Issue</h3>
@@ -135,11 +161,7 @@ function Ticket() {
         <button onClick={openModal} className="btn">
           <FaPlus /> Add Note
         </button>
-        
       )}
-
-
-
       <Modal
         isOpen={modalIsOpen}
         onRequestClose={closeModal}
@@ -170,42 +192,40 @@ function Ticket() {
       </Modal>
 
       {notes && Array.isArray(notes) ? (
-  notes.map((note) => (
-    <NoteItem key={note._id} note={note} />
-  ))
-) : (
-  <p>No notes available</p>
-)}
+        notes.map((note) => <NoteItem key={note._id} note={note} />)
+      ) : (
+        <p>No notes available</p>
+      )}
 
-{ticket.media && ticket.media.length > 0 ? (
-  <div className="media-container">
-    {ticket.media.map((mediaItem) => (
-      <div key={mediaItem.public_id} className="media-item">
-        {mediaItem.url.startsWith("https://res.cloudinary.com") ? (
-          mediaItem.url.endsWith(".mp4") ? (
-            <video
-              src={mediaItem.url}
-              controls // This adds video controls (play, pause, volume, etc.)
-              className="media-video" // Apply the media-video style
-            >
-              Your browser does not support the video tag.
-            </video>
-          ) : (
-            <img
-              src={mediaItem.url}
-              alt={`Image ${mediaItem.public_id}`}
-              className="media-image" // Apply the media-image style
-            />
-          )
-        ) : (
-          <p>Unsupported media format</p>
-        )}
-      </div>
-    ))}
-  </div>
-) : (
-  <p>No media available</p>
-)}
+      {ticket.media && ticket.media.length > 0 ? (
+        <div className="media-container">
+          {ticket.media.map((mediaItem) => (
+            <div key={mediaItem.public_id} className="media-item">
+              {mediaItem.url.startsWith("https://res.cloudinary.com") ? (
+                mediaItem.url.endsWith(".mp4") ? (
+                  <video
+                    src={mediaItem.url}
+                    controls // This adds video controls (play, pause, volume, etc.)
+                    className="media-video" // Apply the media-video style
+                  >
+                    Your browser does not support the video tag.
+                  </video>
+                ) : (
+                  <img
+                    src={mediaItem.url}
+                    alt={`Image ${mediaItem.public_id}`}
+                    className="media-image" // Apply the media-image style
+                  />
+                )
+              ) : (
+                <p>Unsupported media format</p>
+              )}
+            </div>
+          ))}
+        </div>
+      ) : (
+        <p>No media available</p>
+      )}
 
       {ticket.status !== "close" && (
         <button onClick={onTicketClose} className="btn btn-block btn-danger">

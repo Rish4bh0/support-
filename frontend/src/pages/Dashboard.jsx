@@ -24,7 +24,12 @@ const Dashboard = () => {
     dispatch(getTickets());
   }, [dispatch]);
 
+  const userRole = useSelector(state => state.auth.user.role); // Retrieve the user's role from Redux state
+
+
+
   
+
 
   useEffect(() => {
     dispatch(getAllTickets()).then((response) => {
@@ -66,6 +71,16 @@ const fetchClosedTickets = async () => {
     return <div className="loading">Loading...</div>;
   }
 
+   // Check if the user has one of the allowed roles
+if (!["ADMIN", "SUPERVISOR", "EMPLOYEE"].includes(userRole)) {
+  // Handle unauthorized access, e.g., redirect or show an error message
+  return (
+    <div>
+      <h1>Unauthorized Access</h1>
+      <p>You do not have permission to access this page.</p>
+    </div>
+  );
+}
   return (
     <>
       <BackButton url="/" />

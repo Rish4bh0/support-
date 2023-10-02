@@ -5,37 +5,19 @@ import BackButton from "../components/BackButton";
 import { getTickets, reset, getAllTickets } from "../features/tickets/ticketSlice";
 import TicketItem from "../components/TicketItem";
 import { fetchAllUsers } from "../features/auth/authSlice";
+import { getAllIssueTypes } from "../features/issues/issueSlice";
 
 
 function Tickets() {
   const { tickets, isLoading } = useSelector((state) => state.tickets);
   const dispatch = useDispatch();
-
+  const userRole = useSelector(state => state.auth.user.role); // Retrieve the user's role from Redux state
   const [activeTab, setActiveTab] = useState("new");
   const [currentPage, setCurrentPage] = useState(1);
   const itemsPerPage = 4; // You can adjust this number as needed
-
-  useEffect(() => {
-    dispatch(fetchAllUsers());
-  }, [dispatch]);
-
-  useEffect(() => {
-    dispatch(getAllTickets());
-  }, [dispatch]);
-
-  useEffect(() => {
-    dispatch(getTickets());
-
-    return () => {
-      dispatch(reset());
-    };
-  }, [dispatch]);
-
-  if (isLoading) return <Spinner />;
-
-  const newTickets = tickets.filter((ticket) => ticket.status === "new");
-  const openTickets = tickets.filter((ticket) => ticket.status === "open");
-  const closedTickets = tickets.filter((ticket) => ticket.status === "close");
+  const newTickets = Array.isArray(tickets) ? tickets.filter((ticket) => ticket.status === "new") : [];
+  const openTickets = Array.isArray(tickets) ? tickets.filter((ticket) => ticket.status === "open") : [];
+  const closedTickets = Array.isArray(tickets) ? tickets.filter((ticket) => ticket.status === "close") : [];
 
   const filteredTickets =
     activeTab === "new" ? newTickets : activeTab === "open" ? openTickets : closedTickets;
@@ -46,10 +28,41 @@ function Tickets() {
   const paginatedTickets = filteredTickets.slice(startIndex, endIndex);
   const totalPages = Math.ceil(filteredTickets.length / itemsPerPage);
 
+
+  useEffect(() => {
+    dispatch(getAllTickets());
+    dispatch(getTickets());
+
+    return () => {
+      dispatch(reset());
+    };
+  }, [dispatch]);
+
+  useEffect(() => {
+    dispatch(fetchAllUsers());
+    dispatch(getAllIssueTypes())
+  }, [dispatch]);
+
+ 
+  
+
+  if (isLoading) return <Spinner />;
+
+  
   const handlePageChange = (page) => {
     setCurrentPage(page);
   };
 
+ // Check if the user has one of the allowed roles
+ if (!["ADMIN", "SUPERVISOR", "EMPLOYEE"].includes(userRole)) {
+  // Handle unauthorized access, e.g., redirect or show an error message
+  return (
+    <div>
+      <h1>Unauthorized Access</h1>
+      <p>You do not have permission to access this page.</p>
+    </div>
+  );
+}
   return (
     <>
       <BackButton url="/" />

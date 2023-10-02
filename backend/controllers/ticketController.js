@@ -156,9 +156,13 @@ const createTicket = asyncHandler(async (req, res) => {
       media: mediaPromises, // Store the array of media data (images and videos)
     });
 
+    
+   
+
     // Send email to logged-in user
     const userEmail = user.email; // Assuming you have an 'email' field in your User model
     const ticketId = ticket._id; // Retrieve the ticket ID
+    const ticketLink = `http://localhost:5000/ticket/${ticketId}`;
     await transporter.sendMail({
       from: 'helpdeskx1122@gmail.com', // Replace with your Gmail email address
       to: userEmail,
@@ -181,8 +185,11 @@ const createTicket = asyncHandler(async (req, res) => {
       from: 'helpdeskx1122@gmail.com', // Replace with your Gmail email address
       to: assignedToEmail,
       subject: 'New Ticket Assignment',
-      text: `Dear ${assignedToUser.name},\n\nYou have been assigned a new ticket (ID: ${ticketId}).\n\nBest Regards`,
+      html: `<p style="text-align: left;">Dear ${assignedToUser.name},</p>
+        <p style="text-align: left;">You have been assigned a new ticket (ID: ${ticketId}). Please click this <a href="${ticketLink}">link</a> to view the ticket.</p>
+        <p style="text-align: left;">Best Regards</p>`,
     });
+    
 
     res.status(201).json(ticket);
   } catch (error) {

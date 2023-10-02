@@ -2,7 +2,7 @@ import { Navigate, Outlet } from "react-router-dom";
 import { useAuthStatus } from "../hooks/useAuthStatus";
 import Spinner from "./Spinner";
 
-export const PrivateRoute = () => {
+export const PrivateRoute = ({requiredRole}) => {
   const { loggedIn, checkingStatus } = useAuthStatus();
 
   if (checkingStatus) {

@@ -6,7 +6,7 @@ const { protect } = require('../middleware/authMiddleware')
 
 router
   .route('/')
-  .get(protect, getNotes)
+  .get(getNotes)
   .post(protect, addNote)
 
 module.exports = router

@@ -8,6 +8,7 @@ import { fetchAllUsers } from "../features/auth/authSlice";
 
 // Import icons for "Next" and "Previous" buttons
 import { FaArrowLeft, FaArrowRight } from "react-icons/fa";
+import { getAllIssueTypes } from "../features/issues/issueSlice";
 
 function Ticketss() {
   const { ticketss, isLoading } = useSelector((state) => state.tickets);
@@ -24,6 +25,7 @@ function Ticketss() {
 
   useEffect(() => {
     dispatch(fetchAllUsers());
+    dispatch(getAllIssueTypes())
   }, [dispatch]);
 
   useEffect(() => {

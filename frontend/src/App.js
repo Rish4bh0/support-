@@ -17,6 +17,7 @@ import IssueTypeid from './pages/issueaction'
 import UpdateTicket from './pages/updateTicket.jsx'
 import ForgotPassword from './pages/Forgotpassword'
 import ResetPassword from './pages/Resetpassword'
+import RoleCheck  from './pages/ProtectedRoute'
 
 function App () {
   return (
@@ -28,9 +29,11 @@ function App () {
             <Route path='/' element={<Home />} />
             <Route path='/login' element={<Login />} />
             <Route path='/register' element={<Register />} />
+
             <Route path='/new-ticket' element={<PrivateRoute />}>
               <Route path='/new-ticket' element={<NewTicket />} />
             </Route>
+            
             <Route path='/tickets' element={<PrivateRoute />}>
               <Route path='/tickets' element={<Tickets />} />
             </Route>
@@ -46,6 +49,7 @@ function App () {
             <Route path='/dashboard' element={<PrivateRoute />}>
               <Route path='/dashboard' element={<Dashboard />} />
             </Route>
+
             <Route path='/issues' element={<PrivateRoute />}>
               <Route path='/issues' element={<IssueTypeList />} />
             </Route>
@@ -60,7 +64,13 @@ function App () {
             </Route>
             <Route path='/reset-password/:token' element={<PrivateRoute />}>
               <Route path='/reset-password/:token' element={<ResetPassword />} />
-            </Route>
+            </Route>   
+           {/*
+             <Route
+              path='/dashboard'
+              element={<PrivateRoute requiredRole="ADMIN" element={<Dashboard />} />}
+            />
+           */}
           </Routes>
         </div>
       </Router>

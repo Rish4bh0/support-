@@ -1,6 +1,7 @@
 const express = require('express')
 const router = express.Router()
 
+
 const {
   getTickets,
   getTicket,
@@ -13,9 +14,7 @@ const {
  
 } = require('../controllers/ticketController')
 
-
 const { protect } = require('../middleware/authMiddleware')
-
 
 // Re-route into note router
 const noteRouter = require('./noteRoutes')

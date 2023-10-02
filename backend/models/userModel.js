@@ -15,10 +15,10 @@ const userSchema = mongoose.Schema(
       type: String,
       required: [true, 'Please add a password']
     },
-    isAdmin: {
-      type: Boolean,
-      required: true,
-      default: false
+    role: {
+      type: String,
+      enum: ['USER', 'ADMIN', 'SUPERVISOR', 'EMPLOYEE'], 
+      default: 'USER', // Set a default role if needed
     },
     resetPasswordToken: String, // Add these fields to the schema
     resetPasswordExpire: Date,

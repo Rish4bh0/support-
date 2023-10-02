@@ -29,6 +29,7 @@ function IssueList() {
   const { isLoading, isError, isSuccess, message } = useSelector(
     (state) => state.issueTypes
   );
+  const userRole = useSelector(state => state.auth.user.role); // Retrieve the user's role from Redux state
   const [name, setNewIssueName] = useState("");
   const dispatch = useDispatch();
   const navigate = useNavigate();
@@ -83,6 +84,18 @@ function IssueList() {
   const closeModal = () => {
     setIsModalOpen(false);
   };
+
+ // Check if the user has one of the allowed roles
+ if (!["ADMIN", "SUPERVISOR", "EMPLOYEE"].includes(userRole)) {
+  // Handle unauthorized access, e.g., redirect or show an error message
+  return (
+    <div>
+      <h1>Unauthorized Access</h1>
+      <p>You do not have permission to access this page.</p>
+    </div>
+  );
+}
+
 
   return (
     <>

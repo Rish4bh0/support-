@@ -48,6 +48,7 @@ const registerUser = asyncHandler(async (req, res) => {
       _id: user._id,
       name: user.name,
       email: user.email,
+      role: user.role,
       token: generateToken(user._id)
     })
   } else {
@@ -70,6 +71,7 @@ const loginUser = asyncHandler(async (req, res) => {
       _id: user._id,
       name: user.name,
       email: user.email,
+      role: user.role,
       token: generateToken(user._id)
     })
   } else {
@@ -82,7 +84,8 @@ const getAllUsers = asyncHandler(async (req, res) => {
   const users = await User.find(); // Fetch all users
   const simplifiedUsers = users.map(user => ({
     _id: user._id,
-    name: user.name
+    name: user.name,
+    role: user.role,
   }));
   res.json(simplifiedUsers);
 });
@@ -95,7 +98,8 @@ const getMe = asyncHandler(async (req, res) => {
   const user = {
     id: req.user._id,
     email: req.user.email,
-    name: req.user.name
+    name: req.user.name,
+    role: req.user.role,
   }
   res.status(200).json(user)
 })

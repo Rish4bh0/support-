@@ -5,18 +5,20 @@ import BackButton from "../components/BackButton";
 import { reset, getAllTickets } from "../features/tickets/ticketSlice";
 import TicketItem from "../components/TicketItem";
 import { fetchAllUsers } from "../features/auth/authSlice";
+import { getAllIssueTypes } from "../features/issues/issueSlice";
 
 
 function ListTickets() {
   const { allTickets, isLoading } = useSelector((state) => state.tickets);
   const dispatch = useDispatch();
-
+  const userRole = useSelector(state => state.auth.user.role); // Retrieve the user's role from Redux state
   const [activeTab, setActiveTab] = useState("new");
   const [currentPage, setCurrentPage] = useState(1);
   const itemsPerPage = 4; // You can adjust this number as needed
 
   useEffect(() => {
     dispatch(fetchAllUsers());
+    dispatch(getAllIssueTypes())
   }, [dispatch]);
 
   useEffect(() => {
@@ -45,6 +47,18 @@ function ListTickets() {
   const handlePageChange = (page) => {
     setCurrentPage(page);
   };
+
+
+ // Check if the user has one of the allowed roles
+ if (!["ADMIN", "SUPERVISOR", "EMPLOYEE"].includes(userRole)) {
+  // Handle unauthorized access, e.g., redirect or show an error message
+  return (
+    <div>
+      <h1>Unauthorized Access</h1>
+      <p>You do not have permission to access this page.</p>
+    </div>
+  );
+}
 
   return (
     <>
