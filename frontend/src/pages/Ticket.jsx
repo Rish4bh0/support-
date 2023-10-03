@@ -1,6 +1,6 @@
 import { useDispatch, useSelector } from "react-redux";
 import BackButton from "../components/BackButton";
-import { getTicket, closeTicket } from "../features/tickets/ticketSlice";
+import { getTicket, closeTicket, reviewTicket } from "../features/tickets/ticketSlice";
 import {
   getNotes,
   createNote,
@@ -32,12 +32,13 @@ const customStyles = {
 Modal.setAppElement("#root");
 
 function Ticket() {
-  
-// Access the user's role from Redux state
-const userRole = useSelector((state) => state.auth.user?.role);
+  // Access the user's role from Redux state
+  const userRole = useSelector((state) => state.auth.user?.role);
 
-// Define an array of roles that should see the "Dashboard" link
-const allowedRoles = ["ADMIN", "SUPERVISOR", "EMPLOYEE"];
+  // Define an array of roles that should see the "Dashboard" link
+  const allowedRoles = ["ADMIN", "SUPERVISOR", "EMPLOYEE"];
+
+  const allowedRolesReview = ["ADMIN", "SUPERVISOR"];
   const options = {
     weekday: "long",
     year: "numeric",
@@ -115,6 +116,13 @@ const allowedRoles = ["ADMIN", "SUPERVISOR", "EMPLOYEE"];
     toast.success("Ticket Closed");
     navigate("/tickets");
   };
+  // Close ticket
+  const onTicketSendForReview = () => {
+    dispatch(reviewTicket(ticketId));
+    toast.success("Ticket Sent For Review");
+    navigate("/tickets");
+  };
+
 
   // Open/Close Modal
   const openModal = () => {
@@ -161,20 +169,17 @@ const allowedRoles = ["ADMIN", "SUPERVISOR", "EMPLOYEE"];
           <p>{ticket.description}</p>
         </div>
         {ticket.status !== "close" &&
-        userRole &&
-        allowedRoles.includes(userRole) && (
-        <h2>Notes</h2>
-        )}
+          userRole &&
+          allowedRoles.includes(userRole) && <h2>Notes</h2>}
       </header>
 
-      
       {ticket.status !== "close" &&
         userRole &&
         allowedRoles.includes(userRole) && (
-        <button onClick={openModal} className="btn">
-          <FaPlus /> Add Note
-        </button>
-      )}
+          <button onClick={openModal} className="btn">
+            <FaPlus /> Add Note
+          </button>
+        )}
       <Modal
         isOpen={modalIsOpen}
         onRequestClose={closeModal}
@@ -238,6 +243,12 @@ const allowedRoles = ["ADMIN", "SUPERVISOR", "EMPLOYEE"];
         </div>
       ) : (
         <p>No media available</p>
+      )}
+
+      {userRole && allowedRolesReview.includes(userRole) && (
+        <button onClick={onTicketSendForReview} className="btn btn-block ">
+          Send ticket for review
+        </button>
       )}
 
       {ticket.status !== "close" &&
