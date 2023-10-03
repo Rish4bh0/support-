@@ -1,7 +1,15 @@
 const asyncHandler = require('express-async-handler');
 const IssueType = require('../models/issueModel');
-
+const User = require("../models/userModel");
 const createIssueType = asyncHandler(async (req, res) => {
+   // Get user using the id and JWT
+   const user = await User.findById(req.user.id);
+
+   if (!user) {
+     res.status(401);
+     throw new Error("User not found");
+   }
+  
   const { name } = req.body;
 
   if (!name) {
@@ -21,11 +29,27 @@ const createIssueType = asyncHandler(async (req, res) => {
 });
 
 const getAllIssueTypes = asyncHandler(async (req, res) => {
+     // Get user using the id and JWT
+     const user = await User.findById(req.user.id);
+
+     if (!user) {
+       res.status(401);
+       throw new Error("User not found");
+     }
+  
   const issueTypes = await IssueType.find();
   res.status(200).json(issueTypes);
 });
 
 const updateIssueType = asyncHandler(async (req, res) => {
+     // Get user using the id and JWT
+     const user = await User.findById(req.user.id);
+
+     if (!user) {
+       res.status(401);
+       throw new Error("User not found");
+     }
+  
   const { name } = req.body;
 
   if (!name) {
@@ -49,6 +73,13 @@ const updateIssueType = asyncHandler(async (req, res) => {
 
 
 const deleteIssueType = asyncHandler(async (req, res) => {
+     // Get user using the id and JWT
+     const user = await User.findById(req.user.id);
+
+     if (!user) {
+       res.status(401);
+       throw new Error("User not found");
+     }
   const issueType = await IssueType.findById(req.params.id);
 
   if (!issueType) {
@@ -64,6 +95,13 @@ const deleteIssueType = asyncHandler(async (req, res) => {
 // Controller to select an issue type by ID
 const selectIssueType = async (req, res) => {
     try {
+         // Get user using the id and JWT
+   const user = await User.findById(req.user.id);
+
+   if (!user) {
+     res.status(401);
+     throw new Error("User not found");
+   }
       const { id } = req.params;
       const selectedIssueType = await IssueType.findById(id);
   

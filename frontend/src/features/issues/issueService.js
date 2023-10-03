@@ -14,10 +14,22 @@ const createIssueType = async (nameData, token) => {
   return response.data;
 };
 
-const getAllIssueTypes = async () => {
-  const response = await axios.get(API_URL);
+const getAllIssueTypes = async token => {
+  try{
+  const config = {
+    headers: {
+      Authorization: `Bearer ${token}`
+    }
+  }
+  
+  const response = await axios.get(API_URL, config);
   return response.data;
+} catch (error) {
+  console.error("Error fetching all tickets:", error);
+  return [];
+}
 };
+
 
 const updateIssueType = async (id, name, token) => {
     const config = {

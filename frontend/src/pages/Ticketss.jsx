@@ -28,10 +28,11 @@ function Ticketss() {
     dispatch(getAllIssueTypes())
   }, [dispatch]);
 
+  /*
   useEffect(() => {
     dispatch(getAllTickets());
   }, [dispatch]);
-
+*/
   useEffect(() => {
     dispatch(getTicketss());
 

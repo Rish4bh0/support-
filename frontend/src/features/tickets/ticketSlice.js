@@ -102,12 +102,14 @@ export const getTicketss = createAsyncThunk(
 )
 export const getAllTickets = createAsyncThunk(
   'tickets/getAllTickets',
-  async (_, { rejectWithValue }) => {
+  async (_, thunkAPI ) => {
     try {
-      const allTickets = await ticketService.getAllTickets();
+      // Token is required for authentication
+      const token = thunkAPI.getState().auth.user.token
+      const allTickets = await ticketService.getAllTickets(token);
       return allTickets;
     } catch (error) {
-      return rejectWithValue(error.message);
+      return thunkAPI.rejectWithValue(error.message);
     }
   }
 );

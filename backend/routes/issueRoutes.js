@@ -11,15 +11,16 @@ const {
 const { protect } = require('../middleware/authMiddleware');
 const roleMiddleware = require('../middleware/roleMiddleware');
 // Protected routes for issue types
-router
-  .route('/')
-  .post(protect, roleMiddleware(['ADMIN', 'SUPERVISOR', 'EMPLOYEE']),createIssueType)
-  .get(protect, getAllIssueTypes);
+router.route('/').get(protect, getAllIssueTypes);
+
+router.route('/').post(protect,roleMiddleware(['ADMIN', 'SUPERVISOR', 'EMPLOYEE']), createIssueType)
+  
 
 router
   .route('/:id')
   .put(protect, roleMiddleware(['ADMIN', 'SUPERVISOR', 'EMPLOYEE']),updateIssueType)
-  .get(protect, selectIssueType)
-  .delete(protect,roleMiddleware(['ADMIN', 'SUPERVISOR', 'EMPLOYEE']),deleteIssueType);
+  .get(protect, roleMiddleware(['ADMIN', 'SUPERVISOR', 'EMPLOYEE']),selectIssueType)
+  .delete(protect, roleMiddleware(['ADMIN', 'SUPERVISOR', 'EMPLOYEE']),deleteIssueType);
 
 module.exports = router;
+// roleMiddleware(['ADMIN', 'SUPERVISOR', 'EMPLOYEE']),

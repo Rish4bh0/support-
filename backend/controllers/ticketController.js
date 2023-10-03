@@ -46,6 +46,15 @@ const getTicketss = asyncHandler(async (req, res) => {
 // @access  Private (assuming this route is also protected)
 
 const getAllTickets = asyncHandler(async (req, res) => {
+  /*
+  // Get user using the id and JWT
+   const user = await User.findById(req.user.id);
+
+   if (!user) {
+     res.status(401);
+     throw new Error("User not found");
+   }
+  */
   // Get all tickets in the database
   const allTickets = await Ticket.find({});
 

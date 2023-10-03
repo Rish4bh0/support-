@@ -53,17 +53,20 @@ const getTicket = async (ticketId, token) => {
   return response.data
 }
 // Get all tickets
-export const getAllTickets = async () => {
+export const getAllTickets = async token => {
   try {
-    const response = await axios.get(API_URL + '/all');
+    const config = {
+      headers: {
+        Authorization: `Bearer ${token}`
+      }
+    }
+    const response = await axios.get(API_URL + '/all', config);
     return response.data;
   } catch (error) {
     console.error("Error fetching all tickets:", error);
     return [];
   }
 };
-
-
 
 // Close ticket
 const closeTicket = async (ticketId, token) => {

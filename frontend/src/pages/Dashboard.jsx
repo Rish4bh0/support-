@@ -1,19 +1,24 @@
-// Dashboard.js
 
 
-import React, { useEffect, useState } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
-import TicketSummaryBox from './TicketSummaryBox.js';
-import TicketTable from './TicketTable.js'; // Import the TicketTable component
+import React, { useEffect, useState } from "react";
+import { useDispatch, useSelector } from "react-redux";
+import TicketSummaryBox from "./TicketSummaryBox.js";
+import TicketTable from "./TicketTable.js"; // Import the TicketTable component
 
-import { getAllTickets, getTickets, reset } from '../features/tickets/ticketSlice';
+import {
+  getAllTickets,
+  getTickets,
+  reset,
+} from "../features/tickets/ticketSlice";
 
-import './Dashboard.css';
-import BackButton from '../components/BackButton.jsx';
+import "./Dashboard.css";
+import BackButton from "../components/BackButton.jsx";
 
 const Dashboard = () => {
   const dispatch = useDispatch();
-  const { tickets, allTickets, isLoading } = useSelector((state) => state.tickets);
+  const { tickets, allTickets, isLoading } = useSelector(
+    (state) => state.tickets
+  );
   const [newTicketsCount, setNewTicketsCount] = useState(0);
   const [openTicketsCount, setOpenTicketsCount] = useState(0);
   const [closedTicketsCount, setClosedTicketsCount] = useState(0);
@@ -24,20 +29,21 @@ const Dashboard = () => {
     dispatch(getTickets());
   }, [dispatch]);
 
-  const userRole = useSelector(state => state.auth.user.role); // Retrieve the user's role from Redux state
-
-
-
-  
-
+  const userRole = useSelector((state) => state.auth.user.role); // Retrieve the user's role from Redux state
 
   useEffect(() => {
     dispatch(getAllTickets()).then((response) => {
       if (response.payload) {
         setAllTicketsCount(response.payload.length);
-        setNewTicketsCount(response.payload.filter((ticket) => ticket.status === 'new').length);
-        setOpenTicketsCount(response.payload.filter((ticket) => ticket.status === 'open').length);
-        setClosedTicketsCount(response.payload.filter((ticket) => ticket.status === 'close').length); // Fixed status typo
+        setNewTicketsCount(
+          response.payload.filter((ticket) => ticket.status === "new").length
+        );
+        setOpenTicketsCount(
+          response.payload.filter((ticket) => ticket.status === "open").length
+        );
+        setClosedTicketsCount(
+          response.payload.filter((ticket) => ticket.status === "close").length
+        ); // Fixed status typo
       }
     });
 
@@ -54,33 +60,34 @@ const Dashboard = () => {
 
   // Function to fetch closed tickets (you should adjust this function based on your API)
   // Function to fetch closed tickets (you should adjust this function based on your API)
-const fetchClosedTickets = async () => {
-  try {
-    const response = await fetch('http://localhost:5000/api/tickets/all');
-    const data = await response.json();
-    const closedTicketsData = data.filter((ticket) => ticket.status === 'close');
-    return closedTicketsData;
-  } catch (error) {
-    console.error('Error fetching closed tickets:', error);
-    return [];
-  }
-};
-
+  const fetchClosedTickets = async () => {
+    try {
+      const response = await fetch("http://localhost:5000/api/tickets/all");
+      const data = await response.json();
+      const closedTicketsData = data.filter(
+        (ticket) => ticket.status === "close"
+      );
+      return closedTicketsData;
+    } catch (error) {
+      console.error("Error fetching closed tickets:", error);
+      return [];
+    }
+  };
 
   if (!tickets) {
     return <div className="loading">Loading...</div>;
   }
 
-   // Check if the user has one of the allowed roles
-if (!["ADMIN", "SUPERVISOR", "EMPLOYEE"].includes(userRole)) {
-  // Handle unauthorized access, e.g., redirect or show an error message
-  return (
-    <div>
-      <h1>Unauthorized Access</h1>
-      <p>You do not have permission to access this page.</p>
-    </div>
-  );
-}
+  // Check if the user has one of the allowed roles
+  if (!["ADMIN", "SUPERVISOR", "EMPLOYEE"].includes(userRole)) {
+    // Handle unauthorized access, e.g., redirect or show an error message
+    return (
+      <div>
+        <h1>Unauthorized Access</h1>
+        <p>You do not have permission to access this page.</p>
+      </div>
+    );
+  }
   return (
     <>
       <BackButton url="/" />
@@ -90,13 +97,29 @@ if (!["ADMIN", "SUPERVISOR", "EMPLOYEE"].includes(userRole)) {
         </section>
 
         <div className="summary-boxes">
-          <TicketSummaryBox className="summary-box" title="All Tickets" count={allTicketsCount} />
-          <TicketSummaryBox className="summary-box" title="New Tickets" count={newTicketsCount} />
-          <TicketSummaryBox className="summary-box" title="Open Tickets" count={openTicketsCount} />
-          <TicketSummaryBox className="summary-box" title="Closed Tickets" count={closedTicketsCount} />
+          <TicketSummaryBox
+            className="summary-box"
+            title="All Tickets"
+            count={allTicketsCount}
+          />
+          <TicketSummaryBox
+            className="summary-box"
+            title="New Tickets"
+            count={newTicketsCount}
+          />
+          <TicketSummaryBox
+            className="summary-box"
+            title="Open Tickets"
+            count={openTicketsCount}
+          />
+          <TicketSummaryBox
+            className="summary-box"
+            title="Closed Tickets"
+            count={closedTicketsCount}
+          />
         </div>
 
-        {/* Render the TicketTable component with the closed tickets data */}
+      
         <TicketTable tickets={closedTickets} />
       </div>
     </>
@@ -104,7 +127,6 @@ if (!["ADMIN", "SUPERVISOR", "EMPLOYEE"].includes(userRole)) {
 };
 
 export default Dashboard;
-
 
 /*
 
@@ -177,10 +199,3 @@ const [allTicketsCount, setAllTicketsCount] = useState(0); // Initialize the cou
 export default Dashboard;
 
 */
-
-
-
-
-
-
-

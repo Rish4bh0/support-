@@ -27,7 +27,7 @@ router
 
   router.route('/my').get(protect, getTicketss);
 
-router.route('/all').get(protect, roleMiddleware(['ADMIN', 'SUPERVISOR', 'EMPLOYEE']), getAllTickets);
+router.route('/all').get(getAllTickets);
 
 router
   .route('/:id')
@@ -38,3 +38,6 @@ router
   
 
 module.exports = router
+
+
+//protect, roleMiddleware(['ADMIN', 'SUPERVISOR', 'EMPLOYEE']),
