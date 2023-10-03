@@ -34,7 +34,9 @@ function ListTickets() {
   const filteredTickets = allTickets.filter((ticket) => {
     if (activeTab === "new") return ticket.status === "new";
     if (activeTab === "open") return ticket.status === "open";
+    if (activeTab === "review") return ticket.status === "review";
     if (activeTab === "close") return ticket.status === "close";
+    
     return false;
   });
 
@@ -75,6 +77,12 @@ function ListTickets() {
           onClick={() => setActiveTab("open")}
         >
           Open Tickets
+        </button>
+        <button
+          className={`btn btn-reverse btn-back ${activeTab === "review" ? "active" : ""}`}
+          onClick={() => setActiveTab("review")}
+        >
+          Tickets on review
         </button>
         <button
           className={`btn btn-reverse btn-back ${activeTab === "close" ? "active" : ""}`}

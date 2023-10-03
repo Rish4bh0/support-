@@ -17,10 +17,11 @@ function Tickets() {
   const itemsPerPage = 4; // You can adjust this number as needed
   const newTickets = Array.isArray(tickets) ? tickets.filter((ticket) => ticket.status === "new") : [];
   const openTickets = Array.isArray(tickets) ? tickets.filter((ticket) => ticket.status === "open") : [];
+  const reviewTickets = Array.isArray(tickets) ? tickets.filter((ticket) => ticket.status === "review") : [];
   const closedTickets = Array.isArray(tickets) ? tickets.filter((ticket) => ticket.status === "close") : [];
 
   const filteredTickets =
-    activeTab === "new" ? newTickets : activeTab === "open" ? openTickets : closedTickets;
+    activeTab === "new" ? newTickets : activeTab === "open" ? openTickets : activeTab === "review" ? reviewTickets : closedTickets;
 
   // Paginate the filtered tickets
   const startIndex = (currentPage - 1) * itemsPerPage;
@@ -78,6 +79,12 @@ function Tickets() {
           onClick={() => setActiveTab("open")}
         >
           Open Tickets
+        </button>
+        <button
+          className={`btn btn-reverse btn-back ${activeTab === "review" ? "active" : ""}`}
+          onClick={() => setActiveTab("review")}
+        >
+          Tickets on review
         </button>
         <button
           className={`btn btn-reverse btn-back ${activeTab === "closed" ? "active" : ""}`}

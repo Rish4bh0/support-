@@ -46,9 +46,11 @@ function Ticketss() {
   const newTickets = ticketss.filter((ticket) => ticket.status === "new");
   const openTickets = ticketss.filter((ticket) => ticket.status === "open");
   const closedTickets = ticketss.filter((ticket) => ticket.status === "close");
+  const reviewTickets = ticketss.filter((ticket) => ticket.status === "review");
+
 
   const filteredTickets =
-    activeTab === "new" ? newTickets : activeTab === "open" ? openTickets : closedTickets;
+    activeTab === "new" ? newTickets : activeTab === "open" ? openTickets : activeTab === "review" ? reviewTickets : closedTickets;
 
   // Paginate the filtered tickets
   const startIndex = (currentPage[activeTab] - 1) * itemsPerPage;
@@ -120,8 +122,14 @@ function Ticketss() {
           Open Tickets
         </button>
         <button
-          className={`btn btn-reverse btn-back ${activeTab === "closed" ? "active" : ""}`}
-          onClick={() => handleTabChange("closed")}
+          className={`btn btn-reverse btn-back ${activeTab === "review" ? "active" : ""}`}
+          onClick={() => handleTabChange("review")}
+        >
+          Tickets on review
+        </button>
+        <button
+          className={`btn btn-reverse btn-back ${activeTab === "close" ? "active" : ""}`}
+          onClick={() => handleTabChange("close")}
         >
           Closed Tickets
         </button>

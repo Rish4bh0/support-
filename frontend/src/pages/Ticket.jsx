@@ -1,6 +1,10 @@
 import { useDispatch, useSelector } from "react-redux";
 import BackButton from "../components/BackButton";
-import { getTicket, closeTicket, reviewTicket } from "../features/tickets/ticketSlice";
+import {
+  getTicket,
+  closeTicket,
+  reviewTicket,
+} from "../features/tickets/ticketSlice";
 import {
   getNotes,
   createNote,
@@ -123,7 +127,6 @@ function Ticket() {
     navigate("/tickets");
   };
 
-
   // Open/Close Modal
   const openModal = () => {
     setModalIsOpen(true);
@@ -245,11 +248,14 @@ function Ticket() {
         <p>No media available</p>
       )}
 
-      {(userRole && allowedRolesReview.includes(userRole)) && (
-        <button onClick={onTicketSendForReview} className="btn btn-block ">
-          Send ticket for review
-        </button>
-      )}
+{userRole &&
+  allowedRolesReview.includes(userRole) &&
+  (ticket.status !== "review" && ticket.status !== "close") && (
+    <button onClick={onTicketSendForReview} className="btn btn-block btn-blue">
+      Send ticket for review
+    </button>
+  )}
+
 
       {ticket.status !== "close" &&
         userRole &&

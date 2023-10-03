@@ -291,6 +291,11 @@ h3 {
 }
 
 .status-close {
+  background-color: rgb(17, 6, 102);
+  color: #fff;
+  border-radius: 10px;
+}
+.status-close {
   background-color: darkred;
   color: #fff;
   border-radius: 10px;
