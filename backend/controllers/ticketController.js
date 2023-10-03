@@ -176,7 +176,9 @@ const createTicket = asyncHandler(async (req, res) => {
       from: 'helpdeskx1122@gmail.com', // Replace with your Gmail email address
       to: userEmail,
       subject: 'Ticket Created',
-      text: `Dear ${user.name},\n\nYour ticket (ID: ${ticketId}) has been created successfully.\n\nBest Regards`,
+      html: `<p style="text-align: left;">Dear ${user.name},</p>
+      <p style="text-align: left;">A request for support has been created and assigned (ID: ${ticketId})  A reppresentative will follow-up with you as soon as possible. You can <a href="${ticketLink}">view this ticket's progress online</a> to view the ticket.</p>
+      <p style="text-align: left;">Best Regards,</p>`,
     });
 
     // Retrieve the email address of the assignedTo user
@@ -196,7 +198,7 @@ const createTicket = asyncHandler(async (req, res) => {
       subject: 'New Ticket Assignment',
       html: `<p style="text-align: left;">Dear ${assignedToUser.name},</p>
         <p style="text-align: left;">You have been assigned a new ticket (ID: ${ticketId}). Please click this <a href="${ticketLink}">link</a> to view the ticket.</p>
-        <p style="text-align: left;">Best Regards</p>`,
+        <p style="text-align: left;">Best Regards,</p>`,
     });
     
 
