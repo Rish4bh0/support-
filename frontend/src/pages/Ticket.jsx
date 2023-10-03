@@ -245,7 +245,7 @@ function Ticket() {
         <p>No media available</p>
       )}
 
-      {userRole && allowedRolesReview.includes(userRole) && (
+      {(userRole && allowedRolesReview.includes(userRole)) && (
         <button onClick={onTicketSendForReview} className="btn btn-block ">
           Send ticket for review
         </button>
