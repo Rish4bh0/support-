@@ -27,7 +27,7 @@ app.use(express.urlencoded({ extended: true, limit: '50mb' }));
 app.use('/api/users', require('./routes/userRoutes'))
 app.use('/api/tickets', require('./routes/ticketRoutes'))
 app.use('/api/issues', require('./routes/issueRoutes'));
-
+app.use('/api/organizations', require ('./routes/organizationRoutes'));
 // Serve Frontend
 
   // Set build folder as static folder

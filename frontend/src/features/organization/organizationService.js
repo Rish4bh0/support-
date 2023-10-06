@@ -1,20 +1,20 @@
 import axios from 'axios';
 
-const API_URL = '/api/issues/';
+const API_URL = '/api/organizations/';
 
-const createIssueType = async (nameData, token) => {
+const createOrganization = async (organizationData, token) => {
   const config = {
     headers: {
       Authorization: `Bearer ${token}`,
     },
   };
 
-  const response = await axios.post(API_URL, nameData, config);
+  const response = await axios.post(API_URL, organizationData, config);
 
   return response.data;
 };
 
-const getAllIssueTypes = async token => {
+const getAllOrganization = async token => {
   try{
   const config = {
     headers: {
@@ -31,7 +31,7 @@ const getAllIssueTypes = async token => {
 };
 
 
-const updateIssueType = async (id, name, token) => {
+const updateOrganization = async (id, organizationData, token) => {
     const config = {
       headers: {
         Authorization: `Bearer ${token}`,
@@ -39,14 +39,14 @@ const updateIssueType = async (id, name, token) => {
     };
   
     try {
-      const response = await axios.put(API_URL + id, { name }, config);
-      return response.data;
+      const response = await axios.put(API_URL + id, organizationData, config);
+      return response.data; 
     } catch (error) {
       throw error; 
     }
   };
 
-const deleteIssueType = async (id, token) => {
+const deleteOrganization = async (id, token) => {
   const config = {
     headers: {
       Authorization: `Bearer ${token}`,
@@ -57,7 +57,7 @@ const deleteIssueType = async (id, token) => {
 };
 
 
-const selectIssueTypeById = async (id, token) => {
+const selectOrganizationById = async (id, token) => {
     const config = {
       headers: {
         Authorization: `Bearer ${token}`
@@ -71,11 +71,11 @@ const selectIssueTypeById = async (id, token) => {
   }
 
 const issueTypeService = {
-  createIssueType,
-  getAllIssueTypes,
-  updateIssueType,
-  deleteIssueType,
-  selectIssueTypeById,
+    createOrganization,
+  getAllOrganization,
+  updateOrganization,
+  deleteOrganization,
+  selectOrganizationById,
   
 };
 

@@ -1,9 +1,7 @@
-const mongoose = require('mongoose');
+const mongoose = require("mongoose");
 
 const issueTypeSchema = new mongoose.Schema({
-  name: { type: String, required: true, unique: false }, // set unique to false
-  // other fields...
+  name: { type: String, required: true, unique: false }
 });
 
-
-module.exports = mongoose.model('issueType', issueTypeSchema);
+module.exports = mongoose.model("issueType", issueTypeSchema);

@@ -1,22 +1,22 @@
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
-import issueTypeService from './issueService';
+import organizationService from './organizationService';
 
 const initialState = {
-  issueTypes: [],
-  selectedIssueType : {},
+  organizations: [],
+  selectedOrganization : {},
   isLoading: false,
   isError: false,
   isSuccess: false,
   message: ''
 };
 
-export const createIssueType = createAsyncThunk(
-  'issues/create',
-  async (nameData, thunkAPI) => {
+export const createOrganization = createAsyncThunk(
+  'organizations/create',
+  async (organizationData, thunkAPI) => {
     try {
       const token = thunkAPI.getState().auth.user.token;
-      const response = await issueTypeService.createIssueType(nameData, token);
-      console.log('API Response:', response); 
+      const response = await organizationService.createOrganization(organizationData, token);
+      console.log('API Response:', response); // Log the entire response
       return response;
     } catch (error) {
       return thunkAPI.rejectWithValue(error.message);
@@ -25,13 +25,13 @@ export const createIssueType = createAsyncThunk(
 );
 
 
-// Get all issue types
-export const getAllIssueTypes = createAsyncThunk(
-  'issues/getAll',
+// Get all organizations
+export const getAllOrganization = createAsyncThunk(
+  'organizations/getAll',
   async (_, thunkAPI) => {
     try {
       const token = thunkAPI.getState().auth.user.token;
-      return await issueTypeService.getAllIssueTypes(token);
+      return await organizationService.getAllOrganization(token);
     } catch (error) {
       return thunkAPI.rejectWithValue(error.message);
     }
@@ -39,11 +39,11 @@ export const getAllIssueTypes = createAsyncThunk(
 );
 
 // Update issue type
-export const updateIssueType = createAsyncThunk(
+export const updateOrganization = createAsyncThunk(
     'issues/update',
-    async ({ id, name, token }, thunkAPI) => {
+    async ({ id, organizationData, token }, thunkAPI) => {
       try {
-        const updatedIssueType = await issueTypeService.updateIssueType(id, name, token);
+        const updatedIssueType = await organizationService.updateOrganization(id, organizationData, token);
         return updatedIssueType;
       } catch (error) {
         return thunkAPI.rejectWithValue(error.message);
@@ -51,14 +51,14 @@ export const updateIssueType = createAsyncThunk(
     }
   );
 
-// Delete issue type
-export const deleteIssueType = createAsyncThunk(
+// Delete organization
+export const deleteOrganization = createAsyncThunk(
   'issues/delete',
   async (id, thunkAPI) => {
     try {
       const token = thunkAPI.getState().auth.user.token;
-      await issueTypeService.deleteIssueType(id, token);
-      return id; // Return the deleted issue type's ID
+      await organizationService.deleteOrganization(id, token);
+      return id; // Return the deleted organization ID
     } catch (error) {
       return thunkAPI.rejectWithValue(error.message);
     }
@@ -66,7 +66,7 @@ export const deleteIssueType = createAsyncThunk(
 );
 
 
-  export const selectIssueTypeById = createAsyncThunk(
+  export const selectOrganizationById = createAsyncThunk(
     'issues/selectById',
     async (id, thunkAPI) => {
       /**
@@ -77,7 +77,7 @@ export const deleteIssueType = createAsyncThunk(
       try {
         // Token is required for authentication
         const token = thunkAPI.getState().auth.user.token
-        return await issueTypeService.selectIssueTypeById(id, token)
+        return await organizationService.selectOrganizationById(id, token)
       } catch (error) {
         const message =
           (error.response &&
@@ -93,8 +93,8 @@ export const deleteIssueType = createAsyncThunk(
 
 
 // Issue Type Slice
-export const issueTypeSlice = createSlice({
-  name: 'issueTypes',
+export const organizationSlice = createSlice({
+  name: 'organizations',
   initialState,
   reducers: {
    
@@ -102,76 +102,76 @@ export const issueTypeSlice = createSlice({
   },
   extraReducers: (builder) => {
     builder
-      .addCase(createIssueType.pending, state => {
+      .addCase(createOrganization.pending, state => {
         state.isLoading = true
       })
-      .addCase(createIssueType.fulfilled, state => {
+      .addCase(createOrganization.fulfilled, state => {
         state.isLoading = false
         state.isSuccess = true
       })
-      .addCase(createIssueType.rejected, (state, action) => {
+      .addCase(createOrganization.rejected, (state, action) => {
         state.isLoading = false
         state.isError = true
         state.message = action.payload
       })
-      .addCase(getAllIssueTypes.pending, (state) => {
+      .addCase(getAllOrganization.pending, (state) => {
         state.isLoading = true;
         state.isError = false;
       })
-      .addCase(getAllIssueTypes.fulfilled, (state, action) => {
+      .addCase(getAllOrganization.fulfilled, (state, action) => {
         state.isLoading = false;
         state.issueTypes = action.payload;
       })
-      .addCase(getAllIssueTypes.rejected, (state) => {
+      .addCase(getAllOrganization.rejected, (state) => {
         state.isLoading = false;
         state.isError = true;
       })
-      .addCase(updateIssueType.pending, (state) => {
+      .addCase(updateOrganization.pending, (state) => {
         state.isLoading = true;
         state.isError = false;
         state.errorMessage = '';
       })
-      .addCase(updateIssueType.fulfilled, (state, action) => {
+      .addCase(updateOrganization.fulfilled, (state, action) => {
         state.isLoading = false;
-        // Update the issue type in the state with the updated data
-        state.issueTypes = state.issueTypes.map((issueType) =>
-          issueType._id === action.payload._id ? action.payload : issueType
+        // Update the organization in the state with the updated data
+        state.organizations = state.organizations.map((organization) =>
+        organization._id === action.payload._id ? action.payload : organization
         );
       })
-      .addCase(updateIssueType.rejected, (state, action) => {
+      .addCase(updateOrganization.rejected, (state, action) => {
         state.isLoading = false;
         state.isError = true;
         state.errorMessage = action.payload;
       })
-      .addCase(deleteIssueType.pending, (state) => {
+      .addCase(deleteOrganization.pending, (state) => {
         state.isLoading = true;
         state.isError = false;
       })
-      .addCase(deleteIssueType.fulfilled, (state, action) => {
+      .addCase(deleteOrganization.fulfilled, (state, action) => {
         state.isLoading = false;
-        // Remove the deleted issue type from the state
-        state.issueTypes = state.issueTypes.filter((issueType) => issueType._id !== action.payload);
+        // Remove the deleted organization from the state
+        state.organizations = state.organizations.filter((organization) => organization._id !== action.payload);
         
       })
-      .addCase(deleteIssueType.rejected, (state) => {
+      .addCase(deleteOrganization.rejected, (state) => {
         state.isLoading = false;
         state.isError = true;
       })
-      .addCase(selectIssueTypeById.pending, (state) => {
+      .addCase(selectOrganizationById.pending, (state) => {
         state.isLoading = true;
         state.isError = false;
-        state.selectedIssueType = null; // Clear previous data
+        state.selectedOrganization = null; // Clear previous data
       })
-      .addCase(selectIssueTypeById.fulfilled, (state, action) => {
+      .addCase(selectOrganizationById.fulfilled, (state, action) => {
         state.isLoading = false;
         state.isError = false;
-        state.selectedIssueType = action.payload;
+        state.selectedOrganization = action.payload;
       })
-      .addCase(selectIssueTypeById.rejected, (state, action) => {
+      .addCase(selectOrganizationById.rejected, (state, action) => {
         state.isLoading = false;
         state.isError = true;
         state.selectedIssueType = null; // Clear previous data
-        state.errorMessage = action.payload;
+        state.selectedOrganization = action.payload;
       });
       
   },

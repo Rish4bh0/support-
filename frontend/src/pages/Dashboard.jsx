@@ -21,6 +21,7 @@ const Dashboard = () => {
   );
   const [newTicketsCount, setNewTicketsCount] = useState(0);
   const [openTicketsCount, setOpenTicketsCount] = useState(0);
+  const [reviewTicketsCount, setReviewTicketsCount] = useState(0);
   const [closedTicketsCount, setClosedTicketsCount] = useState(0);
   const [allTicketsCount, setAllTicketsCount] = useState(0);
   const [closedTickets, setClosedTickets] = useState([]); // State to store closed tickets
@@ -40,6 +41,9 @@ const Dashboard = () => {
         );
         setOpenTicketsCount(
           response.payload.filter((ticket) => ticket.status === "open").length
+        );
+        setReviewTicketsCount(
+          response.payload.filter((ticket) => ticket.status === "review").length
         );
         setClosedTicketsCount(
           response.payload.filter((ticket) => ticket.status === "close").length
@@ -111,6 +115,11 @@ const Dashboard = () => {
             className="summary-box"
             title="Open Tickets"
             count={openTicketsCount}
+          />
+          <TicketSummaryBox
+            className="summary-box"
+            title="Tickets on review"
+            count={reviewTicketsCount}
           />
           <TicketSummaryBox
             className="summary-box"

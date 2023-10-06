@@ -1,6 +1,7 @@
 const asyncHandler = require('express-async-handler');
 const IssueType = require('../models/issueModel');
 const User = require("../models/userModel");
+
 const createIssueType = asyncHandler(async (req, res) => {
    // Get user using the id and JWT
    const user = await User.findById(req.user.id);
