@@ -5,6 +5,12 @@ const organizationSchema = mongoose.Schema({
     type: String,
     required: [true, 'Please add an organization name'],
   },
+  contact: {
+    type: Number
+  },
+  email: {
+    type: String
+  },
   description: String,
   // Add other fields as needed
 });

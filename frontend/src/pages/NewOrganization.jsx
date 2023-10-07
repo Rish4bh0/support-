@@ -17,21 +17,23 @@ import CloseIcon from "@mui/icons-material/Close";
 import EditIcon from "@mui/icons-material/Edit";
 import DeleteIcon from "@mui/icons-material/Delete";
 import {
-  getAllIssueTypes,
-  createIssueType,
+  getAllOrganization,
+  createOrganization,
   reset,
-  deleteIssueType,
-} from "../features/issues/issueSlice";
+  deleteOrganization,
+} from "../features/organization/organizationSlice";
 import BackButton from "../components/BackButton";
-import { getAllOrganization } from "../features/organization/organizationSlice";
 
-function IssueList() {
-  const issues = useSelector((state) => state.issueTypes.issueTypes);
+function OrganizationList() {
+  const organizations = useSelector((state) => state.organizations.organizations);
   const { isLoading, isError, isSuccess, message } = useSelector(
-    (state) => state.issueTypes
+    (state) => state.organizations
   );
   const userRole = useSelector(state => state.auth.user.role); // Retrieve the user's role from Redux state
-  const [name, setNewIssueName] = useState("");
+  const [name, setNewOrganizationName] = useState("");
+  const [email, setEmail] = useState("");
+  const [contact, setContact] = useState("");
+  const [description, setDescription] = useState("");
   const dispatch = useDispatch();
   const navigate = useNavigate();
 
@@ -40,7 +42,6 @@ function IssueList() {
 
   useEffect(() => {
     // Load the initial issue list when the component mounts
-    dispatch(getAllIssueTypes());
     dispatch(getAllOrganization());
   }, [dispatch]);
 
@@ -54,26 +55,26 @@ function IssueList() {
   }, [dispatch, isError, isSuccess, message]);
 
   // Function to handle form submission for creating a new issue
-  const handleCreateIssue = (e) => {
+  const handleCreateOrganization = (e) => {
     e.preventDefault();
     // Dispatch the createIssueType action with the new issue name
-    dispatch(createIssueType({ name }));
+    dispatch(createOrganization({ name, email, contact, description }));
 
     // Clear the input field after creating the issue
-    setNewIssueName("");
+    setNewOrganizationName("");
     closeModal();
   };
   // Function to handle issue deletion
-  const handleDeleteIssue = (issueId) => {
+  const handleDeleteOrganization = (organizationId) => {
     const token = // Retrieve the user token from your authentication system
-      dispatch(deleteIssueType(issueId, token))
+      dispatch(deleteOrganization(organizationId, token))
         .then(() => {
           // Optionally, you can show a success message here.
-          toast.success("Issue deleted successfully");
+          toast.success("Organization deleted successfully");
         })
         .catch((error) => {
           // Handle the error and display it to the user, if necessary.
-          toast.error(`Error deleting issue: ${error.message}`);
+          toast.error(`Error deleting organization: ${error.message}`);
         });
   };
 
@@ -103,7 +104,7 @@ function IssueList() {
     <>
       <BackButton url="/" />
       <div>
-        <h1>Issue List</h1>
+        <h1>Organization List</h1>
 
         {/* Add Issue Button */}
         <Button
@@ -112,7 +113,7 @@ function IssueList() {
           onClick={openModal}
           style={{ marginBottom: "10px" }}
         >
-          Add Issue
+          Add Organization
         </Button>
 
         {/* Table View */}
@@ -120,18 +121,24 @@ function IssueList() {
           <Table>
             <TableHead>
               <TableRow>
-                <TableCell>Issue Name</TableCell>
-                <TableCell>Issue ID</TableCell>
+                <TableCell>Organization ID</TableCell>
+                <TableCell>Organization name</TableCell>
+                <TableCell>Organization email</TableCell>
+                <TableCell>Organization contact</TableCell>
+                <TableCell>Description</TableCell>
                 <TableCell>Action</TableCell>
               </TableRow>
             </TableHead>
             <TableBody>
-              {issues.map((issue) => (
-                <TableRow key={issue._id}>
-                  <TableCell>{issue.name}</TableCell>
-                  <TableCell>{issue._id}</TableCell>
+              {organizations.map((organization) => (
+                <TableRow key={organization._id}>
+                    <TableCell>{organization._id}</TableCell>
+                    <TableCell>{organization.name}</TableCell>
+                    <TableCell>{organization.email}</TableCell>
+                    <TableCell>{organization.contact}</TableCell>
+                    <TableCell>{organization.description}</TableCell>
                   <TableCell>
-                    <Link to={`/issues/${issue._id}`}>
+                    <Link to={`/organization/${organization._id}`}>
                       <Button
                         variant="contained"
                         style={{ backgroundColor: "green", marginRight: "8px" }}
@@ -142,7 +149,7 @@ function IssueList() {
                     <Button
                       variant="contained"
                       style={{ backgroundColor: "red", marginRight: "8px" }}
-                      onClick={() => handleDeleteIssue(issue._id)}
+                      onClick={() => handleDeleteOrganization(organization._id)}
                     >
                       <DeleteIcon style={{ background: "transparent" }} />
                     </Button>
@@ -185,8 +192,8 @@ function IssueList() {
             <CloseIcon />
           </Button>
 
-          <h2>Add Issue</h2>
-          <form onSubmit={handleCreateIssue}>
+          <h2>Add Organization</h2>
+          <form onSubmit={handleCreateOrganization}>
             <div className="form-group">
               <label htmlFor="name">New Issue Name:</label>
               <input
@@ -195,7 +202,40 @@ function IssueList() {
                 name="name"
                 placeholder="Name"
                 value={name}
-                onChange={(e) => setNewIssueName(e.target.value)}
+                onChange={(e) => setNewOrganizationName(e.target.value)}
+              />
+            </div>
+            <div className="form-group">
+              <label htmlFor="email">New Organization email:</label>
+              <input
+                type="text"
+                id="email"
+                name="email"
+                placeholder="Email"
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
+              />
+            </div>
+            <div className="form-group">
+              <label htmlFor="contact">New Organization contact:</label>
+              <input
+                type="number"
+                id="contact"
+                name="contact"
+                placeholder="Contact"
+                value={contact}
+                onChange={(e) => setContact(e.target.value)}
+              />
+            </div>
+            <div className="form-group">
+              <label htmlFor="description">New Organization discription:</label>
+              <input
+                type="text"
+                id="description"
+                name="description"
+                placeholder="Description"
+                value={description}
+                onChange={(e) => setDescription(e.target.value)}
               />
             </div>
             <div className="form-group">
@@ -210,89 +250,4 @@ function IssueList() {
   );
 }
 
-export default IssueList;
-
-/*
-
-import React, { useEffect, useState } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
-import { Link, Navigate } from 'react-router-dom';
-import { getAllIssueTypes, createIssueType, reset } from '../features/issues/issueSlice';
-import { useNavigate } from "react-router-dom";
-import { toast } from 'react-toastify';
-
-function IssueList() {
-  
-  const issues = useSelector((state) => state.issueTypes.issueTypes);
-  const { isLoading, isError, isSuccess, message } = useSelector(
-    (state) => state.issueTypes
-  );
-  const [name, setNewIssueName] = useState("");
-  const dispatch = useDispatch();
-  const navigate = useNavigate();
-  useEffect(() => {
-    // Load the initial issue list when the component mounts
-    dispatch(getAllIssueTypes());
-  }, [dispatch]);
-
-
-  useEffect(() => {
-    if (isError) {
-      toast.error(message);
-    }
-    if (isSuccess) {
-      dispatch(reset());
-      navigate("/");
-    }
-  }, [dispatch, isError, isSuccess, navigate, message]);
-
-
-
-  // Function to handle form submission for creating a new issue
-  const handleCreateIssue = (e) => {
-    e.preventDefault();
-console.log(name)
-    // Dispatch the createIssueType action with the new issue name
-   
-    dispatch(createIssueType({ name }));
-
-    // Clear the input field after creating the issue
-    
-  };
-
-  return (
-    <div>
-      <h1>Issue List</h1>
-
-      // Form for creating a new issue 
-      <form onSubmit={handleCreateIssue}>
-        <div className='form-group'>
-        <label htmlFor="description">New Issue Name:</label>
-          
-          <textarea
-          className='form-control'
-            id = "name"
-            name = "name"
-            placeholder="Name"
-            value={name}
-            onChange={(e) => setNewIssueName(e.target.value)}
-          ></textarea>
-        </div>
-        <div className="form-group">
-        <button className="btn btn-block" >Create Issue</button>
-        </div>
-      </form>
-
-      <ul>
-        {issues.map((issue) => (
-          <li key={issue._id}>
-            <Link to={`/issues/${issue._id}`}>{issue.name}</Link>
-          </li>
-        ))}
-      </ul>
-    </div>
-  );
-}
-
-export default IssueList;
-*/
+export default OrganizationList;

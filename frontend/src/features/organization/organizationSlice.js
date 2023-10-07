@@ -120,7 +120,7 @@ export const organizationSlice = createSlice({
       })
       .addCase(getAllOrganization.fulfilled, (state, action) => {
         state.isLoading = false;
-        state.issueTypes = action.payload;
+        state.organizations = action.payload;
       })
       .addCase(getAllOrganization.rejected, (state) => {
         state.isLoading = false;
@@ -170,13 +170,13 @@ export const organizationSlice = createSlice({
       .addCase(selectOrganizationById.rejected, (state, action) => {
         state.isLoading = false;
         state.isError = true;
-        state.selectedIssueType = null; // Clear previous data
+        state.selectedOrganization = null; // Clear previous data
         state.selectedOrganization = action.payload;
       });
       
   },
 });
 
-export const { reset } = issueTypeSlice.actions;
+export const { reset } = organizationSlice.actions;
 
-export default issueTypeSlice.reducer;
+export default organizationSlice.reducer;

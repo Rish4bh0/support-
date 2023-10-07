@@ -17,7 +17,8 @@ import IssueTypeid from './pages/issueaction'
 import UpdateTicket from './pages/updateTicket.jsx'
 import ForgotPassword from './pages/Forgotpassword'
 import ResetPassword from './pages/Resetpassword'
-import RoleCheck  from './pages/ProtectedRoute'
+import Organization from './pages/NewOrganization'
+import UpdateOrganization from './pages/UpdateOrganization'
 
 function App () {
   return (
@@ -65,6 +66,12 @@ function App () {
             <Route path='/reset-password/:token' element={<PrivateRoute />}>
               <Route path='/reset-password/:token' element={<ResetPassword />} />
             </Route>   
+            <Route path='/organization' element={<PrivateRoute />}>
+              <Route path='/organization' element={<Organization />} />
+            </Route>
+            <Route path='/organization/:id' element={<PrivateRoute />}>
+              <Route path='/organization/:id' element={<UpdateOrganization />} />
+            </Route>    
            {/*
              <Route
               path='/dashboard'
