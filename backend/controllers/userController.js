@@ -172,6 +172,94 @@ const resetPassword = asyncHandler(async (req, res) => {
   res.status(200).json({ message: 'Password reset successful' });
 });
 
+const createUser = asyncHandler(async (req, res) => {
+  const { name, email, password, role, organizationId } = req.body; // Add 'organizationId' to the destructuring
+
+  // Validation
+  if (!name || !email || !password) {
+    res.status(400);
+    throw new Error('Please provide all required fields');
+  }
+
+  // Check for existing user
+  const userExists = await User.findOne({ email });
+
+  if (userExists) {
+    res.status(400);
+    throw new Error('User already exists');
+  }
+
+  // Hash password
+  const salt = await bcrypt.genSalt(10);
+  const hashedPassword = await bcrypt.hash(password, salt);
+
+  // Create user with optional organizationId
+  const user = await User.create({
+    name,
+    email,
+    password: hashedPassword,
+    role,
+    organization: organizationId, // Include the 'organization' field
+  });
+
+  // User is created
+  if (user) {
+    res.status(201).json({
+      _id: user._id,
+      name: user.name,
+      email: user.email,
+      role: user.role,
+      organization: user.organization, // Include organization ID in the response
+      token: generateToken(user._id),
+    });
+  } else {
+    res.status(400);
+    throw new Error('User could not be created');
+  }
+});
+
+// Update a user by ID
+const updateUser = asyncHandler(async (req, res) => {
+  const { id } = req.params;
+  const { name, email, password, role, organizationId } = req.body; // Include 'role' and 'organizationId'
+
+  try {
+    // Find the user by ID
+    const user = await User.findById(id);
+
+    if (!user) {
+      return res.status(404).json({ error: 'User not found' });
+    }
+
+    // Update user fields
+    user.name = name;
+    user.email = email;
+    user.role = role;
+    user.organization = organizationId; // Include 'organization' field
+    // Check if a new password is provided and hash it
+    if (password) {
+      const salt = await bcrypt.genSalt(10);
+      const hashedPassword = await bcrypt.hash(password, salt);
+      user.password = hashedPassword;
+    }
+
+    // Save the updated user
+    await user.save();
+
+    // Respond with the updated user
+    res.status(200).json({
+      _id: user._id,
+      name: user.name,
+      email: user.email,
+      role: user.role,
+      organization: user.organization, // Include organization ID in the response
+    });
+  } catch (error) {
+    res.status(500).json({ error: 'Failed to update user' });
+  }
+});
+
+
 
 module.exports = {
   registerUser,
@@ -179,5 +267,7 @@ module.exports = {
   getAllUsers,
   getMe,
   forgotPassword,
-  resetPassword
+  resetPassword,
+  createUser,
+  updateUser
 }

@@ -40,7 +40,7 @@ export const getAllOrganization = createAsyncThunk(
 
 // Update issue type
 export const updateOrganization = createAsyncThunk(
-    'issues/update',
+    'organizations/update',
     async ({ id, organizationData, token }, thunkAPI) => {
       try {
         const updatedIssueType = await organizationService.updateOrganization(id, organizationData, token);
@@ -53,7 +53,7 @@ export const updateOrganization = createAsyncThunk(
 
 // Delete organization
 export const deleteOrganization = createAsyncThunk(
-  'issues/delete',
+  'organizations/delete',
   async (id, thunkAPI) => {
     try {
       const token = thunkAPI.getState().auth.user.token;
@@ -67,7 +67,7 @@ export const deleteOrganization = createAsyncThunk(
 
 
   export const selectOrganizationById = createAsyncThunk(
-    'issues/selectById',
+    'organizations/selectById',
     async (id, thunkAPI) => {
       /**
        * thunkAPI: an object containing all of the parameters

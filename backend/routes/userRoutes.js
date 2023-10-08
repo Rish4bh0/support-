@@ -6,9 +6,9 @@ const {
   getAllUsers,
   getMe,
   forgotPassword,
-  resetPassword
-
-
+  resetPassword,
+  createUser,
+  updateUser
 } = require('../controllers/userController')
 
 const { protect } = require('../middleware/authMiddleware')
@@ -21,6 +21,9 @@ router.get('/get', getAllUsers)
 
 router.post('/forgot-password', forgotPassword); 
 router.post('/reset-password/:token', resetPassword);
+
+router.post('/create', createUser)
+router.put('/create/:id', updateUser)
 
 // Protected route (2nd argument) - protect
 router.get('/me', protect, getMe)

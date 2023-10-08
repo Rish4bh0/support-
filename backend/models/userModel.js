@@ -15,6 +15,10 @@ const userSchema = mongoose.Schema(
       type: String,
       required: [true, 'Please add a password']
     },
+    organization: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: 'Organization',
+    },
     role: {
       type: String,
       enum: ['USER', 'ADMIN', 'SUPERVISOR', 'EMPLOYEE'], 
