@@ -8,7 +8,8 @@ const {
   forgotPassword,
   resetPassword,
   createUser,
-  updateUser
+  updateUser,
+  deleteUser
 } = require('../controllers/userController')
 
 const { protect } = require('../middleware/authMiddleware')
@@ -24,6 +25,7 @@ router.post('/reset-password/:token', resetPassword);
 
 router.post('/create', createUser)
 router.put('/create/:id', updateUser)
+router.delete('/create/:id', deleteUser)
 
 // Protected route (2nd argument) - protect
 router.get('/me', protect, getMe)

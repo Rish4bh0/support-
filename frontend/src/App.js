@@ -19,6 +19,8 @@ import ForgotPassword from './pages/Forgotpassword'
 import ResetPassword from './pages/Resetpassword'
 import Organization from './pages/NewOrganization'
 import UpdateOrganization from './pages/UpdateOrganization'
+import Createuser from './pages/NewUser'
+import Updateuser from './pages/UpdateUser'
 
 function App () {
   return (
@@ -71,7 +73,13 @@ function App () {
             </Route>
             <Route path='/organization/:id' element={<PrivateRoute />}>
               <Route path='/organization/:id' element={<UpdateOrganization />} />
-            </Route>    
+            </Route>
+            <Route path='/createuser' element={<PrivateRoute />}>
+              <Route path='/createuser' element={<Createuser />} />
+            </Route>  
+            <Route path='/createuser/:id' element={<PrivateRoute />}>
+              <Route path='/createuser/:id' element={<Updateuser />} />
+            </Route>      
            {/*
              <Route
               path='/dashboard'

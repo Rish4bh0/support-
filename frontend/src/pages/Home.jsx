@@ -43,6 +43,11 @@ function Home() {
       </Link>
       )}
       {(userRole && allowedRoles.includes(userRole)) && (
+      <Link to="/createuser" className="btn btn-reverse btn-block">
+        <FaInfo /> Add users
+      </Link>
+      )}
+      {(userRole && allowedRoles.includes(userRole)) && (
         <Link to="/dashboard" className="btn btn-block">
           <FaInfo /> Dashboard
         </Link>

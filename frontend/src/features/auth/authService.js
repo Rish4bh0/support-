@@ -1,6 +1,6 @@
 import axios from 'axios'
 
-const API_URL = '/api/users'
+const API_URL = '/api/users/'
 
 // Register user
 const register = async userData => {
@@ -40,11 +40,52 @@ const getAllUsers = async () => {
     throw error;
   }
 };
+
+const createUser = async (userData, token) => {
+  const config = {
+    headers: {
+      Authorization: `Bearer ${token}`,
+    },
+  };
+
+  const response = await axios.post(API_URL, userData, config);
+
+  return response.data;
+};
+
+const updateUser = async (id, userData, token) => {
+  const config = {
+    headers: {
+      Authorization: `Bearer ${token}`,
+    },
+  };
+
+  try {
+    const response = await axios.put(API_URL + id, userData, config);
+    return response.data; 
+  } catch (error) {
+    throw error; 
+  }
+};
+
+const deleteUser = async (id, token) => {
+  const config = {
+    headers: {
+      Authorization: `Bearer ${token}`,
+    },
+  };
+
+  await axios.delete(API_URL + '/create/' +id, config);
+};
+
 const authService = {
   register,
   logout,
   login,
   getAllUsers,
+  createUser,
+  updateUser,
+  deleteUser
 }
 
 export default authService

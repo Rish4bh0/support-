@@ -115,6 +115,44 @@ export const fetchAllUsers = createAsyncThunk(
     }
   }
 );
+
+export const createUser = createAsyncThunk(
+  'auth/create',
+  async (userData, thunkAPI) => {
+    try {
+      const token = thunkAPI.getState().auth.user.token;
+      const response = await authService.createUser(userData, token);
+      console.log('API Response:', response); // Log the entire response
+      return response;
+    } catch (error) {
+      return thunkAPI.rejectWithValue(error.message);
+    }
+  }
+);
+
+export const updateUser = createAsyncThunk(
+  'auth/update',
+  async ({ id, userData, token }, thunkAPI) => {
+    try {
+      const updatedUser = await authService.updateUser(id, userData, token);
+      return updatedUser;
+    } catch (error) {
+      return thunkAPI.rejectWithValue(error.message);
+    }
+  }
+);
+export const deleteUser = createAsyncThunk(
+  'auth/delete',
+  async (id, thunkAPI) => {
+    try {
+      const token = thunkAPI.getState().auth.user.token;
+      await authService.deleteUser(id, token);
+      return id; // Return the deleted user ID
+    } catch (error) {
+      return thunkAPI.rejectWithValue(error.message);
+    }
+  }
+);
 /**
  * A Slice 'createSlice' function that accepts an initial state, an object of reducer functions,
  * and a "slice name", and automatically generates action creators and
@@ -196,8 +234,48 @@ export const authSlice = createSlice({
         state.message = action.payload
         state.user = null
       })
-     
-      
+      .addCase(createUser.pending, state => {
+        state.isLoading = true
+      })
+      .addCase(createUser.fulfilled, state => {
+        state.isLoading = false
+        state.isSuccess = true
+      })
+      .addCase(createUser.rejected, (state, action) => {
+        state.isLoading = false
+        state.isError = true
+        state.message = action.payload
+      })
+      .addCase(updateUser.pending, (state) => {
+        state.isLoading = true;
+        state.isError = false;
+        state.errorMessage = '';
+      })
+      .addCase(updateUser.fulfilled, (state, action) => {
+        state.isLoading = false;
+        state.users = state.users.map((user) =>
+        user._id === action.payload._id ? action.payload : user
+        );
+      })
+      .addCase(updateUser.rejected, (state, action) => {
+        state.isLoading = false;
+        state.isError = true;
+        state.errorMessage = action.payload;
+      })
+      .addCase(deleteUser.pending, (state) => {
+        state.isLoading = true;
+        state.isError = false;
+      })
+      .addCase(deleteUser.fulfilled, (state, action) => {
+        state.isLoading = false;
+        // Remove the deleted organization from the state
+        state.users = state.users.filter((user) => user._id !== action.payload);
+        
+      })
+      .addCase(deleteUser.rejected, (state) => {
+        state.isLoading = false;
+        state.isError = true;
+      })
       .addCase(logout.fulfilled, state => {
         state.user = null
       })
