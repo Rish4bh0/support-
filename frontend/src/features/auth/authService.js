@@ -41,14 +41,14 @@ const getAllUsers = async () => {
   }
 };
 
-const createUser = async (userData, token) => {
+const createUser = async (createData, token) => {
   const config = {
     headers: {
       Authorization: `Bearer ${token}`,
     },
   };
 
-  const response = await axios.post(API_URL, userData, config);
+  const response = await axios.post(API_URL + '/create/', createData, config);
 
   return response.data;
 };

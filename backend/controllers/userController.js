@@ -86,7 +86,8 @@ const getAllUsers = asyncHandler(async (req, res) => {
     _id: user._id,
     name: user.name,
     role: user.role,
-    email: user.email
+    email: user.email,
+    organization: user.organization
   }));
   res.json(simplifiedUsers);
 });
@@ -174,10 +175,10 @@ const resetPassword = asyncHandler(async (req, res) => {
 });
 
 const createUser = asyncHandler(async (req, res) => {
-  const { name, email, password, role, organizationId } = req.body; // Add 'organizationId' to the destructuring
+  const { name, email, password, role, organization } = req.body; // Add 'organizationId' to the destructuring
 
   // Validation
-  if (!name || !email || !password) {
+  if (!name || !email || !password ) {
     res.status(400);
     throw new Error('Please provide all required fields');
   }
@@ -200,7 +201,7 @@ const createUser = asyncHandler(async (req, res) => {
     email,
     password: hashedPassword,
     role,
-    organization: organizationId, // Include the 'organization' field
+    organization, // Include the 'organization' field
   });
 
   // User is created

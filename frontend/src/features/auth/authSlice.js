@@ -116,12 +116,13 @@ export const fetchAllUsers = createAsyncThunk(
   }
 );
 
+
 export const createUser = createAsyncThunk(
   'auth/create',
-  async (userData, thunkAPI) => {
+  async (createData, thunkAPI) => {
     try {
       const token = thunkAPI.getState().auth.user.token;
-      const response = await authService.createUser(userData, token);
+      const response = await authService.createUser(createData, token);
       console.log('API Response:', response); // Log the entire response
       return response;
     } catch (error) {
@@ -169,12 +170,7 @@ export const authSlice = createSlice({
   initialState,
   // An object of "case reducers". Key names will be used to generate actions.
   reducers: {
-    reset: state => {
-      state.isError = false
-      state.isLoading = false
-      state.isSuccess = false
-      state.message = ''
-    }
+    reset: state => initialState
   },
   /**
    *

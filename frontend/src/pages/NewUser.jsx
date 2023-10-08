@@ -23,16 +23,24 @@ import {
   deleteUser,
 } from "../features/auth/authSlice";
 import BackButton from "../components/BackButton";
+import { getAllOrganization } from "../features/organization/organizationSlice";
 
 function UserList() {
   const users = useSelector((state) => state.auth.users);
   const { isLoading, isError, isSuccess, message } = useSelector(
     (state) => state.auth.users
   );
-  const userRole = useSelector(state => state.auth.user.role); // Retrieve the user's role from Redux state
+  const organizations = useSelector((state) => state.organizations.organizations);
+  const organizationMap = {};
+
+  // Create a mapping of organization IDs to their names
+  organizations.forEach((organization) => {
+    organizationMap[organization._id] = organization.name;
+  });
+  const userRole = useSelector(state => state.auth.user.role);
   const [name, setNewUserName] = useState("");
   const [email, setEmail] = useState("");
-  const [role, setRole] = useState("");
+  const [role, setRole] = useState("USER");
   const [password, setPassword] = useState("");
   const [organization, setOrganization] = useState("");
   const dispatch = useDispatch();
@@ -42,8 +50,8 @@ function UserList() {
   const [isModalOpen, setIsModalOpen] = useState(false);
 
   useEffect(() => {
-    // Load the initial issue list when the component mounts
     dispatch(fetchAllUsers());
+    dispatch(getAllOrganization());
   }, [dispatch]);
 
   useEffect(() => {
@@ -55,59 +63,53 @@ function UserList() {
     }
   }, [dispatch, isError, isSuccess, message]);
 
-  // Function to handle form submission for creating a new issue
   const handleCreateUser = (e) => {
     e.preventDefault();
-    // Dispatch the createIssueType action with the new issue name
-    dispatch(createUser({ name, email, password, role}));
-
-    // Clear the input field after creating the issue
+    console.log(role, organization)
+    dispatch(createUser({ name, email, password, role, organization }));
     setNewUserName("");
+    setEmail("");
+    setPassword("");
+    setRole(""); // Clear the role input field
+    setOrganization(""); // Clear the organization input field
     closeModal();
   };
-  // Function to handle issue deletion
+
   const handleDeleteUser = (userId) => {
-    const token = // Retrieve the user token from your authentication system
-      dispatch(deleteUser(userId, token))
-        .then(() => {
-          // Optionally, you can show a success message here.
-          toast.success("User deleted successfully");
-        })
-        .catch((error) => {
-          // Handle the error and display it to the user, if necessary.
-          toast.error(`Error deleting User: ${error.message}`);
-        });
+    // Retrieve the user token from your authentication system
+    const token = 'your-token-here';
+    
+    dispatch(deleteUser(userId, token))
+      .then(() => {
+        toast.success("User deleted successfully");
+      })
+      .catch((error) => {
+        toast.error(`Error deleting User: ${error.message}`);
+      });
   };
 
-  // Function to open the modal
   const openModal = () => {
     setIsModalOpen(true);
   };
 
-  // Function to close the modal
   const closeModal = () => {
     setIsModalOpen(false);
   };
 
- // Check if the user has one of the allowed roles
- if (!["ADMIN", "SUPERVISOR", "EMPLOYEE"].includes(userRole)) {
-  // Handle unauthorized access, e.g., redirect or show an error message
-  return (
-    <div>
-      <h1>Unauthorized Access</h1>
-      <p>You do not have permission to access this page.</p>
-    </div>
-  );
-}
-
+  if (!["ADMIN", "SUPERVISOR", "EMPLOYEE"].includes(userRole)) {
+    return (
+      <div>
+        <h1>Unauthorized Access</h1>
+        <p>You do not have permission to access this page.</p>
+      </div>
+    );
+  }
 
   return (
     <>
       <BackButton url="/" />
       <div>
         <h1>User List</h1>
-
-        {/* Add Issue Button */}
         <Button
           variant="contained"
           color="primary"
@@ -116,8 +118,6 @@ function UserList() {
         >
           Add User
         </Button>
-
-        {/* Table View */}
         <TableContainer component={Paper}>
           <Table>
             <TableHead>
@@ -133,11 +133,11 @@ function UserList() {
             <TableBody>
               {users.map((user) => (
                 <TableRow key={user._id}>
-                    <TableCell>{user._id}</TableCell>
-                    <TableCell>{user.name}</TableCell>
-                    <TableCell>{user.email}</TableCell>
-                    <TableCell>{user.role}</TableCell>
-                    <TableCell>{user.organization}</TableCell>
+                  <TableCell>{user._id}</TableCell>
+                  <TableCell>{user.name}</TableCell>
+                  <TableCell>{user.email}</TableCell>
+                  <TableCell>{user.role}</TableCell>
+                  <TableCell>{user.organization ? organizationMap[user.organization] : "Unassigned"}</TableCell>
                   <TableCell>
                     <Link to={`/createuser/${user._id}`}>
                       <Button
@@ -160,8 +160,6 @@ function UserList() {
             </TableBody>
           </Table>
         </TableContainer>
-
-        {/* Add Issue Modal */}
         <Modal
           isOpen={isModalOpen}
           onRequestClose={closeModal}
@@ -183,7 +181,6 @@ function UserList() {
             },
           }}
         >
-          {/* Close button */}
           <Button
             variant="text"
             color="inherit"
@@ -192,7 +189,6 @@ function UserList() {
           >
             <CloseIcon />
           </Button>
-
           <h2>Add User</h2>
           <form onSubmit={handleCreateUser}>
             <div className="form-group">
@@ -218,35 +214,55 @@ function UserList() {
               />
             </div>
             <div className="form-group">
-            <label htmlFor="password">New user password:</label>
-            <input
-              type="password"
-              id="password"
-              name="password"
-              value={password}
-              placeholder="Enter your password"
-              onChange={(e) => setPassword(e.target.value)}
-            />
-          </div>
-          <div className="form-group">
-            <label htmlFor="role">Role</label>
-            <select
-              name="role"
-              id="role"
-              value={role}
-              onChange={(e) => setRole(e.target.value)}
-            >
-              <option value="ADMIN">ADMIN</option>
-              <option value="USER">USER</option>
-              <option value="SUPERVISOR">SUPERVISOR</option>
-              <option value="EMPLOYEE">EMPLOYEE</option>
-            </select>
-          </div>
-
-           
+              <label htmlFor="password">New user password:</label>
+              <input
+                type="password"
+                id="password"
+                name="password"
+                value={password}
+                placeholder="Enter your password"
+                onChange={(e) => setPassword(e.target.value)}
+              />
+            </div>
+            <div className="form-group">
+              <label htmlFor="role">Role</label>
+              <select
+                name="role"
+                id="role"
+                value={role}
+                onChange={(e) => setRole(e.target.value)}
+              >
+                <option value="ADMIN">ADMIN</option>
+                <option value="USER">USER</option>
+                <option value="SUPERVISOR">SUPERVISOR</option>
+                <option value="EMPLOYEE">EMPLOYEE</option>
+              </select>
+            </div>
+            <div className="form-group">
+              <label htmlFor="organization">Organization</label>
+              <select
+                name="organization"
+                id="organization"
+                value={organization}
+                onChange={(e) => setOrganization(e.target.value)}
+              >
+                <option value="">Select One</option>
+                {organizations && organizations.length > 0 ? (
+                  organizations.map((organization) => (
+                    <option key={organization._id} value={organization._id}>
+                      {organization.name}
+                    </option>
+                  ))
+                ) : (
+                  <option value="" disabled>
+                    No organization available
+                  </option>
+                )}
+              </select>
+            </div>
             <div className="form-group">
               <Button type="submit" variant="contained" color="primary">
-                Create Issue
+                Create User
               </Button>
             </div>
           </form>
@@ -257,3 +273,4 @@ function UserList() {
 }
 
 export default UserList;
+

@@ -18,11 +18,13 @@ const userSchema = mongoose.Schema(
     organization: {
       type: mongoose.Schema.Types.ObjectId,
       ref: 'Organization',
+
     },
     role: {
       type: String,
       enum: ['USER', 'ADMIN', 'SUPERVISOR', 'EMPLOYEE'], 
       default: 'USER', // Set a default role if needed
+
     },
     resetPasswordToken: String, // Add these fields to the schema
     resetPasswordExpire: Date,
