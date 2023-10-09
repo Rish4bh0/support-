@@ -61,7 +61,7 @@ const updateUser = async (id, userData, token) => {
   };
 
   try {
-    const response = await axios.put(API_URL + id, userData, config);
+    const response = await axios.put(API_URL + '/create/' + id, userData, config);
     return response.data; 
   } catch (error) {
     throw error; 
@@ -78,6 +78,19 @@ const deleteUser = async (id, token) => {
   await axios.delete(API_URL + '/create/' +id, config);
 };
 
+const selectUserById = async (id, token) => {
+  const config = {
+    headers: {
+      Authorization: `Bearer ${token}`
+    },
+    responseType: 'json',
+  }
+
+  const response = await axios.get(API_URL + '/create/' + id, config)
+
+  return response.data
+}
+
 const authService = {
   register,
   logout,
@@ -85,7 +98,8 @@ const authService = {
   getAllUsers,
   createUser,
   updateUser,
-  deleteUser
+  deleteUser,
+  selectUserById
 }
 
 export default authService

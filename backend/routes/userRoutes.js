@@ -9,7 +9,8 @@ const {
   resetPassword,
   createUser,
   updateUser,
-  deleteUser
+  deleteUser,
+  getUserById
 } = require('../controllers/userController')
 
 const { protect } = require('../middleware/authMiddleware')
@@ -24,6 +25,7 @@ router.post('/forgot-password', forgotPassword);
 router.post('/reset-password/:token', resetPassword);
 
 router.post('/create', createUser)
+router.get('/create/:id', getUserById)
 router.put('/create/:id', updateUser)
 router.delete('/create/:id', deleteUser)
 

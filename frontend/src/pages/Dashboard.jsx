@@ -2,8 +2,8 @@
 
 import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import TicketSummaryBox from "./TicketSummaryBox.js";
-import TicketTable from "./TicketTable.js"; // Import the TicketTable component
+import TicketSummaryBox from "./TicketSummaryBox.jsx";
+import TicketTable from "./TicketTable.jsx"; // Import the TicketTable component
 
 import {
   getAllTickets,

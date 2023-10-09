@@ -26,10 +26,8 @@ import BackButton from "../components/BackButton";
 import { getAllOrganization } from "../features/organization/organizationSlice";
 
 function UserList() {
+  const authUser = useSelector((state) => state.auth.user); // Get the user from the Redux store
   const users = useSelector((state) => state.auth.users);
-  const { isLoading, isError, isSuccess, message } = useSelector(
-    (state) => state.auth.users
-  );
   const organizations = useSelector((state) => state.organizations.organizations);
   const organizationMap = {};
 
@@ -54,14 +52,7 @@ function UserList() {
     dispatch(getAllOrganization());
   }, [dispatch]);
 
-  useEffect(() => {
-    if (isError) {
-      toast.error(message);
-    }
-    if (isSuccess) {
-      dispatch(reset());
-    }
-  }, [dispatch, isError, isSuccess, message]);
+  
 
   const handleCreateUser = (e) => {
     e.preventDefault();
@@ -105,6 +96,9 @@ function UserList() {
     );
   }
 
+  // Filter users based on the organization of the authenticated user
+  const filteredUsers = users.filter(user => user.organization === authUser.organization);
+
   return (
     <>
       <BackButton url="/" />
@@ -131,7 +125,7 @@ function UserList() {
               </TableRow>
             </TableHead>
             <TableBody>
-              {users.map((user) => (
+              {filteredUsers.map((user) => (
                 <TableRow key={user._id}>
                   <TableCell>{user._id}</TableCell>
                   <TableCell>{user.name}</TableCell>
@@ -232,7 +226,7 @@ function UserList() {
                 value={role}
                 onChange={(e) => setRole(e.target.value)}
               >
-                <option value="">Select One</option> 
+                <option value="">Select One</option>
                 <option value="USER">USER</option>
                 <option value="ADMIN">ADMIN</option>
                 <option value="SUPERVISOR">SUPERVISOR</option>
@@ -274,4 +268,5 @@ function UserList() {
 }
 
 export default UserList;
+
 

@@ -21,6 +21,8 @@ import Organization from './pages/NewOrganization'
 import UpdateOrganization from './pages/UpdateOrganization'
 import Createuser from './pages/NewUser'
 import Updateuser from './pages/UpdateUser'
+import OrganizationDetail from './pages/OrganizationDetail'
+import AllOrganization from './pages/AllOrganization'
 
 function App () {
   return (
@@ -71,6 +73,9 @@ function App () {
             <Route path='/organization' element={<PrivateRoute />}>
               <Route path='/organization' element={<Organization />} />
             </Route>
+            <Route path='/organizations' element={<PrivateRoute />}>
+              <Route path='/organizations' element={<AllOrganization />} />
+            </Route>
             <Route path='/organization/:id' element={<PrivateRoute />}>
               <Route path='/organization/:id' element={<UpdateOrganization />} />
             </Route>
@@ -79,7 +84,10 @@ function App () {
             </Route>  
             <Route path='/createuser/:id' element={<PrivateRoute />}>
               <Route path='/createuser/:id' element={<Updateuser />} />
-            </Route>      
+            </Route>
+            <Route path='/organizations/:id' element={<PrivateRoute />}>
+              <Route path='/organizations/:id' element={<OrganizationDetail />} />
+            </Route>        
            {/*
              <Route
               path='/dashboard'

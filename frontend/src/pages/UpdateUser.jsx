@@ -1,33 +1,41 @@
 import React, { useEffect, useState } from "react";
 import {
-  selectOrganizationById,
-  updateOrganization,
-} from "../features/organization/organizationSlice";
+  reset,
+  selectUserById,
+  updateUser,
+} from "../features/auth/authSlice";
 import { useParams } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import Spinner from "../components/Spinner";
-
-const UpdateOrganization = () => {
-  const organization = useSelector(
-    (state) => state.organizations.selectedOrganization
+import { toast } from "react-toastify";
+import { getAllOrganization } from "../features/organization/organizationSlice";
+const UpdateUser = () => {
+  const user = useSelector(
+    (state) => state.auth.selectedUser
   );
+  const organizations = useSelector((state) => state.organizations.organizations);
   const { id } = useParams();
   const dispatch = useDispatch();
-
+  const [password, setPassword] = useState("");
   // State to store form data
   const [formData, setFormData] = useState({
     name: "",
     email: "",
-    contact: "",
-    description: "",
+    role: "",
+    organization: "",
   });
 
-  // Function to handle form input changes
+  // Function to handle form input changes except for password
   const handleChange = (e) => {
     setFormData({
       ...formData,
       [e.target.name]: e.target.value,
     });
+  };
+
+  // Function to handle password input changes
+  const handlePasswordChange = (e) => {
+    setPassword(e.target.value);
   };
 
   // Function to handle form submission
@@ -36,38 +44,42 @@ const UpdateOrganization = () => {
 
     // Dispatch the updateOrganization action with the updated organization data
     dispatch(
-      updateOrganization({
+      updateUser({
         id,
-        organizationData: formData,
+        userData: {
+          ...formData,  // Include other form data
+          password,      // Include the password
+        },
       })
     );
   };
 
   useEffect(() => {
     // Fetch the selected organization by its ID
-    dispatch(selectOrganizationById(id));
+    dispatch(selectUserById(id));
+    dispatch(getAllOrganization());
   }, [id, dispatch]);
 
   // Update formData with organization data when it's available
   useEffect(() => {
-    if (organization) {
+    if (user) {
       setFormData({
-        name: organization.name,
-        email: organization.email,
-        contact: organization.contact,
-        description: organization.description,
+        name: user.name,
+        email: user.email,
+        role: user.role,
+        organization: user.organization,
       });
     }
-  }, [organization]);
+  }, [user]);
 
   // Display loading message if the organization is being fetched
-  if (!organization) {
+  if (!user) {
     return <Spinner />;
   }
 
   return (
     <>
-      <h2>Update Organization</h2>
+      <h2>Update User</h2>
       <form onSubmit={handleSubmit}>
         <div className="form-group">
           <label htmlFor="name">Name</label>
@@ -92,30 +104,58 @@ const UpdateOrganization = () => {
           />
         </div>
         <div className="form-group">
-          <label htmlFor="contact">Contact</label>
+          <label htmlFor="password">New user password:</label>
           <input
-            type="text"
-            id="contact"
-            name="contact"
-            value={formData.contact}
-            onChange={handleChange}
-            required
+            type="password"
+            id="password"
+            name="password"
+            value={password}
+            placeholder="Enter your password"
+            onChange={handlePasswordChange}  // Use the separate handler
           />
         </div>
         <div className="form-group">
-          <label htmlFor="description">Description</label>
-          <textarea
-            id="description"
-            name="description"
-            value={formData.description}
-            onChange={handleChange}
-            required
-          />
-        </div>
+            <label htmlFor="role">Role</label>
+            <select
+              name="role"
+              id="role"
+              value={formData.role}
+              onChange={handleChange}
+            >
+              <option value="USER">USER</option>
+              <option value="ADMIN">
+              ADMIN
+              </option>
+              <option value="SUPERVISOR">SUPERVISOR</option>
+              <option value="EMPLOYEE">EMPLOYEE</option>
+            </select>
+          </div>
+          <div className="form-group">
+              <label htmlFor="organization">Organization</label>
+              <select
+                name="organization"
+                id="organization"
+                value={formData.organization}
+              onChange={handleChange}
+              >
+                <option value="">Select One</option>
+                {organizations && organizations.length > 0 ? (
+                  organizations.map((organization) => (
+                    <option key={organization._id} value={organization._id}>
+                      {organization.name}
+                    </option>
+                  ))
+                ) : (
+                  <option value="" disabled>
+                    No organization available
+                  </option>
+                )}
+              </select>
+            </div>
         <button type="submit">Update</button>
       </form>
     </>
   );
 };
 
-export default UpdateOrganization;
+export default UpdateUser;

@@ -49,6 +49,7 @@ const registerUser = asyncHandler(async (req, res) => {
       name: user.name,
       email: user.email,
       role: user.role,
+      organization: user.organization,
       token: generateToken(user._id)
     })
   } else {
@@ -72,6 +73,7 @@ const loginUser = asyncHandler(async (req, res) => {
       name: user.name,
       email: user.email,
       role: user.role,
+      organization: user.organization,
       token: generateToken(user._id)
     })
   } else {
@@ -102,6 +104,7 @@ const getMe = asyncHandler(async (req, res) => {
     email: req.user.email,
     name: req.user.name,
     role: req.user.role,
+    organization: user.organization,
   }
   res.status(200).json(user)
 })
@@ -223,7 +226,7 @@ const createUser = asyncHandler(async (req, res) => {
 // Update a user by ID
 const updateUser = asyncHandler(async (req, res) => {
   const { id } = req.params;
-  const { name, email, password, role, organizationId } = req.body; // Include 'role' and 'organizationId'
+  const { name, email, password, role, organization } = req.body; // Include 'role' and 'organizationId'
 
   try {
     // Find the user by ID
@@ -237,7 +240,7 @@ const updateUser = asyncHandler(async (req, res) => {
     user.name = name;
     user.email = email;
     user.role = role;
-    user.organization = organizationId; // Include 'organization' field
+    user.organization = organization; // Include 'organization' field
     // Check if a new password is provided and hash it
     if (password) {
       const salt = await bcrypt.genSalt(10);
@@ -274,7 +277,19 @@ const deleteUser = asyncHandler (async (req, res) => {
   }
 });
 
-
+const getUserById = asyncHandler (async (req, res) => {
+  try {
+    const { id } = req.params;
+    const user = await User.findById(id);
+    
+    if (!user) {
+      return res.status(404).json({ error: 'User not found' });
+    }
+    res.status(200).json(user);
+  } catch (error) {
+    res.status(500).json({ error: 'Failed to fetch user' });
+  }
+});
 
 module.exports = {
   registerUser,
@@ -285,5 +300,6 @@ module.exports = {
   resetPassword,
   createUser,
   updateUser,
-  deleteUser
+  deleteUser,
+  getUserById
 }

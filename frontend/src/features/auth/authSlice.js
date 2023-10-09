@@ -7,6 +7,7 @@ const user = JSON.parse(localStorage.getItem('user'))
 const initialState = {
   user: user ? user : null,
   users: [],
+  selectedUser: {},
   isError: false,
   isLoading: false,
   isSuccess: false,
@@ -154,6 +155,31 @@ export const deleteUser = createAsyncThunk(
     }
   }
 );
+
+export const selectUserById = createAsyncThunk(
+  'organizations/selectById',
+  async (id, thunkAPI) => {
+    /**
+     * thunkAPI: an object containing all of the parameters
+     * that are normally passed to a Redux thunk function,
+     * as well as additional options: https://redux-toolkit.js.org/api/createAsyncThunk
+     */
+    try {
+      // Token is required for authentication
+      const token = thunkAPI.getState().auth.user.token
+      return await authService.selectUserById(id, token)
+    } catch (error) {
+      const message =
+        (error.response &&
+          error.response.data &&
+          error.response.data.message) ||
+        error.message ||
+        error.toString()
+
+      return thunkAPI.rejectWithValue(message)
+    }
+  }
+)
 /**
  * A Slice 'createSlice' function that accepts an initial state, an object of reducer functions,
  * and a "slice name", and automatically generates action creators and
@@ -170,7 +196,12 @@ export const authSlice = createSlice({
   initialState,
   // An object of "case reducers". Key names will be used to generate actions.
   reducers: {
-    reset: state => initialState
+    reset: state => {
+      state.isError = false
+      state.isLoading = false
+      state.isSuccess = false
+      state.message = ''
+    }
   },
   /**
    *
@@ -275,6 +306,22 @@ export const authSlice = createSlice({
       .addCase(logout.fulfilled, state => {
         state.user = null
       })
+      .addCase(selectUserById.pending, (state) => {
+        state.isLoading = true;
+        state.isError = false;
+        state.selectedUser = null; // Clear previous data
+      })
+      .addCase(selectUserById.fulfilled, (state, action) => {
+        state.isLoading = false;
+        state.isError = false;
+        state.selectedUser = action.payload;
+      })
+      .addCase(selectUserById.rejected, (state, action) => {
+        state.isLoading = false;
+        state.isError = true;
+        state.selectedUser = null; // Clear previous data
+        state.selectedUser = action.payload;
+      });
   }
 })
 
