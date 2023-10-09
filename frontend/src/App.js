@@ -23,6 +23,7 @@ import Createuser from './pages/NewUser'
 import Updateuser from './pages/UpdateUser'
 import OrganizationDetail from './pages/OrganizationDetail'
 import AllOrganization from './pages/AllOrganization'
+import Forget from './pages/Forgotpassword'
 
 function App () {
   return (
@@ -87,6 +88,9 @@ function App () {
             </Route>
             <Route path='/organizations/:id' element={<PrivateRoute />}>
               <Route path='/organizations/:id' element={<OrganizationDetail />} />
+            </Route> 
+            <Route path='/forget' element={<PrivateRoute />}>
+              <Route path='/forget' element={<Forget />} />
             </Route>        
            {/*
              <Route

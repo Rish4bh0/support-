@@ -52,11 +52,15 @@ function Home() {
         <FaInfo /> User Management
       </Link>
       )}
+      <Link to="/forget" className="btn btn-reverse btn-block">
+        <FaInfo /> Forget Password
+      </Link>
       {(userRole && allowedRoles.includes(userRole)) && (
         <Link to="/dashboard" className="btn btn-block">
           <FaInfo /> Dashboard
         </Link>
       )}
+
     </>
   );
 }
