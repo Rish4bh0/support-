@@ -116,7 +116,15 @@ const TicketTable = ({ tickets }) => {
       }
       return true; // If no month or year selected, include all tickets
     })
-   
+    const formatTime = (seconds) => {
+      const hours = Math.floor(seconds / 3600);
+      const minutes = Math.floor((seconds % 3600) / 60);
+      const remainingSeconds = seconds % 60;
+    
+      return `${hours.toString().padStart(2, '0')}:${minutes.toString().padStart(2, '0')}:${remainingSeconds.toString().padStart(2, '0')}`;
+    };
+    
+    
     const startIdx = page * rowsPerPage;
     const endIdx = startIdx + rowsPerPage;
     const displayedTickets = filteredTickets.slice(startIdx, endIdx);
@@ -188,9 +196,10 @@ const TicketTable = ({ tickets }) => {
               <TableHeaderCell>Clients Name</TableHeaderCell>
               <TableHeaderCell>Status</TableHeaderCell>
               <TableHeaderCell>Ticket solved by</TableHeaderCell>
+              <TableHeaderCell>Hours spent</TableHeaderCell>
               <TableHeaderCell>Created At</TableHeaderCell>
               <TableHeaderCell>Closed At</TableHeaderCell>
-              <TableHeaderCell>Time Taken</TableHeaderCell>
+              <TableHeaderCell>Ticket open for</TableHeaderCell>
               <TableHeaderCell>Actions</TableHeaderCell>{" "}
             </TableRow>
           </TableHead>
@@ -203,6 +212,7 @@ const TicketTable = ({ tickets }) => {
                 <TableCellStyled>
                   {getUserNameById(ticket.assignedTo)}
                 </TableCellStyled>
+                <TableCellStyled>{formatTime(ticket.timeSpent)}</TableCellStyled>
                 <TableCellStyled>
                   {new Date(ticket.createdAt).toLocaleString("en-US", options)}
                 </TableCellStyled>

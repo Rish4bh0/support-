@@ -6,9 +6,7 @@ const { protect } = require('../middleware/authMiddleware')
 
 router
   .route('/')
-  .get(getNotes)
+  .get(protect, getNotes)
   .post(protect, addNote)
 
 module.exports = router
-
-// /api/tickets/:ticketId/notes

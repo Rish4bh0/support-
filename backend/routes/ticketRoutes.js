@@ -10,15 +10,18 @@ const {
   deleteTicket,
   getAllTickets,
   getTicketss,
+  savetime,
   
  
 } = require('../controllers/ticketController')
 
 const { protect } = require('../middleware/authMiddleware')
 const roleMiddleware = require('../middleware/roleMiddleware');
+
 // Re-route into note router
 const noteRouter = require('./noteRoutes')
 router.use('/:ticketId/notes', noteRouter)
+
 
 router
   .route('/')
@@ -28,6 +31,8 @@ router
   router.route('/my').get(protect, getTicketss);
 
 router.route('/all').get(getAllTickets);
+
+router.route('/:ticketId/elapsed-time').put(savetime);
 
 router
   .route('/:id')

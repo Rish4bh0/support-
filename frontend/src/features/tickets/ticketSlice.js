@@ -243,6 +243,33 @@ export const updateTicketAsync = createAsyncThunk(
 );
 
 
+// Create a new Redux thunk action to save elapsed time
+export const saveElapsedTime = createAsyncThunk(
+  'tickets/saveElapsedTime',
+  async ({ ticketId, timeSpent }, thunkAPI) => {
+    try {
+      const token = thunkAPI.getState().auth.user.token;
+      const response = await ticketService.saveElapsedTime(
+        ticketId,
+        timeSpent,
+        token
+      );
+      return response;
+    } catch (error) {
+      const message =
+        (error.response &&
+          error.response.data &&
+          error.response.data.message) ||
+        error.message ||
+        error.toString();
+
+      return thunkAPI.rejectWithValue(message);
+    }
+  }
+);
+
+
+
 export const ticketSlice = createSlice({
   name: 'ticket',
   initialState,
@@ -348,7 +375,32 @@ export const ticketSlice = createSlice({
         state.isLoading = false;
         state.isError = true;
         state.message = action.payload;
-      });
+      })
+      .addCase(saveElapsedTime.pending, (state) => {
+        // Handle pending action
+        state.isLoading = true;
+      })
+      .addCase(saveElapsedTime.fulfilled, (state, action) => {
+        state.isLoading = false;
+        state.isSuccess = true;
+      
+        // Find the index of the ticket with the matching ticketId
+        const ticketIndex = state.tickets.findIndex(
+          (ticket) => ticket._id === action.payload._id
+        );
+      
+        if (ticketIndex !== -1) {
+          // Update the elapsed time of the matched ticket
+          state.tickets[ticketIndex].elapsedTime = action.payload.elapsedTime;
+        }
+      })
+      .addCase(saveElapsedTime.rejected, (state, action) => {
+        // Handle rejected action
+        state.isLoading = false;
+        state.isError = true;
+        state.message = action.payload;
+      })
+
   }
 })
 

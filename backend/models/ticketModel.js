@@ -69,6 +69,10 @@ const ticketSchema = mongoose.Schema(
         },
       },
     ],
+    timeSpent: {
+      type: Number,
+      default: 0, // Default value is 0 minutes
+    },
   },
   {
     timestamps: true,

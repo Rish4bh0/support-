@@ -4,6 +4,7 @@ import {
   getTicket,
   closeTicket,
   reviewTicket,
+  saveElapsedTime,
 } from "../features/tickets/ticketSlice";
 import {
   getNotes,
@@ -51,7 +52,54 @@ function Ticket() {
   };
   const [modalIsOpen, setModalIsOpen] = useState(false);
   const [noteText, setNoteText] = useState("");
+  const [isTimerRunning, setIsTimerRunning] = useState(false);
+  const [elapsedTime, setElapsedTime] = useState(0);
+  const [timerIntervalId, setTimerIntervalId] = useState(null);
+  // Define a function to start the timer
+  const startTimer = () => {
+    setIsTimerRunning(true);
+    const startTime = Date.now() - elapsedTime;
+    const timerInterval = setInterval(() => {
+      setElapsedTime(Date.now() - startTime);
+    }, 1000);
+    // Store the timer interval ID in the component's state
+    setTimerIntervalId(timerInterval);
+  };
 
+  const stopTimer = () => {
+    setIsTimerRunning(false);
+    clearInterval(timerIntervalId);
+
+    // Calculate elapsed time in seconds
+    const timeSpent = Math.floor(elapsedTime / 1000);
+
+    // Calculate the updated total elapsed time by adding to the existing timeSpent
+    const updatedTimeSpent = ticket.timeSpent + timeSpent;
+
+    // Dispatch an action to save the updated elapsed time to the server
+    dispatch(saveElapsedTime({ ticketId, timeSpent: updatedTimeSpent }));
+  };
+
+  // Handle timer start/stop button click
+  const handleTimerButtonClick = () => {
+    if (isTimerRunning) {
+      // If the timer is running, stop it
+      stopTimer();
+    } else {
+      // If the timer is not running, start it
+      startTimer();
+    }
+  };
+
+  // Format the elapsed time in HH:MM:SS format
+  const formatElapsedTime = (milliseconds) => {
+    const seconds = Math.floor((milliseconds / 1000) % 60);
+    const minutes = Math.floor((milliseconds / 1000 / 60) % 60);
+    const hours = Math.floor(milliseconds / 1000 / 60 / 60);
+    return `${hours.toString().padStart(2, "0")}:${minutes
+      .toString()
+      .padStart(2, "0")}:${seconds.toString().padStart(2, "0")}`;
+  };
   const { ticket, isLoading, isError, message } = useSelector(
     (state) => state.tickets
   );
@@ -141,7 +189,15 @@ function Ticket() {
     dispatch(createNote({ ticketId, noteText }));
     closeModal();
   };
-
+  const formatTime = (seconds) => {
+    const hours = Math.floor(seconds / 3600);
+    const minutes = Math.floor((seconds % 3600) / 60);
+    const remainingSeconds = seconds % 60;
+  
+    return `${hours.toString().padStart(2, '0')}:${minutes.toString().padStart(2, '0')}:${remainingSeconds.toString().padStart(2, '0')}`;
+  };
+  
+  const formattedTimeSpent = formatTime(ticket.timeSpent);
   return (
     <div className="ticket-page">
       <header className="ticket-header">
@@ -159,6 +215,7 @@ function Ticket() {
         <h3>Product: {ticket.product}</h3>
         <h3>Assigned To: {getUserNameById(ticket.assignedTo)}</h3>
         <h3>Priority: {ticket.priority}</h3>
+        <h3>Time spent: {formattedTimeSpent}</h3>
         <h3>Issue Type: {issueById(ticket.issueType)}</h3>
         {ticket.status === "close" && (
           <h3>
@@ -171,9 +228,16 @@ function Ticket() {
           <h3>Description of Issue</h3>
           <p>{ticket.description}</p>
         </div>
+        <div className="ticket-timer">
+          <h3>Elapsed Time: {formatElapsedTime(elapsedTime)}</h3>
+          <button onClick={handleTimerButtonClick} className="btn">
+            {isTimerRunning ? "Stop Timer" : "Start Timer"}
+          </button>
+        </div>
         {ticket.status !== "close" &&
           userRole &&
           allowedRoles.includes(userRole) && <h2>Notes</h2>}
+           
       </header>
 
       {ticket.status !== "close" &&

@@ -412,6 +412,30 @@ const updateTicket = asyncHandler(async (req, res) => {
   res.status(200).json(updatedTicket);
 });
 
+  const savetime = asyncHandler(async (req, res) => {
+  try {
+    const { ticketId } = req.params;
+    const { timeSpent } = req.body;
+
+    // Find the ticket by ID
+    const ticket = await Ticket.findById(ticketId);
+
+    if (!ticket) {
+      return res.status(404).json({ message: 'Ticket not found' });
+    }
+
+    // Update the elapsed time in the ticket object
+    ticket.timeSpent = timeSpent;
+
+    // Save the updated ticket
+    await ticket.save();
+
+    res.json({ message: 'Elapsed time updated successfully' });
+  } catch (error) {
+    console.error('Error updating elapsed time:', error);
+    res.status(500).json({ message: 'Internal server error' });
+  }
+});
 
 module.exports = {
   getTickets,
@@ -421,5 +445,6 @@ module.exports = {
   getTicket,
   deleteTicket,
   updateTicket,
+  savetime
  
 };

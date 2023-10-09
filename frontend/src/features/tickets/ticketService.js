@@ -119,6 +119,23 @@ export const updateTicket = async (ticketId, updatedTicketData, token) => {
   return response.data;
 };
 
+// Add a new function to save elapsed time
+export const saveElapsedTime = async (ticketId, timeSpent, token) => {
+  const config = {
+    headers: {
+      Authorization: `Bearer ${token}`,
+    },
+  };
+
+  const response = await axios.put(
+    `${API_URL}${ticketId}/elapsed-time`,
+    { timeSpent },
+    config
+  );
+
+  return response.data;
+};
+
 
 const ticketService = {
   createTicket,
@@ -128,7 +145,8 @@ const ticketService = {
   closeTicket,
   getAllTickets,
   updateTicket,
-  reviewTicket
+  reviewTicket,
+  saveElapsedTime
 }
 
 export default ticketService
