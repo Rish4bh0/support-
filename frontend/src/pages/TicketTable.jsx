@@ -20,6 +20,8 @@ import { Link } from "react-router-dom";
 import { DateRangePicker } from 'react-date-range';
 import 'react-date-range/dist/styles.css'; 
 import 'react-date-range/dist/theme/default.css';
+import { FaCalendar } from "react-icons/fa";
+import { FaTimes } from 'react-icons/fa';
 const TicketTableWrapper = styled.div`
   background-color: #f4f4f4;
   padding: 20px;
@@ -176,28 +178,32 @@ const TicketTable = ({ tickets }) => {
             onChange={handleClientNameSearchChange}
           />
         </Box>
+        {!isDateRangePickerOpen && (
+        <button className="btn btn-reverse btn-block" onClick={toggleDateRangePicker}>
+          <FaCalendar /> Open Date Picker
+        </button>
+      )}
         {isDateRangePickerOpen && (
-  <DateRangePicker
-    onChange={handleDateRangeChange}
-    moveRangeOnFirstSelection={false}
-    ranges={[
-      {
-        startDate: dateRange[0],
-        endDate: dateRange[1],
-        key: "selection",
-      },
-    ]}
-    showSelectionPreview={true}
-    direction="horizontal"
-    
-    renderStaticRange={(props) => (
-      <button className="date-picker-close-button" onClick={toggleDateRangePicker}>Close</button>
-    )}
-  />
+  <div className="date-range-picker-container">
+    <DateRangePicker
+      onChange={handleDateRangeChange}
+      moveRangeOnFirstSelection={false}
+      ranges={[
+        {
+          startDate: dateRange[0],
+          endDate: dateRange[1],
+          key: "selection",
+        },
+      ]}
+      showSelectionPreview={true}
+      direction="horizontal"
+    />
+    <button className="close-button" onClick={toggleDateRangePicker}>
+      <FaTimes />
+    </button>
+  </div>
 )}
-<button className="date-picker-toggle-button" onClick={toggleDateRangePicker}>
-  {isDateRangePickerOpen ? "Close Date Picker" : "Open Date Picker"}
-</button>
+
 
 
         <TableContainer component={Paper}>

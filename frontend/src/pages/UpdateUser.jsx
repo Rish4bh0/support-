@@ -13,6 +13,8 @@ const UpdateUser = () => {
   const user = useSelector(
     (state) => state.auth.selectedUser
   );
+  const userRole = useSelector((state) => state.auth.user?.role);
+  const allowedRoles = ["ADMIN", "SUPERVISOR", "EMPLOYEE"];
   const organizations = useSelector((state) => state.organizations.organizations);
   const { id } = useParams();
   const dispatch = useDispatch();
@@ -114,6 +116,7 @@ const UpdateUser = () => {
             onChange={handlePasswordChange}  // Use the separate handler
           />
         </div>
+        {(userRole && allowedRoles.includes(userRole)) && (
         <div className="form-group">
             <label htmlFor="role">Role</label>
             <select
@@ -128,8 +131,11 @@ const UpdateUser = () => {
               </option>
               <option value="SUPERVISOR">SUPERVISOR</option>
               <option value="EMPLOYEE">EMPLOYEE</option>
+              <option value="ORGAGENT">ORGAGENT</option>
             </select>
           </div>
+        )}
+         {(userRole && allowedRoles.includes(userRole)) && (
           <div className="form-group">
               <label htmlFor="organization">Organization</label>
               <select
@@ -152,7 +158,8 @@ const UpdateUser = () => {
                 )}
               </select>
             </div>
-        <button type="submit">Update</button>
+         )}
+        <button className="btn btn-reverse btn-block" type="submit">Update</button>
       </form>
     </>
   );

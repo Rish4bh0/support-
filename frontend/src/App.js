@@ -15,7 +15,6 @@ import Dashboard from './pages/Dashboard'
 import IssueTypeList from './pages/issues'
 import IssueTypeid from './pages/issueaction'
 import UpdateTicket from './pages/updateTicket.jsx'
-import ForgotPassword from './pages/Forgotpassword'
 import ResetPassword from './pages/Resetpassword'
 import Organization from './pages/NewOrganization'
 import UpdateOrganization from './pages/UpdateOrganization'
@@ -35,6 +34,8 @@ function App () {
             <Route path='/' element={<Home />} />
             <Route path='/login' element={<Login />} />
             <Route path='/register' element={<Register />} />
+            <Route path='/forget' element={<Forget />} />
+            <Route path='/reset-password/:token' element={<ResetPassword />} />
 
             <Route path='/new-ticket' element={<PrivateRoute />}>
               <Route path='/new-ticket' element={<NewTicket />} />
@@ -65,12 +66,6 @@ function App () {
             <Route path='/ticket/:ticketId/update' element={<PrivateRoute />}>
               <Route path='/ticket/:ticketId/update' element={<UpdateTicket />} />
             </Route>
-            <Route path='/forgot-password' element={<PrivateRoute />}>
-              <Route path='/forgot-password' element={<ForgotPassword />} />
-            </Route>
-            <Route path='/reset-password/:token' element={<PrivateRoute />}>
-              <Route path='/reset-password/:token' element={<ResetPassword />} />
-            </Route>   
             <Route path='/organization' element={<PrivateRoute />}>
               <Route path='/organization' element={<Organization />} />
             </Route>
@@ -89,9 +84,7 @@ function App () {
             <Route path='/organizations/:id' element={<PrivateRoute />}>
               <Route path='/organizations/:id' element={<OrganizationDetail />} />
             </Route> 
-            <Route path='/forget' element={<PrivateRoute />}>
-              <Route path='/forget' element={<Forget />} />
-            </Route>        
+      
            {/*
              <Route
               path='/dashboard'

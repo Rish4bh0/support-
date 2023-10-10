@@ -15,6 +15,7 @@ import {
 } from "@mui/material";
 import CloseIcon from "@mui/icons-material/Close";
 import EditIcon from "@mui/icons-material/Edit";
+
 import DeleteIcon from "@mui/icons-material/Delete";
 import {
   getAllOrganization,
@@ -65,7 +66,7 @@ function OrganizationList() {
  
 
   // Check if the user has one of the allowed roles
-  if (!["ADMIN", "SUPERVISOR", "EMPLOYEE"].includes(userRole)) {
+  if (!["ADMIN", "SUPERVISOR", "EMPLOYEE", "ORGAGENT"].includes(userRole)) {
     // Handle unauthorized access, e.g., redirect or show an error message
     return (
       <div>

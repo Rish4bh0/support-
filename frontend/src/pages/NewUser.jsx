@@ -237,6 +237,7 @@ function UserList() {
                 <option value="ADMIN">ADMIN</option>
                 <option value="SUPERVISOR">SUPERVISOR</option>
                 <option value="EMPLOYEE">EMPLOYEE</option>
+                <option value="ORGAGENT">ORGAGENT</option>
               </select>
             </div>
             <div className="form-group">

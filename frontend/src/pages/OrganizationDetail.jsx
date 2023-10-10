@@ -182,7 +182,7 @@ const OrganizationDetail = () => {
                 onChange={(e) => setRole(e.target.value)}
               >
                 <option value="">Select One</option> 
-                <option value="EMPLOYEE">EMPLOYEE</option>
+                <option value="ORGAGENT">ORGAGENT</option>
               </select>
             </div>
             <div className="form-group">

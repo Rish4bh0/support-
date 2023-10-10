@@ -193,10 +193,12 @@ function Ticket() {
     const hours = Math.floor(seconds / 3600);
     const minutes = Math.floor((seconds % 3600) / 60);
     const remainingSeconds = seconds % 60;
-  
-    return `${hours.toString().padStart(2, '0')}:${minutes.toString().padStart(2, '0')}:${remainingSeconds.toString().padStart(2, '0')}`;
+
+    return `${hours.toString().padStart(2, "0")}:${minutes
+      .toString()
+      .padStart(2, "0")}:${remainingSeconds.toString().padStart(2, "0")}`;
   };
-  
+
   const formattedTimeSpent = formatTime(ticket.timeSpent);
   return (
     <div className="ticket-page">
@@ -237,7 +239,6 @@ function Ticket() {
         {ticket.status !== "close" &&
           userRole &&
           allowedRoles.includes(userRole) && <h2>Notes</h2>}
-           
       </header>
 
       {ticket.status !== "close" &&
@@ -312,14 +313,17 @@ function Ticket() {
         <p>No media available</p>
       )}
 
-{userRole &&
-  allowedRolesReview.includes(userRole) &&
-  (ticket.status !== "review" && ticket.status !== "close") && (
-    <button onClick={onTicketSendForReview} className="btn btn-block btn-blue">
-      Send ticket for review
-    </button>
-  )}
-
+      {userRole &&
+        allowedRolesReview.includes(userRole) &&
+        ticket.status !== "review" &&
+        ticket.status !== "close" && (
+          <button
+            onClick={onTicketSendForReview}
+            className="btn btn-reverse btn-block"
+          >
+            Send ticket for review
+          </button>
+        )}
 
       {ticket.status !== "close" &&
         userRole &&

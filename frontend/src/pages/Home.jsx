@@ -1,4 +1,4 @@
-import { FaQuestionCircle, FaTicketAlt, FaHistory, FaList, FaInfo } from "react-icons/fa";
+import { FaQuestionCircle, FaTicketAlt, FaHistory, FaList, FaInfo, FaUserPlus, FaPlus, FaBoxTissue } from "react-icons/fa";
 import { useSelector } from "react-redux";
 import { Link } from "react-router-dom";
 
@@ -8,6 +8,7 @@ function Home() {
 
   // Define an array of roles that should see the "Dashboard" link
   const allowedRoles = ["ADMIN", "SUPERVISOR", "EMPLOYEE"];
+  const allowedRolesOrg = ["ADMIN", "SUPERVISOR", "EMPLOYEE", "ORGAGENT"];
 
   return (
     <>
@@ -34,12 +35,12 @@ function Home() {
       </Link>
       {(userRole && allowedRoles.includes(userRole)) && (
       <Link to="/issues" className="btn btn-reverse btn-block">
-        <FaInfo /> Issues
+        <FaBoxTissue /> Issues
       </Link>
       )}
-       {(userRole && allowedRoles.includes(userRole)) && (
+       {(userRole && allowedRolesOrg.includes(userRole)) && (
       <Link to="/organization" className="btn btn-reverse btn-block">
-        <FaInfo /> My Organization
+        <FaInfo/> My Organization
       </Link>
       )}
        {(userRole && allowedRoles.includes(userRole)) && (
@@ -49,12 +50,9 @@ function Home() {
       )}
       {(userRole && allowedRoles.includes(userRole)) && (
       <Link to="/createuser" className="btn btn-reverse btn-block">
-        <FaInfo /> User Management
+        <FaUserPlus /> User Management
       </Link>
       )}
-      <Link to="/forget" className="btn btn-reverse btn-block">
-        <FaInfo /> Forget Password
-      </Link>
       {(userRole && allowedRoles.includes(userRole)) && (
         <Link to="/dashboard" className="btn btn-block">
           <FaInfo /> Dashboard
