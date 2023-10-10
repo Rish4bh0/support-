@@ -9,6 +9,272 @@ import {
   Paper,
   TablePagination,
   TextField,
+  Box, // Import Box component for layout
+} from "@mui/material";
+import styled from "styled-components";
+import { fetchAllUsers } from "../features/auth/authSlice";
+import { getAllIssueTypes } from "../features/issues/issueSlice";
+import { useDispatch, useSelector } from "react-redux";
+import { getAllTickets } from "../features/tickets/ticketSlice";
+import { Link } from "react-router-dom";
+import { DateRangePicker } from 'react-date-range';
+import 'react-date-range/dist/styles.css'; 
+import 'react-date-range/dist/theme/default.css';
+const TicketTableWrapper = styled.div`
+  background-color: #f4f4f4;
+  padding: 20px;
+  border-radius: 10px;
+  box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.2);
+`;
+
+const TableHeaderCell = styled.th`
+  padding: 10px;
+`;
+
+const TableCellStyled = styled.td`
+  padding: 10px;
+`;
+
+const DebouncedTextField = ({ label, value, onChange }) => {
+  const [searchTerm, setSearchTerm] = useState(value);
+
+  useEffect(() => {
+    const debounceTimeout = setTimeout(() => {
+      onChange(searchTerm);
+    }, 300); // Adjust the debounce delay as needed
+
+    return () => {
+      clearTimeout(debounceTimeout);
+    };
+  }, [searchTerm, onChange]);
+
+  return (
+    <TextField
+      label={label}
+      variant="outlined"
+      value={searchTerm}
+      onChange={(e) => setSearchTerm(e.target.value)}
+      fullWidth
+      style={{ marginRight: "10px" }}
+    />
+  );
+};
+
+const TicketTable = ({ tickets }) => {
+  const options = {
+    weekday: "long",
+    year: "numeric",
+    month: "long",
+    day: "numeric",
+  };
+  const [page, setPage] = useState(0);
+  const [rowsPerPage, setRowsPerPage] = useState(10);
+  const [searchTerm, setSearchTerm] = useState("");
+  const [clientNameSearchTerm, setClientNameSearchTerm] = useState("");
+  const [dateRange, setDateRange] = useState([null, null]);
+  const [isDateRangePickerOpen, setDateRangePickerOpen] = useState(false);
+  const toggleDateRangePicker = () => {
+    setDateRangePickerOpen(!isDateRangePickerOpen);
+  };
+  
+  const handleSearchChange = (value) => {
+    setSearchTerm(value);
+    setPage(0);
+  };
+
+  const handleClientNameSearchChange = (value) => {
+    setClientNameSearchTerm(value);
+    setPage(0);
+  };
+
+  const handleDateRangeChange = (ranges) => {
+    setDateRange([ranges.selection.startDate, ranges.selection.endDate]);
+    setPage(0);
+  };
+
+  const dispatch = useDispatch();
+  useEffect(() => {
+    dispatch(fetchAllUsers());
+    dispatch(getAllIssueTypes());
+    dispatch(getAllTickets());
+  }, [dispatch]);
+
+  const users = useSelector((state) => state.auth.users);
+
+  const getUserNameById = (userId) => {
+    const user = users.find((user) => user._id === userId);
+    return user ? user.name : "Unknown User";
+  };
+
+  const calculateTimeTaken = (createdAt, closedAt) => {
+    const startTime = new Date(createdAt);
+    const endTime = new Date(closedAt);
+    const timeDifference = endTime - startTime;
+
+    const days = Math.floor(timeDifference / (1000 * 60 * 60 * 24));
+    const hours = Math.floor(
+      (timeDifference % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60)
+    );
+
+    if (days > 0 && hours > 0) {
+      return `${days} Days ${hours} Hours`;
+    } else if (days > 0) {
+      return `${days} Days`;
+    } else if (hours > 0) {
+      return `${hours} Hours`;
+    } else {
+      return "Less than an hour";
+    }
+  };
+
+  const filteredTickets = tickets
+    .filter((ticket) =>
+      ticket._id.toLowerCase().includes(searchTerm.toLowerCase())
+    )
+    .filter((ticket) =>
+      ticket.customerName
+        .toLowerCase()
+        .includes(clientNameSearchTerm.toLowerCase())
+    )
+    .filter((ticket) => {
+      if (dateRange[0] && dateRange[1]) {
+        const ticketDate = new Date(ticket.closedAt);
+        return (
+          ticketDate >= dateRange[0] && ticketDate <= dateRange[1]
+        );
+      }
+      return true;
+    });
+
+  const formatTime = (seconds) => {
+    const hours = Math.floor(seconds / 3600);
+    const minutes = Math.floor((seconds % 3600) / 60);
+    const remainingSeconds = seconds % 60;
+
+    return `${hours.toString().padStart(2, "0")}:${minutes
+      .toString()
+      .padStart(2, "0")}:${remainingSeconds.toString().padStart(2, "0")}`;
+  };
+
+  const startIdx = page * rowsPerPage;
+  const endIdx = startIdx + rowsPerPage;
+  const displayedTickets = filteredTickets.slice(startIdx, endIdx);
+
+  return (
+
+      <TicketTableWrapper>
+        <h2>Recently Closed Tickets</h2>
+        <Box display="flex" alignItems="center" marginBottom="20px">
+          <DebouncedTextField
+            label="Search by _id"
+            value={searchTerm}
+            onChange={handleSearchChange}
+          />
+          <DebouncedTextField
+            label="Search by Client's Name"
+            value={clientNameSearchTerm}
+            onChange={handleClientNameSearchChange}
+          />
+        </Box>
+        {isDateRangePickerOpen && (
+  <DateRangePicker
+    onChange={handleDateRangeChange}
+    moveRangeOnFirstSelection={false}
+    ranges={[
+      {
+        startDate: dateRange[0],
+        endDate: dateRange[1],
+        key: "selection",
+      },
+    ]}
+    showSelectionPreview={true}
+    direction="horizontal"
+    
+    renderStaticRange={(props) => (
+      <button className="date-picker-close-button" onClick={toggleDateRangePicker}>Close</button>
+    )}
+  />
+)}
+<button className="date-picker-toggle-button" onClick={toggleDateRangePicker}>
+  {isDateRangePickerOpen ? "Close Date Picker" : "Open Date Picker"}
+</button>
+
+
+        <TableContainer component={Paper}>
+          <Table>
+            <TableHead>
+              <TableRow>
+                <TableHeaderCell>ID</TableHeaderCell>
+                <TableHeaderCell>Clients Name</TableHeaderCell>
+                <TableHeaderCell>Status</TableHeaderCell>
+                <TableHeaderCell>Ticket solved by</TableHeaderCell>
+                <TableHeaderCell>Hours spent</TableHeaderCell>
+                <TableHeaderCell>Created At</TableHeaderCell>
+                <TableHeaderCell>Closed At</TableHeaderCell>
+                <TableHeaderCell>Ticket open duration</TableHeaderCell>
+                <TableHeaderCell>Actions</TableHeaderCell>
+              </TableRow>
+            </TableHead>
+            <TableBody>
+            {filteredTickets.map((ticket) => (
+              <TableRow key={ticket._id}>
+                <TableCellStyled>{ticket._id}</TableCellStyled>
+                <TableCellStyled>{ticket.customerName}</TableCellStyled>
+                <TableCellStyled>{ticket.status}</TableCellStyled>
+                <TableCellStyled>
+                  {getUserNameById(ticket.assignedTo)}
+                </TableCellStyled>
+                <TableCellStyled>{formatTime(ticket.timeSpent)}</TableCellStyled>
+                <TableCellStyled>
+                  {new Date(ticket.createdAt).toLocaleString("en-US", options)}
+                </TableCellStyled>
+                <TableCellStyled>
+                  {new Date(ticket.closedAt).toLocaleString("en-US", options)}
+                </TableCellStyled>
+                <TableCellStyled>
+                  {calculateTimeTaken(ticket.createdAt, ticket.closedAt)}
+                </TableCellStyled>{" "}
+                <TableCellStyled>
+                  <Link to={`/ticket/${ticket._id}`}>View Details</Link>{" "}
+                
+                </TableCellStyled>
+              </TableRow>
+            ))}
+            </TableBody>
+          </Table>
+        </TableContainer>
+        <TablePagination
+          rowsPerPageOptions={[10, 25, 50]}
+          component="div"
+          count={filteredTickets.length}
+          rowsPerPage={rowsPerPage}
+          page={page}
+          onPageChange={(event, newPage) => setPage(newPage)}
+          onRowsPerPageChange={(event) => {
+            setRowsPerPage(parseInt(event.target.value, 10));
+            setPage(0);
+          }}
+        />
+      </TicketTableWrapper>
+
+  );
+};
+
+export default TicketTable;
+
+
+/*
+import React, { useEffect, useState } from "react";
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableContainer,
+  TableHead,
+  TableRow,
+  Paper,
+  TablePagination,
+  TextField,
   MenuItem,
 } from "@mui/material";
 import styled from "styled-components";
@@ -185,7 +451,7 @@ const TicketTable = ({ tickets }) => {
         <MenuItem value="">All Years</MenuItem>
         <MenuItem value="2023">2023</MenuItem>
         <MenuItem value="2022">2022</MenuItem>
-        {/* Add all years you need */}
+
       </TextField>
 
       <TableContainer component={Paper}>
@@ -224,7 +490,7 @@ const TicketTable = ({ tickets }) => {
                 </TableCellStyled>{" "}
                 <TableCellStyled>
                   <Link to={`/ticket/${ticket._id}`}>View Details</Link>{" "}
-                  {/* Add a link to view ticket details */}
+                
                 </TableCellStyled>
               </TableRow>
             ))}
@@ -248,7 +514,7 @@ const TicketTable = ({ tickets }) => {
 };
 
 export default TicketTable;
-
+*/
 /*
 import React, { useEffect, useState } from "react";
 import {

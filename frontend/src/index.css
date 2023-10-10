@@ -289,6 +289,33 @@ h3 {
   color: #fff;
   border-radius: 10px;
 }
+/* CSS styles */
+.date-picker-toggle-button {
+  background-color: #0074d9;
+  color: #fff;
+  padding: 10px 15px;
+  border: none;
+  cursor: pointer;
+  border-radius: 5px;
+}
+
+.date-picker-toggle-button:hover {
+  background-color: #0056b3;
+}
+
+.date-picker-close-button {
+  background-color: #d9534f;
+  color: #fff;
+  padding: 10px 15px;
+  border: none;
+  cursor: pointer;
+  border-radius: 5px;
+}
+
+.date-picker-close-button:hover {
+  background-color: #c9302c;
+}
+
 
 .status-close {
   background-color: rgb(17, 6, 102);

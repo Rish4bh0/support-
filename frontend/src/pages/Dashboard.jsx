@@ -66,7 +66,7 @@ const Dashboard = () => {
   // Function to fetch closed tickets (you should adjust this function based on your API)
   const fetchClosedTickets = async () => {
     try {
-      const response = await fetch("https://supportdesk-1eot.onrender.com/api/tickets/all");
+      const response = await fetch("/api/tickets/all");
       const data = await response.json();
       const closedTicketsData = data.filter(
         (ticket) => ticket.status === "close"
