@@ -4,15 +4,15 @@ const ticketSchema = mongoose.Schema(
   {
     customerName: {
       type: String,
-      required: [true, 'Please enter customers name'],
+
     },
     customerEmail: {
       type: String,
-      required: [true, 'Please enter customers email'],
+
     },
     customerContact: {
       type: Number,
-      required: [true, 'Please enter customers contact'],
+
     },
     user: {
       type: mongoose.Schema.Types.ObjectId,
@@ -69,6 +69,11 @@ const ticketSchema = mongoose.Schema(
         },
       },
     ],
+    organization: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: 'Organization',
+
+    },
     timeSpent: {
       type: Number,
       default: 0, // Default value is 0 minutes

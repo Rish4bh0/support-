@@ -9,7 +9,7 @@ import {
   Paper,
   TablePagination,
   TextField,
-  Box, // Import Box component for layout
+  Box,
 } from "@mui/material";
 import styled from "styled-components";
 import { fetchAllUsers } from "../features/auth/authSlice";
@@ -22,19 +22,26 @@ import 'react-date-range/dist/styles.css';
 import 'react-date-range/dist/theme/default.css';
 import { FaCalendar } from "react-icons/fa";
 import { FaTimes } from 'react-icons/fa';
+import VisibilityIcon from "@mui/icons-material/Visibility";
+import { getAllOrganization } from "../features/organization/organizationSlice";
+
+
 const TicketTableWrapper = styled.div`
   background-color: #f4f4f4;
   padding: 20px;
   border-radius: 10px;
   box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.2);
+  width: 100%; 
 `;
 
 const TableHeaderCell = styled.th`
   padding: 10px;
+  font-size: 13px; 
 `;
 
 const TableCellStyled = styled.td`
   padding: 10px;
+  font-size: 12px; 
 `;
 
 const DebouncedTextField = ({ label, value, onChange }) => {
@@ -43,7 +50,7 @@ const DebouncedTextField = ({ label, value, onChange }) => {
   useEffect(() => {
     const debounceTimeout = setTimeout(() => {
       onChange(searchTerm);
-    }, 300); // Adjust the debounce delay as needed
+    }, 300);
 
     return () => {
       clearTimeout(debounceTimeout);
@@ -73,8 +80,17 @@ const TicketTable = ({ tickets }) => {
   const [rowsPerPage, setRowsPerPage] = useState(10);
   const [searchTerm, setSearchTerm] = useState("");
   const [clientNameSearchTerm, setClientNameSearchTerm] = useState("");
+  const [organizationSearchTerm, setOrganizationSearchTerm] = useState("");
   const [dateRange, setDateRange] = useState([null, null]);
   const [isDateRangePickerOpen, setDateRangePickerOpen] = useState(false);
+  const organizations = useSelector((state) => state.organizations.organizations);
+  const organizationMap = {};
+
+  // Create a mapping of organization IDs to their names
+  organizations.forEach((organization) => {
+    organizationMap[organization._id] = organization.name;
+  });
+
   const toggleDateRangePicker = () => {
     setDateRangePickerOpen(!isDateRangePickerOpen);
   };
@@ -89,6 +105,11 @@ const TicketTable = ({ tickets }) => {
     setPage(0);
   };
 
+  const handleOrganizationSearchChange = (value) => {
+    setOrganizationSearchTerm(value);
+    setPage(0);
+  };
+
   const handleDateRangeChange = (ranges) => {
     setDateRange([ranges.selection.startDate, ranges.selection.endDate]);
     setPage(0);
@@ -99,6 +120,7 @@ const TicketTable = ({ tickets }) => {
     dispatch(fetchAllUsers());
     dispatch(getAllIssueTypes());
     dispatch(getAllTickets());
+    dispatch(getAllOrganization());
   }, [dispatch]);
 
   const users = useSelector((state) => state.auth.users);
@@ -130,6 +152,7 @@ const TicketTable = ({ tickets }) => {
   };
 
   const filteredTickets = tickets
+  
     .filter((ticket) =>
       ticket._id.toLowerCase().includes(searchTerm.toLowerCase())
     )
@@ -138,6 +161,7 @@ const TicketTable = ({ tickets }) => {
         .toLowerCase()
         .includes(clientNameSearchTerm.toLowerCase())
     )
+    
     .filter((ticket) => {
       if (dateRange[0] && dateRange[1]) {
         const ticketDate = new Date(ticket.closedAt);
@@ -146,7 +170,15 @@ const TicketTable = ({ tickets }) => {
         );
       }
       return true;
-    });
+    })
+    
+    .filter((ticket) =>
+      ticket.organization
+        ? organizationMap[ticket.organization]
+            .toLowerCase()
+            .includes(organizationSearchTerm.toLowerCase())
+        : true
+    );
 
   const formatTime = (seconds) => {
     const hours = Math.floor(seconds / 3600);
@@ -163,74 +195,86 @@ const TicketTable = ({ tickets }) => {
   const displayedTickets = filteredTickets.slice(startIdx, endIdx);
 
   return (
-
-      <TicketTableWrapper>
-        <h2>Recently Closed Tickets</h2>
-        <Box display="flex" alignItems="center" marginBottom="20px">
-          <DebouncedTextField
-            label="Search by _id"
-            value={searchTerm}
-            onChange={handleSearchChange}
-          />
-          <DebouncedTextField
-            label="Search by Client's Name"
-            value={clientNameSearchTerm}
-            onChange={handleClientNameSearchChange}
-          />
-        </Box>
-        {!isDateRangePickerOpen && (
+    <TicketTableWrapper>
+      <h2>Recently Closed Tickets</h2>
+      <Box display="flex" alignItems="center" marginBottom="20px">
+        <DebouncedTextField
+          label="Search by _id"
+          value={searchTerm}
+          onChange={handleSearchChange}
+        />
+        <DebouncedTextField
+          label="Search by Client's Name"
+          value={clientNameSearchTerm}
+          onChange={handleClientNameSearchChange}
+        />
+        <DebouncedTextField
+          label="Search by Organization"
+          value={organizationSearchTerm}
+          onChange={handleOrganizationSearchChange}
+        />
+      </Box>
+      {!isDateRangePickerOpen && (
         <button className="btn btn-reverse btn-block" onClick={toggleDateRangePicker}>
           <FaCalendar /> Open Date Picker
         </button>
       )}
-        {isDateRangePickerOpen && (
-  <div className="date-range-picker-container">
-    <DateRangePicker
-      onChange={handleDateRangeChange}
-      moveRangeOnFirstSelection={false}
-      ranges={[
-        {
-          startDate: dateRange[0],
-          endDate: dateRange[1],
-          key: "selection",
-        },
-      ]}
-      showSelectionPreview={true}
-      direction="horizontal"
-    />
-    <button className="close-button" onClick={toggleDateRangePicker}>
-      <FaTimes />
-    </button>
-  </div>
-)}
+      {isDateRangePickerOpen && (
+        <div className="date-range-picker-container">
+          <DateRangePicker
+            onChange={handleDateRangeChange}
+            moveRangeOnFirstSelection={false}
+            ranges={[
+              {
+                startDate: dateRange[0],
+                endDate: dateRange[1],
+                key: "selection",
+              },
+            ]}
+            showSelectionPreview={true}
+            direction="horizontal"
+          />
+          <button className="close-button" onClick={toggleDateRangePicker}>
+            <FaTimes />
+          </button>
+        </div>
+      )}
 
-
-
-        <TableContainer component={Paper}>
-          <Table>
-            <TableHead>
-              <TableRow>
-                <TableHeaderCell>ID</TableHeaderCell>
-                <TableHeaderCell>Clients Name</TableHeaderCell>
-                <TableHeaderCell>Status</TableHeaderCell>
-                <TableHeaderCell>Ticket solved by</TableHeaderCell>
-                <TableHeaderCell>Hours spent</TableHeaderCell>
-                <TableHeaderCell>Created At</TableHeaderCell>
-                <TableHeaderCell>Closed At</TableHeaderCell>
-                <TableHeaderCell>Ticket open duration</TableHeaderCell>
-                <TableHeaderCell>Actions</TableHeaderCell>
-              </TableRow>
-            </TableHead>
-            <TableBody>
-            {filteredTickets.map((ticket) => (
+      <TableContainer component={Paper}>
+        <Table>
+          <TableHead>
+            <TableRow>
+              <TableHeaderCell>ID</TableHeaderCell>
+              <TableHeaderCell>Clients Name</TableHeaderCell>
+              <TableHeaderCell>Organization</TableHeaderCell>
+              <TableHeaderCell>Status</TableHeaderCell>
+              <TableHeaderCell>Ticket solved by</TableHeaderCell>
+              <TableHeaderCell>Hours spent</TableHeaderCell>
+              <TableHeaderCell>Created At</TableHeaderCell>
+              <TableHeaderCell>Closed At</TableHeaderCell>
+              <TableHeaderCell>Ticket open duration</TableHeaderCell>
+              <TableHeaderCell>Actions</TableHeaderCell>
+            </TableRow>
+          </TableHead>
+          <TableBody>
+            {displayedTickets.map((ticket) => (
               <TableRow key={ticket._id}>
                 <TableCellStyled>{ticket._id}</TableCellStyled>
-                <TableCellStyled>{ticket.customerName}</TableCellStyled>
+                <TableCellStyled>
+                  {ticket.customerName ? ticket.customerName : "Unassigned"}
+                </TableCellStyled>
+                <TableCellStyled>
+                  {ticket.organization
+                    ? organizationMap[ticket.organization]
+                    : "Unassigned"}
+                </TableCellStyled>
                 <TableCellStyled>{ticket.status}</TableCellStyled>
                 <TableCellStyled>
                   {getUserNameById(ticket.assignedTo)}
                 </TableCellStyled>
-                <TableCellStyled>{formatTime(ticket.timeSpent)}</TableCellStyled>
+                <TableCellStyled>
+                  {formatTime(ticket.timeSpent)}
+                </TableCellStyled>
                 <TableCellStyled>
                   {new Date(ticket.createdAt).toLocaleString("en-US", options)}
                 </TableCellStyled>
@@ -239,30 +283,30 @@ const TicketTable = ({ tickets }) => {
                 </TableCellStyled>
                 <TableCellStyled>
                   {calculateTimeTaken(ticket.createdAt, ticket.closedAt)}
-                </TableCellStyled>{" "}
+                </TableCellStyled>
                 <TableCellStyled>
-                  <Link to={`/ticket/${ticket._id}`}>View Details</Link>{" "}
-                
+                  <Link to={`/ticket/${ticket._id}`}>
+                    <VisibilityIcon />
+                  </Link>{" "}
                 </TableCellStyled>
               </TableRow>
             ))}
-            </TableBody>
-          </Table>
-        </TableContainer>
-        <TablePagination
-          rowsPerPageOptions={[10, 25, 50]}
-          component="div"
-          count={filteredTickets.length}
-          rowsPerPage={rowsPerPage}
-          page={page}
-          onPageChange={(event, newPage) => setPage(newPage)}
-          onRowsPerPageChange={(event) => {
-            setRowsPerPage(parseInt(event.target.value, 10));
-            setPage(0);
-          }}
-        />
-      </TicketTableWrapper>
-
+          </TableBody>
+        </Table>
+      </TableContainer>
+      <TablePagination
+        rowsPerPageOptions={[10, 25, 50]}
+        component="div"
+        count={filteredTickets.length}
+        rowsPerPage={rowsPerPage}
+        page={page}
+        onPageChange={(event, newPage) => setPage(newPage)}
+        onRowsPerPageChange={(event) => {
+          setRowsPerPage(parseInt(event.target.value, 10));
+          setPage(0);
+        }}
+      />
+    </TicketTableWrapper>
   );
 };
 

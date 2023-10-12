@@ -1,102 +1,178 @@
-import { BrowserRouter as Router, Routes, Route } from 'react-router-dom'
-import { ToastContainer } from 'react-toastify'
-import 'react-toastify/dist/ReactToastify.css'
-import Header from './components/Header'
-import { PrivateRoute } from './components/PrivateRoute'
-import Home from './pages/Home'
-import Login from './pages/Login'
-import NewTicket from './pages/NewTicket'
-import Register from './pages/Register'
-import Tickets from './pages/Tickets'
-import Ticketss from './pages/Ticketss'
-import Ticket from './pages/Ticket'
-import ListTickets from './pages/ListTickets'
-import Dashboard from './pages/Dashboard'
-import IssueTypeList from './pages/issues'
-import IssueTypeid from './pages/issueaction'
-import UpdateTicket from './pages/updateTicket.jsx'
-import ResetPassword from './pages/Resetpassword'
-import Organization from './pages/NewOrganization'
-import UpdateOrganization from './pages/UpdateOrganization'
-import Createuser from './pages/NewUser'
-import Updateuser from './pages/UpdateUser'
-import OrganizationDetail from './pages/OrganizationDetail'
-import AllOrganization from './pages/AllOrganization'
-import Forget from './pages/Forgotpassword'
+import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
+import { ToastContainer } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
+import Header from "./components/Header";
 
-function App () {
+import DefaultSidebar from "./components/Sidebar";
+import { PrivateRoute } from "./components/PrivateRoute";
+import Home from "./pages/Home";
+import Login from "./pages/Login";
+import NewTicket from "./pages/NewTicket";
+import Register from "./pages/Register";
+import Tickets from "./pages/Tickets";
+import Ticketss from "./pages/Ticketss";
+import Ticket from "./pages/Ticket";
+import ListTickets from "./pages/ListTickets";
+import Dashboard from "./pages/Dashboard";
+import IssueTypeList from "./pages/issues";
+import IssueTypeid from "./pages/issueaction";
+import UpdateTicket from "./pages/updateTicket.jsx";
+import ResetPassword from "./pages/Resetpassword";
+import Organization from "./pages/NewOrganization";
+import UpdateOrganization from "./pages/UpdateOrganization";
+import Createuser from "./pages/NewUser";
+import Updateuser from "./pages/UpdateUser";
+import OrganizationDetail from "./pages/OrganizationDetail";
+import AllOrganization from "./pages/AllOrganization";
+import Forget from "./pages/Forgotpassword";
+import ORGTICKET from "./pages/OrganizationTicket";
+import "./App.css";
+import { FiSettings } from "react-icons/fi";
+import { TooltipComponent } from "@syncfusion/ej2-react-popups";
+import { NavBar, Footer, Sidebar } from "./components";
+import  Table  from "./pages/Table.jsx"
+import { useStateContext } from "./contexts/ContextProvider";
+import { useSelector } from "react-redux";
+
+function App() {
+  const { activeMenu, setactiveMenu } = useStateContext();
+  const { user } = useSelector((state) => state.auth);
   return (
     <>
       <Router>
-        <div className='container'>
-          <Header />
-          <Routes>
-            <Route path='/' element={<Home />} />
-            <Route path='/login' element={<Login />} />
-            <Route path='/register' element={<Register />} />
-            <Route path='/forget' element={<Forget />} />
-            <Route path='/reset-password/:token' element={<ResetPassword />} />
+        <div className="flex relative dark:bg-main-dark-bg">
+        {user ? (
+          <div className="fixed right-4 bottom-4" style={{ zIndex: "1000" }}>
+            <TooltipComponent content="Settings" position="Top">
+              <button
+                type="button"
+                className="text-3xl p-3
+            hover:drop-shadow-xl
+            hover:bg-light-gray text-white"
+                style={{ background: "blue", borderRadius: "50%" }}
+              >
+                <FiSettings />
+              </button>
+            </TooltipComponent>
+          </div>
+        ) :null }
+          {user ? (
+            activeMenu ? (
+              <div className="w-72 fixed sidebar dark:bg-secondary-dark-bg bg-white">
+                <Sidebar />
+              </div>
+            ) : (
+              <div className="w-0 dark:bg-secondary-dark-bg">
+                <Sidebar />
+              </div>
+            )
+          ) : (
+            setactiveMenu(false)
+          )}
+          <div
+            className={
+              activeMenu
+                ? "dark:bg-main-dark-bg  bg-main-bg min-h-screen md:ml-72 w-full  "
+                : "bg-main-bg dark:bg-main-dark-bg  w-full min-h-screen flex-2 "
+            }
+          >
+            <div
+              className="fixed md:static
+              bg-main-bg dark:bg-main-dark-bg
+              navbar w-full"
+            >
+              <NavBar />
+            </div>
 
-            <Route path='/new-ticket' element={<PrivateRoute />}>
-              <Route path='/new-ticket' element={<NewTicket />} />
-            </Route>
-            
-            <Route path='/tickets' element={<PrivateRoute />}>
-              <Route path='/tickets' element={<Tickets />} />
-            </Route>
-            <Route path='/ticketss' element={<PrivateRoute />}>
-              <Route path='/ticketss' element={<Ticketss />} />
-            </Route>
-            <Route path='/ticket/:ticketId' element={<PrivateRoute />}>
-              <Route path='/ticket/:ticketId' element={<Ticket />} />
-            </Route>
-            <Route path='/allticket' element={<PrivateRoute />}>
-              <Route path='/allticket' element={<ListTickets />} />
-            </Route>
-            <Route path='/dashboard' element={<PrivateRoute />}>
-              <Route path='/dashboard' element={<Dashboard />} />
-            </Route>
+            <div className="container">
+              <Routes>
+                <Route path="/" element={<Home />} />
+                <Route path="/table" element={<Table />} />
+                <Route path="/login" element={<Login />} />
+                <Route path="/register" element={<Register />} />
+                <Route path="/forget" element={<Forget />} />
+                <Route
+                  path="/reset-password/:token"
+                  element={<ResetPassword />}
+                />
 
-            <Route path='/issues' element={<PrivateRoute />}>
-              <Route path='/issues' element={<IssueTypeList />} />
-            </Route>
-            <Route path='/issues/:id' element={<PrivateRoute />}>
-              <Route path='/issues/:id' element={<IssueTypeid />} />
-            </Route>
-            <Route path='/ticket/:ticketId/update' element={<PrivateRoute />}>
-              <Route path='/ticket/:ticketId/update' element={<UpdateTicket />} />
-            </Route>
-            <Route path='/organization' element={<PrivateRoute />}>
-              <Route path='/organization' element={<Organization />} />
-            </Route>
-            <Route path='/organizations' element={<PrivateRoute />}>
-              <Route path='/organizations' element={<AllOrganization />} />
-            </Route>
-            <Route path='/organization/:id' element={<PrivateRoute />}>
-              <Route path='/organization/:id' element={<UpdateOrganization />} />
-            </Route>
-            <Route path='/createuser' element={<PrivateRoute />}>
-              <Route path='/createuser' element={<Createuser />} />
-            </Route>  
-            <Route path='/createuser/:id' element={<PrivateRoute />}>
-              <Route path='/createuser/:id' element={<Updateuser />} />
-            </Route>
-            <Route path='/organizations/:id' element={<PrivateRoute />}>
-              <Route path='/organizations/:id' element={<OrganizationDetail />} />
-            </Route> 
-      
-           {/*
+                <Route path="/new-ticket" element={<PrivateRoute />}>
+                  <Route path="/new-ticket" element={<NewTicket />} />
+                </Route>
+                <Route path="/org-ticket" element={<PrivateRoute />}>
+                  <Route path="/org-ticket" element={<ORGTICKET />} />
+                </Route>
+                <Route path="/tickets" element={<PrivateRoute />}>
+                  <Route path="/tickets" element={<Tickets />} />
+                </Route>
+                <Route path="/ticketss" element={<PrivateRoute />}>
+                  <Route path="/ticketss" element={<Ticketss />} />
+                </Route>
+                <Route path="/ticket/:ticketId" element={<PrivateRoute />}>
+                  <Route path="/ticket/:ticketId" element={<Ticket />} />
+                </Route>
+                <Route path="/allticket" element={<PrivateRoute />}>
+                  <Route path="/allticket" element={<ListTickets />} />
+                </Route>
+                <Route path="/dashboard" element={<PrivateRoute />}>
+                  <Route path="/dashboard" element={<Dashboard />} />
+                </Route>
+
+                <Route path="/issues" element={<PrivateRoute />}>
+                  <Route path="/issues" element={<IssueTypeList />} />
+                </Route>
+                <Route path="/issues/:id" element={<PrivateRoute />}>
+                  <Route path="/issues/:id" element={<IssueTypeid />} />
+                </Route>
+                <Route
+                  path="/ticket/:ticketId/update"
+                  element={<PrivateRoute />}
+                >
+                  <Route
+                    path="/ticket/:ticketId/update"
+                    element={<UpdateTicket />}
+                  />
+                </Route>
+                <Route path="/organization" element={<PrivateRoute />}>
+                  <Route path="/organization" element={<Organization />} />
+                </Route>
+                <Route path="/organizations" element={<PrivateRoute />}>
+                  <Route path="/organizations" element={<AllOrganization />} />
+                </Route>
+                <Route path="/organization/:id" element={<PrivateRoute />}>
+                  <Route
+                    path="/organization/:id"
+                    element={<UpdateOrganization />}
+                  />
+                </Route>
+                <Route path="/createuser" element={<PrivateRoute />}>
+                  <Route path="/createuser" element={<Createuser />} />
+                </Route>
+                <Route path="/createuser/:id" element={<PrivateRoute />}>
+                  <Route path="/createuser/:id" element={<Updateuser />} />
+                </Route>
+                <Route path="/organizations/:id" element={<PrivateRoute />}>
+                  <Route
+                    path="/organizations/:id"
+                    element={<OrganizationDetail />}
+                  />
+                </Route>
+
+                {/*
              <Route
               path='/dashboard'
               element={<PrivateRoute requiredRole="ADMIN" element={<Dashboard />} />}
             />
            */}
-          </Routes>
+              </Routes>
+            </div>
+            <Footer />
+          </div>
         </div>
       </Router>
       <ToastContainer />
     </>
-  )
+  );
 }
 
-export default App
+export default App;

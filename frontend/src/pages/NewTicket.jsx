@@ -7,6 +7,7 @@ import { fetchAllUsers } from "../features/auth/authSlice";
 import Spinner from "../components/Spinner";
 import BackButton from "../components/BackButton";
 import { getAllIssueTypes } from "../features/issues/issueSlice";
+import { getAllOrganization } from "../features/organization/organizationSlice";
 
 function NewTicket() {
   const { user } = useSelector((state) => state.auth);
@@ -15,6 +16,7 @@ function NewTicket() {
   );
   const users = useSelector((state) => state.auth.users);
   const issues = useSelector((state) => state.issueTypes.issueTypes);
+  const organizations = useSelector((state) => state.organizations.organizations);
 
   const [name] = useState(user.name);
   const [email] = useState(user.email);
@@ -28,6 +30,7 @@ function NewTicket() {
   const [description, setDescription] = useState("");
   const [assignedTo, setAssignedTo] = useState("");
   const [media, setMedia] = useState([]);
+  const [organization, setOrganization ] = useState("");
 
   const dispatch = useDispatch();
   const navigate = useNavigate();
@@ -37,6 +40,7 @@ function NewTicket() {
     dispatch(fetchAllUsers());
     // Load the initial issue list when the component mounts
     dispatch(getAllIssueTypes());
+    dispatch(getAllOrganization());
   }, [dispatch]);
 
   const handleMedia = (e) => {
@@ -69,18 +73,19 @@ function NewTicket() {
       toast.error(message);
     }
     if (isSuccess) {
+     
+     
       dispatch(reset());
-      navigate("/tickets");
     }
   }, [dispatch, isError, isSuccess, navigate, message]);
 
   const onSubmit = (e) => {
-    e.preventDefault();
-    if (!isEmailValid) {
+ //   e.preventDefault();
+  //  if (!isEmailValid) {
       // Email is not valid, display an error or take appropriate action
-      toast.error("Please enter a valid email address.");
-      return;
-    }
+  //    toast.error("Please enter a valid email address.");
+   //   return;
+  //  }
 
     const ticketData = {
       product,
@@ -92,16 +97,17 @@ function NewTicket() {
       customerName,
       customerEmail,
       customerContact,
+      organization
     };
 
     dispatch(createTicket(ticketData));
   };
-
+/*
   const validateEmail = (email) => {
     const emailPattern = /^[a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,4}$/;
     setIsEmailValid(emailPattern.test(email));
   };
-
+*/
   if (isLoading) return <Spinner />;
 
   return (
@@ -136,7 +142,7 @@ function NewTicket() {
               onChange={(e) => setCustomerName(e.target.value)}
             ></input>
           </div>
-          <div className={`form-group ${isEmailValid ? "valid" : "invalid"}`}>
+          <div className="form-group"/*className={`form-group ${isEmailValid ? "valid" : "invalid"}`}*/>
             <label htmlFor="customerEmail">Customer Email</label>
             <input
               className="form-control"
@@ -146,14 +152,14 @@ function NewTicket() {
               id="customerEmail"
               onChange={(e) => {
                 setCustomerEmail(e.target.value);
-                validateEmail(e.target.value);
+                //validateEmail(e.target.value);
               }}
             />
-            {isEmailValid ? null : (
+           {/* {isEmailValid ? null : (
               <p className="error-message">
                 Please enter a valid email address.
               </p>
-            )}
+           )}*/}
           </div>
 
           <div className="form-group">
@@ -166,6 +172,28 @@ function NewTicket() {
               id="customerContact"
               onChange={(e) => setCustomerContact(e.target.value)}
             ></input>
+          </div>
+          <div className="form-group">
+            <label htmlFor="organization">Organization</label>
+            <select
+              name="organization"
+              id="organization"
+              value={organization}
+              onChange={(e) => setOrganization(e.target.value)}
+            >
+              <option value="">Select One</option>
+              {organizations && organizations.length > 0 ? (
+                organizations.map((organization) => (
+                  <option key={organization._id} value={organization._id}>
+                    {organization.name}
+                  </option>
+                ))
+              ) : (
+                <option value="" disabled>
+                  No organization available
+                </option>
+              )}
+            </select>
           </div>
 
           <div className="form-group">

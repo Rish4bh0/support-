@@ -3,33 +3,31 @@ import { useDispatch, useSelector } from "react-redux";
 import { Link, useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
 import Modal from "react-modal";
-import {
-  Table,
-  TableBody,
-  TableCell,
-  TableContainer,
-  TableHead,
-  TableRow,
-  Paper,
-  Button,
-} from "@mui/material";
+import { DataGrid } from "@mui/x-data-grid";
 import CloseIcon from "@mui/icons-material/Close";
-import EditIcon from "@mui/icons-material/Edit";
-import DeleteIcon from "@mui/icons-material/Delete";
+import { Button, Paper } from "@mui/material";
 import {
-  getAllOrganization,
   createOrganization,
-  reset,
   deleteOrganization,
+  getAllOrganization,
+  reset,
 } from "../features/organization/organizationSlice";
 import BackButton from "../components/BackButton";
+import AddCircleOutlineIcon from "@mui/icons-material/AddCircleOutline";
+import DeleteIcon from "@mui/icons-material/Delete";
+import ModeEditIcon from "@mui/icons-material/ModeEdit";
+import ViewListIcon from "@mui/icons-material/ViewList";
+import VisibilityIcon from '@mui/icons-material/Visibility';
+
 
 function OrganizationList() {
-  const organizations = useSelector((state) => state.organizations.organizations);
+  const organizations = useSelector(
+    (state) => state.organizations.organizations
+  );
   const { isLoading, isError, isSuccess, message } = useSelector(
     (state) => state.organizations
   );
-  const userRole = useSelector(state => state.auth.user.role); // Retrieve the user's role from Redux state
+  const userRole = useSelector((state) => state.auth.user.role);
   const [name, setNewOrganizationName] = useState("");
   const [email, setEmail] = useState("");
   const [contact, setContact] = useState("");
@@ -41,7 +39,7 @@ function OrganizationList() {
   const [isModalOpen, setIsModalOpen] = useState(false);
 
   useEffect(() => {
-    // Load the initial issue list when the component mounts
+    // Load the initial organization list when the component mounts
     dispatch(getAllOrganization());
   }, [dispatch]);
 
@@ -54,28 +52,28 @@ function OrganizationList() {
     }
   }, [dispatch, isError, isSuccess, message]);
 
-  // Function to handle form submission for creating a new issue
+  // Function to handle form submission for creating a new organization
   const handleCreateOrganization = (e) => {
     e.preventDefault();
-    // Dispatch the createIssueType action with the new issue name
     dispatch(createOrganization({ name, email, contact, description }));
 
-    // Clear the input field after creating the issue
+    // Clear the input fields after creating the organization
     setNewOrganizationName("");
+    setEmail("");
+    setContact("");
+    setDescription("");
     closeModal();
   };
-  // Function to handle issue deletion
+
+  // Function to handle organization deletion
   const handleDeleteOrganization = (organizationId) => {
-    const token = // Retrieve the user token from your authentication system
-      dispatch(deleteOrganization(organizationId, token))
-        .then(() => {
-          // Optionally, you can show a success message here.
-          toast.success("Organization deleted successfully");
-        })
-        .catch((error) => {
-          // Handle the error and display it to the user, if necessary.
-          toast.error(`Error deleting organization: ${error.message}`);
-        });
+    dispatch(deleteOrganization(organizationId))
+      .then(() => {
+        toast.success("Organization deleted successfully");
+      })
+      .catch((error) => {
+        toast.error(`Error deleting organization: ${error.message}`);
+      });
   };
 
   // Function to open the modal
@@ -88,85 +86,92 @@ function OrganizationList() {
     setIsModalOpen(false);
   };
 
- // Check if the user has one of the allowed roles
- if (!["ADMIN", "SUPERVISOR", "EMPLOYEE"].includes(userRole)) {
-  // Handle unauthorized access, e.g., redirect or show an error message
-  return (
-    <div>
-      <h1>Unauthorized Access</h1>
-      <p>You do not have permission to access this page.</p>
-    </div>
-  );
-}
+  // Check if the user has one of the allowed roles
+  if (!["ADMIN", "SUPERVISOR", "EMPLOYEE"].includes(userRole)) {
+    // Handle unauthorized access, e.g., redirect or show an error message
+    return (
+      <div>
+        <h1>Unauthorized Access</h1>
+        <p>You do not have permission to access this page.</p>
+      </div>
+    );
+  }
 
+  const columns = [
+    { field: "organizationId", headerName: "Organization ID", flex: 1 },
+    { field: "organizationName", headerName: "Organization Name", flex: 1 },
+    { field: "organizationEmail", headerName: "Organization Email", flex: 1 },
+    {
+      field: "organizationContact",
+      headerName: "Organization Contact",
+      flex: 1,
+    },
+
+    {
+      field: "actions",
+      headerName: "Action",
+      flex: 1,
+      renderCell: (params) => (
+        <div>
+          <Link to={`/organization/${params.row.organizationId}`}>
+          <button className="group">
+                      <ModeEditIcon className="text-blue-500 group-hover:text-blue-700 mr-8" />
+                    </button>
+          </Link>
+          <Link to={`/organizations/${params.row.organizationId}`}>
+          <button className="group">
+                      <VisibilityIcon className="text-gray-500 group-hover:text-gray-700 mr-8" />
+                    </button>
+          </Link>
+          <button
+             className="group"
+            onClick={() => handleDeleteOrganization(params.row.organizationId)}
+          >
+            <DeleteIcon className="text-red-500 group-hover:text-red-700 mr-8"/>
+          </button>
+        </div>
+      ),
+    },
+  ];
 
   return (
     <>
       <BackButton url="/" />
       <div>
-        <h1>Organization List</h1>
+        <h1 className="text-xl font-extrabold text-14">
+          {" "}
+          <ViewListIcon /> Organization List
+        </h1>
+        <div className="flex justify-end p-2 md:mx-6 relative">
         <Button
           variant="contained"
           color="primary"
           onClick={openModal}
           style={{ marginBottom: "10px" }}
         >
-          Add Organization
+        <AddCircleOutlineIcon />  Add Organization
         </Button>
-        <TableContainer component={Paper}>
-          <Table>
-            <TableHead>
-              <TableRow>
-                <TableCell>Organization ID</TableCell>
-                <TableCell>Organization name</TableCell>
-                <TableCell>Organization email</TableCell>
-                <TableCell>Organization contact</TableCell>
-                <TableCell>Description</TableCell>
-                <TableCell>Action</TableCell>
-              </TableRow>
-            </TableHead>
-            <TableBody>
-              {organizations.map((organization) => (
-                <TableRow key={organization._id}>
-                    <TableCell>{organization._id}</TableCell>
-                    <TableCell>{organization.name}</TableCell>
-                    <TableCell>{organization.email}</TableCell>
-                    <TableCell>{organization.contact}</TableCell>
-                    <TableCell>{organization.description}</TableCell>
-                  <TableCell>
-                    <Link to={`/organization/${organization._id}`}>
-                      <Button
-                        variant="contained"
-                        style={{ backgroundColor: "green", marginRight: "8px" }}
-                      >
-                        <EditIcon style={{ background: "transparent" }} />
-                      </Button>
-                    </Link>
-                    <Link to={`/organizations/${organization._id}`}>
-                      <Button
-                        variant="contained"
-                        style={{ backgroundColor: "blue", marginRight: "8px" }}
-                      >
-                        <EditIcon style={{ background: "transparent" }} />
-                      </Button>
-                    </Link>
-                    <Button
-                      variant="contained"
-                      style={{ backgroundColor: "red", marginRight: "8px" }}
-                      onClick={() => handleDeleteOrganization(organization._id)}
-                    >
-                      <DeleteIcon style={{ background: "transparent" }} />
-                    </Button>
-                  </TableCell>
-                </TableRow>
-              ))}
-            </TableBody>
-          </Table>
-        </TableContainer>
+        </div>
+        <DataGrid
+          rows={organizations.map((organization) => ({
+            ...organization,
+            id: organization._id, // Ensure each row has a unique id
+            organizationId: organization._id, // Assuming _id is the Organization ID field
+            organizationName: organization.name,
+            organizationEmail: organization.email,
+            organizationContact: organization.contact,
+          }))}
+          columns={columns}
+          pageSize={5}
+          checkboxSelection
+          onSelectionModelChange={(newSelection) => {
+            // Handle selection changes if needed
+          }}
+        />
         <Modal
           isOpen={isModalOpen}
           onRequestClose={closeModal}
-          contentLabel="Add Issue Modal"
+          contentLabel="Add Organization Modal"
           style={{
             overlay: {
               display: "flex",
@@ -176,7 +181,7 @@ function OrganizationList() {
             },
             content: {
               width: "500px",
-              height: "300px",
+              height: "500px",
               margin: "0 auto",
               backgroundColor: "white",
               borderRadius: "4px",
@@ -192,11 +197,10 @@ function OrganizationList() {
           >
             <CloseIcon />
           </Button>
-
           <h2>Add Organization</h2>
           <form onSubmit={handleCreateOrganization}>
             <div className="form-group">
-              <label htmlFor="name">New Issue Name:</label>
+              <label htmlFor="name">Organization Name:</label>
               <input
                 type="text"
                 id="name"
@@ -207,7 +211,7 @@ function OrganizationList() {
               />
             </div>
             <div className="form-group">
-              <label htmlFor="email">New Organization email:</label>
+              <label htmlFor="email">Organization Email:</label>
               <input
                 type="text"
                 id="email"
@@ -218,9 +222,9 @@ function OrganizationList() {
               />
             </div>
             <div className="form-group">
-              <label htmlFor="contact">New Organization contact:</label>
+              <label htmlFor="contact">Organization Contact:</label>
               <input
-                type="number"
+                type="text"
                 id="contact"
                 name="contact"
                 placeholder="Contact"
@@ -229,7 +233,7 @@ function OrganizationList() {
               />
             </div>
             <div className="form-group">
-              <label htmlFor="description">New Organization discription:</label>
+              <label htmlFor="description">Organization Description:</label>
               <input
                 type="text"
                 id="description"
@@ -241,7 +245,7 @@ function OrganizationList() {
             </div>
             <div className="form-group">
               <Button type="submit" variant="contained" color="primary">
-                Create Issue
+                Create Organization
               </Button>
             </div>
           </form>

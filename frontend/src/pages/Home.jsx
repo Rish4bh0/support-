@@ -43,21 +43,9 @@ function Home() {
         <FaInfo/> My Organization
       </Link>
       )}
-       {(userRole && allowedRoles.includes(userRole)) && (
-      <Link to="/organizations" className="btn btn-reverse btn-block">
-        <FaInfo /> All Organization
-      </Link>
-      )}
-      {(userRole && allowedRoles.includes(userRole)) && (
-      <Link to="/createuser" className="btn btn-reverse btn-block">
-        <FaUserPlus /> User Management
-      </Link>
-      )}
-      {(userRole && allowedRoles.includes(userRole)) && (
-        <Link to="/dashboard" className="btn btn-block">
-          <FaInfo /> Dashboard
-        </Link>
-      )}
+
+      
+
 
     </>
   );

@@ -98,6 +98,7 @@ const createTicket = asyncHandler(async (req, res) => {
     customerName,
     customerEmail,
     customerContact,
+    organization,
     media, // Expect an array of mixed media data (images and videos)
   } = req.body;
 
@@ -106,10 +107,7 @@ const createTicket = asyncHandler(async (req, res) => {
     !priority ||
     !issueType ||
     !assignedTo ||
-    !description ||
-    !customerName ||
-    !customerEmail ||
-    !customerContact
+    !description 
   ) {
     res.status(400);
     throw new Error("Please provide all required fields");
@@ -162,7 +160,8 @@ const createTicket = asyncHandler(async (req, res) => {
       customerContact,
       user: req.user.id,
       status: "new",
-      media: mediaPromises, // Store the array of media data (images and videos)
+      media: mediaPromises,
+      organization 
     });
 
     
@@ -177,7 +176,7 @@ const createTicket = asyncHandler(async (req, res) => {
       to: userEmail,
       subject: 'Ticket Created',
       html: `<p style="text-align: left;">Dear ${user.name},</p>
-      <p style="text-align: left;">A request for support has been created and assigned (ID: ${ticketId})  A reppresentative will follow-up with you as soon as possible. You can <a href="${ticketLink}">view this ticket's progress online</a> to view the ticket.</p>
+      <p style="text-align: left;">A request for support has been created and assigned (ID: ${ticketId})  A reppresentative will follow-up with you as soon as possible. You can <a href="${ticketLink}">link</a> to view this ticket's progress online</p>
       <p style="text-align: left;">Best Regards,</p>`,
     });
 

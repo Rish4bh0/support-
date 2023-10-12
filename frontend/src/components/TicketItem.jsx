@@ -31,6 +31,15 @@ function TicketItem({ ticket }) {
   // Extract the name of the issueType (if found)
   const issueTypeName = ticketIssueType ? ticketIssueType.name : "Unknown Issue Type";
 
+  // Access the issueTypes array from the Redux state (assuming you have it there)
+  const organizations = useSelector((state) => state.organizations.organizations);
+
+  // Find the issueType object with the same ID as the ticket's issueType ID
+  const ticketorganizations = organizations.find((organization) => organization._id === ticket.organization);
+
+  // Extract the name of the issueType (if found)
+  const organizationName = ticketorganizations ? ticketorganizations.name : "Unknown Organization";
+
   return (
     <div className="ticket">
       <div>{new Date(ticket.createdAt).toLocaleString("en-US", options)}</div>
@@ -39,6 +48,7 @@ function TicketItem({ ticket }) {
       <div className={`priority priority-${ticket.priority}`}>{ticket.priority}</div>
       <div>{issueTypeName}</div> {/* Display the issue type's name */}
       <div className={`status status-${ticket.status}`}>{ticket.status}</div>
+      <div>{organizationName}</div>
       <div className="icon-buttons">
         <IconButton component={Link} to={`/ticket/${ticket._id}`} className="btn btn-reverse btn-sm">
           <VisibilityIcon />

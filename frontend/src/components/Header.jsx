@@ -1,7 +1,11 @@
+
 import { FaSignOutAlt, FaSignInAlt, FaUser } from "react-icons/fa";
 import { Link, useNavigate } from "react-router-dom";
 import { useSelector, useDispatch } from "react-redux";
 import { logout, reset } from "../features/auth/authSlice";
+
+
+import Logo from '../assets/dry.png';
 
 function Header() {
   const navigate = useNavigate();
@@ -17,7 +21,9 @@ function Header() {
   return (
     <header className="header">
       <div className="logo">
-        <Link to="/">Dryice Support Desk</Link>
+        <Link to="/">
+        <img src={Logo} alt="Your Logo" style={{ width: "100px", height: "100px" }} />
+        </Link>
       </div>
       <ul>
         {user ? (

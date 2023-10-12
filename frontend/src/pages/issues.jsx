@@ -3,19 +3,9 @@ import { useDispatch, useSelector } from "react-redux";
 import { Link, useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
 import Modal from "react-modal";
-import {
-  Table,
-  TableBody,
-  TableCell,
-  TableContainer,
-  TableHead,
-  TableRow,
-  Paper,
-  Button,
-} from "@mui/material";
+import { DataGrid } from "@mui/x-data-grid";
 import CloseIcon from "@mui/icons-material/Close";
-import EditIcon from "@mui/icons-material/Edit";
-import DeleteIcon from "@mui/icons-material/Delete";
+import Button from "@mui/material/Button";
 import {
   getAllIssueTypes,
   createIssueType,
@@ -24,22 +14,24 @@ import {
 } from "../features/issues/issueSlice";
 import BackButton from "../components/BackButton";
 import { getAllOrganization } from "../features/organization/organizationSlice";
+import AddCircleOutlineIcon from "@mui/icons-material/AddCircleOutline";
+import DeleteIcon from "@mui/icons-material/Delete";
+import ModeEditIcon from "@mui/icons-material/ModeEdit";
+import ViewListIcon from "@mui/icons-material/ViewList";
 
 function IssueList() {
   const issues = useSelector((state) => state.issueTypes.issueTypes);
   const { isLoading, isError, isSuccess, message } = useSelector(
     (state) => state.issueTypes
   );
-  const userRole = useSelector(state => state.auth.user.role); // Retrieve the user's role from Redux state
+  const userRole = useSelector((state) => state.auth.user.role);
   const [name, setNewIssueName] = useState("");
   const dispatch = useDispatch();
   const navigate = useNavigate();
 
-  // Local state for the modal
   const [isModalOpen, setIsModalOpen] = useState(false);
 
   useEffect(() => {
-    // Load the initial issue list when the component mounts
     dispatch(getAllIssueTypes());
     dispatch(getAllOrganization());
   }, [dispatch]);
@@ -53,107 +45,93 @@ function IssueList() {
     }
   }, [dispatch, isError, isSuccess, message]);
 
-  // Function to handle form submission for creating a new issue
   const handleCreateIssue = (e) => {
     e.preventDefault();
-    // Dispatch the createIssueType action with the new issue name
     dispatch(createIssueType({ name }));
-
-    // Clear the input field after creating the issue
     setNewIssueName("");
     closeModal();
   };
-  // Function to handle issue deletion
+
   const handleDeleteIssue = (issueId) => {
-    const token = // Retrieve the user token from your authentication system
-      dispatch(deleteIssueType(issueId, token))
-        .then(() => {
-          // Optionally, you can show a success message here.
-          toast.success("Issue deleted successfully");
-        })
-        .catch((error) => {
-          // Handle the error and display it to the user, if necessary.
-          toast.error(`Error deleting issue: ${error.message}`);
-        });
+    const token = ""; // Retrieve the user token from your authentication system
+    dispatch(deleteIssueType(issueId, token))
+      .then(() => {
+        toast.success("Issue deleted successfully");
+      })
+      .catch((error) => {
+        toast.error(`Error deleting issue: ${error.message}`);
+      });
   };
 
-  // Function to open the modal
   const openModal = () => {
     setIsModalOpen(true);
   };
 
-  // Function to close the modal
   const closeModal = () => {
     setIsModalOpen(false);
   };
 
- // Check if the user has one of the allowed roles
- if (!["ADMIN", "SUPERVISOR", "EMPLOYEE"].includes(userRole)) {
-  // Handle unauthorized access, e.g., redirect or show an error message
-  return (
-    <div>
-      <h1>Unauthorized Access</h1>
-      <p>You do not have permission to access this page.</p>
-    </div>
-  );
-}
-
+  if (!["ADMIN", "SUPERVISOR", "EMPLOYEE"].includes(userRole)) {
+    return (
+      <div>
+        <h1>Unauthorized Access</h1>
+        <p>You do not have permission to access this page.</p>
+      </div>
+    );
+  }
 
   return (
     <>
       <BackButton url="/" />
       <div>
-        <h1>Issue List</h1>
+        <h1 className="text-xl font-extrabold text-14">
+          {" "}
+          <ViewListIcon /> Issue List
+        </h1>
+        <div className="flex justify-end p-2 md:mx-6 relative">
+          <Button
+            variant="contained"
+            color="primary"
+            onClick={openModal}
+            style={{ marginBottom: "10px" }}
+          >
+            <AddCircleOutlineIcon /> Add Issue
+          </Button>
+        </div>
 
-        {/* Add Issue Button */}
-        <Button
-          variant="contained"
-          color="primary"
-          onClick={openModal}
-          style={{ marginBottom: "10px" }}
-        >
-          Add Issue
-        </Button>
+        <DataGrid
+          rows={issues.map((issue, index) => ({ ...issue, id: index }))}
+          columns={[
+            { field: "name", headerName: "Issue Name", flex: 1 },
+            { field: "_id", headerName: "Issue ID", flex: 1 },
+            {
+              field: "actions",
+              headerName: "Action",
+              flex: 1,
+              renderCell: (params) => (
+                <div>
+                  <Link to={`/issues/${params.row._id}`}>
+                    <button className="group">
+                      <ModeEditIcon className="text-blue-500 group-hover:text-blue-700 mr-8" />
+                    </button>
+                  </Link>
 
-        {/* Table View */}
-        <TableContainer component={Paper}>
-          <Table>
-            <TableHead>
-              <TableRow>
-                <TableCell>Issue Name</TableCell>
-                <TableCell>Issue ID</TableCell>
-                <TableCell>Action</TableCell>
-              </TableRow>
-            </TableHead>
-            <TableBody>
-              {issues.map((issue) => (
-                <TableRow key={issue._id}>
-                  <TableCell>{issue.name}</TableCell>
-                  <TableCell>{issue._id}</TableCell>
-                  <TableCell>
-                    <Link to={`/issues/${issue._id}`}>
-                      <Button
-                        variant="contained"
-                        style={{ backgroundColor: "green", marginRight: "8px" }}
-                      >
-                        <EditIcon style={{ background: "transparent" }} />
-                      </Button>
-                    </Link>
-                    <Button
-                      variant="contained"
-                      style={{ backgroundColor: "red", marginRight: "8px" }}
-                      onClick={() => handleDeleteIssue(issue._id)}
-                    >
-                      <DeleteIcon style={{ background: "transparent" }} />
-                    </Button>
-                  </TableCell>
-                </TableRow>
-              ))}
-            </TableBody>
-          </Table>
-        </TableContainer>
+                  <button
+                    onClick={() => handleDeleteIssue(params.row._id)}
+                    className="group"
+                  >
+                    <DeleteIcon className="text-red-500 group-hover:text-red-700 mr-8" />
+                  </button>
+                </div>
+              ),
+            },
+          ]}
+          pageSize={5}
+          checkboxSelection
+          onSelectionModelChange={(newSelection) => {}}
+          getRowId={(row) => row.id}
+        />
 
-        {/* Add Issue Modal */}
         <Modal
           isOpen={isModalOpen}
           onRequestClose={closeModal}
@@ -175,7 +153,6 @@ function IssueList() {
             },
           }}
         >
-          {/* Close button */}
           <Button
             variant="text"
             color="inherit"

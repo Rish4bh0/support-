@@ -6,6 +6,7 @@ import { reset, getAllTickets } from "../features/tickets/ticketSlice";
 import TicketItem from "../components/TicketItem";
 import { fetchAllUsers } from "../features/auth/authSlice";
 import { getAllIssueTypes } from "../features/issues/issueSlice";
+import { getAllOrganization } from "../features/organization/organizationSlice";
 
 
 function ListTickets() {
@@ -19,6 +20,7 @@ function ListTickets() {
   useEffect(() => {
     dispatch(fetchAllUsers());
     dispatch(getAllIssueTypes())
+    dispatch(getAllOrganization())
   }, [dispatch]);
 
   useEffect(() => {
@@ -99,7 +101,8 @@ function ListTickets() {
           <div>Priority</div>
           <div>Issue Type</div>
           <div>Status</div>
-          <div></div>
+          <div>Organization</div>
+          <div>Actions</div>
         </div>
         {paginatedTickets.map((ticket) => (
           <TicketItem key={ticket._id} ticket={ticket} />

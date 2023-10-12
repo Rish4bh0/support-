@@ -9,6 +9,7 @@ import { fetchAllUsers } from "../features/auth/authSlice";
 // Import icons for "Next" and "Previous" buttons
 import { FaArrowLeft, FaArrowRight } from "react-icons/fa";
 import { getAllIssueTypes } from "../features/issues/issueSlice";
+import { getAllOrganization } from "../features/organization/organizationSlice";
 
 function Ticketss() {
   const { ticketss, isLoading } = useSelector((state) => state.tickets);
@@ -18,14 +19,16 @@ function Ticketss() {
   const [currentPage, setCurrentPage] = useState({
     new: 1,
     open: 1,
-    closed: 1,
+    review: 1,
+    close: 1,
   });
   const itemsPerPage = 4; // You can adjust this number as needed
   const maxPageButtons = 5; // Maximum number of page buttons to display
 
   useEffect(() => {
     dispatch(fetchAllUsers());
-    dispatch(getAllIssueTypes())
+    dispatch(getAllIssueTypes());
+    dispatch(getAllOrganization());
   }, [dispatch]);
 
   /*
@@ -142,6 +145,7 @@ function Ticketss() {
           <div>Priority</div>
           <div>Issue Type</div>
           <div>Status</div>
+          <div>Organization</div>
           <div>Actions</div>
         </div>
         {paginatedTickets.map((ticket) => (

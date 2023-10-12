@@ -20,6 +20,7 @@ import Modal from "react-modal";
 import { FaPlus } from "react-icons/fa";
 import { fetchAllUsers } from "../features/auth/authSlice";
 import { getAllIssueTypes } from "../features/issues/issueSlice";
+import { getAllOrganization } from "../features/organization/organizationSlice";
 
 const customStyles = {
   content: {
@@ -55,6 +56,13 @@ function Ticket() {
   const [isTimerRunning, setIsTimerRunning] = useState(false);
   const [elapsedTime, setElapsedTime] = useState(0);
   const [timerIntervalId, setTimerIntervalId] = useState(null);
+  const organizations = useSelector((state) => state.organizations.organizations);
+  const organizationMap = {};
+
+  // Create a mapping of organization IDs to their names
+  organizations.forEach((organization) => {
+    organizationMap[organization._id] = organization.name;
+  });
   // Define a function to start the timer
   const startTimer = () => {
     setIsTimerRunning(true);
@@ -136,6 +144,7 @@ function Ticket() {
     dispatch(fetchAllUsers());
     // Load the initial issue list when the component mounts
     dispatch(getAllIssueTypes());
+    dispatch(getAllOrganization());
   }, [dispatch]);
 
   // Access user data from the Redux store
@@ -155,6 +164,7 @@ function Ticket() {
     const issue = issues.find((issue) => issue._id === issueId);
     return issue ? issue.name : "Unknown User";
   };
+  
 
   if (isLoading || notesIsLoading) return <Spinner />;
 
@@ -219,6 +229,7 @@ function Ticket() {
         <h3>Priority: {ticket.priority}</h3>
         <h3>Time spent: {formattedTimeSpent}</h3>
         <h3>Issue Type: {issueById(ticket.issueType)}</h3>
+        <h3>Organization: {ticket.organization ? organizationMap[ticket.organization] : "Unassigned"}</h3>
         {ticket.status === "close" && (
           <h3>
             Closed At:{" "}
@@ -230,12 +241,16 @@ function Ticket() {
           <h3>Description of Issue</h3>
           <p>{ticket.description}</p>
         </div>
+        {ticket.status !== "close" &&
+        userRole &&
+        allowedRoles.includes(userRole) && (
         <div className="ticket-timer">
           <h3>Elapsed Time: {formatElapsedTime(elapsedTime)}</h3>
           <button onClick={handleTimerButtonClick} className="btn">
             {isTimerRunning ? "Stop Timer" : "Start Timer"}
           </button>
         </div>
+        )}
         {ticket.status !== "close" &&
           userRole &&
           allowedRoles.includes(userRole) && <h2>Notes</h2>}

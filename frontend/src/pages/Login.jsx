@@ -14,18 +14,8 @@ function Login() {
 
   const { email, password } = formData; // destructuring
 
-  /**
-   * useDispatch() returns a reference to the dispatch function
-   * from the Redux store. You may use it to dispatch actions
-   * as needed.
-   */
   const dispatch = useDispatch();
   const navigate = useNavigate();
-
-  /**
-   * useSelector() allows you to extract data from the Redux store state,
-   * using a selector function.
-   */
 
   const { user, isLoading, isError, isSuccess, message } = useSelector(
     (state) => state.auth
@@ -38,10 +28,17 @@ function Login() {
 
     // Redirect when logged in
     if (isSuccess || user) {
-      navigate("/");
+      if (user) {
+        if (["ADMIN", "SUPERVISOR", "EMPLOYEE"].includes(user.role)) {
+          navigate("/dashboard"); // Redirect to the dashboard route for ADMIN, SUPERVISOR, EMPLOYEE
+        } else if (user.role === "ORGAGENT") {
+          navigate("/organization"); // Redirect to the organization route for ORGAGENT
+        } else {
+          navigate("/"); // Redirect to the home route for other roles
+        }
+      }
+      dispatch(reset());
     }
-
-    dispatch(reset());
   }, [isError, isSuccess, user, navigate, message, dispatch]);
 
   const onChange = (e) => {
