@@ -30,7 +30,7 @@ function Login() {
     if (isSuccess || user) {
       if (user) {
         if (["ADMIN", "SUPERVISOR", "EMPLOYEE"].includes(user.role)) {
-          navigate("/dashboard"); // Redirect to the dashboard route for ADMIN, SUPERVISOR, EMPLOYEE
+          navigate("/dash"); // Redirect to the dashboard route for ADMIN, SUPERVISOR, EMPLOYEE
         } else if (user.role === "ORGAGENT") {
           navigate("/organization"); // Redirect to the organization route for ORGAGENT
         } else {

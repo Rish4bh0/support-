@@ -1,21 +1,15 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { Link, useNavigate } from "react-router-dom";
+import { Link } from "react-router-dom";
 import { toast } from "react-toastify";
-import Modal from "react-modal";
-import {
- 
-  Button,
-} from "@mui/material";
-import { DataGrid, GridVisibilityOffIcon } from "@mui/x-data-grid";
-import CloseIcon from "@mui/icons-material/Close";
-import EditIcon from "@mui/icons-material/Edit";
-import { getAllOrganization, createOrganization, reset, deleteOrganization } from "../features/organization/organizationSlice";
+import { DataGrid } from "@mui/x-data-grid";
+import { getAllOrganization, reset } from "../features/organization/organizationSlice";
 import BackButton from "../components/BackButton";
-import DeleteIcon from "@mui/icons-material/Delete";
 import ModeEditIcon from "@mui/icons-material/ModeEdit";
 import ViewListIcon from "@mui/icons-material/ViewList";
 import VisibilityIcon from '@mui/icons-material/Visibility';
+import Spinner from "../components/Spinner";
+
 
 
 function OrganizationList() {
@@ -29,15 +23,8 @@ function OrganizationList() {
   // Filter organizations to include only the organization with the user's organizationId
   const userOrganization = organizations.find(org => org._id === organizationId);
 
-  const [name, setNewOrganizationName] = useState("");
-  const [email, setEmail] = useState("");
-  const [contact, setContact] = useState("");
-  const [description, setDescription] = useState("");
-  const dispatch = useDispatch();
-  const navigate = useNavigate();
 
-  // Local state for the modal
-  const [isModalOpen, setIsModalOpen] = useState(false);
+  const dispatch = useDispatch();
 
   useEffect(() => {
     // Load the initial issue list when the component mounts
@@ -52,6 +39,7 @@ function OrganizationList() {
       dispatch(reset());
     }
   }, [dispatch, isError, isSuccess, message]);
+
 
   // Check if the user has one of the allowed roles
   if (!["ADMIN", "SUPERVISOR", "EMPLOYEE", "ORGAGENT"].includes(userRole)) {
@@ -99,6 +87,8 @@ function OrganizationList() {
     }
   ] : [];
 
+  if (isLoading) return <Spinner />;
+
   return (
     <>
       <BackButton url="/" />
@@ -107,13 +97,16 @@ function OrganizationList() {
           {" "}
           <ViewListIcon /> Manage my organization
         </h1>
+       <div>
         <DataGrid
           rows={rows}
           columns={columns}
           pageSize={5}
-          checkboxSelection={false} // Set to true if you want to enable checkbox selection
+          checkboxSelection
         />
-      </div>
+        </div>
+        </div>
+      
     </>
   );
 }

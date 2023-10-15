@@ -11,6 +11,7 @@ const {
   getAllTickets,
   getTicketss,
   savetime,
+  report,
   
  
 } = require('../controllers/ticketController')
@@ -31,6 +32,7 @@ router
   router.route('/my').get(protect, getTicketss);
 
 router.route('/all').get(getAllTickets);
+router.route('/report').get(report);
 
 router.route('/:ticketId/elapsed-time').put(savetime);
 

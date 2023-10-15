@@ -4,13 +4,15 @@ import { updateTicketAsync, getTicket } from '../features/tickets/ticketSlice';
 import { useParams } from 'react-router-dom';
 import { fetchAllUsers } from '../features/auth/authSlice';
 import { getAllIssueTypes } from '../features/issues/issueSlice';
+import { getAllOrganization } from '../features/organization/organizationSlice';
 
 const UpdateProductPage = () => {
   const { ticketId } = useParams();
   const { ticket } = useSelector((state) => state.tickets);
   const users = useSelector((state) => state.auth.users);
   const issues = useSelector((state) => state.issueTypes.issueTypes);
-  const userRole = useSelector(state => state.auth.user.role); // Retrieve the user's role from Redux state
+  const userRole = useSelector(state => state.auth.user.role); 
+  const organizations = useSelector(state => state.organizations.organizations);
   const dispatch = useDispatch();
 
   // State for form data including media
@@ -20,6 +22,7 @@ const UpdateProductPage = () => {
     product: '',
     priority: '',
     assignedTo: '',
+    organization: '',
     issueType: '',
     customerEmail: '',
     customerContact: '',
@@ -34,6 +37,7 @@ const UpdateProductPage = () => {
     dispatch(fetchAllUsers());
     // Load the initial issue list when the component mounts
     dispatch(getAllIssueTypes());
+    dispatch(getAllOrganization());
   }, [dispatch]);
 
   useEffect(() => {
@@ -47,6 +51,7 @@ const UpdateProductPage = () => {
         assignedTo: ticket.assignedTo,
         issueType: ticket.issueType,
         customerEmail: ticket.customerEmail,
+        organization: ticket.organization,
         customerContact: ticket.customerContact,
       });
     } else {
@@ -100,6 +105,7 @@ const UpdateProductPage = () => {
           product: formData.product,
         priority: formData.priority,
         assignedTo: formData.assignedTo,
+        organization: formData.organization,
         issueType: formData.issueType,
         customerEmail: formData.customerEmail,
         customerContact: formData.customerContact,
@@ -159,7 +165,28 @@ const UpdateProductPage = () => {
               onChange={handleChange}
             ></input>
           </div>
-
+          <div className="form-group">
+            <label htmlFor="organization">Organization</label>
+            <select
+              name="organization"
+              id="organization"
+              value={formData.organization}
+              onChange={handleChange}
+            >
+              <option value="">Select One</option>
+              {organizations && organizations.length > 0 ? (
+                organizations.map((organization) => (
+                  <option key={organization._id} value={organization._id}>
+                    {organization.name}
+                  </option>
+                ))
+              ) : (
+                <option value="" disabled>
+                  No organization available
+                </option>
+              )}
+            </select>
+          </div>
           <div className="form-group">
             <label htmlFor="assignedTo">Assign To</label>
             <select

@@ -33,6 +33,12 @@ import { NavBar, Footer, Sidebar } from "./components";
 import  Table  from "./pages/Table.jsx"
 import { useStateContext } from "./contexts/ContextProvider";
 import { useSelector } from "react-redux";
+import  Unassigned from "./pages/unassigned";
+import  Report from "./pages/report";
+import One from "./pages/one"
+import Dash from "./pages/Dash"
+
+
 
 function App() {
   const { activeMenu, setactiveMenu } = useStateContext();
@@ -87,10 +93,14 @@ function App() {
             <div className="container">
               <Routes>
                 <Route path="/" element={<Home />} />
+                <Route path="/one" element={<One />} />
                 <Route path="/table" element={<Table />} />
+                <Route path="/report" element={<Report/>} />
                 <Route path="/login" element={<Login />} />
                 <Route path="/register" element={<Register />} />
                 <Route path="/forget" element={<Forget />} />
+                <Route path="/dash" element={<Dash />} />
+                
                 <Route
                   path="/reset-password/:token"
                   element={<ResetPassword />}
@@ -98,6 +108,9 @@ function App() {
 
                 <Route path="/new-ticket" element={<PrivateRoute />}>
                   <Route path="/new-ticket" element={<NewTicket />} />
+                </Route>
+                <Route path="/unassigned" element={<PrivateRoute />}>
+                  <Route path="/unassigned" element={<Unassigned />} />
                 </Route>
                 <Route path="/org-ticket" element={<PrivateRoute />}>
                   <Route path="/org-ticket" element={<ORGTICKET />} />

@@ -68,6 +68,21 @@ export const getAllTickets = async token => {
   }
 };
 
+export const report = async token => {
+  try {
+    const config = {
+      headers: {
+        Authorization: `Bearer ${token}`
+      }
+    }
+    const response = await axios.get(API_URL + '/report', config);
+    return response.data;
+  } catch (error) {
+    console.error("Error fetching report:", error);
+    return [];
+  }
+};
+
 // Close ticket
 const closeTicket = async (ticketId, token) => {
   const config = {
@@ -146,7 +161,8 @@ const ticketService = {
   getAllTickets,
   updateTicket,
   reviewTicket,
-  saveElapsedTime
+  saveElapsedTime,
+  report
 }
 
 export default ticketService

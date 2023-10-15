@@ -4,7 +4,6 @@ import { useParams, Link} from "react-router-dom";
 import Spinner from "../components/Spinner";
 import { getAllOrganization, selectOrganizationById } from "../features/organization/organizationSlice";
 import { createUser, deleteUser, fetchAllUsers } from "../features/auth/authSlice";
-
 import CloseIcon from "@mui/icons-material/Close";
 import Modal from "react-modal";
 import {
@@ -14,12 +13,21 @@ import {
   TableContainer,
   TableHead,
   TableRow,
-  Paper,
+  
   Button,
 } from "@mui/material";
 import EditIcon from "@mui/icons-material/Edit";
 import DeleteIcon from "@mui/icons-material/Delete";
 import { toast } from "react-toastify";
+import { DataGrid } from "@mui/x-data-grid";
+import ModeEditIcon from "@mui/icons-material/ModeEdit";
+import AddCircleOutlineIcon from "@mui/icons-material/AddCircleOutline";
+import ViewListIcon from "@mui/icons-material/ViewList";
+import { styled } from '@mui/material/styles';
+import Box from '@mui/material/Box';
+import Paper from '@mui/material/Paper';
+import Grid from '@mui/material/Grid';
+
 const OrganizationDetail = () => {
   const { id } = useParams();
   const dispatch = useDispatch();
@@ -30,7 +38,13 @@ const OrganizationDetail = () => {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const organizations = useSelector((state) => state.organizations.organizations);
   const organizationMap = {};
-
+  const Item = styled(Paper)(({ theme }) => ({
+    backgroundColor: theme.palette.mode === 'dark' ? '#1A2027' : '#fff',
+    ...theme.typography.body2,
+    padding: theme.spacing(1),
+    textAlign: 'center',
+    color: theme.palette.text.secondary,
+  }));
   // Create a mapping of organization IDs to their names
   organizations.forEach((organization) => {
     organizationMap[organization._id] = organization.name;
@@ -78,37 +92,51 @@ const OrganizationDetail = () => {
   // Filter users based on the organization of the authenticated user
   const filteredUsers = users.filter(user => user.organization === authUser.organization);
 
+  
+  
+  
+  
   if (!myorganization) {
     return <Spinner />;
   }
 
   return (
     <>
-    <div>
-      <h2>Organization Details</h2>
-      <Button
-          variant="contained"
-          color="primary"
-          onClick={openModal}
-          style={{ marginBottom: "10px" }}
-        >
-          Add User
-        </Button>
-      <ul>
-        <li>
-          <strong>Name:</strong> {myorganization.name}
-        </li>
-        <li>
-          <strong>Email:</strong> {myorganization.email}
-        </li>
-        <li>
-          <strong>Contact:</strong> {myorganization.contact}
-        </li>
-        <li>
-          <strong>Description:</strong> {myorganization.description}
-        </li>
-      </ul>
+    <div className="mb-10">
+    <h1 className="text-xl font-extrabold text-14 mb-10">
+          {" "}
+          <ViewListIcon /> My Organization Details
+        </h1>
+
+        <Box sx={{ flexGrow: 1 }}>
+      <Grid container spacing={2}>
+        <Grid item xs={6}>
+          <Item><strong>Name:</strong> {myorganization.name}</Item>
+        </Grid>
+        <Grid item xs={6}>
+          <Item><strong>Email:</strong> {myorganization.email}</Item>
+        </Grid>
+        <Grid item xs={6}>
+          <Item> <strong>Contact:</strong> {myorganization.contact}</Item>
+        </Grid>
+        <Grid item xs={6}>
+          <Item> <strong>Description:</strong> {myorganization.description}</Item>
+        </Grid>
+      </Grid>
+    </Box>
+
+ 
     </div>
+    <div className="flex justify-end p-2 md:mx-6 relative">
+          <Button
+            variant="contained"
+            color="primary"
+            onClick={openModal}
+            style={{ marginBottom: "10px" }}
+          >
+            <AddCircleOutlineIcon /> Add User
+          </Button>
+        </div>
     <Modal
           isOpen={isModalOpen}
           onRequestClose={closeModal}
@@ -193,50 +221,53 @@ const OrganizationDetail = () => {
           </form>
         </Modal>
         <div>
-        <h1>User List</h1>
+        <h1 className="text-xl font-extrabold text-14 mb-10">
+          {" "}
+          <ViewListIcon /> My organization users
+        </h1>
 
-        <TableContainer component={Paper}>
-          <Table>
-            <TableHead>
-              <TableRow>
-                <TableCell>User ID</TableCell>
-                <TableCell>User name</TableCell>
-                <TableCell>User email</TableCell>
-                <TableCell>User role</TableCell>
-                <TableCell>Organization</TableCell>
-                <TableCell>Action</TableCell>
-              </TableRow>
-            </TableHead>
-            <TableBody>
-              {filteredUsers.map((user) => (
-                <TableRow key={user._id}>
-                  <TableCell>{user._id}</TableCell>
-                  <TableCell>{user.name}</TableCell>
-                  <TableCell>{user.email}</TableCell>
-                  <TableCell>{user.role}</TableCell>
-                  <TableCell>{user.organization ? organizationMap[user.organization] : "Unassigned"}</TableCell>
-                  <TableCell>
-                    <Link to={`/createuser/${user._id}`}>
-                      <Button
-                        variant="contained"
-                        style={{ backgroundColor: "green", marginRight: "8px" }}
-                      >
-                        <EditIcon style={{ background: "transparent" }} />
-                      </Button>
-                    </Link>
-                    <Button
-                      variant="contained"
-                      style={{ backgroundColor: "red", marginRight: "8px" }}
-                      onClick={() => handleDeleteUser(user._id)}
-                    >
-                      <DeleteIcon style={{ background: "transparent" }} />
-                    </Button>
-                  </TableCell>
-                </TableRow>
-              ))}
-            </TableBody>
-          </Table>
-        </TableContainer>
+        <DataGrid
+ rows={filteredUsers.map((user, index) => ({ ...user, id: index }))}
+columns={[
+  {field: "name", headerName: "User Name", flex:1},
+  {field: "email", headerName: "User email", flex: 1},
+  {field: "role", headerName: "User role", flex: 1 },
+  { 
+    field: "organization", 
+    headerName: "Organization", 
+    width: 200,
+    renderCell: (params) => (
+      organizationMap[params.value] || "Unassigned"
+    )
+  },
+  {field: "_id", headerName: "User Id", flex: 1},
+  {
+    field: "actions",
+    headerName: "Action",
+    flex: 1,
+    renderCell: (params) => (
+      <div>
+        <Link to={`/createuser/${params.row.id}`}>
+          <button className="group">
+            <ModeEditIcon className="text-blue-500 group-hover:text-blue-700 mr-8" />
+          </button>
+        </Link>
+
+        <button
+          onClick={() => handleDeleteUser(params.row.id)}
+          className="group"
+        >
+          <DeleteIcon className="text-red-500 group-hover:text-red-700 mr-8" />
+        </button>
+      </div>
+    ),
+  },
+]}
+pageSize={5}
+  checkboxSelection
+  onSelectionModelChange={(newSelection) => {}}
+  getRowId={(row) => row.id}
+/>
        
       </div>
     </>
@@ -244,3 +275,5 @@ const OrganizationDetail = () => {
 };
 
 export default OrganizationDetail;
+
+

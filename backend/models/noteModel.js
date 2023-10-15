@@ -12,6 +12,12 @@ const noteSchema = mongoose.Schema(
       required: true,
       ref: 'Ticket'
     },
+    timeEntries: [
+      {
+        toTime: Date,
+        fromTime: Date,
+      },
+    ],
     text: {
       type: String,
       required: [true, 'Please add some text']

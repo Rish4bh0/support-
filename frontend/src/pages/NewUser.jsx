@@ -4,18 +4,11 @@ import { Link, useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
 import Modal from "react-modal";
 import {
-  Table,
-  TableBody,
-  TableCell,
-  TableContainer,
-  TableHead,
-  TableRow,
-  Paper,
   Button,
 } from "@mui/material";
 import CloseIcon from "@mui/icons-material/Close";
-import EditIcon from "@mui/icons-material/Edit";
 import DeleteIcon from "@mui/icons-material/Delete";
+import ModeEditIcon from "@mui/icons-material/ModeEdit";
 import {
   fetchAllUsers,
   createUser,
@@ -23,7 +16,10 @@ import {
   deleteUser,
 } from "../features/auth/authSlice";
 import BackButton from "../components/BackButton";
+import { DataGrid } from "@mui/x-data-grid";
 import { getAllOrganization } from "../features/organization/organizationSlice";
+import AddCircleOutlineIcon from "@mui/icons-material/AddCircleOutline";
+import ViewListIcon from "@mui/icons-material/ViewList";
 
 function UserList() {
   const users = useSelector((state) => state.auth.users);
@@ -109,57 +105,63 @@ function UserList() {
     <>
       <BackButton url="/" />
       <div>
-        <h1>User List</h1>
-        <Button
-          variant="contained"
-          color="primary"
-          onClick={openModal}
-          style={{ marginBottom: "10px" }}
-        >
-          Add User
-        </Button>
-        <TableContainer component={Paper}>
-          <Table>
-            <TableHead>
-              <TableRow>
-                <TableCell>User ID</TableCell>
-                <TableCell>User name</TableCell>
-                <TableCell>User email</TableCell>
-                <TableCell>User role</TableCell>
-                <TableCell>Organization</TableCell>
-                <TableCell>Action</TableCell>
-              </TableRow>
-            </TableHead>
-            <TableBody>
-              {users.map((user) => (
-                <TableRow key={user._id}>
-                  <TableCell>{user._id}</TableCell>
-                  <TableCell>{user.name}</TableCell>
-                  <TableCell>{user.email}</TableCell>
-                  <TableCell>{user.role}</TableCell>
-                  <TableCell>{user.organization ? organizationMap[user.organization] : "Unassigned"}</TableCell>
-                  <TableCell>
-                    <Link to={`/createuser/${user._id}`}>
-                      <Button
-                        variant="contained"
-                        style={{ backgroundColor: "green", marginRight: "8px" }}
-                      >
-                        <EditIcon style={{ background: "transparent" }} />
-                      </Button>
-                    </Link>
-                    <Button
-                      variant="contained"
-                      style={{ backgroundColor: "red", marginRight: "8px" }}
-                      onClick={() => handleDeleteUser(user._id)}
-                    >
-                      <DeleteIcon style={{ background: "transparent" }} />
-                    </Button>
-                  </TableCell>
-                </TableRow>
-              ))}
-            </TableBody>
-          </Table>
-        </TableContainer>
+      <h1 className="text-xl font-extrabold text-14">
+          {" "}
+          <ViewListIcon /> User List
+        </h1>
+        <div className="flex justify-end p-2 md:mx-6 relative">
+          <Button
+            variant="contained"
+            color="primary"
+            onClick={openModal}
+            style={{ marginBottom: "10px" }}
+          >
+            <AddCircleOutlineIcon /> Add User
+          </Button>
+        </div>
+        <DataGrid
+  rows={users.map((user, index) => ({ ...user, id: index }))}
+  columns={[
+    {field: "name", headerName: "User Name", flex:1},
+    {field: "email", headerName: "User email", flex: 1},
+    {field: "role", headerName: "User role", flex: 1 },
+    { 
+      field: "organization", 
+      headerName: "Organization", 
+      width: 200,
+      renderCell: (params) => (
+        organizationMap[params.value] || "Unassigned"
+      )
+    },
+    {field: "_id", headerName: "User Id", flex: 1},
+    {
+      field: "actions",
+      headerName: "Action",
+      flex: 1,
+      renderCell: (params) => (
+        <div>
+          <Link to={`/createuser/${params.row._id}`}>
+            <button className="group">
+              <ModeEditIcon className="text-blue-500 group-hover:text-blue-700 mr-8" />
+            </button>
+          </Link>
+
+          <button
+            onClick={() => handleDeleteUser(params.row._id)}
+            className="group"
+          >
+            <DeleteIcon className="text-red-500 group-hover:text-red-700 mr-8" />
+          </button>
+        </div>
+      ),
+    },
+  ]}
+  pageSize={5}
+  checkboxSelection
+  onSelectionModelChange={(newSelection) => {}}
+  getRowId={(row) => row.id}
+/>
+      
         <Modal
           isOpen={isModalOpen}
           onRequestClose={closeModal}
@@ -173,7 +175,7 @@ function UserList() {
             },
             content: {
               width: "500px",
-              height: "300px",
+              height: "600px",
               margin: "0 auto",
               backgroundColor: "white",
               borderRadius: "4px",

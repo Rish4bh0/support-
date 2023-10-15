@@ -1,9 +1,10 @@
 const asyncHandler = require("express-async-handler");
-
+const Organization = require('../models/organizationModel');
 const User = require("../models/userModel");
 const Ticket = require("../models/ticketModel");
 const cloudinary = require("../config/cloudinary");
 const transporter = require ('../middleware/nodeMailer')
+const Note = require('../models/noteModel');
 // @desc    Get user tickets
 // @route   GET /api/tickets
 // @access  Private
@@ -87,7 +88,7 @@ const getTicket = asyncHandler(async (req, res) => {
 
 
 
-
+/*
 const createTicket = asyncHandler(async (req, res) => {
   const {
     product,
@@ -106,7 +107,6 @@ const createTicket = asyncHandler(async (req, res) => {
     !product ||
     !priority ||
     !issueType ||
-    !assignedTo ||
     !description 
   ) {
     res.status(400);
@@ -165,7 +165,7 @@ const createTicket = asyncHandler(async (req, res) => {
     });
 
     
-   
+   /*
 
     // Send email to logged-in user
     const userEmail = user.email; // Assuming you have an 'email' field in your User model
@@ -200,6 +200,137 @@ const createTicket = asyncHandler(async (req, res) => {
         <p style="text-align: left;">Best Regards,</p>`,
     });
     
+
+    res.status(201).json(ticket);
+  } catch (error) {
+    // Handle any errors that occur during user, media, or ticket creation
+    res.status(500).json({ error: "Ticket creation failed" });
+  }
+});
+*/
+
+const createTicket = asyncHandler(async (req, res) => {
+  const {
+    product,
+    priority,
+    issueType,
+    assignedTo,
+    description,
+    customerName,
+    customerEmail,
+    customerContact,
+    organization,
+    media, // Expect an array of mixed media data (images and videos)
+  } = req.body;
+/*
+  if (!product || !priority || !issueType || !description) {
+    res.status(400);
+    throw new Error("Please provide all required fields");
+  }*/
+
+  try {
+    const mediaPromises = [];
+
+    for (const mediaItem of media) {
+      let result;
+
+      if (mediaItem.startsWith("data:image")) {
+        // Handle image upload
+        result = await cloudinary.uploader.upload(mediaItem, {
+          resource_type: "image", // Specify that you're uploading an image
+          folder: "tickets/images", // Store images in a different folder
+        });
+      } else if (mediaItem.startsWith("data:video")) {
+        // Handle video upload
+        result = await cloudinary.uploader.upload(mediaItem, {
+          resource_type: "video", // Specify that you're uploading a video
+          folder: "tickets/videos", // Store videos in a different folder
+        });
+      } else {
+        // Handle unsupported media type (you can customize this part)
+        throw new Error("Unsupported media type");
+      }
+
+      mediaPromises.push({
+        public_id: result.public_id,
+        url: result.secure_url,
+      });
+    }
+
+    const user = await User.findById(req.user.id);
+
+    if (!user) {
+      res.status(401);
+      throw new Error("User not found");
+    }
+
+    // Define the assignedToUser variable to be used later
+    let assignedToUser = null;
+   let org = null;
+
+    if (assignedTo) {
+      assignedToUser = await User.findById(assignedTo);
+
+      if (!assignedToUser) {
+        res.status(400);
+        throw new Error('Assigned user not found');
+      }
+    }
+
+    if (organization) {
+      // Assuming you have an "Organization" model, you can fetch the organization.
+      org = await Organization.findById(organization);
+
+      if (!org) {
+        res.status(400);
+        throw new Error('Organization not found');
+      }
+    }
+
+    const ticket = await Ticket.create({
+      product,
+      priority,
+      issueType,
+      assignedTo: assignedToUser ? assignedToUser.id : null,
+      description,
+      customerName,
+      customerEmail,
+      customerContact,
+      user: req.user.id,
+      status: "new",
+      media: mediaPromises,
+      organization: org ? org._id : null, // Set to null if not provided
+    });
+
+    
+
+    // Send email to logged-in user
+    const userEmail = user.email; // Assuming you have an 'email' field in your User model
+    const ticketId = ticket._id; // Retrieve the ticket ID
+    const ticketLink = `https://supportdesk-1eot.onrender.com/ticket/${ticketId}`;
+
+    await transporter.sendMail({
+      from: 'helpdeskx1122@gmail.com', // Replace with your Gmail email address
+      to: userEmail,
+      subject: 'Ticket Created',
+      html: `<p style="text-align: left;">Dear ${user.name},</p>
+      <p style="text-align: left;">A request for support has been created and assigned (ID: ${ticketId})  A reppresentative will follow-up with you as soon as possible. You can <a href="${ticketLink}">link</a> to view this ticket's progress online</p>
+      <p style="text-align: left;">Best Regards,</p>`,
+    });
+    // Send email to the assignedTo user if provided
+    if (assignedToUser) {
+      const assignedToEmail = assignedToUser.email; // Assuming you have an 'email' field in your User model
+      await transporter.sendMail({
+        from: 'helpdeskx1122@gmail.com', // Replace with your Gmail email address
+        to: assignedToEmail,
+        subject: 'New Ticket Assignment',
+        html: `<p style="text-align: left;">Dear ${assignedToUser.name},</p>
+          <p style="text-align: left;">You have been assigned a new ticket (ID: ${ticketId}). Please click this <a href="${ticketLink}">link</a> to view the ticket.</p>
+          <p style="text-align: left;">Best Regards,</p>`,
+      });
+    }
+
+    // Rest of your code...
 
     res.status(201).json(ticket);
   } catch (error) {
@@ -436,6 +567,144 @@ const updateTicket = asyncHandler(async (req, res) => {
   }
 });
 
+const report = async (req, res) => {
+  try {
+    const notes = await Note.find().populate({
+      path: 'ticket',
+      populate: {
+        path: 'organization', // Populate the organization field in the Ticket model
+      },
+    });
+
+    const totalTimeSpentPerTicket = {};
+
+    // Iterate through the notes and calculate total time spent for each closed ticket in hours
+    for (const note of notes) {
+      const ticket = note.ticket; // Access the populated ticket details
+      const ticketId = ticket._id.toString(); // Convert ObjectId to string
+
+      // Check if the status is "close"
+      if (ticket.status === 'close') {
+        const timeEntries = note.timeEntries;
+
+        let totalSpent = 0;
+
+        timeEntries.forEach((entry) => {
+          const toTime = new Date(entry.toTime);
+          const fromTime = new Date(entry.fromTime);
+          const entryTimeSpent = toTime - fromTime;
+          totalSpent += entryTimeSpent;
+        });
+
+        if (!totalTimeSpentPerTicket[ticketId]) {
+          totalTimeSpentPerTicket[ticketId] = {
+            totalSpent: 0,
+            ticketDetails: ticket,
+          };
+        }
+
+        totalTimeSpentPerTicket[ticketId].totalSpent += totalSpent;
+      }
+    }
+
+    // Convert the result to hours and make it always positive
+    for (const ticketId in totalTimeSpentPerTicket) {
+      totalTimeSpentPerTicket[ticketId].totalSpent = Math.abs(totalTimeSpentPerTicket[ticketId].totalSpent / 3600000);
+    }
+
+    res.json(totalTimeSpentPerTicket);
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ error: 'An error occurred while calculating total time spent for closed tickets.' });
+  }
+};
+
+/*
+const report = async (req, res) => {
+  try {
+    const notes = await Note.find().populate('ticket'); // Use populate to join the Ticket model
+
+    const totalTimeSpentPerTicket = {};
+
+    // Iterate through the notes and calculate total time spent for each ticket in hours
+    notes.forEach((note) => {
+      const ticket = note.ticket; // Access the populated ticket details
+      const ticketId = ticket._id.toString(); // Convert ObjectId to string
+      const timeEntries = note.timeEntries;
+
+      let totalSpent = 0;
+
+      timeEntries.forEach((entry) => {
+        const toTime = new Date(entry.toTime);
+        const fromTime = new Date(entry.fromTime);
+        const entryTimeSpent = toTime - fromTime;
+        totalSpent += entryTimeSpent;
+      });
+
+      if (!totalTimeSpentPerTicket[ticketId]) {
+        totalTimeSpentPerTicket[ticketId] = {
+          totalSpent: 0,
+          ticketDetails: ticket,
+        };
+      }
+
+      totalTimeSpentPerTicket[ticketId].totalSpent += totalSpent;
+    });
+
+    // Convert the result to hours and make it always positive
+    for (const ticketId in totalTimeSpentPerTicket) {
+      totalTimeSpentPerTicket[ticketId].totalSpent = Math.abs(totalTimeSpentPerTicket[ticketId].totalSpent / 3600000);
+    }
+
+    res.json(totalTimeSpentPerTicket);
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ error: 'An error occurred while calculating total time spent for all tickets individually.' });
+  }
+};
+*/
+/*
+const report = async (req, res) => {
+  try {
+    const notes = await Note.find(); // Retrieve all notes from the database
+
+    const totalTimeSpentPerTicket = {};
+
+    // Iterate through the notes and calculate total time spent for each ticket in hours
+    notes.forEach((note) => {
+      const ticketId = note.ticket.toString(); // Convert ObjectId to string
+      const timeEntries = note.timeEntries;
+
+      let totalSpent = 0;
+
+      timeEntries.forEach((entry) => {
+        const toTime = new Date(entry.toTime);
+        const fromTime = new Date(entry.fromTime);
+        const entryTimeSpent = toTime - fromTime;
+        totalSpent += entryTimeSpent;
+      });
+
+      if (!totalTimeSpentPerTicket[ticketId]) {
+        totalTimeSpentPerTicket[ticketId] = 0;
+      }
+
+      totalTimeSpentPerTicket[ticketId] += totalSpent;
+    });
+
+    // Convert the result to hours and make it always positive
+    for (const ticketId in totalTimeSpentPerTicket) {
+      totalTimeSpentPerTicket[ticketId] = Math.abs(totalTimeSpentPerTicket[ticketId] / 3600000);
+    }
+
+    res.json(totalTimeSpentPerTicket);
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ error: 'An error occurred while calculating total time spent for all tickets individually.' });
+  }
+};
+
+*/
+
 module.exports = {
   getTickets,
   getTicketss,
@@ -444,6 +713,7 @@ module.exports = {
   getTicket,
   deleteTicket,
   updateTicket,
-  savetime
+  savetime,
+  report
  
 };

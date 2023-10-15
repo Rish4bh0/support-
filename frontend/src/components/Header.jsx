@@ -5,7 +5,7 @@ import { useSelector, useDispatch } from "react-redux";
 import { logout, reset } from "../features/auth/authSlice";
 
 
-import Logo from '../assets/dry.png';
+
 
 function Header() {
   const navigate = useNavigate();
@@ -22,7 +22,7 @@ function Header() {
     <header className="header">
       <div className="logo">
         <Link to="/">
-        <img src={Logo} alt="Your Logo" style={{ width: "100px", height: "100px" }} />
+        Logo
         </Link>
       </div>
       <ul>

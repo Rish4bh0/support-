@@ -1,16 +1,18 @@
 import React, { useEffect } from "react";
 import { AiOutlineMenu } from "react-icons/ai";
 import { BsChatLeft } from "react-icons/bs";
-import { RiLoginBoxLine, RiNotification3Line, RiRegisteredFill, RiRegisteredLine } from "react-icons/ri";
+import {
+  RiNotification3Line,
+} from "react-icons/ri";
 import { MdKeyboardArrowDown } from "react-icons/md";
 import { TooltipComponent } from "@syncfusion/ej2-react-popups";
-import { Chat, Notification, UserProfile } from ".";
 import { useStateContext } from "../contexts/ContextProvider";
 import { useSelector, useDispatch } from "react-redux";
-import { logout, reset } from "../features/auth/authSlice"; // Import your logout action
+import { logout, reset } from "../features/auth/authSlice"; 
 import { useNavigate } from "react-router-dom";
-import PersonAddIcon from '@mui/icons-material/PersonAdd';
-import LoginIcon from '@mui/icons-material/Login';
+import PersonAddIcon from "@mui/icons-material/PersonAdd";
+import LoginIcon from "@mui/icons-material/Login";
+import LogoutIcon from "@mui/icons-material/Logout";
 
 const NavButton = ({ title, customFunc, icon, color, dotColor }) => (
   <TooltipComponent content={title} position="BottomCenter">
@@ -30,25 +32,32 @@ const NavButton = ({ title, customFunc, icon, color, dotColor }) => (
 );
 
 const NavBar = () => {
-  const { activeMenu, setactiveMenu, handleClick, isClicked, setisClicked, screenSize, setscreenSize } = useStateContext();
-  
+  const {
+    activeMenu,
+    setactiveMenu,
+    handleClick,
+    isClicked,
+    setisClicked,
+    screenSize,
+    setscreenSize,
+  } = useStateContext();
+
   const handleLoginClick = () => {
     navigate("/login");
-  }
+  };
 
-
-  const  handleRegisterClick = () => {
+  const handleRegisterClick = () => {
     navigate("/register");
-  }
- 
+  };
+
   useEffect(() => {
     const handleResize = () => setscreenSize(window.innerWidth);
 
-    window.addEventListener('resize', handleResize);
+    window.addEventListener("resize", handleResize);
 
     handleResize();
 
-    return () => window.removeEventListener('resize', handleResize);
+    return () => window.removeEventListener("resize", handleResize);
   }, []);
 
   useEffect(() => {
@@ -56,7 +65,7 @@ const NavBar = () => {
       setactiveMenu(false);
     } //else {
     //  setactiveMenu(true);
-  //  }
+    //  }
   }, [screenSize]);
 
   const user = useSelector((state) => state.auth.user);
@@ -64,49 +73,55 @@ const NavBar = () => {
   const navigate = useNavigate();
 
   const onLogout = () => {
-    dispatch(logout()); 
+    dispatch(logout());
     dispatch(reset());
     navigate("/");
   };
 
   return (
     <div className="flex justify-between p-2 md:mx-6 relative">
+     <div className="mt-0.5">
       {user ? (
-      <NavButton
-        title="Menu"
-        customFunc={() => setactiveMenu((prevActiveMenu) => !prevActiveMenu)}
-        color="black"
-        icon={<AiOutlineMenu />}
-      />
+        <NavButton
+          title="Menu"
+          customFunc={() => setactiveMenu((prevActiveMenu) => !prevActiveMenu)}
+          color="black"
+          icon={<AiOutlineMenu />}
+        />
       ) : (
-
-<AiOutlineMenu className="text-white" />
-
-
-        )}
-      <div className="flex">
-      {user ? (
-        <NavButton
-          title="Chat"
-          dotColor="#03c9d7"
-          customFunc={() => handleClick("chat")}
-          color="black"
-          icon={<BsChatLeft />}
-        />
-        ) : null}
+        <AiOutlineMenu className="text-white" />
+      )}
+      </div>
+      <div className="flex ">
+        <div className="mt-2">
         {user ? (
-        <NavButton
-          title="Notifications"
-          dotColor="#03c9d7"
-          customFunc={() => handleClick("notification")}
-          color="black"
-          icon={<RiNotification3Line />}
-        />
+          <NavButton
+            title="Chat"
+            dotColor="#03c9d7"
+            customFunc={() => handleClick("chat")}
+            color="black"
+            icon={<BsChatLeft />}
+          />
         ) : null}
-       
-          {user ? (
-             <TooltipComponent content="Profile" position="BottomCenter">
-            <div className="flex items-center gap-2 cursor-pointer mt-1 p-1 hover-bg-light-gray rounded-lg" onClick={() => handleClick("userProfile")}>
+        </div>
+        <div className="mt-2">
+        {user ? (
+          <NavButton
+            title="Notifications"
+            dotColor="#03c9d7"
+            customFunc={() => handleClick("notification")}
+            color="black"
+            icon={<RiNotification3Line />}
+          />
+        ) : null}
+        
+        </div>
+        {user ? (
+          <TooltipComponent content="Profile" position="BottomCenter">
+            <div
+              className="flex items-center gap-2 cursor-pointer p-1 hover:bg-light-gray rounded-lg"
+              onClick={() => handleClick("userProfile")}
+            >
               <p>
                 <span className="text-gray-400 text-14">Hi, </span>{" "}
                 <span className="text-gray-400 font-bold ml-1 text-14">
@@ -114,31 +129,37 @@ const NavBar = () => {
                 </span>
               </p>
               <MdKeyboardArrowDown className="text-gray-400 text-14" />
-              <button onClick={onLogout}>Logout</button>
-            </div>
-            </TooltipComponent>
-          ) : (
-            <div className="flex items-center gap-2 cursor-pointer mt-1 p-1 hover-bg-light-gray rounded-lg" >
               <NavButton
-          title="Login"
-         // dotColor="#03c9d7"
-          color="black"
-          customFunc={handleLoginClick}
-          icon={<LoginIcon />}
-        />
-               <NavButton
-          title="Register"
-          //dotColor="#03c9d7"
-          color="black"
-          customFunc={handleRegisterClick}
-          icon={<PersonAddIcon/>}
-        />
+           title="Logout"
+           // dotColor="#03c9d7"
+           color="black"
+           customFunc={onLogout}
+           icon={<LogoutIcon />}
+         />
+              </div>
+             
               
-            </div>
-          )}
-        
+          </TooltipComponent>
+
+        ) : (
+          <div className="flex items-center gap-2 cursor-pointer mt-1 p-1 hover-bg-light-gray rounded-lg">
+            <NavButton
+              title="Login"
+              // dotColor="#03c9d7"
+              color="black"
+              customFunc={handleLoginClick}
+              icon={<LoginIcon />}
+            />
+            <NavButton
+              title="Register"
+              //dotColor="#03c9d7"
+              color="black"
+              customFunc={handleRegisterClick}
+              icon={<PersonAddIcon />}
+            />
+          </div>
+        )}
       </div>
-     
     </div>
   );
 };

@@ -6,6 +6,7 @@ const initialState = {
   ticketss: [],
   ticket: {},
   allTickets: [],
+  reports: [],
   isError: false,
   isSuccess: false,
   isLoading: false,
@@ -107,6 +108,20 @@ export const getAllTickets = createAsyncThunk(
       // Token is required for authentication
       const token = thunkAPI.getState().auth.user.token
       const allTickets = await ticketService.getAllTickets(token);
+      return allTickets;
+    } catch (error) {
+      return thunkAPI.rejectWithValue(error.message);
+    }
+  }
+);
+
+export const report = createAsyncThunk(
+  'tickets/report',
+  async (_, thunkAPI ) => {
+    try {
+      // Token is required for authentication
+      const token = thunkAPI.getState().auth.user.token
+      const allTickets = await ticketService.report(token);
       return allTickets;
     } catch (error) {
       return thunkAPI.rejectWithValue(error.message);
@@ -338,6 +353,18 @@ export const ticketSlice = createSlice({
         state.allTickets = action.payload;
       })
       .addCase(getAllTickets.rejected, (state, action) => {
+        state.isLoading = false;
+        state.isError = action.error.message;
+      })
+      .addCase(report.pending, (state) => {
+        state.isLoading = true;
+        state.isError = null;
+      })
+      .addCase(report.fulfilled, (state, action) => {
+        state.isLoading = false;
+        state.reports = action.payload;
+      })
+      .addCase(report.rejected, (state, action) => {
         state.isLoading = false;
         state.isError = action.error.message;
       })

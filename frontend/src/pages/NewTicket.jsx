@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import React,{ useState, useEffect } from "react";
 import { useSelector, useDispatch } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
@@ -99,7 +99,7 @@ function NewTicket() {
       customerContact,
       organization
     };
-
+    console.log(ticketData)
     dispatch(createTicket(ticketData));
   };
 /*
@@ -322,7 +322,7 @@ function NewTicket() {
           </div>
 
           <div className="form-group">
-            <button className="btn btn-block">Submit</button>
+            <button  className="btn btn-block">Submit</button>
           </div>
         </form>
       </section>
@@ -331,3 +331,5 @@ function NewTicket() {
 }
 
 export default NewTicket;
+
+

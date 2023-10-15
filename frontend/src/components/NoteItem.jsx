@@ -1,13 +1,19 @@
 import { useSelector } from "react-redux";
 
 function NoteItem({ note }) {
-  const { user } = useSelector((state) => state.auth);
+  const user = useSelector((state) => state.auth.users);
+  const userMap = {};
 
+  // Create a mapping of organization IDs to their names
+  user.forEach((user) => {
+    userMap[user._id] = user.name;
+  });
   const options = {
     weekday: "long",
     year: "numeric",
     month: "long",
     day: "numeric",
+    hour: '2-digit', minute: '2-digit'
   };
 
   return (
@@ -19,9 +25,13 @@ function NoteItem({ note }) {
       }}
     >
       <h4>
-        Note from {note.isStaff ? <span>Staff</span> : <span>{user.name}</span>}
+        Note from {note.isStaff ? <span>Staff</span> : <span>{note.user
+                    ? userMap[note.user]
+                    : "Unassigned"}</span>}
       </h4>
       <p>{note.text}</p>
+      <p>{new Date(note.toTime).toLocaleString("en-US", options)}</p>
+      <p>{new Date(note.fromTime).toLocaleString("en-US", options)}</p>
       <div className="note-date">
         {new Date(note.createdAt).toLocaleString("en-US", options)}
       </div>

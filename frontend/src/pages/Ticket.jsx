@@ -5,6 +5,7 @@ import {
   closeTicket,
   reviewTicket,
   saveElapsedTime,
+  report,
 } from "../features/tickets/ticketSlice";
 import {
   getNotes,
@@ -21,6 +22,12 @@ import { FaPlus } from "react-icons/fa";
 import { fetchAllUsers } from "../features/auth/authSlice";
 import { getAllIssueTypes } from "../features/issues/issueSlice";
 import { getAllOrganization } from "../features/organization/organizationSlice";
+import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
+import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
+import { DemoContainer } from '@mui/x-date-pickers/internals/demo';
+import { TimePicker } from '@mui/x-date-pickers/TimePicker';
+import { DataGrid } from "@mui/x-data-grid";
+
 
 const customStyles = {
   content: {
@@ -45,14 +52,11 @@ function Ticket() {
   const allowedRoles = ["ADMIN", "SUPERVISOR", "EMPLOYEE"];
 
   const allowedRolesReview = ["ADMIN", "SUPERVISOR"];
-  const options = {
-    weekday: "long",
-    year: "numeric",
-    month: "long",
-    day: "numeric",
-  };
+  
   const [modalIsOpen, setModalIsOpen] = useState(false);
-  const [noteText, setNoteText] = useState("");
+  const [text, settext] = useState("");
+  const [fromTimee, setfromTimee] = useState("");
+  const [toTimee, settoTimee] = useState("");
   const [isTimerRunning, setIsTimerRunning] = useState(false);
   const [elapsedTime, setElapsedTime] = useState(0);
   const [timerIntervalId, setTimerIntervalId] = useState(null);
@@ -63,6 +67,7 @@ function Ticket() {
   organizations.forEach((organization) => {
     organizationMap[organization._id] = organization.name;
   });
+
   // Define a function to start the timer
   const startTimer = () => {
     setIsTimerRunning(true);
@@ -136,6 +141,7 @@ function Ticket() {
 
     dispatch(getTicket(ticketId));
     dispatch(getNotes(ticketId));
+    dispatch(report());
     // eslint-disable-next-line
   }, [isError, message, ticketId]);
 
@@ -196,9 +202,27 @@ function Ticket() {
   // Create Note Submit
   const onNoteSubmit = (e) => {
     e.preventDefault();
-    dispatch(createNote({ ticketId, noteText }));
+    const toTime = new Date(toTimee);
+    const fromTime = new Date(fromTimee);
+    console.log(toTime, fromTime)
+
+    const timeEntries = [
+      {
+        fromTime,
+        toTime,
+      }
+    ];
+    const noteData ={
+      text,
+      timeEntries
+    }
+    console.log( noteData)
+    dispatch(createNote({ ticketId, noteData }));
     closeModal();
   };
+
+
+  
   const formatTime = (seconds) => {
     const hours = Math.floor(seconds / 3600);
     const minutes = Math.floor((seconds % 3600) / 60);
@@ -210,6 +234,49 @@ function Ticket() {
   };
 
   const formattedTimeSpent = formatTime(ticket.timeSpent);
+  const options = {
+    weekday: "long",
+    year: "numeric",
+    month: "long",
+    day: "numeric",
+    hour: '2-digit', minute: '2-digit'
+  };
+  
+  const columns = [
+    { field: "noteId", headerName: "Note ID", flex: 1 },
+    { field: "text", headerName: "text", flex: 1 },
+    {
+      field: "toTime",
+      headerName: "To Time",
+      flex: 3,
+      valueGetter: (params) => {
+        // Access "toTime" inside "timeEntries" array
+        const formattedTime = new Date(params.row.toTime[0].toTime).toLocaleString("en-US", options);
+        return formattedTime;
+      },
+    },
+    {
+      field: "fromTime",
+      headerName: "From Time",
+      flex: 3,
+      valueGetter: (params) => {
+        // Access "fromTime" inside "timeEntries" array
+        const formattedTime = new Date(params.row.fromTime[0].fromTime).toLocaleString("en-US", options);
+        return formattedTime;
+      },
+    },
+  ];
+  
+  // Map notes data to rows for the DataGrid
+  const rows = notes.map((note) => ({
+    id: note._id,
+    noteId: note._id,
+    text: note.text,
+    toTime: note.timeEntries,
+    fromTime: note.timeEntries,
+  }));
+  
+
   return (
     <div className="ticket-page">
       <header className="ticket-header">
@@ -263,34 +330,70 @@ function Ticket() {
             <FaPlus /> Add Note
           </button>
         )}
-      <Modal
-        isOpen={modalIsOpen}
-        onRequestClose={closeModal}
-        style={customStyles}
-        contentLabel="Add Note"
-      >
-        <h2>Add Note</h2>
-        <button className="btn-close" onClick={closeModal}>
-          X
-        </button>
-        <form onSubmit={onNoteSubmit}>
-          <div className="form-group">
-            <textarea
-              name="noteText"
-              id="noteText"
-              className="form-control"
-              placeholder="Note Text"
-              value={noteText}
-              onChange={(e) => setNoteText(e.target.value)}
-            ></textarea>
-          </div>
-          <div className="form-group">
-            <button className="btn" type="submit">
-              Submit
-            </button>
-          </div>
-        </form>
-      </Modal>
+
+     
+    <Modal
+      isOpen={modalIsOpen}
+      onRequestClose={closeModal}
+      style={customStyles} // Define your custom styles
+      contentLabel="Add Note"
+    >
+      <h2>Add Note</h2>
+      <button className="btn-close" onClick={closeModal}>
+        X
+      </button>
+      <form onSubmit={onNoteSubmit}>
+        <div className="form-group">
+          <label htmlFor="text">Text:</label>
+          <textarea
+            name="text"
+            id="text"
+            className="form-control"
+            placeholder="Text"
+            value={text}
+            onChange={(e) => settext(e.target.value)}
+          ></textarea>
+        </div>
+        <div className="form-group">
+          <label htmlFor="toTimee">To Time:</label>
+          <LocalizationProvider dateAdapter={AdapterDayjs}>
+            <DemoContainer components={['TimePicker']}>
+              <TimePicker
+                label="To Time"
+                value={toTimee}
+                onChange={(newToTime) => settoTimee(newToTime)}
+              />
+            </DemoContainer>
+          </LocalizationProvider>
+        </div>
+        <div className="form-group">
+          <label htmlFor="fromTimee">From Time:</label>
+          <LocalizationProvider dateAdapter={AdapterDayjs}>
+            <DemoContainer components={['TimePicker']}>
+              <TimePicker
+                label="From Time"
+                value={fromTimee}
+                onChange={(newFromTime) => setfromTimee(newFromTime)}
+              />
+            </DemoContainer>
+          </LocalizationProvider>
+        </div>
+        <div className="form-group">
+          <button className="btn" type="submit">
+            Submit
+          </button>
+        </div>
+      </form>
+        </Modal>
+        
+        <div style={{ height: 400, width: "100%" }}>
+      <DataGrid
+        rows={rows}
+        columns={columns}
+        pageSize={5} // You can adjust the number of rows per page
+      />
+    </div>
+     
 
       {notes && Array.isArray(notes) ? (
         notes.map((note) => <NoteItem key={note._id} note={note} />)

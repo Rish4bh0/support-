@@ -13,6 +13,7 @@ import {
 
 import "./Dashboard.css";
 import BackButton from "../components/BackButton.jsx";
+import Report from "./report.jsx";
 
 const Dashboard = () => {
   const dispatch = useDispatch();
@@ -129,7 +130,7 @@ const Dashboard = () => {
         </div>
 
       
-        <TicketTable tickets={closedTickets} />
+       <Report />
       </div>
     </>
   );

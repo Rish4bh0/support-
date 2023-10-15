@@ -118,11 +118,6 @@ function OrganizationList() {
                       <ModeEditIcon className="text-blue-500 group-hover:text-blue-700 mr-8" />
                     </button>
           </Link>
-          <Link to={`/organizations/${params.row.organizationId}`}>
-          <button className="group">
-                      <VisibilityIcon className="text-gray-500 group-hover:text-gray-700 mr-8" />
-                    </button>
-          </Link>
           <button
              className="group"
             onClick={() => handleDeleteOrganization(params.row.organizationId)}

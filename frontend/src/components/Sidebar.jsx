@@ -4,10 +4,11 @@ import { SiShopware } from "react-icons/si";
 import { MdOutlineCancel } from "react-icons/md";
 import { TooltipComponent } from "@syncfusion/ej2-react-popups";
 import { useStateContext } from "../contexts/ContextProvider";
-
+import Logo from "../assets/dryice-logo.png";
 
 const Sidebar = () => {
-  const { currentColor, activeMenu, setactiveMenu, screenSize } = useStateContext();
+  const { currentColor, activeMenu, setactiveMenu, screenSize } =
+    useStateContext();
   const handleCloseSideBar = () => {
     if (activeMenu && screenSize <= 900) {
       setactiveMenu(false);
@@ -37,7 +38,7 @@ const Sidebar = () => {
             mt-4 flex text-xl font-extrabold first-letter:tracking-tight dark:text-white
             text-slate-900"
             >
-              <SiShopware /> <span>DryIce Support</span>
+              <img src={Logo} alt="DryIce Logo" className="w-40 h-25 ml-10 mt-4" />
             </Link>
             <TooltipComponent content="Menu" position="BottomCenter">
               <button
@@ -63,10 +64,10 @@ const Sidebar = () => {
               </p>
 
               <NavLink
-                to={`/dashboard`}
+                to={`/dash`}
                 onClick={handleCloseSideBar}
                 style={({ isActive }) => ({
-                  backgroundColor: isActive ? currentColor : '',
+                  backgroundColor: isActive ? currentColor : "",
                 })}
                 className={({ isActive }) =>
                   isActive ? activeLink : normalLink
@@ -88,20 +89,20 @@ const Sidebar = () => {
                 to={`/tickets`}
                 onClick={handleCloseSideBar}
                 style={({ isActive }) => ({
-                  backgroundColor: isActive ? currentColor : '',
+                  backgroundColor: isActive ? currentColor : "",
                 })}
                 className={({ isActive }) =>
                   isActive ? activeLink : normalLink
                 }
               >
                 <SiShopware />
-                <span className="capitalize">My tickets</span>
+                <span className="capitalize">Tickets Assigned to me</span>
               </NavLink>
               <NavLink
                 to={`allticket`}
                 onClick={handleCloseSideBar}
                 style={({ isActive }) => ({
-                  backgroundColor: isActive ? currentColor : '',
+                  backgroundColor: isActive ? currentColor : "",
                 })}
                 className={({ isActive }) =>
                   isActive ? activeLink : normalLink
@@ -114,7 +115,7 @@ const Sidebar = () => {
                 to={`/org-ticket`}
                 onClick={handleCloseSideBar}
                 style={({ isActive }) => ({
-                  backgroundColor: isActive ? currentColor : '',
+                  backgroundColor: isActive ? currentColor : "",
                 })}
                 className={({ isActive }) =>
                   isActive ? activeLink : normalLink
@@ -124,17 +125,30 @@ const Sidebar = () => {
                 <span className="capitalize">My organization Tickets</span>
               </NavLink>
               <NavLink
-                to={`/ticketss`}
+                to={`/unassigned`}
                 onClick={handleCloseSideBar}
                 style={({ isActive }) => ({
-                  backgroundColor: isActive ? currentColor : '',
+                  backgroundColor: isActive ? currentColor : "",
                 })}
                 className={({ isActive }) =>
                   isActive ? activeLink : normalLink
                 }
               >
                 <SiShopware />
-                <span className="capitalize">Tickets Assigned to me</span>
+                <span className="capitalize">Unassigned Tickets</span>
+              </NavLink>
+              <NavLink
+                to={`/ticketss`}
+                onClick={handleCloseSideBar}
+                style={({ isActive }) => ({
+                  backgroundColor: isActive ? currentColor : "",
+                })}
+                className={({ isActive }) =>
+                  isActive ? activeLink : normalLink
+                }
+              >
+                <SiShopware />
+                <span className="capitalize">My tickets</span>
               </NavLink>
             </div>
             <div>
@@ -149,7 +163,7 @@ const Sidebar = () => {
                 to={`/createuser`}
                 onClick={handleCloseSideBar}
                 style={({ isActive }) => ({
-                  backgroundColor: isActive ? currentColor : '',
+                  backgroundColor: isActive ? currentColor : "",
                 })}
                 className={({ isActive }) =>
                   isActive ? activeLink : normalLink
@@ -162,7 +176,7 @@ const Sidebar = () => {
                 to={`/organizations`}
                 onClick={handleCloseSideBar}
                 style={({ isActive }) => ({
-                  backgroundColor: isActive ? currentColor : '',
+                  backgroundColor: isActive ? currentColor : "",
                 })}
                 className={({ isActive }) =>
                   isActive ? activeLink : normalLink
@@ -175,7 +189,7 @@ const Sidebar = () => {
                 to={`/issues`}
                 onClick={handleCloseSideBar}
                 style={({ isActive }) => ({
-                  backgroundColor: isActive ? currentColor : '',
+                  backgroundColor: isActive ? currentColor : "",
                 })}
                 className={({ isActive }) =>
                   isActive ? activeLink : normalLink
@@ -188,7 +202,7 @@ const Sidebar = () => {
                 to={`/new-ticket`}
                 onClick={handleCloseSideBar}
                 style={({ isActive }) => ({
-                  backgroundColor: isActive ? currentColor : '',
+                  backgroundColor: isActive ? currentColor : "",
                 })}
                 className={({ isActive }) =>
                   isActive ? activeLink : normalLink
@@ -210,7 +224,7 @@ const Sidebar = () => {
                 to={`/organization`}
                 onClick={handleCloseSideBar}
                 style={({ isActive }) => ({
-                  backgroundColor: isActive ? currentColor : '',
+                  backgroundColor: isActive ? currentColor : "",
                 })}
                 className={({ isActive }) =>
                   isActive ? activeLink : normalLink

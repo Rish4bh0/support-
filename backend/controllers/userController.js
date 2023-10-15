@@ -178,7 +178,7 @@ const resetPassword = asyncHandler(async (req, res) => {
 });
 
 const createUser = asyncHandler(async (req, res) => {
-  const { name, email, password, role, organization } = req.body; // Add 'organizationId' to the destructuring
+  const { name, email, password, role, organization } = req.body; 
 
   // Validation
   if (!name || !email || !password ) {

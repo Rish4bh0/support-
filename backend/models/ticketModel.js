@@ -16,17 +16,16 @@ const ticketSchema = mongoose.Schema(
     },
     user: {
       type: mongoose.Schema.Types.ObjectId,
-      required: true,
+
       ref: 'User',
     },
     assignedTo: {
       type: mongoose.Schema.Types.ObjectId,
-      required: true,
       ref: 'User',
     },
     product: {
       type: String,
-      required: [true, 'Please select a product'],
+      //required: [true, 'Please select a product'],
       enum: [
         'Ecommerce',
         'Employee management system',
@@ -36,12 +35,12 @@ const ticketSchema = mongoose.Schema(
     },
     priority: {
       type: String,
-      required: [true, 'Please select a priority type'],
+     // required: [true, 'Please select a priority type'],
       enum: ['High', 'Low'],
     },
     issueType: {
       type: mongoose.Schema.Types.ObjectId,
-      required: true,
+    //  required: true,
       ref: 'issueType',
     },
     description: {

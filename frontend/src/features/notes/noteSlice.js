@@ -58,7 +58,7 @@ export const getNotes = createAsyncThunk(
  */
 export const createNote = createAsyncThunk(
   'notes/create',
-  async ({ noteText, ticketId }, thunkAPI) => {
+  async ({ noteData, ticketId }, thunkAPI) => {
     /**
      * thunkAPI: an object containing all of the parameters
      * that are normally passed to a Redux thunk function,
@@ -67,7 +67,7 @@ export const createNote = createAsyncThunk(
     try {
       // Token is required for authentication
       const token = thunkAPI.getState().auth.user.token
-      return await noteService.createNote(noteText, ticketId, token)
+      return await noteService.createNote(noteData, ticketId, token)
     } catch (error) {
       const message =
         (error.response &&
