@@ -1,68 +1,161 @@
-import React from 'react';
-import { GoAlert } from 'react-icons/go';
-import { IoIosMore } from 'react-icons/io';
-import { DropDownListComponent } from '@syncfusion/ej2-react-dropdowns';
+import React, { useEffect, useState } from "react";
+import { GoAlert } from "react-icons/go";
+import { IoIosMore } from "react-icons/io";
+import { DropDownListComponent } from "@syncfusion/ej2-react-dropdowns";
 
-import { Stacked, Pie, Button, LineChart, SparkLine } from '../components';
-import { earningData, medicalproBranding, recentTransactions, weeklyStats, dropdownData, SparklineAreaData, ecomPieChartData } from '../data/dummy';
-import { useStateContext } from '../contexts/ContextProvider';
-import product9 from '../data/product9.jpg';
-import Report from './report';
+import { Stacked, Pie, Button, LineChart, SparkLine } from "../components";
+import {
+  earningData,
+  medicalproBranding,
+  recentTransactions,
+  weeklyStats,
+  dropdownData,
+  SparklineAreaData,
+  ecomPieChartData,
+} from "../data/dummy";
+import { useStateContext } from "../contexts/ContextProvider";
+import product9 from "../data/product9.jpg";
+import Report from "./report";
+import { getAllTickets, getTickets } from "../features/tickets/ticketSlice";
+import { useDispatch } from "react-redux";
+import ConfirmationNumberIcon from '@mui/icons-material/ConfirmationNumber';
 
 const DropDown = ({ currentMode }) => (
   <div className="w-28 border-1 border-color px-2 py-1 rounded-md">
-    <DropDownListComponent id="time" fields={{ text: 'Time', value: 'Id' }} style={{ border: 'none', color: (currentMode === 'Dark') && 'white' }} value="1" dataSource={dropdownData} popupHeight="220px" popupWidth="120px" />
+    <DropDownListComponent
+      id="time"
+      fields={{ text: "Time", value: "Id" }}
+      style={{ border: "none", color: currentMode === "Dark" && "white" }}
+      value="1"
+      dataSource={dropdownData}
+      popupHeight="220px"
+      popupWidth="120px"
+    />
   </div>
 );
 
 const Ecommerce = () => {
   const { currentColor, currentMode } = useStateContext();
+  const [newTicketsCount, setNewTicketsCount] = useState(0);
+  const [openTicketsCount, setOpenTicketsCount] = useState(0);
+  const [reviewTicketsCount, setReviewTicketsCount] = useState(0);
+  const [closedTicketsCount, setClosedTicketsCount] = useState(0);
+  const [allTicketsCount, setAllTicketsCount] = useState(0);
+  const dispatch = useDispatch();
+  useEffect(() => {
+    dispatch(getTickets());
+  }, [dispatch]);
+
+  useEffect(() => {
+    dispatch(getAllTickets()).then((response) => {
+      if (response.payload) {
+        setAllTicketsCount(response.payload.length);
+        setNewTicketsCount(
+          response.payload.filter((ticket) => ticket.status === "new").length
+        );
+        setOpenTicketsCount(
+          response.payload.filter((ticket) => ticket.status === "open").length
+        );
+        setReviewTicketsCount(
+          response.payload.filter((ticket) => ticket.status === "review").length
+        );
+        setClosedTicketsCount(
+          response.payload.filter((ticket) => ticket.status === "close").length
+        ); // Fixed status typo
+      }
+    });
+  });
 
   return (
-    <div className="mt-24">
+    <div className="mt-24 mr-20">
       <div className="flex flex-wrap lg:flex-nowrap justify-center ">
         <div className="bg-white dark:text-gray-200 dark:bg-secondary-dark-bg h-44 rounded-xl w-full lg:w-80 p-8 pt-9 m-3 bg-hero-pattern bg-no-repeat bg-cover bg-center">
           <div className="flex justify-between items-center">
             <div>
-              <p className="font-bold text-gray-400">Earnings</p>
-              <p className="text-2xl">$63,448.78</p>
+              <p className="font-bold text-gray-400">All Ticket</p>
+              <p className="text-2xl">{allTicketsCount}</p>
             </div>
             <button
               type="button"
               style={{ backgroundColor: currentColor }}
               className="text-2xl opacity-0.9 text-white hover:drop-shadow-xl rounded-full  p-4"
-            >
-              
-            </button>
+            ></button>
           </div>
           <div className="mt-6">
-            <Button
-              color="white"
-              bgColor={currentColor}
-              text="Download"
-              borderRadius="10px"
-            />
+            
           </div>
         </div>
         <div className="flex m-3 flex-wrap justify-center gap-1 items-center">
-          {earningData.map((item) => (
-            <div key={item.title} className="bg-white h-44 dark:text-gray-200 dark:bg-secondary-dark-bg md:w-56  p-4 pt-9 rounded-2xl ">
-              <button
-                type="button"
-                style={{ color: item.iconColor, backgroundColor: item.iconBg }}
-                className="text-2xl opacity-0.9 rounded-full  p-4 hover:drop-shadow-xl"
-              >
-                {item.icon}
-              </button>
-              <p className="mt-3">
-                <span className="text-lg font-semibold">{item.amount}</span>
-                <span className={`text-sm text-${item.pcColor} ml-2`}>
-                  {item.percentage}
-                </span>
-              </p>
-              <p className="text-sm text-gray-400  mt-1">{item.title}</p>
-            </div>
-          ))}
+          <div className="bg-white h-44 dark:text-gray-200 dark:bg-secondary-dark-bg md:w-56 p-4 pt-9 rounded-2xl">
+            <button
+              type="button"
+              style={{ backgroundColor: currentColor }}
+              className="text-2xl opacity-0.9 text-white hover:drop-shadow-xl rounded-full  p-4"
+            >
+              <ConfirmationNumberIcon/>
+            </button>
+            <p className="mt-3">
+              <span className="text-lg font-semibold">{newTicketsCount}</span>
+              <span className={`text-sm text-14 ml-2`}>
+                40%
+              </span>
+            </p>
+            <p className="text-sm text-gray-400 mt-1">New Ticket</p>
+          </div>
+        </div>
+        <div className="flex m-3 flex-wrap justify-center gap-1 items-center">
+          <div className="bg-white h-44 dark:text-gray-200 dark:bg-secondary-dark-bg md:w-56 p-4 pt-9 rounded-2xl">
+            <button
+             type="button"
+             style={{ backgroundColor: currentColor }}
+             className="text-2xl opacity-0.9 text-white hover:drop-shadow-xl rounded-full  p-4"
+            >
+              <ConfirmationNumberIcon/>
+            </button>
+            <p className="mt-3">
+              <span className="text-lg font-semibold">{openTicketsCount}</span>
+              <span className={`text-sm text-14 ml-2`}>
+                50%
+              </span>
+            </p>
+            <p className="text-sm text-gray-400 mt-1">Open Ticket</p>
+          </div>
+        </div>
+        <div className="flex m-3 flex-wrap justify-center gap-1 items-center">
+          <div className="bg-white h-44 dark:text-gray-200 dark:bg-secondary-dark-bg md:w-56 p-4 pt-9 rounded-2xl">
+            <button
+             type="button"
+             style={{ backgroundColor: currentColor }}
+             className="text-2xl opacity-0.9 text-white hover:drop-shadow-xl rounded-full  p-4"
+            >
+              <ConfirmationNumberIcon/>
+            </button>
+            <p className="mt-3">
+              <span className="text-lg font-semibold">{reviewTicketsCount}</span>
+              <span className={`text-sm text-14 ml-2`}>
+                10%
+              </span>
+            </p>
+            <p className="text-sm text-gray-400 mt-1">Tickets in review</p>
+          </div>
+        </div>
+        <div className="flex m-3 flex-wrap justify-center gap-1 items-center">
+          <div className="bg-white h-44 dark:text-gray-200 dark:bg-secondary-dark-bg md:w-56 p-4 pt-9 rounded-2xl">
+            <button
+              type="button"
+              style={{ backgroundColor: currentColor }}
+              className="text-2xl opacity-0.9 text-white hover:drop-shadow-xl rounded-full  p-4"
+            >
+              <ConfirmationNumberIcon/>
+            </button>
+            <p className="mt-3">
+              <span className="text-lg font-semibold">{closedTicketsCount}</span>
+              <span className={`text-sm text-14 ml-2`}>
+                20%
+              </span>
+            </p>
+            <p className="text-sm text-gray-400 mt-1">Closed Ticket</p>
+          </div>
         </div>
       </div>
 
@@ -103,7 +196,15 @@ const Ecommerce = () => {
               </div>
 
               <div className="mt-5">
-                <SparkLine currentColor={currentColor} id="line-sparkLine" type="Line" height="80px" width="250px" data={SparklineAreaData} color={currentColor} />
+                <SparkLine
+                  currentColor={currentColor}
+                  id="line-sparkLine"
+                  type="Line"
+                  height="80px"
+                  width="250px"
+                  data={SparklineAreaData}
+                  color={currentColor}
+                />
               </div>
               <div className="mt-10">
                 <Button
@@ -128,13 +229,23 @@ const Ecommerce = () => {
               <p className="font-semibold text-white text-2xl">Earnings</p>
 
               <div>
-                <p className="text-2xl text-white font-semibold mt-8">$63,448.78</p>
+                <p className="text-2xl text-white font-semibold mt-8">
+                  $63,448.78
+                </p>
                 <p className="text-gray-200">Monthly revenue</p>
               </div>
             </div>
 
             <div className="mt-4">
-              <SparkLine currentColor={currentColor} id="column-sparkLine" height="100px" type="Column" data={SparklineAreaData} width="320" color="rgb(242, 252, 253)" />
+              <SparkLine
+                currentColor={currentColor}
+                id="column-sparkLine"
+                height="100px"
+                type="Column"
+                data={SparklineAreaData}
+                width="320"
+                color="rgb(242, 252, 253)"
+              />
             </div>
           </div>
 
@@ -145,7 +256,12 @@ const Ecommerce = () => {
             </div>
 
             <div className="w-40">
-              <Pie id="pie-chart" data={ecomPieChartData} legendVisiblity={false} height="160px" />
+              <Pie
+                id="pie-chart"
+                data={ecomPieChartData}
+                legendVisiblity={false}
+                height="160px"
+              />
             </div>
           </div>
         </div>

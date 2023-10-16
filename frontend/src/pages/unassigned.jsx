@@ -8,25 +8,29 @@ import { getAllIssueTypes } from "../features/issues/issueSlice";
 import { getAllOrganization } from "../features/organization/organizationSlice";
 import { DataGrid } from "@mui/x-data-grid";
 import { makeStyles } from "@mui/styles";
+import { Link } from "react-router-dom";
+import ModeEditIcon from "@mui/icons-material/ModeEdit";
+
 
 const useStyles = makeStyles({
-  highPriority: {
+  highPriorityy: {
     backgroundColor: "#ff0000",
     color: "#fff",
   },
-  lowPriority: {
+  lowPriorityy: {
     backgroundColor: "#00ff00",
     color: "#000",
   },
-  openStatus: {
+  openStatusy: {
     backgroundColor: "#ff0000",
     color: "#fff",
   },
-  closedStatus: {
+  closedStatusy: {
     backgroundColor: "#00ff00",
     color: "#000",
   },
 });
+
 
 function UnassignedTickets() {
   const { allTickets, isLoading } = useSelector((state) => state.tickets);
@@ -78,7 +82,6 @@ function UnassignedTickets() {
   }));
 
   const columns = [
-    { field: "date", headerName: "Date", flex: 1 },
     { field: "product", headerName: "Product", flex: 1 },
     { field: "assignedTo", headerName: "Assigned To", flex: 1 },
     {
@@ -116,6 +119,21 @@ function UnassignedTickets() {
       },
     
     { field: "organization", headerName: "Organization", flex: 1 },
+    {
+      field: "actions",
+      headerName: "Action",
+      flex: 1,
+      renderCell: (params) => (
+        <div>
+           <Link to={`/ticket/${params.row.id}/update`}>
+          <button className="group">
+            <ModeEditIcon className="text-blue-500 group-hover:text-blue-700 mr-8" />
+          </button>
+        </Link>
+
+        </div>
+      ),
+    },
   ];
 
   return (

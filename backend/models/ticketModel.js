@@ -2,6 +2,10 @@ const mongoose = require('mongoose')
 
 const ticketSchema = mongoose.Schema(
   {
+    title: {
+      type: String,
+
+    },
     customerName: {
       type: String,
 

@@ -8,7 +8,7 @@ export default function Footer() {
     <>
       <footer className="relative bg-blueGray-200 pt-8 pb-6">
         <div
-          className="bottom-auto top-0 left-0 right-0 w-full absolute pointer-events-none overflow-hidden -mt-20 h-20"
+          className="bottom-auto top-0 left-0 right-0 w-50% absolute pointer-events-none overflow-hidden -mt-20 h-20"
           style={{ transform: "translateZ(0)" }}
         >
           <svg

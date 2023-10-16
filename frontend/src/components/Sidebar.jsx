@@ -5,6 +5,19 @@ import { MdOutlineCancel } from "react-icons/md";
 import { TooltipComponent } from "@syncfusion/ej2-react-popups";
 import { useStateContext } from "../contexts/ContextProvider";
 import Logo from "../assets/dryice-logo.png";
+import DashboardIcon from '@mui/icons-material/Dashboard';
+import ConfirmationNumberIcon from '@mui/icons-material/ConfirmationNumber';
+import AssignmentTurnedInIcon from '@mui/icons-material/AssignmentTurnedIn';
+import AssignmentLateIcon from '@mui/icons-material/AssignmentLate';
+import ListAltIcon from '@mui/icons-material/ListAlt';
+import CorporateFareIcon from '@mui/icons-material/CorporateFare';
+import AssignmentIndIcon from '@mui/icons-material/AssignmentInd';
+import PersonAddIcon from '@mui/icons-material/PersonAdd';
+import DomainAddIcon from '@mui/icons-material/DomainAdd';
+import AddCircleIcon from '@mui/icons-material/AddCircle';
+import RoomPreferencesIcon from '@mui/icons-material/RoomPreferences';
+import { useSelector } from "react-redux";
+
 
 const Sidebar = () => {
   const { currentColor, activeMenu, setactiveMenu, screenSize } =
@@ -18,6 +31,12 @@ const Sidebar = () => {
     "flex items-center gap-5 pl-4 pt-3 pb-2.5 rounded-lg text-white text-md m-2";
   const normalLink =
     "flex items-center gap-5 pl-4 pt-3 pb-2.5 rounded-lg text-md text-gray-700 dark:text-gray-200 dark:hover:text-black hover:bg-light-gray m-2";
+// Access the user's role from Redux state
+const userRole = useSelector((state) => state.auth.user?.role);
+
+// Define an array of roles that should see the "Dashboard" link
+const allowedRoles = ["ADMIN", "SUPERVISOR", "EMPLOYEE"];
+const allowedRolesOrg = ["ADMIN", "SUPERVISOR", "EMPLOYEE", "ORGAGENT"];
 
   return (
     <div
@@ -55,6 +74,7 @@ const Sidebar = () => {
             </TooltipComponent>
           </div>
           <div className="mt-10">
+          {(userRole && allowedRoles.includes(userRole)) && (
             <div>
               <p
                 className="text-gray-400 m-3
@@ -73,8 +93,31 @@ const Sidebar = () => {
                   isActive ? activeLink : normalLink
                 }
               >
-                <SiShopware />
+                <DashboardIcon />
                 <span className="capitalize">Analytics</span>
+              </NavLink>
+            </div>
+            )}
+            <div>
+              <p
+                className="text-gray-400 m-3
+                mt-4 uppercase"
+              >
+                New
+              </p>
+
+              <NavLink
+                to={`/new-ticket`}
+                onClick={handleCloseSideBar}
+                style={({ isActive }) => ({
+                  backgroundColor: isActive ? currentColor : "",
+                })}
+                className={({ isActive }) =>
+                  isActive ? activeLink : normalLink
+                }
+              >
+                <ConfirmationNumberIcon  />
+                <span className="capitalize">Create Ticket</span>
               </NavLink>
             </div>
             <div>
@@ -84,7 +127,8 @@ const Sidebar = () => {
               >
                 Tickets
               </p>
-
+              {(userRole && allowedRoles.includes(userRole)) && (
+                <>
               <NavLink
                 to={`/tickets`}
                 onClick={handleCloseSideBar}
@@ -95,8 +139,8 @@ const Sidebar = () => {
                   isActive ? activeLink : normalLink
                 }
               >
-                <SiShopware />
-                <span className="capitalize">Tickets Assigned to me</span>
+                <AssignmentTurnedInIcon />
+                <span className="capitalize">Assigned</span>
               </NavLink>
               <NavLink
                 to={`allticket`}
@@ -108,22 +152,10 @@ const Sidebar = () => {
                   isActive ? activeLink : normalLink
                 }
               >
-                <SiShopware />
-                <span className="capitalize">All tickets</span>
+                <ListAltIcon />
+                <span className="capitalize">All </span>
               </NavLink>
-              <NavLink
-                to={`/org-ticket`}
-                onClick={handleCloseSideBar}
-                style={({ isActive }) => ({
-                  backgroundColor: isActive ? currentColor : "",
-                })}
-                className={({ isActive }) =>
-                  isActive ? activeLink : normalLink
-                }
-              >
-                <SiShopware />
-                <span className="capitalize">My organization Tickets</span>
-              </NavLink>
+              
               <NavLink
                 to={`/unassigned`}
                 onClick={handleCloseSideBar}
@@ -134,9 +166,11 @@ const Sidebar = () => {
                   isActive ? activeLink : normalLink
                 }
               >
-                <SiShopware />
-                <span className="capitalize">Unassigned Tickets</span>
+                <AssignmentLateIcon />
+                <span className="capitalize">Unassigned</span>
               </NavLink>
+              </>
+              )}
               <NavLink
                 to={`/ticketss`}
                 onClick={handleCloseSideBar}
@@ -147,16 +181,18 @@ const Sidebar = () => {
                   isActive ? activeLink : normalLink
                 }
               >
-                <SiShopware />
-                <span className="capitalize">My tickets</span>
+                <AssignmentIndIcon />
+                <span className="capitalize">Tickets created by me</span>
               </NavLink>
             </div>
+            {(userRole && allowedRoles.includes(userRole)) && (
+             
             <div>
               <p
                 className="text-gray-400 m-3
                 mt-4 uppercase"
               >
-                New
+                Manage
               </p>
 
               <NavLink
@@ -169,8 +205,8 @@ const Sidebar = () => {
                   isActive ? activeLink : normalLink
                 }
               >
-                <SiShopware />
-                <span className="capitalize">Add user</span>
+                <PersonAddIcon />
+                <span className="capitalize">User</span>
               </NavLink>
               <NavLink
                 to={`/organizations`}
@@ -182,8 +218,8 @@ const Sidebar = () => {
                   isActive ? activeLink : normalLink
                 }
               >
-                <SiShopware />
-                <span className="capitalize">Add organization</span>
+                <DomainAddIcon />
+                <span className="capitalize">Organization</span>
               </NavLink>
               <NavLink
                 to={`/issues`}
@@ -195,23 +231,12 @@ const Sidebar = () => {
                   isActive ? activeLink : normalLink
                 }
               >
-                <SiShopware />
-                <span className="capitalize">Add issue</span>
-              </NavLink>
-              <NavLink
-                to={`/new-ticket`}
-                onClick={handleCloseSideBar}
-                style={({ isActive }) => ({
-                  backgroundColor: isActive ? currentColor : "",
-                })}
-                className={({ isActive }) =>
-                  isActive ? activeLink : normalLink
-                }
-              >
-                <SiShopware />
-                <span className="capitalize">Create Ticket</span>
+                <AddCircleIcon />
+                <span className="capitalize">Issue</span>
               </NavLink>
             </div>
+            )}
+             {(userRole && allowedRolesOrg.includes(userRole)) && (
             <div>
               <p
                 className="text-gray-400 m-3
@@ -230,10 +255,25 @@ const Sidebar = () => {
                   isActive ? activeLink : normalLink
                 }
               >
-                <SiShopware />
+                <RoomPreferencesIcon />
                 <span className="capitalize">My Organization</span>
               </NavLink>
+              <NavLink
+                to={`/org-ticket`}
+                onClick={handleCloseSideBar}
+                style={({ isActive }) => ({
+                  backgroundColor: isActive ? currentColor : "",
+                })}
+                className={({ isActive }) =>
+                  isActive ? activeLink : normalLink
+                }
+              >
+                <CorporateFareIcon />
+                <span className="capitalize">Organization Tickets</span>
+              </NavLink>
             </div>
+            
+            )}
           </div>
         </>
       )}

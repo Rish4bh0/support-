@@ -220,7 +220,8 @@ const createTicket = asyncHandler(async (req, res) => {
     customerEmail,
     customerContact,
     organization,
-    media, // Expect an array of mixed media data (images and videos)
+    media,
+    title // Expect an array of mixed media data (images and videos)
   } = req.body;
 /*
   if (!product || !priority || !issueType || !description) {
@@ -299,7 +300,8 @@ const createTicket = asyncHandler(async (req, res) => {
       user: req.user.id,
       status: "new",
       media: mediaPromises,
-      organization: org ? org._id : null, // Set to null if not provided
+      organization: org ? org._id : null,
+      title
     });
 
     

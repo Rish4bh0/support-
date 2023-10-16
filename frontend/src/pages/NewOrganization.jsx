@@ -53,14 +53,14 @@ function OrganizationList() {
   }
 
   const columns = [
-    { field: "id", headerName: "Organization ID", width: 200 },
-    { field: "name", headerName: "Organization name", width: 200 },
-    { field: "email", headerName: "Organization email", width: 200 },
-    { field: "contact", headerName: "Organization contact", width: 200 },
+    { field: "id", headerName: "Organization ID", flex: 1},
+    { field: "name", headerName: "Organization name", flex: 1 },
+    { field: "email", headerName: "Organization email", flex: 1 },
+    { field: "contact", headerName: "Organization contact", flex: 1 },
     {
       field: "actions",
       headerName: "Action",
-      width: 200,
+      flex: 1,
       renderCell: (params) => (
         <div>
           <Link to={`/organization/${params.row.id}`}>
