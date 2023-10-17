@@ -181,7 +181,7 @@ const uniqueProductTypes = [...new Set(allTickets.map((ticket) => ticket.product
 const totalUniqueProducts = uniqueProductTypes.length;
 
   const options = {
-    weekday: "long",
+  //  weekday: "long",
     year: "numeric",
     month: "long",
     day: "numeric",
@@ -198,14 +198,14 @@ const totalUniqueProducts = uniqueProductTypes.length;
   const columns = [
     { field: "ticketId", headerName: "Ticket ID", flex: 0.7 },
     { field: "name", headerName: "Organization", flex: 0.7 },
-    { field: "product", headerName: "Project", flex: 1 },
-    { field: "payment", headerName: "Payment", flex: 1},
+    { field: "product", headerName: "Project", flex: 1.5 },
+    { field: "payment", headerName: "Payment Type", flex: 0.7},
     { field: "totalSpent", headerName: "Hours Spent", flex: 1 },
     { field: "status", headerName: "Status", flex: 0.5 },
     {
       field: "createdAt",
       headerName: "Created At",
-      flex: 1.5,
+      flex: 1.1,
       valueGetter: (params) => {
         const formattedTime = new Date(params.row.createdAt).toLocaleString(
           "en-US",
@@ -217,7 +217,7 @@ const totalUniqueProducts = uniqueProductTypes.length;
     {
       field: "closedAt",
       headerName: "Closed At",
-      flex: 1.5,
+      flex: 1.1,
       valueGetter: (params) => {
         const formattedTime = new Date(params.row.closedAt).toLocaleString(
           "en-US",
