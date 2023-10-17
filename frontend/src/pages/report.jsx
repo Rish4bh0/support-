@@ -198,7 +198,7 @@ const totalUniqueProducts = uniqueProductTypes.length;
   const columns = [
     { field: "ticketId", headerName: "Ticket ID", flex: 0.7 },
     { field: "name", headerName: "Organization", flex: 0.7 },
-    { field: "product", headerName: "Product", flex: 1 },
+    { field: "product", headerName: "Project", flex: 1 },
     { field: "payment", headerName: "Payment", flex: 1},
     { field: "totalSpent", headerName: "Hours Spent", flex: 1 },
     { field: "status", headerName: "Status", flex: 0.5 },
@@ -268,7 +268,7 @@ const totalUniqueProducts = uniqueProductTypes.length;
             />
           </div>
           <div>
-            <label className="block text-gray-700">Product Filter</label>
+            <label className="block text-gray-700">Project Filter</label>
             <Select
               value={selectedProduct}
               onChange={(e) => setSelectedProduct(e.target.value)}
