@@ -18,6 +18,15 @@ import DeleteIcon from "@mui/icons-material/Delete";
 import ModeEditIcon from "@mui/icons-material/ModeEdit";
 import ViewListIcon from "@mui/icons-material/ViewList";
 import VisibilityIcon from '@mui/icons-material/Visibility';
+import {
+
+  Grid,
+  Select,
+  MenuItem,
+  FormControl,
+  InputLabel,
+
+} from "@mui/material";
 
 
 function OrganizationList() {
@@ -32,6 +41,7 @@ function OrganizationList() {
   const [email, setEmail] = useState("");
   const [contact, setContact] = useState("");
   const [description, setDescription] = useState("");
+  const [payment, setPayment] = useState("");
   const dispatch = useDispatch();
   const navigate = useNavigate();
 
@@ -55,7 +65,7 @@ function OrganizationList() {
   // Function to handle form submission for creating a new organization
   const handleCreateOrganization = (e) => {
     e.preventDefault();
-    dispatch(createOrganization({ name, email, contact, description }));
+    dispatch(createOrganization({ name, email, contact, description, payment }));
 
     // Clear the input fields after creating the organization
     setNewOrganizationName("");
@@ -238,6 +248,33 @@ function OrganizationList() {
                 onChange={(e) => setDescription(e.target.value)}
               />
             </div>
+            <Grid item xs={6}>
+            <FormControl fullWidth>
+              <InputLabel htmlFor="payment">Payment Type</InputLabel>
+              <Select
+                name="payment"
+                id="payment"
+                value={payment}
+                onChange={(e) => setPayment(e.target.value)}
+              >
+                <MenuItem value="Paid">
+                Paid
+                </MenuItem>
+                <MenuItem value="Paid Amc">
+                Paid Amc
+                </MenuItem>
+                <MenuItem value="Free support">
+                Free support
+                </MenuItem>
+                <MenuItem value="Free support period under AMC">
+                Free support period under AMC
+                </MenuItem>
+                <MenuItem value="Support contract">
+                Support contract
+                </MenuItem>
+              </Select>
+            </FormControl>
+          </Grid>
             <div className="form-group">
               <Button type="submit" variant="contained" color="primary">
                 Create Organization

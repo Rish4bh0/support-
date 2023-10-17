@@ -42,6 +42,8 @@ function IssueList() {
     }
     if (isSuccess) {
       dispatch(reset());
+      toast.success("Issue added")
+      dispatch(getAllIssueTypes());
     }
   }, [dispatch, isError, isSuccess, message]);
 

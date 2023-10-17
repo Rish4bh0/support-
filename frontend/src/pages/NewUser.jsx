@@ -56,6 +56,8 @@ function UserList() {
     }
     if (isSuccess) {
       dispatch(reset());
+      toast.success('User added')
+      dispatch(fetchAllUsers());
     }
   }, [dispatch, isError, isSuccess, message]);
 

@@ -19,18 +19,17 @@ function Home() {
         <container>
           <div className="relative pt-36 ml-auto">
             <div className="lg:w-2/3 text-center mx-auto">
-            <h1 className="text-gray-900 dark:text-white font-bold text-5xl md:text-6xl xl:text-7xl">
-  Streamlining Customer Support with{" "}
-  <span className="text-primary dark:text-white">
-    Imagination and Innovation.
-  </span>
-</h1>
-<p className="mt-8 text-gray-700 dark:text-gray-300">
-  Welcome to our cutting-edge ticketing and support system. We are dedicated to providing you with top-tier customer service and assistance. Our innovative solutions and passionate team are here to make your experience as smooth as possible, so you can focus on what you do best.
-
-  Our commitment to excellence means you can count on us for all your support needs. Whether you have questions, encounter issues, or require assistance, we've got you covered. Say goodbye to long wait times and hello to efficient, effective support.
-
-</p>
+              <h1 className="text-gray-900 dark:text-white font-bold text-2xl md:text-5xl xl:text-6xl">
+                DryIce customer support{" "}
+                
+              </h1>
+              <p className="mt-8 text-gray-700 dark:text-gray-300">
+                Welcome to our cutting-edge ticketing and support system. We are
+                dedicated to providing you with top-tier customer service and
+                assistance. Our innovative solutions and passionate team are
+                here to make your experience as smooth as possible, so you can
+                focus on what you do best. 
+              </p>
               <div className="mt-16 flex flex-wrap justify-center gap-y-4 gap-x-6">
                 <a
                   href="/new-ticket"
@@ -48,96 +47,33 @@ function Home() {
                 </a>
               </div>
               <div className="hidden py-8 mt-16 border-y border-gray-100 dark:border-gray-800 sm:flex justify-between">
-  <div className="text-left">
-    <h6 className="text-lg font-semibold text-gray-700 dark:text-white">
-      Unmatched Reliability
-    </h6>
-    <p className="mt-2 text-gray-500">
-      Count on us for uninterrupted service.
-    </p>
-  </div>
-  <div className="text-left">
-    <h6 className="text-lg font-semibold text-gray-700 dark:text-white">
-      Exceptional User Experience
-    </h6>
-    <p className="mt-2 text-gray-500">
-      Easy-to-use interface for a seamless experience.
-    </p>
-  </div>
-  <div className="text-left">
-    <h6 className="text-lg font-semibold text-gray-700 dark:text-white">
-      24/7 Expert Support
-    </h6>
-    <p className="mt-2 text-gray-500">
-      Round-the-clock assistance from our experts.
-    </p>
-  </div>
-</div>
-
-
-            </div>
-            <div className="mt-12 grid grid-cols-3 sm:grid-cols-4 md:grid-cols-6">
-              <div className="p-4 grayscale transition duration-200 hover:grayscale-0">
-                <img
-                  src={Logo1}
-                  className="h-12 w-auto mx-auto"
-                  loading="lazy"
-                  alt="client logo"
-                  width=""
-                  height=""
-                />
-              </div>
-              <div className="p-4 grayscale transition duration-200 hover:grayscale-0">
-                <img
-                  src={USAID}
-                  className="h-12 w-auto mx-auto"
-                  loading="lazy"
-                  alt="client logo"
-                  width=""
-                  height=""
-                />
-              </div>
-              <div className="p-4 flex grayscale transition duration-200 hover:grayscale-0">
-                <img
-                  src={Logo2}
-                  className="h-14 w-auto m-auto"
-                  loading="lazy"
-                  alt="client logo"
-                  width=""
-                  height=""
-                />
-              </div>
-              <div className="p-4 grayscale transition duration-200 hover:grayscale-0">
-                <img
-                  src={Logo3}
-                  className="h-12 w-auto mx-auto"
-                  loading="lazy"
-                  alt="client logo"
-                  width=""
-                  height=""
-                />
-              </div>
-              <div className="p-4 flex grayscale transition duration-200 hover:grayscale-0">
-                <img
-                  src={Logo4}
-                  className="h-8 w-auto m-auto"
-                  loading="lazy"
-                  alt="client logo"
-                  width=""
-                  height=""
-                />
-              </div>
-              <div className="p-4 grayscale transition duration-200 hover:grayscale-0">
-                <img
-                  src={Logo5}
-                  className="h-14 w-auto mx-auto"
-                  loading="lazy"
-                  alt="client logo"
-                  width=""
-                  height=""
-                />
+                <div className="text-left">
+                  <h6 className="text-lg font-semibold text-gray-700 dark:text-white">
+                    Unmatched Reliability
+                  </h6>
+                  <p className="mt-2 text-gray-500">
+                    Count on us for uninterrupted service.
+                  </p>
+                </div>
+                <div className="text-left">
+                  <h6 className="text-lg font-semibold text-gray-700 dark:text-white">
+                    Exceptional User Experience
+                  </h6>
+                  <p className="mt-2 text-gray-500">
+                    Easy-to-use interface for a seamless experience.
+                  </p>
+                </div>
+                <div className="text-left">
+                  <h6 className="text-lg font-semibold text-gray-700 dark:text-white">
+                    24/7 Expert Support
+                  </h6>
+                  <p className="mt-2 text-gray-500">
+                    Round-the-clock assistance from our experts.
+                  </p>
+                </div>
               </div>
             </div>
+           
           </div>
         </container>
       </div>

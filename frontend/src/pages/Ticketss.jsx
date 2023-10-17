@@ -25,7 +25,9 @@ function Ticketss() {
   const itemsPerPage = 4; // You can adjust this number as needed
   const maxPageButtons = 5; // Maximum number of page buttons to display
 
+
   useEffect(() => {
+   
     dispatch(fetchAllUsers());
     dispatch(getAllIssueTypes());
     dispatch(getAllOrganization());

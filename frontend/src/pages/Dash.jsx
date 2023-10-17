@@ -17,8 +17,11 @@ import { useStateContext } from "../contexts/ContextProvider";
 import product9 from "../data/product9.jpg";
 import Report from "./report";
 import { getAllTickets, getTickets } from "../features/tickets/ticketSlice";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import ConfirmationNumberIcon from '@mui/icons-material/ConfirmationNumber';
+import { Typography } from "@mui/material";
+import DashboardIcon from "@mui/icons-material/Dashboard";
+
 
 const DropDown = ({ currentMode }) => (
   <div className="w-28 border-1 border-color px-2 py-1 rounded-md">
@@ -42,9 +45,14 @@ const Ecommerce = () => {
   const [closedTicketsCount, setClosedTicketsCount] = useState(0);
   const [allTicketsCount, setAllTicketsCount] = useState(0);
   const dispatch = useDispatch();
+  const allTickets = useSelector((state) => state.tickets.allTickets);
   useEffect(() => {
     dispatch(getTickets());
+    dispatch(getAllTickets());
   }, [dispatch]);
+  const uniqueProductTypes = [...new Set(allTickets.map((ticket) => ticket.product))];
+const totalUniqueProducts = uniqueProductTypes.length;
+
 
   useEffect(() => {
     dispatch(getAllTickets()).then((response) => {
@@ -67,8 +75,18 @@ const Ecommerce = () => {
   });
 
   return (
+    <>
+     <div className="bg-custom-color p-4 text-white mt-10 rounded-full">
+      <div className="flex items-center justify-center">
+        <DashboardIcon fontSize="large" className="mr-2 mb-3" />
+        <Typography variant="h4" component="h1" gutterBottom>
+          Welcome to Dryice Customer Support Dashboard
+        </Typography>
+      </div>
+    </div>
     <div className="mt-24 mr-20">
-      <div className="flex flex-wrap lg:flex-nowrap justify-center ">
+      
+      <div className="flex flex-wrap lg:flex-nowrap justify-center mb-20">
         <div className="bg-white dark:text-gray-200 dark:bg-secondary-dark-bg h-44 rounded-xl w-full lg:w-80 p-8 pt-9 m-3 bg-hero-pattern bg-no-repeat bg-cover bg-center">
           <div className="flex justify-between items-center">
             <div>
@@ -158,8 +176,9 @@ const Ecommerce = () => {
           </div>
         </div>
       </div>
-
-      <div className="flex gap-10 flex-wrap justify-center">
+{/*
+      <div className="flex gap-10 flex-wrap justify-center mb-20">
+        
         <div className="bg-white dark:text-gray-200 dark:bg-secondary-dark-bg m-3 p-4 rounded-2xl md:w-780  ">
           <div className="flex justify-between">
             <p className="font-semibold text-xl">Revenue Updates</p>
@@ -220,19 +239,22 @@ const Ecommerce = () => {
             </div>
           </div>
         </div>
+       
+       
         <div>
           <div
             className=" rounded-2xl md:w-400 p-4 m-3"
             style={{ backgroundColor: currentColor }}
           >
             <div className="flex justify-between items-center ">
-              <p className="font-semibold text-white text-2xl">Earnings</p>
+              <p className="font-semibold text-white text-2xl">Total projects</p>
 
               <div>
                 <p className="text-2xl text-white font-semibold mt-8">
-                  $63,448.78
+                {totalUniqueProducts}
                 </p>
-                <p className="text-gray-200">Monthly revenue</p>
+
+               <p className="text-gray-200">All active projects</p>
               </div>
             </div>
 
@@ -264,9 +286,11 @@ const Ecommerce = () => {
               />
             </div>
           </div>
+          
         </div>
       </div>
-
+      */}
+{/*
       <div className="flex gap-10 m-4 flex-wrap justify-center">
         <div className="bg-white dark:text-gray-200 dark:bg-secondary-dark-bg p-6 rounded-2xl">
           <div className="flex justify-between items-center gap-2">
@@ -319,9 +343,10 @@ const Ecommerce = () => {
           </div>
         </div>
       </div>
-
-      <Report />
+                  */}
+      <Report className="mt-20"/>
     </div>
+    </>
   );
 };
 

@@ -13,14 +13,33 @@ const UpdateOrganization = () => {
   );
   const { id } = useParams();
   const dispatch = useDispatch();
+  useEffect(() => {
+    // Fetch the selected organization by its ID
+    dispatch(selectOrganizationById(id));
+  }, [id, dispatch]);
 
+ 
   // State to store form data
   const [formData, setFormData] = useState({
     name: "",
     email: "",
     contact: "",
     description: "",
+    payment: "",
   });
+
+   // Update formData with organization data when it's available
+   useEffect(() => {
+    if (organization) {
+      setFormData({
+        name: organization.name,
+        email: organization.email,
+        contact: organization.contact,
+        description: organization.description,
+        payment: organization.payment,
+      });
+    }
+  }, [organization]);
 
   // Function to handle form input changes
   const handleChange = (e) => {
@@ -43,22 +62,7 @@ const UpdateOrganization = () => {
     );
   };
 
-  useEffect(() => {
-    // Fetch the selected organization by its ID
-    dispatch(selectOrganizationById(id));
-  }, [id, dispatch]);
-
-  // Update formData with organization data when it's available
-  useEffect(() => {
-    if (organization) {
-      setFormData({
-        name: organization.name,
-        email: organization.email,
-        contact: organization.contact,
-        description: organization.description,
-      });
-    }
-  }, [organization]);
+  
 
   // Display loading message if the organization is being fetched
   if (!organization) {
@@ -112,6 +116,25 @@ const UpdateOrganization = () => {
             required
           />
         </div>
+        <div className="form-group">
+            <label htmlFor="payment">Payment</label>
+            <select
+              name="payment"
+              id="payment"
+              value={formData.payment}
+              onChange={handleChange}
+            >
+              <option value="Paid">Paid</option>
+              <option value="Paid Amc">
+              Paid Amc
+              </option>
+              <option value="Free support">Free support</option>
+              <option value="Free support period under AMC">Free support period under AMC</option>
+              <option value="Support contract">
+              Support contract
+              </option>
+            </select>
+          </div>
         <button type="submit">Update</button>
       </form>
     </>

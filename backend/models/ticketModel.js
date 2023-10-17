@@ -77,10 +77,7 @@ const ticketSchema = mongoose.Schema(
       ref: 'Organization',
 
     },
-    timeSpent: {
-      type: Number,
-      default: 0, // Default value is 0 minutes
-    },
+   
   },
   {
     timestamps: true,

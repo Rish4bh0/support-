@@ -37,6 +37,8 @@ function OrganizationList() {
     }
     if (isSuccess) {
       dispatch(reset());
+      toast.success("Organization added")
+      dispatch(getAllOrganization());
     }
   }, [dispatch, isError, isSuccess, message]);
 

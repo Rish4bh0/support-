@@ -27,9 +27,10 @@ import { getAllIssueTypes } from "../features/issues/issueSlice";
 
 function NewTicket() {
   const { user } = useSelector((state) => state.auth);
-  const { isLoading, isError, isSuccess, message } = useSelector(
+  const { isLoading, isError,  message, isSuccess } = useSelector(
     (state) => state.tickets
   );
+ 
   const users = useSelector((state) => state.auth.users);
   const issues = useSelector((state) => state.issueTypes.issueTypes);
   const organizations = useSelector((state) => state.organizations.organizations);
@@ -81,16 +82,19 @@ function NewTicket() {
       callback(base64Media);
     };
   };
-
+  
   useEffect(() => {
     if (isError) {
       toast.error(message);
     }
     if (isSuccess) {
+      navigate('/ticketss');
+      toast.success('New ticket created!');
       dispatch(reset());
     }
+    
   }, [dispatch, isError, isSuccess, navigate, message]);
-
+  
   const onSubmit = (e) => {
     e.preventDefault();
    

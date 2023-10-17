@@ -235,20 +235,19 @@ function Ticket() {
 
   const formattedTimeSpent = formatTime(ticket.timeSpent);
   const options = {
-    weekday: "long",
-    year: "numeric",
+   
     month: "long",
     day: "numeric",
     hour: '2-digit', minute: '2-digit'
   };
   
   const columns = [
-    { field: "noteId", headerName: "Note ID", flex: 1 },
-    { field: "text", headerName: "text", flex: 1 },
+    { field: "noteId", headerName: "Note ID", flex: 1.5 },
+    { field: "text", headerName: "Task details", flex: 1 },
     {
       field: "toTime",
-      headerName: "To Time",
-      flex: 3,
+      headerName: "Start Time",
+      flex: 1.5,
       valueGetter: (params) => {
         // Access "toTime" inside "timeEntries" array
         const formattedTime = new Date(params.row.toTime[0].toTime).toLocaleString("en-US", options);
@@ -257,14 +256,36 @@ function Ticket() {
     },
     {
       field: "fromTime",
-      headerName: "From Time",
-      flex: 3,
+      headerName: "End Time",
+      flex: 1.5,
       valueGetter: (params) => {
         // Access "fromTime" inside "timeEntries" array
         const formattedTime = new Date(params.row.fromTime[0].fromTime).toLocaleString("en-US", options);
         return formattedTime;
       },
+    },    
+    {
+      field: "timeDifference",
+      headerName: "Time Difference",
+      flex: 1,
+      valueGetter: (params) => {
+        const toTime = new Date(params.row.toTime[0].toTime);
+        const fromTime = new Date(params.row.fromTime[0].fromTime);
+    
+        // Calculate the absolute time difference in milliseconds
+        const timeDiff = Math.abs(toTime - fromTime);
+    
+        // Convert milliseconds to a formatted time difference
+        const hours = Math.floor(timeDiff / 3600000);
+        const minutes = Math.floor((timeDiff % 3600000) / 60000);
+        const seconds = Math.floor((timeDiff % 60000) / 1000);
+    
+        const formattedTimeDifference = `${hours}h ${minutes}m ${seconds}s`;
+    
+        return formattedTimeDifference;
+      },
     },
+    
   ];
   
   // Map notes data to rows for the DataGrid
@@ -287,6 +308,7 @@ function Ticket() {
             {ticket.status}
           </span>
         </h2>
+        <h3>Ticket Title: {ticket.title}</h3>
         <h3>
           Date Submitted:{" "}
           {new Date(ticket.createdAt).toLocaleString("en-US", options)}
@@ -294,7 +316,6 @@ function Ticket() {
         <h3>Product: {ticket.product}</h3>
         <h3>Assigned To: {getUserNameById(ticket.assignedTo)}</h3>
         <h3>Priority: {ticket.priority}</h3>
-        <h3>Time spent: {formattedTimeSpent}</h3>
         <h3>Issue Type: {issueById(ticket.issueType)}</h3>
         <h3>Organization: {ticket.organization ? organizationMap[ticket.organization] : "Unassigned"}</h3>
         {ticket.status === "close" && (
@@ -308,16 +329,7 @@ function Ticket() {
           <h3>Description of Issue</h3>
           <p>{ticket.description}</p>
         </div>
-        {ticket.status !== "close" &&
-        userRole &&
-        allowedRoles.includes(userRole) && (
-        <div className="ticket-timer">
-          <h3>Elapsed Time: {formatElapsedTime(elapsedTime)}</h3>
-          <button onClick={handleTimerButtonClick} className="btn">
-            {isTimerRunning ? "Stop Timer" : "Start Timer"}
-          </button>
-        </div>
-        )}
+
         {ticket.status !== "close" &&
           userRole &&
           allowedRoles.includes(userRole) && <h2>Notes</h2>}
@@ -327,7 +339,7 @@ function Ticket() {
         userRole &&
         allowedRoles.includes(userRole) && (
           <button onClick={openModal} className="btn">
-            <FaPlus /> Add Note
+            <FaPlus /> Add Task
           </button>
         )}
 
@@ -336,9 +348,9 @@ function Ticket() {
       isOpen={modalIsOpen}
       onRequestClose={closeModal}
       style={customStyles} // Define your custom styles
-      contentLabel="Add Note"
+      contentLabel="Add Task"
     >
-      <h2>Add Note</h2>
+      <h2>Add activity</h2>
       <button className="btn-close" onClick={closeModal}>
         X
       </button>
@@ -346,7 +358,7 @@ function Ticket() {
         <div className="form-group">
           <label htmlFor="text">Text:</label>
           <textarea
-            name="text"
+            name="Task Detail"
             id="text"
             className="form-control"
             placeholder="Text"
@@ -355,7 +367,7 @@ function Ticket() {
           ></textarea>
         </div>
         <div className="form-group">
-          <label htmlFor="toTimee">To Time:</label>
+          <label htmlFor="toTimee">Start Time:</label>
           <LocalizationProvider dateAdapter={AdapterDayjs}>
             <DemoContainer components={['TimePicker']}>
               <TimePicker
@@ -367,7 +379,7 @@ function Ticket() {
           </LocalizationProvider>
         </div>
         <div className="form-group">
-          <label htmlFor="fromTimee">From Time:</label>
+          <label htmlFor="fromTimee">End Time:</label>
           <LocalizationProvider dateAdapter={AdapterDayjs}>
             <DemoContainer components={['TimePicker']}>
               <TimePicker
@@ -394,13 +406,13 @@ function Ticket() {
       />
     </div>
      
-
+{/*
       {notes && Array.isArray(notes) ? (
         notes.map((note) => <NoteItem key={note._id} note={note} />)
       ) : (
         <p>No notes available</p>
       )}
-
+*/}
       {ticket.media && ticket.media.length > 0 ? (
         <div className="media-container">
           {ticket.media.map((mediaItem) => (

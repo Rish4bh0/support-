@@ -34,7 +34,7 @@ router
 router.route('/all').get(getAllTickets);
 router.route('/report').get(report);
 
-router.route('/:ticketId/elapsed-time').put(savetime);
+
 
 router
   .route('/:id')
