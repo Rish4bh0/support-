@@ -20,7 +20,7 @@ function Home() {
           <div className="relative pt-36 ml-auto">
             <div className="lg:w-2/3 text-center mx-auto">
               <h1 className="text-gray-900 dark:text-white font-bold text-2xl md:text-5xl xl:text-6xl">
-                DryIce customer support{" "}
+                NEA customer support{" "}
                 
               </h1>
               <p className="mt-8 text-gray-700 dark:text-gray-300">

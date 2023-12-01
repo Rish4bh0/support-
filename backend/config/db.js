@@ -3,7 +3,7 @@
 
 const mongoose = require("mongoose");
 const connectDB = async ()=>{
-  MONGODB_URI="mongodb+srv://support-desk:hyper@hyper.nevrtvo.mongodb.net/?retryWrites=true&w=majority"
+  MONGODB_URI="mongodb+srv://neatest:nea@nea.dxajwtx.mongodb.net/?retryWrites=true&w=majority"
     try {
         mongoose.set('strictQuery', false);
         const conn = await mongoose.connect(MONGODB_URI, {

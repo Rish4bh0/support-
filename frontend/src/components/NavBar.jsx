@@ -13,6 +13,8 @@ import { useNavigate } from "react-router-dom";
 import PersonAddIcon from "@mui/icons-material/PersonAdd";
 import LoginIcon from "@mui/icons-material/Login";
 import LogoutIcon from "@mui/icons-material/Logout";
+import { getAllOrganization } from '../features/organization/organizationSlice';
+
 
 const NavButton = ({ title, customFunc, icon, color, dotColor }) => (
   <TooltipComponent content={title} position="BottomCenter">
@@ -41,6 +43,12 @@ const NavBar = () => {
     screenSize,
     setscreenSize,
   } = useStateContext();
+
+  const organizations = useSelector((state) => state.organizations.organizations);
+  const organizationMap = {};
+  organizations.forEach((organization) => {
+    organizationMap[organization._id] = organization.name;
+  });
 
   const handleLoginClick = () => {
     navigate("/login");
@@ -125,7 +133,7 @@ const NavBar = () => {
               <p>
                 <span className="text-gray-400 text-14">Hi, </span>{" "}
                 <span className="text-gray-400 font-bold ml-1 text-14">
-                  {user.name}
+                  {user.name}-{organizationMap[user.organization] || "Unassigned"}
                 </span>
               </p>
               <MdKeyboardArrowDown className="text-gray-400 text-14" />

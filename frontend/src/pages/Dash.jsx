@@ -80,7 +80,7 @@ const totalUniqueProducts = uniqueProductTypes.length;
       <div className="flex items-center justify-center">
         <DashboardIcon fontSize="large" className="mr-2 mb-3" />
         <Typography variant="h4" component="h1" gutterBottom>
-          Welcome to Dryice Customer Support Dashboard
+          Welcome to Nepal Electricity Authority Customer Support Dashboard
         </Typography>
       </div>
     </div>

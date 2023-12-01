@@ -105,7 +105,7 @@ const OrganizationDetail = () => {
     <div className="mb-10">
     <h1 className="text-xl font-extrabold text-14 mb-10">
           {" "}
-          <ViewListIcon /> My Organization Details
+          <ViewListIcon /> My Department Details
         </h1>
 
         <Box sx={{ flexGrow: 1 }}>

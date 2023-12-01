@@ -197,7 +197,7 @@ const totalUniqueProducts = uniqueProductTypes.length;
 
   const columns = [
     { field: "ticketId", headerName: "Ticket ID", flex: 0.7 },
-    { field: "name", headerName: "Organization", flex: 0.7 },
+    { field: "name", headerName: "Department", flex: 0.7 },
     { field: "product", headerName: "Project", flex: 1.5 },
     { field: "payment", headerName: "Payment Type", flex: 0.7},
     { field: "totalSpent", headerName: "Hours Spent", flex: 1 },
@@ -259,7 +259,7 @@ const totalUniqueProducts = uniqueProductTypes.length;
             />
           </div>
           <div>
-            <label className="block text-gray-700">Organization Search</label>
+            <label className="block text-gray-700">Department Search</label>
             <input
               className="border border-gray-300 rounded w-40 py-2 px-3"
               type="text"
@@ -324,7 +324,7 @@ const totalUniqueProducts = uniqueProductTypes.length;
           <div className="flex items-center space-x-2">
             <AccessTimeIcon fontSize="small" />
             <Typography variant="subtitle1" fontWeight="bold">
-              Total Hours Spent on {nameSearch || "All"} organizations support:
+              Total Hours Spent on {nameSearch || "All"} department support:
             </Typography>
             <Typography variant="subtitle1">
               {formatTimeInHHMMSS(totalSpentSum)}
