@@ -11,19 +11,15 @@ const organizationSchema = mongoose.Schema({
   email: {
     type: String
   },
-  payment: {
-    type: String,
-    //required: [true, 'Please select a product'],
-    enum: [
-      'Paid',
-      'Paid Amc',
-      'Free support',
-      'Free support period under AMC',
-      'Support contract',
-    ],
+  focalPersonName:{
+    type: String
   },
-  description: String,
-  // Add other fields as needed
+  focalPersonContact:{
+    type: Number
+  },
+  focalPersonEmail:{
+    type: String
+  },
 });
 
 module.exports = mongoose.model('Organization', organizationSchema);

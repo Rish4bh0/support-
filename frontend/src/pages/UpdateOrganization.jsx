@@ -24,8 +24,9 @@ const UpdateOrganization = () => {
     name: "",
     email: "",
     contact: "",
-    description: "",
-    payment: "",
+    focalPersonName: "",
+    focalPersonContact: "",
+    focalPersonEmail: "",
   });
 
    // Update formData with organization data when it's available
@@ -35,8 +36,9 @@ const UpdateOrganization = () => {
         name: organization.name,
         email: organization.email,
         contact: organization.contact,
-        description: organization.description,
-        payment: organization.payment,
+        focalPersonName: organization.focalPersonName,
+        focalPersonContact: organization.focalPersonContact,
+        focalPersonEmail: organization.focalPersonEmail
       });
     }
   }, [organization]);
@@ -107,34 +109,38 @@ const UpdateOrganization = () => {
           />
         </div>
         <div className="form-group">
-          <label htmlFor="description">Description</label>
-          <textarea
-            id="description"
-            name="description"
-            value={formData.description}
+              <label htmlFor="focalPersonName">Focal Person Name:</label>
+              <input
+                type="text"
+                id="focalPersonName"
+                name="focalPersonName"
+                value={formData.focalPersonName}
             onChange={handleChange}
             required
-          />
-        </div>
-        <div className="form-group">
-            <label htmlFor="payment">Payment</label>
-            <select
-              name="payment"
-              id="payment"
-              value={formData.payment}
-              onChange={handleChange}
-            >
-              <option value="Paid">Paid</option>
-              <option value="Paid Amc">
-              Paid Amc
-              </option>
-              <option value="Free support">Free support</option>
-              <option value="Free support period under AMC">Free support period under AMC</option>
-              <option value="Support contract">
-              Support contract
-              </option>
-            </select>
-          </div>
+              />
+            </div>
+            <div className="form-group">
+              <label htmlFor="focalPersonEmail">Focal Person Email:</label>
+              <input
+                type="text"
+                id="focalPersonEmail"
+                name="focalPersonEmail"
+                value={formData.focalPersonEmail}
+            onChange={handleChange}
+            required
+              />
+            </div>
+            <div className="form-group">
+              <label htmlFor="focalPersonContact">Focal Person Contact:</label>
+              <input
+                type="text"
+                id="focalPersonContact"
+                name="focalPersonContact"
+                value={formData.focalPersonContact}
+            onChange={handleChange}
+            required
+              />
+            </div>
         <button type="submit">Update</button>
       </form>
     </>

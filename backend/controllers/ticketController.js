@@ -221,7 +221,7 @@ const createTicket = asyncHandler(async (req, res) => {
     customerContact,
     organization,
     media,
-    title // Expect an array of mixed media data (images and videos)
+    title 
   } = req.body;
 /*
   if (!product || !priority || !issueType || !description) {
@@ -309,7 +309,7 @@ const createTicket = asyncHandler(async (req, res) => {
     // Send email to logged-in user
     const userEmail = user.email; // Assuming you have an 'email' field in your User model
     const ticketId = ticket._id; // Retrieve the ticket ID
-    const ticketLink = `https://supportdesk-1eot.onrender.com/ticket/${ticketId}`;
+    const ticketLink = `https://localhost:3000/ticket/${ticketId}`;
 
     await transporter.sendMail({
       from: 'helpdeskx1122@gmail.com', // Replace with your Gmail email address
@@ -332,7 +332,7 @@ const createTicket = asyncHandler(async (req, res) => {
       });
     }
 
-    // Rest of your code...
+   
 
     res.status(201).json(ticket);
   } catch (error) {

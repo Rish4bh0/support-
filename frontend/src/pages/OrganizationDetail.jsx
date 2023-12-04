@@ -105,22 +105,28 @@ const OrganizationDetail = () => {
     <div className="mb-10">
     <h1 className="text-xl font-extrabold text-14 mb-10">
           {" "}
-          <ViewListIcon /> My Department Details
+          <ViewListIcon /> My Organization Details
         </h1>
 
         <Box sx={{ flexGrow: 1 }}>
       <Grid container spacing={2}>
         <Grid item xs={6}>
-          <Item><strong>Name:</strong> {myorganization.name}</Item>
+          <Item><strong>Organizatio Name:</strong> {myorganization.name}</Item>
         </Grid>
         <Grid item xs={6}>
-          <Item><strong>Email:</strong> {myorganization.email}</Item>
+          <Item><strong>Organization Email:</strong> {myorganization.email}</Item>
         </Grid>
         <Grid item xs={6}>
-          <Item> <strong>Contact:</strong> {myorganization.contact}</Item>
+          <Item> <strong>Organization Contact:</strong> {myorganization.contact}</Item>
         </Grid>
         <Grid item xs={6}>
-          <Item> <strong>Description:</strong> {myorganization.description}</Item>
+          <Item> <strong>Focal Person Name:</strong> {myorganization.focalPersonName}</Item>
+        </Grid>
+        <Grid item xs={6}>
+          <Item> <strong>Focal Person Email:</strong> {myorganization.focalPersonEmail}</Item>
+        </Grid>
+        <Grid item xs={6}>
+          <Item> <strong>Focal Person Contact:</strong> {myorganization.focalPersonContact}</Item>
         </Grid>
       </Grid>
     </Box>

@@ -58,6 +58,7 @@ const NavBar = () => {
     navigate("/register");
   };
 
+ 
   useEffect(() => {
     const handleResize = () => setscreenSize(window.innerWidth);
 
@@ -76,6 +77,9 @@ const NavBar = () => {
     //  }
   }, [screenSize]);
 
+
+
+
   const user = useSelector((state) => state.auth.user);
   const dispatch = useDispatch(); // Get the dispatch function
   const navigate = useNavigate();
@@ -85,6 +89,10 @@ const NavBar = () => {
     dispatch(reset());
     navigate("/");
   };
+
+  useEffect(() => {
+    dispatch(getAllOrganization());
+  }, [dispatch]);
 
   return (
     <div className="flex justify-between p-2 md:mx-6 relative">
@@ -133,7 +141,7 @@ const NavBar = () => {
               <p>
                 <span className="text-gray-400 text-14">Hi, </span>{" "}
                 <span className="text-gray-400 font-bold ml-1 text-14">
-                  {user.name}-{organizationMap[user.organization] || "Unassigned"}
+                  {user.name} {organizationMap[user.organization] || ""}
                 </span>
               </p>
               <MdKeyboardArrowDown className="text-gray-400 text-14" />

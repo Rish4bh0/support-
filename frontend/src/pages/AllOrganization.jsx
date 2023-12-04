@@ -40,8 +40,9 @@ function OrganizationList() {
   const [name, setNewOrganizationName] = useState("");
   const [email, setEmail] = useState("");
   const [contact, setContact] = useState("");
-  const [description, setDescription] = useState("");
-  const [payment, setPayment] = useState("");
+  const [focalPersonName, setFocalPersonName] = useState("");
+  const [focalPersonContact, setFocalPersonContact] = useState("");
+  const [focalPersonEmail, setFocalPersonEmail] = useState("");
   const dispatch = useDispatch();
   const navigate = useNavigate();
 
@@ -65,13 +66,15 @@ function OrganizationList() {
   // Function to handle form submission for creating a new organization
   const handleCreateOrganization = (e) => {
     e.preventDefault();
-    dispatch(createOrganization({ name, email, contact, description, payment }));
+    dispatch(createOrganization({ name, email, contact, focalPersonName, focalPersonContact, focalPersonEmail }));
 
     // Clear the input fields after creating the organization
     setNewOrganizationName("");
     setEmail("");
     setContact("");
-    setDescription("");
+    setFocalPersonContact("");
+    setFocalPersonEmail("");
+    setFocalPersonName("");
     closeModal();
   };
 
@@ -109,13 +112,16 @@ function OrganizationList() {
 
   const columns = [
     { field: "organizationId", headerName: "Organization ID", flex: 1 },
-    { field: "organizationName", headerName: "Organization Name", flex: 1 },
+    { field: "organizationName", headerName: "Organization Name & Location", flex: 1.4 },
     { field: "organizationEmail", headerName: "Organization Email", flex: 1 },
     {
       field: "organizationContact",
       headerName: "Organization Contact",
       flex: 1,
     },
+    { field: "focalPersonName", headerName: "Focal Person Name", flex: 1 },
+    { field: "focalPersonContact", headerName: "Focal Person Contact", flex: 1 },
+    { field: "focalPersonEmail", headerName: "Focal Person Email", flex: 1 },
 
     {
       field: "actions",
@@ -161,10 +167,13 @@ function OrganizationList() {
           rows={organizations.map((organization) => ({
             ...organization,
             id: organization._id, // Ensure each row has a unique id
-            organizationId: organization._id, // Assuming _id is the Organization ID field
+            organizationId: organization._id, 
             organizationName: organization.name,
             organizationEmail: organization.email,
             organizationContact: organization.contact,
+            focalPersonName: organization.focalPersonName,
+            focalPersonEmail: organization.focalPersonEmail,
+            focalPersonContact: organization.focalPersonContact,
           }))}
           columns={columns}
           pageSize={5}
@@ -205,7 +214,7 @@ function OrganizationList() {
           <h2>Add Organization</h2>
           <form onSubmit={handleCreateOrganization}>
             <div className="form-group">
-              <label htmlFor="name">Organization Name:</label>
+              <label htmlFor="name">Organization Name & Location:</label>
               <input
                 type="text"
                 id="name"
@@ -238,43 +247,38 @@ function OrganizationList() {
               />
             </div>
             <div className="form-group">
-              <label htmlFor="description">Organization Description:</label>
+              <label htmlFor="focalPersonName">Focal Person Name:</label>
               <input
                 type="text"
-                id="description"
-                name="description"
+                id="focalPersonName"
+                name="focalPersonName"
                 placeholder="Description"
-                value={description}
-                onChange={(e) => setDescription(e.target.value)}
+                value={focalPersonName}
+                onChange={(e) => setFocalPersonName(e.target.value)}
               />
             </div>
-            <Grid item xs={6}>
-            <FormControl fullWidth>
-              <InputLabel htmlFor="payment">Payment Type</InputLabel>
-              <Select
-                name="payment"
-                id="payment"
-                value={payment}
-                onChange={(e) => setPayment(e.target.value)}
-              >
-                <MenuItem value="Paid">
-                Paid
-                </MenuItem>
-                <MenuItem value="Paid Amc">
-                Paid Amc
-                </MenuItem>
-                <MenuItem value="Free support">
-                Free support
-                </MenuItem>
-                <MenuItem value="Free support period under AMC">
-                Free support period under AMC
-                </MenuItem>
-                <MenuItem value="Support contract">
-                Support contract
-                </MenuItem>
-              </Select>
-            </FormControl>
-          </Grid>
+            <div className="form-group">
+              <label htmlFor="focalPersonEmail">Focal Person Email:</label>
+              <input
+                type="text"
+                id="focalPersonEmail"
+                name="focalPersonEmail"
+                placeholder="Focal Person Email"
+                value={focalPersonEmail}
+                onChange={(e) => setFocalPersonEmail(e.target.value)}
+              />
+            </div>
+            <div className="form-group">
+              <label htmlFor="focalPersonContact">Focal Person Contact:</label>
+              <input
+                type="text"
+                id="focalPersonContact"
+                name="focalPersonContact"
+                placeholder="Focal Person Contact"
+                value={focalPersonContact}
+                onChange={(e) => setFocalPersonContact(e.target.value)}
+              />
+            </div>
             <div className="form-group">
               <Button type="submit" variant="contained" color="primary">
                 Create Organization

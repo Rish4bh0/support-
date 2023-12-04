@@ -88,12 +88,13 @@ function NewTicket() {
       toast.error(message);
     }
     if (isSuccess) {
+      dispatch(reset());
       navigate('/ticketss');
       toast.success('New ticket created!');
-      dispatch(reset());
+      
     }
     
-  }, [dispatch, isError, isSuccess, navigate, message]);
+  }, [dispatch, isError, isSuccess, navigate, message, reset]);
   
   const onSubmit = (e) => {
     e.preventDefault();
@@ -112,7 +113,7 @@ function NewTicket() {
       organization,
       title
     };
-    console.log(title)
+    console.log(ticketData)
     dispatch(createTicket(ticketData));
   };
 

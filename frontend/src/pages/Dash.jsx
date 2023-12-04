@@ -76,6 +76,7 @@ const totalUniqueProducts = uniqueProductTypes.length;
 
   return (
     <>
+     <div className="mt-24 md:mr-0 md:ml-20">
      <div className="bg-custom-color p-4 text-white mt-10 rounded-full">
       <div className="flex items-center justify-center">
         <DashboardIcon fontSize="large" className="mr-2 mb-3" />
@@ -345,6 +346,7 @@ const totalUniqueProducts = uniqueProductTypes.length;
       </div>
                   */}
       <Report className="mt-20"/>
+    </div>
     </div>
     </>
   );

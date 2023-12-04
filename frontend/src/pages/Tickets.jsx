@@ -38,7 +38,7 @@ function Tickets() {
     return () => {
       dispatch(reset());
     };
-  }, [dispatch]);
+  }, [dispatch, reset]);
 
   useEffect(() => {
     dispatch(fetchAllUsers());

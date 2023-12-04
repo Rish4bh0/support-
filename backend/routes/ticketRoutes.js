@@ -39,8 +39,8 @@ router.route('/report').get(report);
 router
   .route('/:id')
   .get(protect, getTicket)
-  .delete(protect,roleMiddleware(['ADMIN', 'SUPERVISOR', 'EMPLOYEE']), deleteTicket)
-  .put( protect, roleMiddleware(['ADMIN', 'SUPERVISOR', 'EMPLOYEE']), updateTicket)
+  .delete(protect,roleMiddleware(['ADMIN', 'SUPERVISOR', 'EMPLOYEE', 'ORGAGENT']), deleteTicket)
+  .put( protect, roleMiddleware(['ADMIN', 'SUPERVISOR', 'EMPLOYEE', 'ORGAGENT']), updateTicket)
 
   
 

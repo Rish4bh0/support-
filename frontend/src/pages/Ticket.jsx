@@ -49,9 +49,9 @@ function Ticket() {
   const userRole = useSelector((state) => state.auth.user?.role);
 
   // Define an array of roles that should see the "Dashboard" link
-  const allowedRoles = ["ADMIN", "SUPERVISOR", "EMPLOYEE"];
+  const allowedRoles = ["ADMIN", "SUPERVISOR", "EMPLOYEE", "ORGAGENT"];
 
-  const allowedRolesReview = ["ADMIN", "SUPERVISOR"];
+  const allowedRolesReview = ["ADMIN", "SUPERVISOR","ORGAGENT"];
   
   const [modalIsOpen, setModalIsOpen] = useState(false);
   const [text, settext] = useState("");
@@ -182,13 +182,13 @@ function Ticket() {
   const onTicketClose = () => {
     dispatch(closeTicket(ticketId));
     toast.success("Ticket Closed");
-    navigate("/tickets");
+    navigate("/");
   };
   // Close ticket
   const onTicketSendForReview = () => {
     dispatch(reviewTicket(ticketId));
     toast.success("Ticket Sent For Review");
-    navigate("/tickets");
+    navigate("/");
   };
 
   // Open/Close Modal

@@ -5,8 +5,8 @@ const User = require("../models/userModel");
 // Create a new organization
 const createOrganization = asyncHandler (async (req, res) => {
   try {
-    const { name, contact, email, description, payment } = req.body;
-    const organization = await Organization.create({ name, contact, email, description, payment });
+    const { name, contact, email, focalPersonName, focalPersonContact, focalPersonEmail } = req.body;
+    const organization = await Organization.create({ name, contact, email, focalPersonName, focalPersonContact, focalPersonEmail });
     res.status(201).json(organization);
   } catch (error) {
     res.status(500).json({ error: 'Failed to create organization' });
@@ -41,10 +41,10 @@ const getOrganizationById = asyncHandler (async (req, res) => {
 const updateOrganization = asyncHandler (async (req, res) => {
   try {
     const { id } = req.params;
-    const { name, contact, email, description, payment } = req.body;
+    const { name, contact, email, focalPersonName, focalPersonContact, focalPersonEmail } = req.body;
     const updatedOrganization = await Organization.findByIdAndUpdate(
       id,
-      { name, contact, email, description,payment },
+      { name, contact, email, focalPersonName, focalPersonContact, focalPersonEmail },
       { new: true }
     );
     if (!updatedOrganization) {
