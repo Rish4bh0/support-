@@ -59,6 +59,9 @@ function OrganizationList() {
     { field: "name", headerName: "Organization name", flex: 1 },
     { field: "email", headerName: "Organization email", flex: 1 },
     { field: "contact", headerName: "Organization contact", flex: 1 },
+    { field: "focalPersonName", headerName: "Focal Person Name", flex: 1 },
+    { field: "focalPersonEmail", headerName: "Focal Person Email", flex: 1 },
+    { field: "focalPersonContact", headerName: "Focal Person Contact", flex: 1 },
     {
       field: "actions",
       headerName: "Action",
@@ -86,6 +89,10 @@ function OrganizationList() {
       name: userOrganization.name,
       email: userOrganization.email,
       contact: userOrganization.contact,
+      focalPersonName: userOrganization.focalPersonName,
+      focalPersonEmail: userOrganization.focalPersonEmail,
+      focalPersonContact: userOrganization.focalPersonContact,
+
     }
   ] : [];
 
