@@ -7,16 +7,14 @@ import { store } from './app/store';
 import { Provider } from 'react-redux';
 import * as serviceWorker from './serviceWorker';
 import { ContextProvider } from './contexts/ContextProvider'
-import { RecoilRoot } from 'recoil';
+
 ReactDOM.render(
   <React.StrictMode>
-     <RecoilRoot>
     <ContextProvider>
     <Provider store={store}>
       <App />
     </Provider>
     </ContextProvider>
-    </RecoilRoot>
   </React.StrictMode>,
   document.getElementById('root')
 );
