@@ -4,7 +4,7 @@ const bcrypt = require('bcryptjs') // A library to help you hash passwords.
 const crypto = require('crypto');
 const User = require('../models/userModel')
 const transporter = require ('../middleware/nodeMailer')
-
+const notification = require('../models/notification')
 // @desc    Register a new user
 // @route   /api/users
 // @access  Public
@@ -76,6 +76,16 @@ const loginUser = asyncHandler(async (req, res) => {
       organization: user.organization,
       token: generateToken(user._id)
     })
+
+    // add notification for login
+  await notification.create({
+    user: user._id,
+    title: 'login',
+    type: 1,
+    text: `New login at ${new Date()}`,
+    read: false,
+  })
+
   } else {
     res.status(401) // Unauthorized
     throw new Error('Invalid credentials')

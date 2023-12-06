@@ -1,20 +1,23 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import { AiOutlineMenu } from "react-icons/ai";
 import { BsChatLeft } from "react-icons/bs";
+import { RiNotification3Line } from "react-icons/ri";
 import {
-  RiNotification3Line,
-} from "react-icons/ri";
-import { MdKeyboardArrowDown } from "react-icons/md";
+  MdKeyboardArrowDown,
+  MdNotificationsActive,
+  MdNotificationsNone,
+} from "react-icons/md";
 import { TooltipComponent } from "@syncfusion/ej2-react-popups";
 import { useStateContext } from "../contexts/ContextProvider";
 import { useSelector, useDispatch } from "react-redux";
-import { logout, reset } from "../features/auth/authSlice"; 
+import { logout, reset } from "../features/auth/authSlice";
 import { useNavigate } from "react-router-dom";
 import PersonAddIcon from "@mui/icons-material/PersonAdd";
 import LoginIcon from "@mui/icons-material/Login";
 import LogoutIcon from "@mui/icons-material/Logout";
-import { getAllOrganization } from '../features/organization/organizationSlice';
-
+import { getAllOrganization } from "../features/organization/organizationSlice";
+import useSocketIo from "../hooks/useSocketio";
+import { NotificationsLength } from "../recoil/atom";
 
 const NavButton = ({ title, customFunc, icon, color, dotColor }) => (
   <TooltipComponent content={title} position="BottomCenter">
@@ -44,7 +47,9 @@ const NavBar = () => {
     setscreenSize,
   } = useStateContext();
 
-  const organizations = useSelector((state) => state.organizations.organizations);
+  const organizations = useSelector(
+    (state) => state.organizations.organizations
+  );
   const organizationMap = {};
   organizations.forEach((organization) => {
     organizationMap[organization._id] = organization.name;
@@ -58,7 +63,6 @@ const NavBar = () => {
     navigate("/register");
   };
 
- 
   useEffect(() => {
     const handleResize = () => setscreenSize(window.innerWidth);
 
@@ -77,12 +81,13 @@ const NavBar = () => {
     //  }
   }, [screenSize]);
 
-
-
-
   const user = useSelector((state) => state.auth.user);
   const dispatch = useDispatch(); // Get the dispatch function
   const navigate = useNavigate();
+
+  const [notificationsLength, setNotificationsLength] = useState(0);
+  const { socket } = useSocketIo();
+  const id = user ? user._id : null;
 
   const onLogout = () => {
     dispatch(logout());
@@ -94,43 +99,99 @@ const NavBar = () => {
     dispatch(getAllOrganization());
   }, [dispatch]);
 
+  useEffect(() => {
+    if (socket) {
+      console.log("Socket connected");
+      socket.emit("setUserId", id);
+      // Getting first notifications length
+      socket.emit("getNotificationsLength", id);
+      socket.on("notificationsLength", (data) => {
+        console.log("Received notificationsLength:", data);
+        setNotificationsLength(data);
+      });
+      const timer = setTimeout(() => {
+        console.log("Fetching notifications length...");
+        socket.emit("getNotificationsLength", id);
+      }, 5000); // run every 5 seconds
+
+      return () => {
+        socket.off("connect");
+        socket.off("disconnect");
+        socket.off("notificationsLength");
+        clearTimeout(timer);
+      };
+    }
+  }, [id, setNotificationsLength, socket]);
   return (
     <div className="flex justify-between p-2 md:mx-6 relative">
-     <div className="mt-0.5">
-      {user ? (
-        <NavButton
-          title="Menu"
-          customFunc={() => setactiveMenu((prevActiveMenu) => !prevActiveMenu)}
-          color="black"
-          icon={<AiOutlineMenu />}
-        />
-      ) : (
-        <AiOutlineMenu className="text-white" />
-      )}
+      <div className="mt-0.5">
+        {user ? (
+          <NavButton
+            title="Menu"
+            customFunc={() =>
+              setactiveMenu((prevActiveMenu) => !prevActiveMenu)
+            }
+            color="black"
+            icon={<AiOutlineMenu />}
+          />
+        ) : (
+          <AiOutlineMenu className="text-white" />
+        )}
       </div>
       <div className="flex ">
         <div className="mt-2">
-        {user ? (
-          <NavButton
-            title="Chat"
-            dotColor="#03c9d7"
-            customFunc={() => handleClick("chat")}
-            color="black"
-            icon={<BsChatLeft />}
-          />
-        ) : null}
+          {user ? (
+            <NavButton
+              title="Chat"
+              dotColor="#03c9d7"
+              customFunc={() => handleClick("chat")}
+              color="black"
+              icon={<BsChatLeft />}
+            />
+          ) : null}
         </div>
         <div className="mt-2">
-        {user ? (
-          <NavButton
-            title="Notifications"
-            dotColor="#03c9d7"
-            customFunc={() => handleClick("notification")}
-            color="black"
-            icon={<RiNotification3Line />}
-          />
-        ) : null}
-        
+          {user ? (
+            <button
+            type="button"
+            onClick={() => {
+              navigate("/notifications");
+            }}
+            style={{ display: "flex", alignItems: "center" }}
+          >
+            <div style={{ position: "relative" }}>
+              {notificationsLength ? (
+                <MdNotificationsActive
+                  size={25}
+                  style={{ marginTop: 7 }}
+                />
+              ) : (
+                <MdNotificationsNone
+                  size={25}
+                  style={{ marginRight: 10 }}
+                />
+              )}
+              {notificationsLength > 0 && (
+                <span
+                  style={{
+                    position: "absolute",
+                    top: -8,
+                    right: -23, 
+                    background: "#03C9D7",
+                    borderRadius: "50%",
+                    padding: "2px 6px",
+                    fontSize: "12px",
+                    color: "white",
+                  }}
+                >
+                  {notificationsLength}
+                </span>
+              )}
+            </div>
+          </button>
+          
+          
+          ) : null}
         </div>
         {user ? (
           <TooltipComponent content="Profile" position="BottomCenter">
@@ -146,17 +207,15 @@ const NavBar = () => {
               </p>
               <MdKeyboardArrowDown className="text-gray-400 text-14" />
               <NavButton
-           title="Logout"
-           // dotColor="#03c9d7"
-           color="black"
-           customFunc={onLogout}
-           icon={<LogoutIcon />}
-         />
-              </div>
-             
+                title="Logout"
+                // dotColor="#03c9d7"
+                color="black"
+                customFunc={onLogout}
+                icon={<LogoutIcon />}
+              />
               
+            </div>
           </TooltipComponent>
-
         ) : (
           <div className="flex items-center gap-2 cursor-pointer mt-1 p-1 hover-bg-light-gray rounded-lg">
             <NavButton

@@ -7,6 +7,7 @@ const createOrganization = asyncHandler (async (req, res) => {
   try {
     const { name, contact, email, focalPersonName, focalPersonContact, focalPersonEmail } = req.body;
     const organization = await Organization.create({ name, contact, email, focalPersonName, focalPersonContact, focalPersonEmail });
+   
     res.status(201).json(organization);
   } catch (error) {
     res.status(500).json({ error: 'Failed to create organization' });

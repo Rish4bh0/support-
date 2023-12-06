@@ -1,50 +1,55 @@
-const express = require('express') // commonjs module syntax
-const colors = require('colors')
-const dotenv = require('dotenv').config()
-const { errorHandler } = require('./middleware/errorMiddleware')
-const connectDB = require('./config/db')
-const path = require('path')
-const PORT = process.env.PORT || 5000
+const express = require('express');
+const colors = require('colors');
+const dotenv = require('dotenv').config();
+const { errorHandler } = require('./middleware/errorMiddleware');
+const connectDB = require('./config/db');
+const path = require('path');
+const PORT = process.env.PORT || 5000;
 const bodyParser = require('body-parser');
+const cors = require('cors');
+
 // Connect to database
-connectDB()
+connectDB();
 
-const app = express()
+const app = express();
 
-/**
- * Each app.use(middleware) is called every time
- * a request is sent to the server
- */
+// Enable Cross-Origin Resource Sharing (CORS)
+app.use(cors());
 
-/**
- * This is a built-in middleware function in Express.
- * It parses incoming requests with JSON payloads and is based on body-parser.
- */
-app.use(express.json({ limit: '50mb' })); // Example: Increase the limit to 10MB
+// Socket.io must be declared before API routes
+const server = require('http').createServer(app);
+const io = require('socket.io')(server, {
+  transports: ['polling'],
+  cors: { origin: "*" }, 
+});
+require('./socketio.js')(io);
+
+// This middleware parses incoming requests with JSON payloads
+app.use(express.json({ limit: '50mb' }));
+
+// This middleware parses incoming requests with URL-encoded payloads
 app.use(express.urlencoded({ extended: true, limit: '50mb' }));
-// Routes endpoints
 
-app.use('/api/users', require('./routes/userRoutes'))
-app.use('/api/tickets', require('./routes/ticketRoutes'))
+// API routes
+app.use('/api/users', require('./routes/userRoutes'));
+app.use('/api/tickets', require('./routes/ticketRoutes'));
 app.use('/api/issues', require('./routes/issueRoutes'));
-app.use('/api/organizations', require ('./routes/organizationRoutes'));
+app.use('/api/organizations', require('./routes/organizationRoutes'));
+app.use('/api/notifications', require('./routes/notificationRoutes'))
+
 // Serve Frontend
+// Set the build folder as a static folder
+app.use(express.static(path.join(__dirname, '../frontend/build')));
 
-  // Set build folder as static folder
-  app.use(express.static(path.join(__dirname, '../frontend/build')))
+// Serve the React app for any other route
+app.get('*', (req, res) => {
+  res.sendFile(path.join(__dirname, '../frontend/build/index.html'));
+});
 
-  app.get('*', (req, res) => {
-    res.sendFile(path.join(__dirname, '../frontend/build/index.html'))
-  })
+// Custom error handling middleware
+app.use(errorHandler);
 
-
-app.use(errorHandler)
-
-/**
- * app.listen()
- * Starts a UNIX socket and listens for connections on the given path.
- * This method is identical to Node’s http.Server.listen().
- */
-app.listen(PORT, () => {
-  console.log(`Server is running on port ${PORT}`)
-})
+// Start the server
+server.listen(PORT, () => {
+  console.log(`Server is running on port ${PORT}`);
+});

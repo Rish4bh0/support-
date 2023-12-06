@@ -1,6 +1,7 @@
 const asyncHandler = require('express-async-handler');
 const IssueType = require('../models/issueModel');
 const User = require("../models/userModel");
+const notification = require('../models/notification')
 
 const createIssueType = asyncHandler(async (req, res) => {
    // Get user using the id and JWT
@@ -26,6 +27,7 @@ const createIssueType = asyncHandler(async (req, res) => {
   }
 
   const issueType = await IssueType.create({ name });
+   
   res.status(201).json(issueType);
 });
 

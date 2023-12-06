@@ -37,7 +37,7 @@ import  Unassigned from "./pages/unassigned";
 import  Report from "./pages/report";
 import One from "./pages/one"
 import Dash from "./pages/Dash"
-
+import Notification from './pages/NotificationsList.js'
 
 
 function App() {
@@ -111,6 +111,9 @@ function App() {
                 </Route>
                 <Route path="/unassigned" element={<PrivateRoute />}>
                   <Route path="/unassigned" element={<Unassigned />} />
+                </Route>
+                <Route path="/notifications" element={<PrivateRoute />}>
+                  <Route path="/notifications" element={<Notification />} />
                 </Route>
                 <Route path="/org-ticket" element={<PrivateRoute />}>
                   <Route path="/org-ticket" element={<ORGTICKET />} />
