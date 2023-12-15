@@ -116,7 +116,7 @@ const UpdateProductPage = () => {
 
 
  // Check if the user has one of the allowed roles
- if (!["ADMIN", "SUPERVISOR", "EMPLOYEE"].includes(userRole)) {
+ if (!["ADMIN", "SUPERVISOR", "EMPLOYEE", "ORGAGENT"].includes(userRole)) {
   // Handle unauthorized access, e.g., redirect or show an error message
   return (
     <div>

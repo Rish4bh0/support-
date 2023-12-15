@@ -39,8 +39,8 @@ const ticketSchema = mongoose.Schema(
     },
     priority: {
       type: String,
-     // required: [true, 'Please select a priority type'],
-      enum: ['High', 'Low'],
+      enum: ['High', 'Low', 'Unknown'],
+      required: false,
     },
     issueType: {
       type: mongoose.Schema.Types.ObjectId,
@@ -53,7 +53,7 @@ const ticketSchema = mongoose.Schema(
     },
     status: {
       type: String,
-      required: true,
+     // required: true,
       enum: ['new', 'open','review', 'close'],
       default: 'new',
     },

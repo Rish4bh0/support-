@@ -246,7 +246,7 @@ const TicketTable = ({ tickets }) => {
             <TableRow>
               <TableHeaderCell>ID</TableHeaderCell>
               <TableHeaderCell>Clients Name</TableHeaderCell>
-              <TableHeaderCell>Organization</TableHeaderCell>
+              <TableHeaderCell>Office</TableHeaderCell>
               <TableHeaderCell>Status</TableHeaderCell>
               <TableHeaderCell>Ticket solved by</TableHeaderCell>
               <TableHeaderCell>Hours spent</TableHeaderCell>

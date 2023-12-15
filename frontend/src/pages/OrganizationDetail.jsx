@@ -105,19 +105,19 @@ const OrganizationDetail = () => {
     <div className="mb-10">
     <h1 className="text-xl font-extrabold text-14 mb-10">
           {" "}
-          <ViewListIcon /> My Organization Details
+          <ViewListIcon /> My Office Details
         </h1>
 
         <Box sx={{ flexGrow: 1 }}>
       <Grid container spacing={2}>
         <Grid item xs={6}>
-          <Item><strong>Organizatio Name:</strong> {myorganization.name}</Item>
+          <Item><strong>Office Name:</strong> {myorganization.name}</Item>
         </Grid>
         <Grid item xs={6}>
-          <Item><strong>Organization Email:</strong> {myorganization.email}</Item>
+          <Item><strong>Office Email:</strong> {myorganization.email}</Item>
         </Grid>
         <Grid item xs={6}>
-          <Item> <strong>Organization Contact:</strong> {myorganization.contact}</Item>
+          <Item> <strong>Office Contact:</strong> {myorganization.contact}</Item>
         </Grid>
         <Grid item xs={6}>
           <Item> <strong>Focal Person Name:</strong> {myorganization.focalPersonName}</Item>
@@ -229,7 +229,7 @@ const OrganizationDetail = () => {
         <div>
         <h1 className="text-xl font-extrabold text-14 mb-10">
           {" "}
-          <ViewListIcon /> My organization users
+          <ViewListIcon /> My office users
         </h1>
 
         <DataGrid
@@ -253,7 +253,7 @@ columns={[
     flex: 1,
     renderCell: (params) => (
       <div>
-        <Link to={`/createuser/${params.row.id}`}>
+        <Link to={`/createuser/${params.row._id}`}>
           <button className="group">
             <ModeEditIcon className="text-blue-500 group-hover:text-blue-700 mr-8" />
           </button>

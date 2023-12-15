@@ -12,7 +12,12 @@ function TicketItem({ ticket }) {
     month: "long",
     day: "numeric",
   };
+  const userRole = useSelector((state) => state.auth.user?.role);
 
+  // Define an array of roles that should see the "Dashboard" link
+  const allowedRolesOrg = ["ADMIN", "SUPERVISOR", "ORGAGENT", ];
+
+  const  allowedRoles = ["ADMIN", "SUPERVISOR",  ];
   // Access the users array from the Redux state
   const users = useSelector((state) => state.auth.users);
 
@@ -49,14 +54,21 @@ function TicketItem({ ticket }) {
       <div>{issueTypeName}</div> {/* Display the issue type's name */}
       <div className={`status status-${ticket.status}`}>{ticket.status}</div>
       <div>{organizationName}</div>
+     
       <div className="icon-buttons">
+      {(userRole && allowedRolesOrg.includes(userRole)) && (
         <IconButton component={Link} to={`/ticket/${ticket._id}`} className="btn btn-reverse btn-sm">
           <VisibilityIcon />
         </IconButton>
+        )}
+
+{(userRole && allowedRoles.includes(userRole)) && (
         <IconButton component={Link} to={`/ticket/${ticket._id}/update`} className="btn btn-reverse btn-sm">
           <EditIcon />
         </IconButton>
+        )}
       </div>
+      
     </div>
   );
 }

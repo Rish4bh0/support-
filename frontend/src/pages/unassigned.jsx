@@ -118,7 +118,7 @@ function UnassignedTickets() {
         </div> )
       },
     
-    { field: "organization", headerName: "Organization", flex: 1 },
+    { field: "organization", headerName: "Office", flex: 1 },
     {
       field: "actions",
       headerName: "Action",

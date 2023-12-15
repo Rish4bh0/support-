@@ -120,7 +120,7 @@ function UserList() {
                 <TableCell>User name</TableCell>
                 <TableCell>User email</TableCell>
                 <TableCell>User role</TableCell>
-                <TableCell>Organization</TableCell>
+                <TableCell>Office</TableCell>
                 <TableCell>Action</TableCell>
               </TableRow>
             </TableHead>
@@ -234,7 +234,7 @@ function UserList() {
               </select>
             </div>
             <div className="form-group">
-              <label htmlFor="organization">Organization</label>
+              <label htmlFor="organization">Office</label>
               <select
                 name="organization"
                 id="organization"
@@ -250,7 +250,7 @@ function UserList() {
                   ))
                 ) : (
                   <option value="" disabled>
-                    No organization available
+                    No office available
                   </option>
                 )}
               </select>

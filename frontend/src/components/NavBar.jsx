@@ -139,17 +139,7 @@ const NavBar = () => {
         )}
       </div>
       <div className="flex ">
-        <div className="mt-2">
-          {user ? (
-            <NavButton
-              title="Chat"
-              dotColor="#03c9d7"
-              customFunc={() => handleClick("chat")}
-              color="black"
-              icon={<BsChatLeft />}
-            />
-          ) : null}
-        </div>
+     
         <div className="mt-2">
           {user ? (
             <button
@@ -159,16 +149,18 @@ const NavBar = () => {
             }}
             style={{ display: "flex", alignItems: "center" }}
           >
-            <div style={{ position: "relative" }}>
+            <div style={{ position: "relative",
+            right: 22,
+           }}>
               {notificationsLength ? (
                 <MdNotificationsActive
                   size={25}
-                  style={{ marginTop: 7 }}
+                  style={{ marginTop: 8 }}
                 />
               ) : (
                 <MdNotificationsNone
                   size={25}
-                  style={{ marginRight: 10 }}
+                  style={{ marginTop: 8 }}
                 />
               )}
               {notificationsLength > 0 && (

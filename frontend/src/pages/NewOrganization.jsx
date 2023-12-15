@@ -55,10 +55,10 @@ function OrganizationList() {
   }
 
   const columns = [
-    { field: "id", headerName: "Organization ID", flex: 1},
-    { field: "name", headerName: "Organization name", flex: 1 },
-    { field: "email", headerName: "Organization email", flex: 1 },
-    { field: "contact", headerName: "Organization contact", flex: 1 },
+    { field: "id", headerName: "Office ID", flex: 1},
+    { field: "name", headerName: "Office name", flex: 1 },
+    { field: "email", headerName: "Office email", flex: 1 },
+    { field: "contact", headerName: "Office contact", flex: 1 },
     { field: "focalPersonName", headerName: "Focal Person Name", flex: 1 },
     { field: "focalPersonEmail", headerName: "Focal Person Email", flex: 1 },
     { field: "focalPersonContact", headerName: "Focal Person Contact", flex: 1 },
@@ -104,7 +104,7 @@ function OrganizationList() {
       <div>
       <h1 className="text-xl font-extrabold text-14 mb-10">
           {" "}
-          <ViewListIcon /> Manage my organization
+          <ViewListIcon /> Manage my office
         </h1>
        <div>
         <DataGrid

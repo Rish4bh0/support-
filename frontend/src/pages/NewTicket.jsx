@@ -116,6 +116,12 @@ function NewTicket() {
     console.log(ticketData)
     dispatch(createTicket(ticketData));
   };
+  const userRole = useSelector((state) => state.auth.user?.role);
+
+  // Define an array of roles that should see the "Dashboard" link
+  const allowedRoles = ["ADMIN", "SUPERVISOR"];
+
+  const allowedRolesReview = ["ADMIN", "SUPERVISOR","ORGAGENT"];
 
   if (isLoading) return <Spinner />;
 
@@ -202,6 +208,11 @@ function NewTicket() {
               </Select>
             </FormControl>
           </Grid>
+
+          {
+          userRole &&
+          allowedRoles.includes(userRole) && 
+        
           <Grid item xs={6}>
             <FormControl fullWidth>
               <InputLabel htmlFor="assignedTo">Assign To</InputLabel>
@@ -228,6 +239,8 @@ function NewTicket() {
               </Select>
             </FormControl>
           </Grid>
+}
+          
           <Grid item xs={6}>
             <FormControl fullWidth>
               <InputLabel htmlFor="product">Product Name</InputLabel>
@@ -252,6 +265,10 @@ function NewTicket() {
               </Select>
             </FormControl>
           </Grid>
+          {
+          userRole &&
+          allowedRoles.includes(userRole) && 
+        
           <Grid item xs={6}>
             <FormControl fullWidth>
               <InputLabel htmlFor="priority">Priority</InputLabel>
@@ -261,6 +278,9 @@ function NewTicket() {
                 value={priority}
                 onChange={(e) => setPriority(e.target.value)}
               >
+                 <MenuItem value="">
+                  Select One
+                </MenuItem>
                 <MenuItem value="High">
                   High
                 </MenuItem>
@@ -270,6 +290,7 @@ function NewTicket() {
               </Select>
             </FormControl>
           </Grid>
+}
           <Grid item xs={6}>
             <FormControl fullWidth>
               <InputLabel htmlFor="issueType">Issue Type</InputLabel>

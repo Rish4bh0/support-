@@ -197,7 +197,7 @@ const totalUniqueProducts = uniqueProductTypes.length;
 
   const columns = [
     { field: "ticketId", headerName: "Ticket ID", flex: 0.7 },
-    { field: "name", headerName: "Department", flex: 0.7 },
+    { field: "name", headerName: "Office", flex: 0.7 },
     { field: "product", headerName: "Project", flex: 1.5 },
     { field: "payment", headerName: "Payment Type", flex: 0.7},
     { field: "totalSpent", headerName: "Hours Spent", flex: 1 },
@@ -259,7 +259,7 @@ const totalUniqueProducts = uniqueProductTypes.length;
             />
           </div>
           <div>
-            <label className="block text-gray-700">Department Search</label>
+            <label className="block text-gray-700">Office Search</label>
             <input
               className="border border-gray-300 rounded w-40 py-2 px-3"
               type="text"

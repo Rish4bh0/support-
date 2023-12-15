@@ -1,9 +1,4 @@
-import USAID from "../assets/usaid.jpg";
-import Logo1 from "../assets/ministry_of_finance.jpg";
-import Logo2 from "../assets/swiss.jpg";
-import Logo3 from "../assets/koica.png";
-import Logo4 from "../assets/undp.png";
-import Logo5 from "../assets/nbi.png";
+
 
 function Home() {
   return (
@@ -73,7 +68,7 @@ function Home() {
                 </div>
               </div>
             </div>
-           
+            
           </div>
         </container>
       </div>

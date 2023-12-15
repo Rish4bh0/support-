@@ -35,7 +35,7 @@ const Sidebar = () => {
 const userRole = useSelector((state) => state.auth.user?.role);
 
 // Define an array of roles that should see the "Dashboard" link
-const allowedRoles = ["ADMIN", "SUPERVISOR", "EMPLOYEE"];
+const allowedRoles = ["ADMIN", "SUPERVISOR", "EMPLOYEE", ];
 const allowedRolesOrg = ["ADMIN", "SUPERVISOR", "EMPLOYEE", "ORGAGENT"];
 
   return (
@@ -74,7 +74,7 @@ const allowedRolesOrg = ["ADMIN", "SUPERVISOR", "EMPLOYEE", "ORGAGENT"];
             </TooltipComponent>
           </div>
           <div className="mt-10">
-          {(userRole && allowedRoles.includes(userRole)) && (
+          {(userRole && allowedRolesOrg.includes(userRole)) && (
             <div>
               <p
                 className="text-gray-400 m-3
@@ -219,7 +219,7 @@ const allowedRolesOrg = ["ADMIN", "SUPERVISOR", "EMPLOYEE", "ORGAGENT"];
                 }
               >
                 <DomainAddIcon />
-                <span className="capitalize">Organization</span>
+                <span className="capitalize">Office</span>
               </NavLink>
               <NavLink
                 to={`/issues`}
@@ -242,7 +242,7 @@ const allowedRolesOrg = ["ADMIN", "SUPERVISOR", "EMPLOYEE", "ORGAGENT"];
                 className="text-gray-400 m-3
                 mt-4 uppercase"
               >
-                Organization
+                Office
               </p>
 
               <NavLink
@@ -256,7 +256,7 @@ const allowedRolesOrg = ["ADMIN", "SUPERVISOR", "EMPLOYEE", "ORGAGENT"];
                 }
               >
                 <RoomPreferencesIcon />
-                <span className="capitalize">My Organization</span>
+                <span className="capitalize">My Office</span>
               </NavLink>
               <NavLink
                 to={`/org-ticket`}
@@ -269,7 +269,7 @@ const allowedRolesOrg = ["ADMIN", "SUPERVISOR", "EMPLOYEE", "ORGAGENT"];
                 }
               >
                 <CorporateFareIcon />
-                <span className="capitalize">Organization Tickets</span>
+                <span className="capitalize">Office Tickets</span>
               </NavLink>
             </div>
             

@@ -49,7 +49,7 @@ function Ticket() {
   const userRole = useSelector((state) => state.auth.user?.role);
 
   // Define an array of roles that should see the "Dashboard" link
-  const allowedRoles = ["ADMIN", "SUPERVISOR", "EMPLOYEE", "ORGAGENT"];
+  const allowedRoles = ["ADMIN", "SUPERVISOR"];
 
   const allowedRolesReview = ["ADMIN", "SUPERVISOR","ORGAGENT"];
   
@@ -317,7 +317,7 @@ function Ticket() {
         <h3>Assigned To: {getUserNameById(ticket.assignedTo)}</h3>
         <h3>Priority: {ticket.priority}</h3>
         <h3>Issue Type: {issueById(ticket.issueType)}</h3>
-        <h3>Organization: {ticket.organization ? organizationMap[ticket.organization] : "Unassigned"}</h3>
+        <h3>Office: {ticket.organization ? organizationMap[ticket.organization] : "Unassigned"}</h3>
         {ticket.status === "close" && (
           <h3>
             Closed At:{" "}

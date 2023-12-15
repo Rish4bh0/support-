@@ -8,28 +8,22 @@ import { fetchAllUsers } from "../features/auth/authSlice";
 import { getAllIssueTypes } from "../features/issues/issueSlice";
 import { getAllOrganization } from "../features/organization/organizationSlice";
 
+// Import icons for "Next" and "Previous" buttons
+import { FaArrowLeft, FaArrowRight } from "react-icons/fa";
 
 function Tickets() {
   const { tickets, isLoading } = useSelector((state) => state.tickets);
   const dispatch = useDispatch();
-  const userRole = useSelector(state => state.auth.user.role); // Retrieve the user's role from Redux state
+  const userRole = useSelector(state => state.auth.user.role);
   const [activeTab, setActiveTab] = useState("new");
-  const [currentPage, setCurrentPage] = useState(1);
-  const itemsPerPage = 4; // You can adjust this number as needed
-  const newTickets = Array.isArray(tickets) ? tickets.filter((ticket) => ticket.status === "new") : [];
-  const openTickets = Array.isArray(tickets) ? tickets.filter((ticket) => ticket.status === "open") : [];
-  const reviewTickets = Array.isArray(tickets) ? tickets.filter((ticket) => ticket.status === "review") : [];
-  const closedTickets = Array.isArray(tickets) ? tickets.filter((ticket) => ticket.status === "close") : [];
-
-  const filteredTickets =
-    activeTab === "new" ? newTickets : activeTab === "open" ? openTickets : activeTab === "review" ? reviewTickets : closedTickets;
-
-  // Paginate the filtered tickets
-  const startIndex = (currentPage - 1) * itemsPerPage;
-  const endIndex = startIndex + itemsPerPage;
-  const paginatedTickets = filteredTickets.slice(startIndex, endIndex);
-  const totalPages = Math.ceil(filteredTickets.length / itemsPerPage);
-
+  const [currentPage, setCurrentPage] = useState({
+    new: 1,
+    open: 1,
+    review: 1,
+    close: 1,
+  });
+  const itemsPerPage = 4;
+  const maxPageButtons = 5;
 
   useEffect(() => {
     dispatch(getAllTickets());
@@ -42,55 +36,99 @@ function Tickets() {
 
   useEffect(() => {
     dispatch(fetchAllUsers());
-    dispatch(getAllIssueTypes())
-    dispatch(getAllOrganization())
+    dispatch(getAllIssueTypes());
+    dispatch(getAllOrganization());
   }, [dispatch]);
-
- 
-  
 
   if (isLoading) return <Spinner />;
 
-  
-  const handlePageChange = (page) => {
-    setCurrentPage(page);
+  const newTickets = tickets.filter((ticket) => ticket.status === "new");
+  const openTickets = tickets.filter((ticket) => ticket.status === "open");
+  const closedTickets = tickets.filter((ticket) => ticket.status === "close");
+  const reviewTickets = tickets.filter((ticket) => ticket.status === "review");
+
+
+  const filteredTickets =
+    activeTab === "new" ? newTickets : activeTab === "open" ? openTickets : activeTab === "review" ? reviewTickets : closedTickets;
+
+  // Paginate the filtered tickets
+  const startIndex = (currentPage[activeTab] - 1) * itemsPerPage;
+  const endIndex = startIndex + itemsPerPage;
+  const sortedTickets = filteredTickets.sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
+  const paginatedTickets = sortedTickets.slice(startIndex, endIndex);
+  const totalPages = Math.ceil(filteredTickets.length / itemsPerPage);
+
+  const handlePageChange = (page, status) => {
+    setCurrentPage({
+      ...currentPage,
+      [status]: page,
+    });
   };
 
- // Check if the user has one of the allowed roles
- if (!["ADMIN", "SUPERVISOR", "EMPLOYEE"].includes(userRole)) {
-  // Handle unauthorized access, e.g., redirect or show an error message
-  return (
-    <div>
-      <h1>Unauthorized Access</h1>
-      <p>You do not have permission to access this page.</p>
-    </div>
-  );
-}
+  const handleNextPage = () => {
+    if (currentPage[activeTab] < totalPages) {
+      setCurrentPage({
+        ...currentPage,
+        [activeTab]: currentPage[activeTab] + 1,
+      });
+    }
+  };
+
+  const handlePrevPage = () => {
+    if (currentPage[activeTab] > 1) {
+      setCurrentPage({
+        ...currentPage,
+        [activeTab]: currentPage[activeTab] - 1,
+      });
+    }
+  };
+
+  // Generate an array of page numbers to display
+  const pageButtons = [];
+  for (let i = 1; i <= totalPages; i++) {
+    pageButtons.push(
+      <button
+        key={i}
+        className={`btn btn-reverse btn-back ${currentPage[activeTab] === i ? "active" : ""}`}
+        onClick={() => handlePageChange(i, activeTab)}
+      >
+        {i}
+      </button>
+    );
+  }
+
+  const handleTabChange = (tab) => {
+    setActiveTab(tab);
+    setCurrentPage({
+      ...currentPage,
+      [tab]: 1, // Reset the page to 1 for the selected status
+    });
+  };
   return (
     <>
       <BackButton url="/" />
       <div className="tab-buttons">
         <button
           className={`btn btn-reverse btn-back ${activeTab === "new" ? "active" : ""}`}
-          onClick={() => setActiveTab("new")}
+          onClick={() => handleTabChange("new")}
         >
           New Tickets
         </button>
         <button
           className={`btn btn-reverse btn-back ${activeTab === "open" ? "active" : ""}`}
-          onClick={() => setActiveTab("open")}
+          onClick={() => handleTabChange("open")}
         >
           Open Tickets
         </button>
         <button
           className={`btn btn-reverse btn-back ${activeTab === "review" ? "active" : ""}`}
-          onClick={() => setActiveTab("review")}
+          onClick={() => handleTabChange("review")}
         >
           Tickets on review
         </button>
         <button
-          className={`btn btn-reverse btn-back ${activeTab === "closed" ? "active" : ""}`}
-          onClick={() => setActiveTab("closed")}
+          className={`btn btn-reverse btn-back ${activeTab === "close" ? "active" : ""}`}
+          onClick={() => handleTabChange("close")}
         >
           Closed Tickets
         </button>
@@ -103,23 +141,36 @@ function Tickets() {
           <div>Priority</div>
           <div>Issue Type</div>
           <div>Status</div>
-          <div>Organization</div>
+          <div>Office</div>
           <div>Actions</div>
         </div>
         {paginatedTickets.map((ticket) => (
           <TicketItem key={ticket._id} ticket={ticket} />
         ))}
       </div>
-      <div className="tab-buttons">
-        {Array.from({ length: totalPages }, (_, index) => (
+      <div className="pagination-row">
+        <div className="pagination-buttons">
           <button
-            key={index}
-            className={`btn btn-reverse btn-back ${currentPage === index + 1 ? "active" : ""}`}
-            onClick={() => handlePageChange(index + 1)}
+            className="btn btn-reverse btn-back"
+            onClick={handlePrevPage}
+            disabled={currentPage === 1}
           >
-            {index + 1}
+            <FaArrowLeft />
           </button>
-        ))}
+          <div className="page-buttons-row">
+            {pageButtons.slice(
+              Math.max(0, currentPage[activeTab] - Math.floor(maxPageButtons / 2)),
+              currentPage[activeTab] + Math.floor(maxPageButtons / 2)
+            )}
+          </div>
+          <button
+            className="btn btn-reverse btn-back"
+            onClick={handleNextPage}
+            disabled={currentPage[activeTab] === totalPages}
+          >
+            <FaArrowRight />
+          </button>
+        </div>
       </div>
     </>
   );

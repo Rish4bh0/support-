@@ -290,8 +290,8 @@ const createTicket = asyncHandler(async (req, res) => {
 
     const ticket = await Ticket.create({
       product,
-      priority,
-      issueType,
+      priority: priority || "Unknown",
+      issueType: issueType || null,
       assignedTo: assignedToUser ? assignedToUser.id : null,
       description,
       customerName,

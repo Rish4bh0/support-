@@ -60,7 +60,8 @@ function Ticketss() {
   // Paginate the filtered tickets
   const startIndex = (currentPage[activeTab] - 1) * itemsPerPage;
   const endIndex = startIndex + itemsPerPage;
-  const paginatedTickets = filteredTickets.slice(startIndex, endIndex);
+  const sortedTickets = filteredTickets.sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
+  const paginatedTickets = sortedTickets.slice(startIndex, endIndex);
   const totalPages = Math.ceil(filteredTickets.length / itemsPerPage);
 
   const handlePageChange = (page, status) => {
@@ -147,7 +148,7 @@ function Ticketss() {
           <div>Priority</div>
           <div>Issue Type</div>
           <div>Status</div>
-          <div>Organization</div>
+          <div>Office</div>
           <div>Actions</div>
         </div>
         {paginatedTickets.map((ticket) => (

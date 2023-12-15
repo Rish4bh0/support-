@@ -73,7 +73,7 @@ const UpdateOrganization = () => {
 
   return (
     <>
-      <h2>Update Organization</h2>
+      <h2>Update Office</h2>
       <form onSubmit={handleSubmit}>
         <div className="form-group">
           <label htmlFor="name">Name</label>

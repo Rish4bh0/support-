@@ -1,3 +1,4 @@
+
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
@@ -38,6 +39,8 @@ import  Report from "./pages/report";
 import One from "./pages/one"
 import Dash from "./pages/Dash"
 import Notification from './pages/NotificationsList.js'
+import AdminPage from './pages/AdminPage.js';
+import ChatBox from "./components/ChatBox.js";
 
 
 function App() {
@@ -49,16 +52,10 @@ function App() {
         <div className="flex relative dark:bg-main-dark-bg">
         {user ? (
           <div className="fixed right-4 bottom-4" style={{ zIndex: "1000" }}>
-            <TooltipComponent content="Settings" position="Top">
-              <button
-                type="button"
-                className="text-3xl p-3
-            hover:drop-shadow-xl
-            hover:bg-light-gray text-white"
-                style={{ background: "blue", borderRadius: "50%" }}
-              >
-                <FiSettings />
-              </button>
+            <TooltipComponent content="Chat" position="Top">
+             
+                <ChatBox />
+              
             </TooltipComponent>
           </div>
         ) :null }
@@ -108,6 +105,9 @@ function App() {
 
                 <Route path="/new-ticket" element={<PrivateRoute />}>
                   <Route path="/new-ticket" element={<NewTicket />} />
+                </Route>
+                <Route path="/admin" element={<PrivateRoute />}>
+                  <Route path="/admin" element={<AdminPage />} />
                 </Route>
                 <Route path="/unassigned" element={<PrivateRoute />}>
                   <Route path="/unassigned" element={<Unassigned />} />

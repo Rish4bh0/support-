@@ -82,7 +82,7 @@ function OrganizationList() {
   const handleDeleteOrganization = (organizationId) => {
     dispatch(deleteOrganization(organizationId))
       .then(() => {
-        toast.success("Organization deleted successfully");
+        toast.success("Office deleted successfully");
       })
       .catch((error) => {
         toast.error(`Error deleting organization: ${error.message}`);
@@ -111,12 +111,12 @@ function OrganizationList() {
   }
 
   const columns = [
-    { field: "organizationId", headerName: "Organization ID", flex: 1 },
-    { field: "organizationName", headerName: "Organization Name & Location", flex: 1.4 },
-    { field: "organizationEmail", headerName: "Organization Email", flex: 1 },
+    { field: "organizationId", headerName: "Office ID", flex: 1 },
+    { field: "organizationName", headerName: "Office Name & Location", flex: 1.4 },
+    { field: "organizationEmail", headerName: "Office Email", flex: 1 },
     {
       field: "organizationContact",
-      headerName: "Organization Contact",
+      headerName: "Office Contact",
       flex: 1,
     },
     { field: "focalPersonName", headerName: "Focal Person Name", flex: 1 },
@@ -151,7 +151,7 @@ function OrganizationList() {
       <div>
         <h1 className="text-xl font-extrabold text-14">
           {" "}
-          <ViewListIcon /> Organization List
+          <ViewListIcon /> Office List
         </h1>
         <div className="flex justify-end p-2 md:mx-6 relative">
         <Button
@@ -160,7 +160,7 @@ function OrganizationList() {
           onClick={openModal}
           style={{ marginBottom: "10px" }}
         >
-        <AddCircleOutlineIcon />  Add Organization
+        <AddCircleOutlineIcon />  Add Office
         </Button>
         </div>
         <DataGrid
@@ -211,10 +211,10 @@ function OrganizationList() {
           >
             <CloseIcon />
           </Button>
-          <h2>Add Organization</h2>
+          <h2>Add Office</h2>
           <form onSubmit={handleCreateOrganization}>
             <div className="form-group">
-              <label htmlFor="name">Organization Name & Location:</label>
+              <label htmlFor="name">Office Name & Location:</label>
               <input
                 type="text"
                 id="name"
@@ -225,7 +225,7 @@ function OrganizationList() {
               />
             </div>
             <div className="form-group">
-              <label htmlFor="email">Organization Email:</label>
+              <label htmlFor="email">Office Email:</label>
               <input
                 type="text"
                 id="email"
@@ -236,7 +236,7 @@ function OrganizationList() {
               />
             </div>
             <div className="form-group">
-              <label htmlFor="contact">Organization Contact:</label>
+              <label htmlFor="contact">Office Contact:</label>
               <input
                 type="text"
                 id="contact"
@@ -281,7 +281,7 @@ function OrganizationList() {
             </div>
             <div className="form-group">
               <Button type="submit" variant="contained" color="primary">
-                Create Organization
+                Create Office
               </Button>
             </div>
           </form>
