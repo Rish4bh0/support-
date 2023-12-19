@@ -15,7 +15,7 @@ function TicketItem({ ticket }) {
   const userRole = useSelector((state) => state.auth.user?.role);
 
   // Define an array of roles that should see the "Dashboard" link
-  const allowedRolesOrg = ["ADMIN", "SUPERVISOR", "ORGAGENT", ];
+  const allowedRolesOrg = ["ADMIN", "SUPERVISOR", "ORGAGENT","USER" ];
 
   const  allowedRoles = ["ADMIN", "SUPERVISOR",  ];
   // Access the users array from the Redux state

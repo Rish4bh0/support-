@@ -337,7 +337,7 @@ function Ticket() {
 
       {ticket.status !== "close" &&
         userRole &&
-        allowedRoles.includes(userRole) && (
+        allowedRolesReview.includes(userRole) && (
           <button onClick={openModal} className="btn">
             <FaPlus /> Add Task
           </button>
