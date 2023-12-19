@@ -58,7 +58,8 @@ function NewTicket() {
     dispatch(getAllIssueTypes());
   }, [dispatch]);
 
-  const handleMedia = (selectedMedia) => {
+  const handleMedia = (e) => {
+    const selectedMedia = e.target.files;
     const mediaArray = [];
 
     for (let i = 0; i < selectedMedia.length; i++) {
@@ -182,12 +183,14 @@ function NewTicket() {
           case "organization":
           setOrganization(value);
           break;
+          /*
           case "media":
             if (files) {
               // Only call handleMedia when files are present
               handleMedia(files);
             }
             break;
+            */
         default:
           break;
       }
@@ -438,6 +441,50 @@ function NewTicket() {
           <Grid item xs={12}>
             <div className="form-outline mb-4">
               <input
+                onChange={handleMedia}
+                type="file"
+                id="formupload"
+                name="media"
+                className="form-control"
+                accept="image/*, video/*"
+                multiple
+              />
+              <label className="form-label" htmlFor="formupload">
+                Upload Media (Images and Videos)
+              </label>
+            </div>
+            {media.length > 0 && (
+              <div className="selected-media">
+                <Typography variant="body2" gutterBottom>
+                  Selected Media:
+                </Typography>
+                <div className="media-items-container">
+                  {media.map((mediaItem, index) => (
+                    <div key={index} className="media-item">
+                      {mediaItem.startsWith("data:image") ? (
+                        <img
+                        className="img-preview max-w-full max-h-32" // Adjust the max height as needed
+                        src={mediaItem}
+                        alt={`Selected Image ${index + 1}`}
+                      />
+                      ) : (
+                        <video
+                        controls
+                        className="video-preview max-w-full max-h-32" // Adjust the max height as needed
+                        src={mediaItem}
+                        alt={`Selected Video ${index + 1}`}
+                      />
+                      )}
+                    </div>
+                  ))}
+                </div>
+              </div>
+            )}
+          </Grid>
+          {/*
+          <Grid item xs={12}>
+            <div className="form-outline mb-4">
+              <input
                 onChange={handleInputChange}
                 type="file"
                 id="formupload"
@@ -478,7 +525,7 @@ function NewTicket() {
               </div>
             )}
           </Grid>
-        
+                      */}
         </Grid>
         <div className="form-group mt-6">
           <Button variant="contained" color="primary" fullWidth type="submit">

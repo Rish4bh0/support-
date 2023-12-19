@@ -129,7 +129,7 @@ function UserList() {
     {field: "role", headerName: "User role", flex: 1 },
     { 
       field: "organization", 
-      headerName: "Organization", 
+      headerName: "Office", 
       width: 200,
       renderCell: (params) => (
         organizationMap[params.value] || "Unassigned"
@@ -196,7 +196,7 @@ function UserList() {
           <h2>Add User</h2>
           <form onSubmit={handleCreateUser}>
             <div className="form-group">
-              <label htmlFor="name">New Issue Name:</label>
+              <label htmlFor="name">Name:</label>
               <input
                 type="text"
                 id="name"
@@ -245,7 +245,7 @@ function UserList() {
               </select>
             </div>
             <div className="form-group">
-              <label htmlFor="organization">Organization</label>
+              <label htmlFor="organization">Office</label>
               <select
                 name="organization"
                 id="organization"

@@ -25,6 +25,7 @@ export default function Footer() {
         </div>
         <div className="container mx-auto px-4">
           <div className="flex flex-wrap text-center lg:text-left">
+            {/*
             <div className="w-full lg:w-6/12 px-4">
               <h4 className="text-3xl font-semibold">Let's keep in touch!</h4>
               <h5 className="text-lg mt-0 mb-2 text-blueGray-600">
@@ -63,7 +64,7 @@ export default function Footer() {
                 </button>
               </div>
             </div>
-            {/*
+            
             <div className="w-full lg:w-6/12 px-4">
               <div className="flex flex-wrap items-top mb-6">
                 <div className="w-full lg:w-4/12 px-4 ml-auto">
