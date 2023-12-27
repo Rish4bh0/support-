@@ -11,13 +11,16 @@ import {
   createIssueType,
   reset,
   deleteIssueType,
-} from "../features/issues/issueSlice";
+  updateIssueType,
+  selectIssueTypeById,
+} from "../features/issues/issueSlice"; // Replace with your actual import statements
 import BackButton from "../components/BackButton";
-import { getAllOrganization } from "../features/organization/organizationSlice";
+import { getAllOrganization } from "../features/organization/organizationSlice"; // Replace with your actual import statements
 import AddCircleOutlineIcon from "@mui/icons-material/AddCircleOutline";
 import DeleteIcon from "@mui/icons-material/Delete";
 import ModeEditIcon from "@mui/icons-material/ModeEdit";
 import ViewListIcon from "@mui/icons-material/ViewList";
+import Spinner from "../components/Spinner";
 
 function IssueList() {
   const issues = useSelector((state) => state.issueTypes.issueTypes);
@@ -25,11 +28,16 @@ function IssueList() {
     (state) => state.issueTypes
   );
   const userRole = useSelector((state) => state.auth.user.role);
-  const [name, setNewIssueName] = useState("");
+  const [newIssueName, setNewIssueName] = useState(""); // Change to 'newIssueName'
+  const [updateName, setUpdateName] = useState(""); // Change to 'updateName'
   const dispatch = useDispatch();
   const navigate = useNavigate();
 
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [isUpdateModalOpen, setIsUpdateModalOpen] = useState(false);
+  const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
+  const [issueIdToDelete, setIssueIdToDelete] = useState(null);
+  const [selectedIssueId, setSelectedIssueId] = useState("");
 
   useEffect(() => {
     dispatch(getAllIssueTypes());
@@ -42,35 +50,113 @@ function IssueList() {
     }
     if (isSuccess) {
       dispatch(reset());
-      toast.success("Issue added")
+      toast.success("Issue added");
       dispatch(getAllIssueTypes());
     }
   }, [dispatch, isError, isSuccess, message]);
 
-  const handleCreateIssue = (e) => {
-    e.preventDefault();
-    dispatch(createIssueType({ name }));
-    setNewIssueName("");
-    closeModal();
+  const handleUpdateIssue = (issueId) => {
+    setSelectedIssueId(issueId);
+
+    // Check if it's a new user or an existing user being updated
+    if (!issueId) {
+      // It's a new user, open the modal for creating
+      setIsUpdateModalOpen(true);
+    } else {
+      // It's an existing user, set the update form state variables
+      const selectedIssue = issues.find((issue) => issue._id === issueId);
+      if (selectedIssue) {
+        setUpdateName(selectedIssue.name);
+      }
+
+      // Open the modal for updating
+      setIsUpdateModalOpen(true);
+    }
   };
 
+  const handleFormSubmit = (e) => {
+    e.preventDefault();
+
+    const issueData = {
+      name: selectedIssueId ? updateName : newIssueName,
+    };
+  
+
+    if (selectedIssueId) {
+      console.log(selectedIssueId)
+      dispatch(updateIssueType({ id: selectedIssueId, issueData }))
+        .then(() => {
+          closeUpdateModal();
+          toast.success("Issue updated successfully");
+        })
+        .catch((error) => {
+          toast.error(`Error updating issue: ${error.message}`);
+        });
+    } else {
+      dispatch(createIssueType(issueData))
+        .then(() => {
+          closeModal();
+          toast.success("Issue added");
+        })
+        .catch((error) => {
+          toast.error(`Error creating issue: ${error.message}`);
+        });
+    }
+
+    setNewIssueName(""); // Change to 'newIssueName'
+    setUpdateName("");
+  };
+
+  useEffect(() => {
+    dispatch(selectIssueTypeById(selectedIssueId));
+  }, [selectedIssueId, dispatch]);
+
   const handleDeleteIssue = (issueId) => {
-    const token = ""; // Retrieve the user token from your authentication system
-    dispatch(deleteIssueType(issueId, token))
+    setIssueIdToDelete(issueId);
+    setIsDeleteModalOpen(true);
+  };
+
+  const confirmDelete = () => {
+    const token = "your-token-here";
+
+    dispatch(deleteIssueType(issueIdToDelete, token))
       .then(() => {
-        toast.success("Issue deleted successfully");
+        toast.success(`Issue deleted successfully`);
       })
       .catch((error) => {
         toast.error(`Error deleting issue: ${error.message}`);
+      })
+      .finally(() => {
+        setIsDeleteModalOpen(false);
+        setIssueIdToDelete(null);
       });
+  };
+
+  const cancelDelete = () => {
+    setIsDeleteModalOpen(false);
+    setIssueIdToDelete(null);
   };
 
   const openModal = () => {
     setIsModalOpen(true);
   };
 
+  const openUpdateModal = () => {
+    setIsUpdateModalOpen(true);
+  };
+
   const closeModal = () => {
     setIsModalOpen(false);
+    setSelectedIssueId("");
+    setNewIssueName(""); // Change to 'newIssueName'
+    setUpdateName("");
+  };
+
+  const closeUpdateModal = () => {
+    setIsUpdateModalOpen(false);
+    setSelectedIssueId("");
+    setNewIssueName(""); // Change to 'newIssueName'
+    setUpdateName("");
   };
 
   if (!["ADMIN", "SUPERVISOR", "EMPLOYEE"].includes(userRole)) {
@@ -84,7 +170,7 @@ function IssueList() {
 
   return (
     <>
-      <BackButton url="/" />
+       <BackButton url="/" />
       <div>
         <h1 className="text-xl font-extrabold text-14">
           {" "}
@@ -112,12 +198,9 @@ function IssueList() {
               flex: 1,
               renderCell: (params) => (
                 <div>
-                  <Link to={`/issues/${params.row._id}`}>
-                    <button className="group">
-                      <ModeEditIcon className="text-blue-500 group-hover:text-blue-700 mr-8" />
-                    </button>
-                  </Link>
-
+                  <button onClick={() => handleUpdateIssue(params.row._id)}>
+                    <ModeEditIcon className="text-blue-500 group-hover:text-blue-700 mr-8" />
+                  </button>
                   <button
                     onClick={() => handleDeleteIssue(params.row._id)}
                     className="group"
@@ -132,6 +215,10 @@ function IssueList() {
           checkboxSelection
           onSelectionModelChange={(newSelection) => {}}
           getRowId={(row) => row.id}
+          loading={isLoading}
+          components={{
+            loadingOverlay: () => <Spinner />, // Custom spinner component
+          }}
         />
 
         <Modal
@@ -147,7 +234,7 @@ function IssueList() {
             },
             content: {
               width: "500px",
-              height: "300px",
+              height: "250px",
               margin: "0 auto",
               backgroundColor: "white",
               borderRadius: "4px",
@@ -165,7 +252,7 @@ function IssueList() {
           </Button>
 
           <h2>Add Issue</h2>
-          <form onSubmit={handleCreateIssue}>
+          <form onSubmit={handleFormSubmit}>
             <div className="form-group">
               <label htmlFor="name">New Issue Name:</label>
               <input
@@ -173,7 +260,7 @@ function IssueList() {
                 id="name"
                 name="name"
                 placeholder="Name"
-                value={name}
+                value={newIssueName}
                 onChange={(e) => setNewIssueName(e.target.value)}
               />
             </div>
@@ -184,6 +271,103 @@ function IssueList() {
             </div>
           </form>
         </Modal>
+
+           {/* Update issue Modal */}
+      <Modal
+        isOpen={!!(isUpdateModalOpen && selectedIssueId)}
+        onRequestClose={closeUpdateModal}
+        contentLabel="Update Issue Modal"
+        style={{
+          overlay: {
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "center",
+            backgroundColor: "rgba(0, 0, 0, 0.3)",
+          },
+          content: {
+            width: "500px",
+            height: "250px",
+            margin: "0 auto",
+            backgroundColor: "white",
+            borderRadius: "4px",
+            padding: "20px",
+          },
+        }}
+      >
+        <Button
+          variant="text"
+          color="inherit"
+          onClick={closeUpdateModal}
+          style={{ position: "absolute", top: "10px", right: "10px" }}
+        >
+          <CloseIcon />
+        </Button>
+        <h2>Update Issue</h2>
+        <form onSubmit={handleFormSubmit}>
+          <div className="form-group">
+            <label htmlFor="name">Name:</label>
+            <input
+              type="text"
+              id="name"
+              name="name"
+              placeholder="Name"
+              value={updateName}
+              onChange={(e) => setUpdateName(e.target.value)}
+            />
+          </div>
+          <div className="form-group">
+            <Button type="submit" variant="contained" color="primary">
+              Update Issue
+            </Button>
+          </div>
+        </form>
+      </Modal>
+
+         {/* Delete Confirmation Modal */}
+      <Modal
+        isOpen={!!isDeleteModalOpen}
+        onRequestClose={cancelDelete}
+        contentLabel="Delete User Confirmation Modal"
+        style={{
+          overlay: {
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "center",
+            backgroundColor: "rgba(0, 0, 0, 0.3)",
+          },
+          content: {
+            width: "370px",
+            height: "160px",
+            backgroundColor: "white",
+            borderRadius: "4px",
+            padding: "20px",
+            position: "relative",
+          },
+        }}
+      >
+        <Button
+          onClick={cancelDelete}
+          style={{
+            position: "absolute",
+            top: "10px",
+            right: "2px",
+          }}
+        >
+          <CloseIcon />
+        </Button>
+        <h2>Confirm Delete</h2>
+        <p>Are you sure you want to delete issue?</p>
+        <Button
+          style={{
+            top: "20px",
+          }}
+          onClick={confirmDelete}
+          variant="contained"
+          color="primary"
+        >
+          Yes, Delete
+        </Button>
+      </Modal>
       </div>
     </>
   );

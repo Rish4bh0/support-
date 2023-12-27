@@ -2,14 +2,14 @@ import axios from 'axios';
 
 const API_URL = '/api/issues/';
 
-const createIssueType = async (nameData, token) => {
+const createIssueType = async (issueData, token) => {
   const config = {
     headers: {
       Authorization: `Bearer ${token}`,
     },
   };
 
-  const response = await axios.post(API_URL, nameData, config);
+  const response = await axios.post(API_URL, issueData, config);
 
   return response.data;
 };
@@ -31,7 +31,7 @@ const getAllIssueTypes = async token => {
 };
 
 
-const updateIssueType = async (id, name, token) => {
+const updateIssueType = async (id, issueData, token) => {
     const config = {
       headers: {
         Authorization: `Bearer ${token}`,
@@ -39,7 +39,7 @@ const updateIssueType = async (id, name, token) => {
     };
   
     try {
-      const response = await axios.put(API_URL + id, { name }, config);
+      const response = await axios.put(API_URL + id,  issueData , config);
       return response.data;
     } catch (error) {
       throw error; 

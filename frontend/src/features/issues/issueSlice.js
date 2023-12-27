@@ -41,9 +41,11 @@ export const getAllIssueTypes = createAsyncThunk(
 // Update issue type
 export const updateIssueType = createAsyncThunk(
     'issues/update',
-    async ({ id, name, token }, thunkAPI) => {
+    async ({ id, issueData }, thunkAPI) => {
       try {
-        const updatedIssueType = await issueTypeService.updateIssueType(id, name, token);
+        const token = thunkAPI.getState().auth.user.token;
+        const updatedIssueType = await issueTypeService.updateIssueType(id, issueData, token);
+        console.log('API Response:', updatedIssueType);
         return updatedIssueType;
       } catch (error) {
         return thunkAPI.rejectWithValue(error.message);
@@ -133,6 +135,7 @@ export const issueTypeSlice = createSlice({
       })
       .addCase(updateIssueType.fulfilled, (state, action) => {
         state.isLoading = false;
+        
         // Update the issue type in the state with the updated data
         state.issueTypes = state.issueTypes.map((issueType) =>
           issueType._id === action.payload._id ? action.payload : issueType

@@ -15,6 +15,8 @@ function Ticketss() {
 
   const [activeTab, setActiveTab] = useState("new");
   const [currentPage, setCurrentPage] = useState({
+    all: 1,
+    draft: 1,
     new: 1,
     open: 1,
     review: 1,
@@ -41,6 +43,7 @@ function Ticketss() {
   if (isLoading) return <Spinner />;
 
   const newTickets = ticketss.filter((ticket) => ticket.status === "new");
+  const draftTickets = ticketss.filter((ticket) => ticket.status === "draft");
   const openTickets = ticketss.filter((ticket) => ticket.status === "open");
   const closedTickets = ticketss.filter((ticket) => ticket.status === "close");
   const reviewTickets = ticketss.filter((ticket) => ticket.status === "review");
@@ -51,6 +54,8 @@ function Ticketss() {
       ? allTickets
       : selectedStatus === "new"
       ? newTickets
+      : selectedStatus === "draft"
+      ? draftTickets
       : selectedStatus === "open"
       ? openTickets
       : selectedStatus === "review"
@@ -110,7 +115,7 @@ function Ticketss() {
     });
   };
 
-  const statusOptions = ["all", "new", "open", "review", "close"];
+  const statusOptions = ["all", "draft", "new", "open", "review", "close"];
 
   return (
     <>

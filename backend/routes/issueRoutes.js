@@ -18,7 +18,7 @@ router.route('/').post(protect,roleMiddleware(['ADMIN', 'SUPERVISOR', 'EMPLOYEE'
 
 router
   .route('/:id')
-  .put(protect, roleMiddleware(['ADMIN', 'SUPERVISOR', 'EMPLOYEE']),updateIssueType)
+  .put( updateIssueType)
   .get(protect, roleMiddleware(['ADMIN', 'SUPERVISOR', 'EMPLOYEE']),selectIssueType)
   .delete(protect, roleMiddleware(['ADMIN', 'SUPERVISOR', 'EMPLOYEE']),deleteIssueType);
 

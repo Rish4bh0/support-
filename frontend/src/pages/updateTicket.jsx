@@ -31,6 +31,7 @@ const UpdateProductPage = () => {
   // State to store selected media files
   const [media, setMedia] = useState([]);
   const [isEmailValid, setIsEmailValid] = useState(false);
+  const [filteredUsers, setFilteredUsers] = useState([]);
 
   useEffect(() => {
     // Fetch the list of registered users when the component loads
@@ -60,9 +61,31 @@ const UpdateProductPage = () => {
     }
   }, [ticketId, ticket, dispatch]);
 
-  const handleChange = (e) => {
-    setFormData({ ...formData, [e.target.name]: e.target.value });
+   const handleChange = (e) => {
+    const { name, value } = e.target;
+
+    // Update formData state
+    setFormData({ ...formData, [name]: value });
+
+   
   };
+
+  useEffect(() => {
+    // Check if organization is selected
+    if (formData.organization) {
+      // Filter users based on roles whenever the organization or users data changes
+      const allowedRoles = ["ADMIN", "SUPERVISOR", "ORGAGENT"];
+      const filteredUsersByRole = users.filter(
+        (user) => user.organization === formData.organization && allowedRoles.includes(user.role)
+      );
+
+      // Update the filteredUsers state
+      setFilteredUsers(filteredUsersByRole);
+    } else {
+      // If no organization is selected, set filteredUsers to the entire list of users
+      setFilteredUsers(users);
+    }
+  }, [formData.organization, users]);
 
   // Function to handle media file selection
   const handleMedia = (e) => {
@@ -114,6 +137,7 @@ const UpdateProductPage = () => {
     );
   };
 
+ 
 
  // Check if the user has one of the allowed roles
  if (!["ADMIN", "SUPERVISOR", "EMPLOYEE", "ORGAGENT"].includes(userRole)) {
@@ -174,6 +198,7 @@ const UpdateProductPage = () => {
               onChange={handleChange}
             >
               <option value="">Select One</option>
+             
               {organizations && organizations.length > 0 ? (
                 organizations.map((organization) => (
                   <option key={organization._id} value={organization._id}>
@@ -188,27 +213,31 @@ const UpdateProductPage = () => {
             </select>
           </div>
           <div className="form-group">
-            <label htmlFor="assignedTo">Assign To</label>
-            <select
-              name="assignedTo"
-              id="assignedTo"
-              value={formData.assignedTo}
-              onChange={handleChange}
-            >
-              <option value="">Select One</option>
-              {users && users.length > 0 ? (
-                users.map((user) => (
-                  <option key={user._id} value={user._id}>
-                    {user.name}
-                  </option>
-                ))
-              ) : (
-                <option value="" disabled>
-                  No users available
+        <label htmlFor="assignedTo">Assign To</label>
+        {filteredUsers ? (
+          <select
+            name="assignedTo"
+            id="assignedTo"
+            value={formData.assignedTo}
+            onChange={handleChange}
+          >
+            <option value="">Select One</option>
+            {filteredUsers.length > 0 ? (
+              filteredUsers.map((user) => (
+                <option key={user._id} value={user._id}>
+                  {user.name}
                 </option>
-              )}
-            </select>
-          </div>
+              ))
+            ) : (
+              <option value="" disabled>
+                No users available for the selected organization and role
+              </option>
+            )}
+          </select>
+        ) : (
+          <p>Loading users...</p>
+        )}
+      </div>
           <div className="form-group">
             <label htmlFor="product">Product Name</label>
             <select

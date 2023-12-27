@@ -6,6 +6,7 @@ import {
   reviewTicket,
   saveElapsedTime,
   report,
+  openTicket,
 } from "../features/tickets/ticketSlice";
 import {
   getNotes,
@@ -22,12 +23,13 @@ import { FaPlus } from "react-icons/fa";
 import { fetchAllUsers } from "../features/auth/authSlice";
 import { getAllIssueTypes } from "../features/issues/issueSlice";
 import { getAllOrganization } from "../features/organization/organizationSlice";
-import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
-import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
-import { DemoContainer } from '@mui/x-date-pickers/internals/demo';
-import { TimePicker } from '@mui/x-date-pickers/TimePicker';
+import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
+import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
+import { DemoContainer } from "@mui/x-date-pickers/internals/demo";
+import { TimePicker } from "@mui/x-date-pickers/TimePicker";
 import { DataGrid } from "@mui/x-data-grid";
-
+import { Carousel } from "react-responsive-carousel";
+import "react-responsive-carousel/lib/styles/carousel.min.css";
 
 const customStyles = {
   content: {
@@ -51,8 +53,8 @@ function Ticket() {
   // Define an array of roles that should see the "Dashboard" link
   const allowedRoles = ["ADMIN", "SUPERVISOR"];
 
-  const allowedRolesReview = ["ADMIN", "SUPERVISOR","ORGAGENT"];
-  
+  const allowedRolesReview = ["ADMIN", "SUPERVISOR", "ORGAGENT"];
+
   const [modalIsOpen, setModalIsOpen] = useState(false);
   const [text, settext] = useState("");
   const [fromTimee, setfromTimee] = useState("");
@@ -60,7 +62,9 @@ function Ticket() {
   const [isTimerRunning, setIsTimerRunning] = useState(false);
   const [elapsedTime, setElapsedTime] = useState(0);
   const [timerIntervalId, setTimerIntervalId] = useState(null);
-  const organizations = useSelector((state) => state.organizations.organizations);
+  const organizations = useSelector(
+    (state) => state.organizations.organizations
+  );
   const organizationMap = {};
 
   // Create a mapping of organization IDs to their names
@@ -170,7 +174,6 @@ function Ticket() {
     const issue = issues.find((issue) => issue._id === issueId);
     return issue ? issue.name : "Unknown User";
   };
-  
 
   if (isLoading || notesIsLoading) return <Spinner />;
 
@@ -182,6 +185,13 @@ function Ticket() {
   const onTicketClose = () => {
     dispatch(closeTicket(ticketId));
     toast.success("Ticket Closed");
+    navigate("/");
+  };
+
+  // Close ticket
+  const onTicketOpen = () => {
+    dispatch(openTicket(ticketId));
+    toast.success("Ticket Opened");
     navigate("/");
   };
   // Close ticket
@@ -204,25 +214,23 @@ function Ticket() {
     e.preventDefault();
     const toTime = new Date(toTimee);
     const fromTime = new Date(fromTimee);
-    console.log(toTime, fromTime)
+    console.log(toTime, fromTime);
 
     const timeEntries = [
       {
         fromTime,
         toTime,
-      }
+      },
     ];
-    const noteData ={
+    const noteData = {
       text,
-      timeEntries
-    }
-    console.log( noteData)
+      timeEntries,
+    };
+    console.log(noteData);
     dispatch(createNote({ ticketId, noteData }));
     closeModal();
   };
 
-
-  
   const formatTime = (seconds) => {
     const hours = Math.floor(seconds / 3600);
     const minutes = Math.floor((seconds % 3600) / 60);
@@ -235,12 +243,12 @@ function Ticket() {
 
   const formattedTimeSpent = formatTime(ticket.timeSpent);
   const options = {
-   
     month: "long",
     day: "numeric",
-    hour: '2-digit', minute: '2-digit'
+    hour: "2-digit",
+    minute: "2-digit",
   };
-  
+
   const columns = [
     { field: "noteId", headerName: "Note ID", flex: 1.5 },
     { field: "text", headerName: "Task details", flex: 1 },
@@ -250,7 +258,9 @@ function Ticket() {
       flex: 1.5,
       valueGetter: (params) => {
         // Access "toTime" inside "timeEntries" array
-        const formattedTime = new Date(params.row.toTime[0].toTime).toLocaleString("en-US", options);
+        const formattedTime = new Date(
+          params.row.toTime[0].toTime
+        ).toLocaleString("en-US", options);
         return formattedTime;
       },
     },
@@ -260,10 +270,12 @@ function Ticket() {
       flex: 1.5,
       valueGetter: (params) => {
         // Access "fromTime" inside "timeEntries" array
-        const formattedTime = new Date(params.row.fromTime[0].fromTime).toLocaleString("en-US", options);
+        const formattedTime = new Date(
+          params.row.fromTime[0].fromTime
+        ).toLocaleString("en-US", options);
         return formattedTime;
       },
-    },    
+    },
     {
       field: "timeDifference",
       headerName: "Time Difference",
@@ -271,23 +283,22 @@ function Ticket() {
       valueGetter: (params) => {
         const toTime = new Date(params.row.toTime[0].toTime);
         const fromTime = new Date(params.row.fromTime[0].fromTime);
-    
+
         // Calculate the absolute time difference in milliseconds
         const timeDiff = Math.abs(toTime - fromTime);
-    
+
         // Convert milliseconds to a formatted time difference
         const hours = Math.floor(timeDiff / 3600000);
         const minutes = Math.floor((timeDiff % 3600000) / 60000);
         const seconds = Math.floor((timeDiff % 60000) / 1000);
-    
+
         const formattedTimeDifference = `${hours}h ${minutes}m ${seconds}s`;
-    
+
         return formattedTimeDifference;
       },
     },
-    
   ];
-  
+
   // Map notes data to rows for the DataGrid
   const rows = notes.map((note) => ({
     id: note._id,
@@ -296,7 +307,6 @@ function Ticket() {
     toTime: note.timeEntries,
     fromTime: note.timeEntries,
   }));
-  
 
   return (
     <div className="ticket-page">
@@ -317,7 +327,12 @@ function Ticket() {
         <h3>Assigned To: {getUserNameById(ticket.assignedTo)}</h3>
         <h3>Priority: {ticket.priority}</h3>
         <h3>Issue Type: {issueById(ticket.issueType)}</h3>
-        <h3>Office: {ticket.organization ? organizationMap[ticket.organization] : "Unassigned"}</h3>
+        <h3>
+          Office:{" "}
+          {ticket.organization
+            ? organizationMap[ticket.organization]
+            : "Unassigned"}
+        </h3>
         {ticket.status === "close" && (
           <h3>
             Closed At:{" "}
@@ -343,70 +358,69 @@ function Ticket() {
           </button>
         )}
 
-     
-    <Modal
-      isOpen={modalIsOpen}
-      onRequestClose={closeModal}
-      style={customStyles} // Define your custom styles
-      contentLabel="Add Task"
-    >
-      <h2>Add activity</h2>
-      <button className="btn-close" onClick={closeModal}>
-        X
-      </button>
-      <form onSubmit={onNoteSubmit}>
-        <div className="form-group">
-          <label htmlFor="text">Text:</label>
-          <textarea
-            name="Task Detail"
-            id="text"
-            className="form-control"
-            placeholder="Text"
-            value={text}
-            onChange={(e) => settext(e.target.value)}
-          ></textarea>
-        </div>
-        <div className="form-group">
-          <label htmlFor="toTimee">Start Time:</label>
-          <LocalizationProvider dateAdapter={AdapterDayjs}>
-            <DemoContainer components={['TimePicker']}>
-              <TimePicker
-                label="To Time"
-                value={toTimee}
-                onChange={(newToTime) => settoTimee(newToTime)}
-              />
-            </DemoContainer>
-          </LocalizationProvider>
-        </div>
-        <div className="form-group">
-          <label htmlFor="fromTimee">End Time:</label>
-          <LocalizationProvider dateAdapter={AdapterDayjs}>
-            <DemoContainer components={['TimePicker']}>
-              <TimePicker
-                label="From Time"
-                value={fromTimee}
-                onChange={(newFromTime) => setfromTimee(newFromTime)}
-              />
-            </DemoContainer>
-          </LocalizationProvider>
-        </div>
-        <div className="form-group">
-          <button className="btn" type="submit">
-            Submit
-          </button>
-        </div>
-      </form>
-        </Modal>
-        
-        <div style={{ height: 400, width: "100%" }}>
-      <DataGrid
-        rows={rows}
-        columns={columns}
-        pageSize={5} // You can adjust the number of rows per page
-      />
-    </div>
-     
-{/*
+      <Modal
+        isOpen={modalIsOpen}
+        onRequestClose={closeModal}
+        style={customStyles} // Define your custom styles
+        contentLabel="Add Task"
+      >
+        <h2>Add activity</h2>
+        <button className="btn-close" onClick={closeModal}>
+          X
+        </button>
+        <form onSubmit={onNoteSubmit}>
+          <div className="form-group">
+            <label htmlFor="text">Text:</label>
+            <textarea
+              name="Task Detail"
+              id="text"
+              className="form-control"
+              placeholder="Text"
+              value={text}
+              onChange={(e) => settext(e.target.value)}
+            ></textarea>
+          </div>
+          <div className="form-group">
+            <label htmlFor="toTimee">Start Time:</label>
+            <LocalizationProvider dateAdapter={AdapterDayjs}>
+              <DemoContainer components={["TimePicker"]}>
+                <TimePicker
+                  label="To Time"
+                  value={toTimee}
+                  onChange={(newToTime) => settoTimee(newToTime)}
+                />
+              </DemoContainer>
+            </LocalizationProvider>
+          </div>
+          <div className="form-group">
+            <label htmlFor="fromTimee">End Time:</label>
+            <LocalizationProvider dateAdapter={AdapterDayjs}>
+              <DemoContainer components={["TimePicker"]}>
+                <TimePicker
+                  label="From Time"
+                  value={fromTimee}
+                  onChange={(newFromTime) => setfromTimee(newFromTime)}
+                />
+              </DemoContainer>
+            </LocalizationProvider>
+          </div>
+          <div className="form-group">
+            <button className="btn" type="submit">
+              Submit
+            </button>
+          </div>
+        </form>
+      </Modal>
+
+      <div style={{ height: 400, width: "100%" }}>
+        <DataGrid
+          rows={rows}
+          columns={columns}
+          pageSize={5} // You can adjust the number of rows per page
+        />
+      </div>
+
+      {/*
       {notes && Array.isArray(notes) ? (
         notes.map((note) => <NoteItem key={note._id} note={note} />)
       ) : (
@@ -415,6 +429,7 @@ function Ticket() {
 */}
       {ticket.media && ticket.media.length > 0 ? (
         <div className="media-container">
+             <Carousel useKeyboardArrows={true}>
           {ticket.media.map((mediaItem) => (
             <div key={mediaItem.public_id} className="media-item">
               {mediaItem.url.startsWith("https://res.cloudinary.com") ? (
@@ -438,6 +453,7 @@ function Ticket() {
               )}
             </div>
           ))}
+           </Carousel>
         </div>
       ) : (
         <p>No media available</p>
@@ -462,6 +478,12 @@ function Ticket() {
             Close Ticket
           </button>
         )}
+
+      {ticket.status !== "close" && (
+        <button onClick={onTicketOpen} className="btn btn-block btn-danger">
+          Open Ticket
+        </button>
+      )}
 
       {/*
       {ticket.status !== "close" && (

@@ -117,6 +117,23 @@ const reviewTicket = async (ticketId, token) => {
   return response.data
 }
 
+// Draft ticket
+const openTicket = async (ticketId, token) => {
+  const config = {
+    headers: {
+      Authorization: `Bearer ${token}`
+    }
+  }
+
+  const response = await axios.put(
+    API_URL + ticketId,
+    { status: 'open' },
+    config
+  )
+
+  return response.data
+}
+
 // Update ticket
 export const updateTicket = async (ticketId, updatedTicketData, token) => {
   const config = {
@@ -162,7 +179,8 @@ const ticketService = {
   updateTicket,
   reviewTicket,
   saveElapsedTime,
-  report
+  report,
+  openTicket
 }
 
 export default ticketService

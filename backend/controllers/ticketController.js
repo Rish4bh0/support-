@@ -221,7 +221,8 @@ const createTicket = asyncHandler(async (req, res) => {
     customerContact,
     organization,
     media,
-    title 
+    title,
+    status
   } = req.body;
 /*
   if (!product || !priority || !issueType || !description) {
@@ -298,7 +299,7 @@ const createTicket = asyncHandler(async (req, res) => {
       customerEmail,
       customerContact,
       user: req.user.id,
-      status: "new",
+      status,
       media: mediaPromises,
       organization: org ? org._id : null,
       title

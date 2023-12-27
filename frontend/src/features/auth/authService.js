@@ -86,7 +86,7 @@ const selectUserById = async (id, token) => {
     responseType: 'json',
   }
 
-  const response = await axios.get(API_URL + '/create/' + id, config)
+  const response = await axios.get(API_URL + 'create/' + id, config)
 
   return response.data
 }
