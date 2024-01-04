@@ -290,6 +290,18 @@ h3 {
   color: #fff;
   border-radius: 10px;
 }
+
+.status-draft {
+  background-color: rgb(251, 224, 50);
+  color: #fff;
+  border-radius: 10px;
+}
+
+.status-review {
+  background-color: rgb(248, 165, 76);
+  color: #fff;
+  border-radius: 10px;
+}
 /* CSS styles */
 .date-picker-toggle-button {
   background-color: #0074d9;
@@ -532,7 +544,7 @@ footer {
   width: 64px;
   height: 64px;
   border: 8px solid;
-  border-color: #000 transparent #555 transparent;
+  border-color: #5a9eec transparent #1e60d2 transparent;
   border-radius: 50%;
   animation: spin 1.2s linear infinite;
 }

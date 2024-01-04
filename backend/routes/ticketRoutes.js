@@ -26,8 +26,9 @@ router.use('/:ticketId/notes', noteRouter)
 
 router
   .route('/')
-  .get(protect,roleMiddleware(['ADMIN', 'SUPERVISOR', 'EMPLOYEE']), getTickets)
+ // .get(protect,roleMiddleware(['ADMIN', 'SUPERVISOR', 'EMPLOYEE']), getTickets)
   .post( protect, createTicket)
+  .get(protect, getTickets)
 
   router.route('/my').get(protect, getTicketss);
 

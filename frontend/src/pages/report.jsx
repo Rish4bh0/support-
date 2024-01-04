@@ -117,6 +117,8 @@ import AccessTimeIcon from "@mui/icons-material/AccessTime";
 import Select from "@mui/material/Select";
 import MenuItem from "@mui/material/MenuItem";
 
+const getRandomColor = () => `#${Math.floor(Math.random() * 16777215).toString(16)}`;
+
 const Report = () => {
   const dispatch = useDispatch();
   const reports = useSelector((state) => state.tickets.reports);
@@ -169,11 +171,12 @@ const Report = () => {
     const isNameFiltered =
       !nameSearch || row.name.toLowerCase().includes(nameSearch.toLowerCase());
     const isProductFiltered =
-      !selectedProduct || row.product === selectedProduct; // Add this line
-      const isPaymentFiltered =
-      !selectedPayment || row.payment === selectedPayment; // Add this line
+      !selectedProduct || row.product === selectedProduct; 
+      
+     // const isPaymentFiltered =
+     // !selectedPayment || row.payment === selectedPayment; 
 
-    return isDateFiltered && isNameFiltered && isProductFiltered && isPaymentFiltered; // Update the return statement
+    return isDateFiltered && isNameFiltered && isProductFiltered; //&& isPaymentFiltered; // Update the return statement
   });
 
   // Calculate the total number of unique product types
@@ -199,7 +202,7 @@ const totalUniqueProducts = uniqueProductTypes.length;
     { field: "ticketId", headerName: "Ticket ID", flex: 0.7 },
     { field: "name", headerName: "Office", flex: 0.7 },
     { field: "product", headerName: "Project", flex: 1.5 },
-    { field: "payment", headerName: "Payment Type", flex: 0.7},
+    /*{ field: "payment", headerName: "Payment Type", flex: 0.7},*/
     { field: "totalSpent", headerName: "Hours Spent", flex: 1 },
     { field: "status", headerName: "Status", flex: 0.5 },
     {
@@ -230,8 +233,17 @@ const totalUniqueProducts = uniqueProductTypes.length;
   ];
 
   return (
-    <div>
-      <section className="flex items-center justify-center ">
+    <div className=" mt-20">
+        <div className=" p-4 text-white mt-10 rounded-2xl mx-auto mb-20" style={{ backgroundColor: getRandomColor(), width: "50%"  }}>
+          <div className="flex items-center justify-center">
+          <AccessTimeIcon fontSize="large" className="mr-3 mb-1"/>
+            <Typography variant="h4" component="h1" gutterBottom>
+            Time spent on support
+            </Typography>
+          </div>
+        </div>
+        {/*
+      <section className="flex items-center justify-center  ">
         <div>
        
           <Typography variant="h4" component="h1" gutterBottom>
@@ -240,6 +252,7 @@ const totalUniqueProducts = uniqueProductTypes.length;
           </Typography>
         </div>
       </section>
+      */}
       <div className="flex justify-end items-center mb-4">
         <div className="bg-white p-4 rounded shadow-md flex space-x-4">
           <div>
@@ -285,6 +298,7 @@ const totalUniqueProducts = uniqueProductTypes.length;
               <MenuItem value="CMS">CMS</MenuItem>
             </Select>
           </div>
+          {/*
           <div>
             <label className="block text-gray-700">Payment Filter</label>
             <Select
@@ -304,6 +318,7 @@ const totalUniqueProducts = uniqueProductTypes.length;
               <MenuItem value="Support contract">Support contract</MenuItem>
             </Select>
           </div>
+          */}
         </div>
       </div>
 

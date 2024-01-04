@@ -15,8 +15,9 @@ function Tickets() {
   const { tickets, isLoading } = useSelector((state) => state.tickets);
   const dispatch = useDispatch();
   const userRole = useSelector(state => state.auth.user.role);
-  const [activeTab, setActiveTab] = useState("new");
+  const [activeTab, setActiveTab] = useState("all");  // Set initial tab to "all"
   const [currentPage, setCurrentPage] = useState({
+    all: 1,
     new: 1,
     open: 1,
     review: 1,
@@ -47,14 +48,17 @@ function Tickets() {
   const closedTickets = tickets.filter((ticket) => ticket.status === "close");
   const reviewTickets = tickets.filter((ticket) => ticket.status === "review");
 
-
   const filteredTickets =
-    activeTab === "new" ? newTickets : activeTab === "open" ? openTickets : activeTab === "review" ? reviewTickets : closedTickets;
+    activeTab === "all" ? tickets :
+    activeTab === "new" ? newTickets :
+    activeTab === "open" ? openTickets :
+    activeTab === "review" ? reviewTickets :
+    activeTab === "close" ? closedTickets : [];
 
   // Paginate the filtered tickets
   const startIndex = (currentPage[activeTab] - 1) * itemsPerPage;
   const endIndex = startIndex + itemsPerPage;
-  const sortedTickets = filteredTickets.sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
+  const sortedTickets = [...filteredTickets].sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
   const paginatedTickets = sortedTickets.slice(startIndex, endIndex);
   const totalPages = Math.ceil(filteredTickets.length / itemsPerPage);
 
@@ -104,34 +108,39 @@ function Tickets() {
       [tab]: 1, // Reset the page to 1 for the selected status
     });
   };
+
+  const statusOptions = ["all", "new", "open", "review", "close"];
+
   return (
     <>
-      <BackButton url="/" />
+      <div className="flex items-center justify-between mb-4">
+        <BackButton url="/" />
+        <div className="flex items-center">
+          <label htmlFor="status-dropdown" className="mr-2">Status:</label>
+          <select
+            id="status-dropdown"
+            className="px-2 py-1 border border-gray-300 rounded"
+            value={activeTab}
+            onChange={(e) => handleTabChange(e.target.value)}
+          >
+            {statusOptions.map((status) => (
+              <option key={status} value={status}>
+                {status === "all" ? "All Tickets" : `${status.charAt(0).toUpperCase()}${status.slice(1)} Tickets`}
+              </option>
+            ))}
+          </select>
+        </div>
+      </div>
       <div className="tab-buttons">
-        <button
-          className={`btn btn-reverse btn-back ${activeTab === "new" ? "active" : ""}`}
-          onClick={() => handleTabChange("new")}
-        >
-          New Tickets
-        </button>
-        <button
-          className={`btn btn-reverse btn-back ${activeTab === "open" ? "active" : ""}`}
-          onClick={() => handleTabChange("open")}
-        >
-          Open Tickets
-        </button>
-        <button
-          className={`btn btn-reverse btn-back ${activeTab === "review" ? "active" : ""}`}
-          onClick={() => handleTabChange("review")}
-        >
-          Tickets on review
-        </button>
-        <button
-          className={`btn btn-reverse btn-back ${activeTab === "close" ? "active" : ""}`}
-          onClick={() => handleTabChange("close")}
-        >
-          Closed Tickets
-        </button>
+        {statusOptions.map((status) => (
+          <button
+            key={status}
+            className={`btn btn-reverse btn-back ${activeTab === status ? "active" : ""}`}
+            onClick={() => handleTabChange(status)}
+          >
+            {status === "all" ? "All Tickets" : `${status.charAt(0).toUpperCase()}${status.slice(1)} Tickets`}
+          </button>
+        ))}
       </div>
       <div className="tickets">
         <div className="ticket-headings">
@@ -153,7 +162,7 @@ function Tickets() {
           <button
             className="btn btn-reverse btn-back"
             onClick={handlePrevPage}
-            disabled={currentPage === 1}
+            disabled={currentPage[activeTab] === 1}
           >
             <FaArrowLeft />
           </button>

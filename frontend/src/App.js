@@ -41,6 +41,8 @@ import Dash from "./pages/Dash"
 import Notification from './pages/NotificationsList.js'
 import AdminPage from './pages/AdminPage.js';
 import ChatBox from "./components/ChatBox.js";
+import Dashboardd from "./pages/Dashboard/Dashboard.js";
+import Admindash from "./pages/Dashboard.jsx"
 
 
 function App() {
@@ -105,6 +107,12 @@ function App() {
 
                 <Route path="/new-ticket" element={<PrivateRoute />}>
                   <Route path="/new-ticket" element={<NewTicket />} />
+                </Route>
+                <Route path="/admindash" element={<PrivateRoute />}>
+                  <Route path="/admindash" element={<Admindash />} />
+                </Route>
+                <Route path="/dashboardd" element={<PrivateRoute />}>
+                  <Route path="/dashboardd" element={<Dashboardd />} />
                 </Route>
                 <Route path="/admin" element={<PrivateRoute />}>
                   <Route path="/admin" element={<AdminPage />} />

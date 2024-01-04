@@ -133,6 +133,7 @@ export const organizationSlice = createSlice({
       })
       .addCase(updateOrganization.fulfilled, (state, action) => {
         state.isLoading = false;
+        state.isSuccess = true;
         // Update the organization in the state with the updated data
         state.organizations = state.organizations.map((organization) =>
         organization._id === action.payload._id ? action.payload : organization

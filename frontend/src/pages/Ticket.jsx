@@ -14,6 +14,7 @@ import {
   reset as notesReset,
 } from "../features/notes/noteSlice";
 import Spinner from "../components/Spinner";
+
 import { useParams, useNavigate } from "react-router-dom";
 import { useEffect, useState } from "react";
 import { toast } from "react-toastify";
@@ -29,6 +30,12 @@ import { DemoContainer } from "@mui/x-date-pickers/internals/demo";
 import { TimePicker } from "@mui/x-date-pickers/TimePicker";
 import { DataGrid } from "@mui/x-data-grid";
 import { Carousel } from "react-responsive-carousel";
+import FsLightbox from "fslightbox-react";
+import {
+  Button,
+} from "@mui/material";
+import SendIcon from "@mui/icons-material/Send";
+import ImageIcon from '@mui/icons-material/Image';
 import "react-responsive-carousel/lib/styles/carousel.min.css";
 
 const customStyles = {
@@ -62,6 +69,8 @@ function Ticket() {
   const [isTimerRunning, setIsTimerRunning] = useState(false);
   const [elapsedTime, setElapsedTime] = useState(0);
   const [timerIntervalId, setTimerIntervalId] = useState(null);
+  const [toggler, setToggler] = useState(false);
+
   const organizations = useSelector(
     (state) => state.organizations.organizations
   );
@@ -412,7 +421,7 @@ function Ticket() {
         </form>
       </Modal>
 
-      <div style={{ height: 400, width: "100%" }}>
+      <div style={{ height: 400, width: "100%", marginBottom: 30}}>
         <DataGrid
           rows={rows}
           columns={columns}
@@ -427,6 +436,8 @@ function Ticket() {
         <p>No notes available</p>
       )}
 */}
+
+{/*
       {ticket.media && ticket.media.length > 0 ? (
         <div className="media-container">
              <Carousel useKeyboardArrows={true}>
@@ -458,6 +469,29 @@ function Ticket() {
       ) : (
         <p>No media available</p>
       )}
+*/}
+ <div>
+
+ <Button
+            variant="contained"
+            color="primary"
+            endIcon={<ImageIcon />}
+            onClick={() => setToggler((prevToggler) => !prevToggler)}
+            className="mt-10" 
+            >
+            {ticket && ticket.media && ticket.media.length > 0
+              ? 'Preview Media'
+              : 'No media available'}
+          </Button>
+      
+
+      {ticket && ticket.media && ticket.media.length > 0 ? (
+        <FsLightbox
+          toggler={toggler}
+          sources={ticket.media.map((mediaItem) => mediaItem.url)}
+        />
+      ) : null}
+    </div>
 
       {userRole &&
         allowedRolesReview.includes(userRole) &&
@@ -479,11 +513,13 @@ function Ticket() {
           </button>
         )}
 
-      {ticket.status !== "close" && (
-        <button onClick={onTicketOpen} className="btn btn-block btn-danger">
-          Open Ticket
-        </button>
-      )}
+{(ticket.status === "draft" || (ticket.status === "close" && userRole &&
+        allowedRoles.includes(userRole))) && (
+  <button onClick={onTicketOpen} className="btn btn-block btn-danger">
+    Open Ticket
+  </button>
+)}
+
 
       {/*
       {ticket.status !== "close" && (

@@ -10,7 +10,10 @@ import { DataGrid } from "@mui/x-data-grid";
 import { makeStyles } from "@mui/styles";
 import { Link } from "react-router-dom";
 import ModeEditIcon from "@mui/icons-material/ModeEdit";
-
+import Box from '@mui/material/Box';
+import { darken, lighten, styled } from '@mui/material/styles';
+import CheckCircleOutlineIcon from '@mui/icons-material/CheckCircleOutline';
+import CancelOutlinedIcon from '@mui/icons-material/CancelOutlined';
 
 const useStyles = makeStyles({
   highPriorityy: {
@@ -35,6 +38,7 @@ const useStyles = makeStyles({
 function UnassignedTickets() {
   const { allTickets, isLoading } = useSelector((state) => state.tickets);
   const organizations = useSelector((state) => state.organizations.organizations);
+  const issues = useSelector((state) => state.issueTypes.issueTypes);
   const dispatch = useDispatch();
   const userRole = useSelector((state) => state.auth.user.role);
   const [activeTab, setActiveTab] = useState("unassigned");
@@ -42,6 +46,124 @@ function UnassignedTickets() {
   const itemsPerPage = 4;
 
   const classes = useStyles();
+  const options = {
+    //  weekday: "long",
+      year: "numeric",
+      month: "long",
+      day: "numeric",
+      //  hour: "2-digit",
+      // minute: "2-digit",
+    };
+
+
+    const getBackgroundColor = (color, mode) =>
+  mode === 'dark' ? darken(color, 0.7) : lighten(color, 0.7);
+
+const getHoverBackgroundColor = (color, mode) =>
+  mode === 'dark' ? darken(color, 0.6) : lighten(color, 0.6);
+
+const getSelectedBackgroundColor = (color, mode) =>
+  mode === 'dark' ? darken(color, 0.5) : lighten(color, 0.5);
+
+const getSelectedHoverBackgroundColor = (color, mode) =>
+  mode === 'dark' ? darken(color, 0.4) : lighten(color, 0.4);
+
+  const StyledDataGrid = styled(DataGrid)(({ theme }) => ({
+    '& .super-app-theme--open': {
+      backgroundColor: getBackgroundColor(theme.palette.info.main, theme.palette.mode),
+      '&:hover': {
+        backgroundColor: getHoverBackgroundColor(
+          theme.palette.info.main,
+          theme.palette.mode,
+        ),
+      },
+      '&.Mui-selected': {
+        backgroundColor: getSelectedBackgroundColor(
+          theme.palette.info.main,
+          theme.palette.mode,
+        ),
+        '&:hover': {
+          backgroundColor: getSelectedHoverBackgroundColor(
+            theme.palette.info.main,
+            theme.palette.mode,
+          ),
+        },
+      },
+    },
+    '& .super-app-theme--new': {
+      backgroundColor: getBackgroundColor(
+        theme.palette.success.main,
+        theme.palette.mode,
+      ),
+      '&:hover': {
+        backgroundColor: getHoverBackgroundColor(
+          theme.palette.success.main,
+          theme.palette.mode,
+        ),
+      },
+      '&.Mui-selected': {
+        backgroundColor: getSelectedBackgroundColor(
+          theme.palette.success.main,
+          theme.palette.mode,
+        ),
+        '&:hover': {
+          backgroundColor: getSelectedHoverBackgroundColor(
+            theme.palette.success.main,
+            theme.palette.mode,
+          ),
+        },
+      },
+    },
+    '& .super-app-theme--review': {
+      backgroundColor: getBackgroundColor(
+        theme.palette.warning.main,
+        theme.palette.mode,
+      ),
+      '&:hover': {
+        backgroundColor: getHoverBackgroundColor(
+          theme.palette.warning.main,
+          theme.palette.mode,
+        ),
+      },
+      '&.Mui-selected': {
+        backgroundColor: getSelectedBackgroundColor(
+          theme.palette.warning.main,
+          theme.palette.mode,
+        ),
+        '&:hover': {
+          backgroundColor: getSelectedHoverBackgroundColor(
+            theme.palette.warning.main,
+            theme.palette.mode,
+          ),
+        },
+      },
+    },
+    '& .super-app-theme--close': {
+      backgroundColor: getBackgroundColor(
+        theme.palette.error.main,
+        theme.palette.mode,
+      ),
+      '&:hover': {
+        backgroundColor: getHoverBackgroundColor(
+          theme.palette.error.main,
+          theme.palette.mode,
+        ),
+      },
+      '&.Mui-selected': {
+        backgroundColor: getSelectedBackgroundColor(
+          theme.palette.error.main,
+          theme.palette.mode,
+        ),
+        '&:hover': {
+          backgroundColor: getSelectedHoverBackgroundColor(
+            theme.palette.error.main,
+            theme.palette.mode,
+          ),
+        },
+      },
+    },
+  }));
+  
 
   useEffect(() => {
     dispatch(fetchAllUsers());
@@ -59,6 +181,12 @@ function UnassignedTickets() {
 
   if (isLoading) return <Spinner />;
 
+  const issueMap = {};
+  issues.forEach((issue)=>{
+    issueMap[issue._id] = issue.name;
+  }) 
+
+  
   const organizationMap = {};
   organizations.forEach((organization) => {
     organizationMap[organization._id] = organization.name;
@@ -72,16 +200,28 @@ function UnassignedTickets() {
 
   const rows = filteredTickets.map((ticket) => ({
     id: ticket._id,
-    date: ticket.date,
+    createdAt: ticket.createdAt,
     product: ticket.product,
-    assignedTo: ticket.assignedTo,
+    assignedTo: ticket.assignedTo ? ticket.assignedTo : 'Unassigned',
     priority: ticket.priority,
-    issueType: ticket.issueType,
+    issueType: issueMap[ticket.issueType] ? issueMap[ticket.issueType] : 'Unassigned',
     status: ticket.status,
-    organization: organizationMap[ticket.organization], // Replace with the organization name
+    organization: organizationMap[ticket.organization] ? organizationMap[ticket.organization] : 'Unassigned',
   }));
 
   const columns = [
+    {
+      field: "createdAt",
+      headerName: "Created At",
+      flex: 1.1,
+      valueGetter: (params) => {
+        const formattedTime = new Date(params.row.createdAt).toLocaleString(
+          "en-US",
+          options
+        );
+        return formattedTime;
+      },
+    },
     { field: "product", headerName: "Product", flex: 1 },
     { field: "assignedTo", headerName: "Assigned To", flex: 1 },
     {
@@ -91,7 +231,7 @@ function UnassignedTickets() {
       renderCell: (params) => (
         <div
           className={
-            params.value === "High" ? classes.highPriority : classes.lowPriority
+            params.value === "high" ? classes.highPriority : classes.lowPriority
           }
         >
           {params.value}
@@ -110,12 +250,25 @@ function UnassignedTickets() {
       flex: 1,
       renderCell: (params) => (
         <div
-          className={
-            params.value === "Open" ? classes.openStatus : classes.closedStatus
-          }
-        >
-          {params.value}
-        </div> )
+        style={{
+          display: 'flex',
+          alignItems: 'center',
+          borderRadius: '8px',
+          padding: '8px',
+        }}
+      >
+        {params.value === 'new' ? (
+          <>
+            <CheckCircleOutlineIcon style={{ color: '#fff', marginRight: '4px' }} />
+            <span style={{ color: '#fff' }}>{params.value}</span>
+          </>
+        ) : (
+          <>
+            <CancelOutlinedIcon style={{ color: '#000', marginRight: '4px' }} />
+            <span style={{ color: '#000' }}>{params.value}</span>
+          </>
+        )}
+      </div> )
       },
     
     { field: "organization", headerName: "Office", flex: 1 },
@@ -143,13 +296,18 @@ function UnassignedTickets() {
        
       </div>
       <div style={{ height: 400, width: "100%" }}>
-        <DataGrid
+        <StyledDataGrid
+        getRowClassName={(params) => `super-app-theme--${params.row.status}`}
           rows={rows}
           columns={columns}
-          pageSize={itemsPerPage}
-          page={currentPage}
-          onPageChange={(newPage) => setCurrentPage(newPage)}
-          disableSelectionOnClick // Disable row selection
+          initialState={{
+            ...rows.initialState,
+            pagination: { paginationModel: { pageSize: 5 } },
+          }}
+          pageSizeOptions={[5, 10, 25]}
+  page={currentPage}
+  onPageChange={(newPage) => setCurrentPage(newPage)}
+  disableSelectionOnClick
         />
       </div>
     </div>

@@ -225,7 +225,7 @@ export const authSlice = createSlice({
     })
     .addCase(fetchAllUsers.fulfilled, (state, action) => {
       state.isLoading = false;
-      state.isSuccess = true
+      state.isSuccess = false
       state.users = action.payload; // Store the list of users
     })
     .addCase(fetchAllUsers.rejected, (state, action) => {
@@ -280,6 +280,7 @@ export const authSlice = createSlice({
       })
       .addCase(updateUser.fulfilled, (state, action) => {
         state.isLoading = false;
+        state.isSuccess = true
         state.users = state.users.map((user) =>
         user._id === action.payload._id ? action.payload : user
         );

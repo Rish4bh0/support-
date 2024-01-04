@@ -45,6 +45,8 @@ function TicketItem({ ticket }) {
   // Extract the name of the issueType (if found)
   const organizationName = ticketorganizations ? ticketorganizations.name : "Unknown Organization";
 
+ 
+
   return (
     <div className="ticket">
       <div>{new Date(ticket.createdAt).toLocaleString("en-US", options)}</div>
@@ -62,10 +64,10 @@ function TicketItem({ ticket }) {
         </IconButton>
         )}
 
-{(userRole && allowedRoles.includes(userRole)) && (
-        <IconButton component={Link} to={`/ticket/${ticket._id}/update`} className="btn btn-reverse btn-sm">
-          <EditIcon />
-        </IconButton>
+{(ticket.status === 'draft' || (userRole && allowedRoles.includes(userRole))) && (
+          <IconButton component={Link} to={`/ticket/${ticket._id}/update`} className="btn btn-reverse btn-sm">
+            <EditIcon />
+          </IconButton>
         )}
       </div>
       

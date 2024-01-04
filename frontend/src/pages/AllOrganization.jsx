@@ -10,6 +10,8 @@ import {
   createOrganization,
   deleteOrganization,
   getAllOrganization,
+  updateOrganization,
+  selectOrganizationById,
   reset,
 } from "../features/organization/organizationSlice";
 import BackButton from "../components/BackButton";
@@ -27,6 +29,7 @@ import {
   InputLabel,
 
 } from "@mui/material";
+import Spinner from "../components/Spinner";
 
 
 function OrganizationList() {
@@ -37,67 +40,190 @@ function OrganizationList() {
     (state) => state.organizations
   );
   const userRole = useSelector((state) => state.auth.user.role);
-  const [name, setNewOrganizationName] = useState("");
-  const [email, setEmail] = useState("");
-  const [contact, setContact] = useState("");
-  const [focalPersonName, setFocalPersonName] = useState("");
-  const [focalPersonContact, setFocalPersonContact] = useState("");
-  const [focalPersonEmail, setFocalPersonEmail] = useState("");
+  const [newName, setNewOrganizationName] = useState("");
+  const [newEmail, setEmail] = useState("");
+  const [newContact, setContact] = useState("");
+  const [newFocalPersonName, setFocalPersonName] = useState("");
+  const [newFocalPersonContact, setFocalPersonContact] = useState("");
+  const [newFocalPersonEmail, setFocalPersonEmail] = useState("");
+  
+  const [updateName, setUpdateOrganizationName] = useState("");
+  const [updateEmail, setUpdateEmail] = useState("");
+  const [updateContact, setUpdateContact] = useState("");
+  const [updateFocalPersonName, setUpdateFocalPersonName] = useState("");
+  const [updatefocalPersonContact, setUpdateFocalPersonContact] = useState("");
+  const [updateFocalPersonEmail, setUpdateFocalPersonEmail] = useState("");
+  
   const dispatch = useDispatch();
-  const navigate = useNavigate();
+
 
   // Local state for the modal
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [isUpdateModalOpen, setIsUpdateModalOpen] = useState(false);
+  const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
+  const [organizationIdToDelete, setOrganizationIdToDelete] = useState(null);
+  const [organizationToDelete, setOrganizationToDelete] = useState(null);
+  const [selectedOrganizationId, setSelectedOrganizationId] = useState("");
 
   useEffect(() => {
     // Load the initial organization list when the component mounts
     dispatch(getAllOrganization());
   }, [dispatch]);
 
-  useEffect(() => {
-    if (isError) {
-      toast.error(message);
+  const handleUpdateOrganization = (organizationId) => {
+    setSelectedOrganizationId(organizationId);
+  
+    // Check if it's a new organization or an existing organization being updated
+    if (!organizationId) {
+      // It's a new organization, open the modal for creating
+      setIsUpdateModalOpen(true);
+    } else {
+      // It's an existing organization, set the update form state variables
+      const selectedOrganization = organizations.find((organization) => organization._id === organizationId);
+      if (selectedOrganization) {
+        setUpdateOrganizationName(selectedOrganization.name);
+        setUpdateEmail(selectedOrganization.email);
+        setUpdateContact(selectedOrganization.contact);
+        setUpdateFocalPersonContact(selectedOrganization.focalPersonContact);
+        setUpdateFocalPersonEmail(selectedOrganization.focalPersonEmail);
+        setUpdateFocalPersonName(selectedOrganization.focalPersonName);
+      }
+  
+      // Open the modal for updating
+      setIsUpdateModalOpen(true);
     }
-    if (isSuccess) {
-      dispatch(reset());
-    }
-  }, [dispatch, isError, isSuccess, message]);
+  };
+  
+  
+  
 
-  // Function to handle form submission for creating a new organization
-  const handleCreateOrganization = (e) => {
-    e.preventDefault();
-    dispatch(createOrganization({ name, email, contact, focalPersonName, focalPersonContact, focalPersonEmail }));
+  const handleDeleteOrganization = (organizationId, organizationName) => {
+    setOrganizationIdToDelete(organizationId);
+    setOrganizationToDelete(organizationName);
+    setIsDeleteModalOpen(true);
+  };
 
-    // Clear the input fields after creating the organization
+  const confirmDelete = () => {
+    const token = "your-token-here";
+
+    dispatch(deleteOrganization(organizationIdToDelete, token))
+      .then(() => {
+        toast.success(`${organizationToDelete} deleted successfully`);
+      })
+      .catch((error) => {
+        toast.error(`Error deleting ${organizationToDelete}: ${error.message}`);
+      })
+      .finally(() => {
+        setIsDeleteModalOpen(false);
+        setOrganizationIdToDelete(null);
+      });
+  };
+
+  const cancelDelete = () => {
+    setIsDeleteModalOpen(false);
+    setOrganizationIdToDelete(null);
+  };
+
+  const openModal = () => {
+    setIsModalOpen(true);
+  };
+
+  const openUpdateModal = () => {
+    setIsUpdateModalOpen(true);
+  };
+
+  const closeUpdateModal = () => {
+    setIsUpdateModalOpen(false);
+    setSelectedOrganizationId("");
     setNewOrganizationName("");
     setEmail("");
     setContact("");
     setFocalPersonContact("");
     setFocalPersonEmail("");
     setFocalPersonName("");
-    closeModal();
+
+    setUpdateOrganizationName("");
+    setUpdateEmail("");
+    setUpdateContact("");
+    setUpdateFocalPersonContact("");
+    setUpdateFocalPersonEmail("");
+    setUpdateFocalPersonName("");
   };
 
-  // Function to handle organization deletion
-  const handleDeleteOrganization = (organizationId) => {
-    dispatch(deleteOrganization(organizationId))
-      .then(() => {
-        toast.success("Office deleted successfully");
-      })
-      .catch((error) => {
-        toast.error(`Error deleting organization: ${error.message}`);
-      });
-  };
-
-  // Function to open the modal
-  const openModal = () => {
-    setIsModalOpen(true);
-  };
-
-  // Function to close the modal
   const closeModal = () => {
     setIsModalOpen(false);
+    setSelectedOrganizationId("");
+    setNewOrganizationName("");
+    setEmail("");
+    setContact("");
+    setFocalPersonContact("");
+    setFocalPersonEmail("");
+    setFocalPersonName("");
+
+    setUpdateOrganizationName("");
+    setUpdateEmail("");
+    setUpdateContact("");
+    setUpdateFocalPersonContact("");
+    setUpdateFocalPersonEmail("");
+    setUpdateFocalPersonName("");
   };
+
+  const handleFormSubmit = (e) => {
+    e.preventDefault();
+  
+    const organizationData = {
+      name: selectedOrganizationId ? updateName : newName,
+      email: selectedOrganizationId ? updateEmail : newEmail,
+      contact: selectedOrganizationId ? updateContact : newContact,
+      focalPersonContact: selectedOrganizationId ? updatefocalPersonContact : newFocalPersonContact,
+      focalPersonEmail: selectedOrganizationId ? updateFocalPersonEmail : newFocalPersonEmail,
+      focalPersonName: selectedOrganizationId ? updateFocalPersonName : newFocalPersonName,
+    };
+  
+     
+
+    if (selectedOrganizationId) {
+      dispatch(updateOrganization({ id: selectedOrganizationId, organizationData }))
+        .then(() => {
+          closeUpdateModal();
+          toast.success("Organization updated successfully");
+          dispatch(getAllOrganization());
+        })
+        .catch((error) => {
+          toast.error(`Error updating organization: ${error.message}`);
+        });
+    } else {
+      dispatch(createOrganization(organizationData))
+        .then(() => {
+          closeModal();
+          toast.success("Organization added");
+          dispatch(getAllOrganization());
+        })
+        .catch((error) => {
+          toast.error(`Error creating organization: ${error.message}`);
+        });
+    }
+
+    setNewOrganizationName("");
+    setEmail("");
+    setContact("");
+    setFocalPersonContact("");
+    setFocalPersonEmail("");
+    setFocalPersonName("");
+
+    setUpdateOrganizationName("");
+    setUpdateEmail("");
+    setUpdateContact("");
+    setUpdateFocalPersonContact("");
+    setUpdateFocalPersonEmail("");
+    setUpdateFocalPersonName("");
+    setSelectedOrganizationId("");
+  };
+
+  useEffect(() => {
+    dispatch(selectOrganizationById(selectedOrganizationId));
+  }, [selectedOrganizationId, dispatch]);
+
 
   // Check if the user has one of the allowed roles
   if (!["ADMIN", "SUPERVISOR", "EMPLOYEE"].includes(userRole)) {
@@ -129,11 +255,9 @@ function OrganizationList() {
       flex: 1,
       renderCell: (params) => (
         <div>
-          <Link to={`/organization/${params.row.organizationId}`}>
-          <button className="group">
-                      <ModeEditIcon className="text-blue-500 group-hover:text-blue-700 mr-8" />
-                    </button>
-          </Link>
+           <button onClick={() => handleUpdateOrganization(params.row.organizationId)}>
+            <ModeEditIcon className="text-blue-500 group-hover:text-blue-700 mr-8" />
+          </button>
           <button
              className="group"
             onClick={() => handleDeleteOrganization(params.row.organizationId)}
@@ -181,9 +305,14 @@ function OrganizationList() {
           onSelectionModelChange={(newSelection) => {
             // Handle selection changes if needed
           }}
+          getRowId={(row) => row.id}
+  loading={isLoading}
+  components={{
+    loadingOverlay: () => <Spinner />, // Custom spinner component
+  }}
         />
         <Modal
-          isOpen={isModalOpen}
+          isOpen={!!isModalOpen}
           onRequestClose={closeModal}
           contentLabel="Add Organization Modal"
           style={{
@@ -212,7 +341,7 @@ function OrganizationList() {
             <CloseIcon />
           </Button>
           <h2>Add Office</h2>
-          <form onSubmit={handleCreateOrganization}>
+          <form onSubmit={handleFormSubmit}>
             <div className="form-group">
               <label htmlFor="name">Office Name & Location:</label>
               <input
@@ -220,7 +349,7 @@ function OrganizationList() {
                 id="name"
                 name="name"
                 placeholder="Name"
-                value={name}
+                value={newName}
                 onChange={(e) => setNewOrganizationName(e.target.value)}
               />
             </div>
@@ -231,7 +360,7 @@ function OrganizationList() {
                 id="email"
                 name="email"
                 placeholder="Email"
-                value={email}
+                value={newEmail}
                 onChange={(e) => setEmail(e.target.value)}
               />
             </div>
@@ -242,7 +371,7 @@ function OrganizationList() {
                 id="contact"
                 name="contact"
                 placeholder="Contact"
-                value={contact}
+                value={newContact}
                 onChange={(e) => setContact(e.target.value)}
               />
             </div>
@@ -253,7 +382,7 @@ function OrganizationList() {
                 id="focalPersonName"
                 name="focalPersonName"
                 placeholder="Description"
-                value={focalPersonName}
+                value={newFocalPersonName}
                 onChange={(e) => setFocalPersonName(e.target.value)}
               />
             </div>
@@ -264,7 +393,7 @@ function OrganizationList() {
                 id="focalPersonEmail"
                 name="focalPersonEmail"
                 placeholder="Focal Person Email"
-                value={focalPersonEmail}
+                value={newFocalPersonEmail}
                 onChange={(e) => setFocalPersonEmail(e.target.value)}
               />
             </div>
@@ -275,7 +404,7 @@ function OrganizationList() {
                 id="focalPersonContact"
                 name="focalPersonContact"
                 placeholder="Focal Person Contact"
-                value={focalPersonContact}
+                value={newFocalPersonContact}
                 onChange={(e) => setFocalPersonContact(e.target.value)}
               />
             </div>
@@ -286,6 +415,158 @@ function OrganizationList() {
             </div>
           </form>
         </Modal>
+
+          {/* Update User Modal */}
+      <Modal
+        isOpen={!!(isUpdateModalOpen && selectedOrganizationId)}
+        onRequestClose={closeUpdateModal}
+        contentLabel="Update Office Modal"
+        style={{
+          overlay: {
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "center",
+            backgroundColor: "rgba(0, 0, 0, 0.3)",
+          },
+          content: {
+            width: "500px",
+            height: "600px",
+            margin: "0 auto",
+            backgroundColor: "white",
+            borderRadius: "4px",
+            padding: "20px",
+          },
+        }}
+      >
+        <Button
+          variant="text"
+          color="inherit"
+          onClick={closeUpdateModal}
+          style={{ position: "absolute", top: "10px", right: "10px" }}
+        >
+          <CloseIcon />
+        </Button>
+        <h2>Update Office</h2>
+        <form onSubmit={handleFormSubmit}>
+          <div className="form-group">
+              <label htmlFor="name">Office Name & Location:</label>
+              <input
+                type="text"
+                id="name"
+                name="name"
+                placeholder="Name"
+                value={updateName}
+                onChange={(e) => setUpdateOrganizationName(e.target.value)}
+              />
+            </div>
+            <div className="form-group">
+              <label htmlFor="email">Office Email:</label>
+              <input
+                type="text"
+                id="email"
+                name="email"
+                placeholder="Email"
+                value={updateEmail}
+                onChange={(e) => setUpdateEmail(e.target.value)}
+              />
+            </div>
+            <div className="form-group">
+              <label htmlFor="contact">Office Contact:</label>
+              <input
+                type="text"
+                id="contact"
+                name="contact"
+                placeholder="Contact"
+                value={updateContact}
+                onChange={(e) => setUpdateContact(e.target.value)}
+              />
+            </div>
+            <div className="form-group">
+              <label htmlFor="focalPersonName">Focal Person Name:</label>
+              <input
+                type="text"
+                id="focalPersonName"
+                name="focalPersonName"
+                placeholder="Focal Person Name"
+                value={updateFocalPersonName}
+                onChange={(e) => setUpdateFocalPersonName(e.target.value)}
+              />
+            </div>
+            <div className="form-group">
+              <label htmlFor="focalPersonEmail">Focal Person Email:</label>
+              <input
+                type="text"
+                id="focalPersonEmail"
+                name="focalPersonEmail"
+                placeholder="Focal Person Email"
+                value={updateFocalPersonEmail}
+                onChange={(e) => setUpdateFocalPersonEmail(e.target.value)}
+              />
+            </div>
+            <div className="form-group">
+              <label htmlFor="focalPersonContact">Focal Person Contact:</label>
+              <input
+                type="text"
+                id="focalPersonContact"
+                name="focalPersonContact"
+                placeholder="Focal Person Contact"
+                value={updatefocalPersonContact}
+                onChange={(e) => setUpdateFocalPersonContact(e.target.value)}
+              />
+            </div>
+          <div className="form-group">
+            <Button type="submit" variant="contained" color="primary">
+              Update Office
+            </Button>
+          </div>
+        </form>
+      </Modal>
+
+      {/* Delete Confirmation Modal */}
+      <Modal
+        isOpen={!!isDeleteModalOpen}
+        onRequestClose={cancelDelete}
+        contentLabel="Delete Office Confirmation Modal"
+        style={{
+          overlay: {
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "center",
+            backgroundColor: "rgba(0, 0, 0, 0.3)",
+          },
+          content: {
+            width: "370px",
+            height: "160px",
+            backgroundColor: "white",
+            borderRadius: "4px",
+            padding: "20px",
+            position: "relative",
+          },
+        }}
+      >
+        <Button
+          onClick={cancelDelete}
+          style={{
+            position: "absolute",
+            top: "10px",
+            right: "2px",
+          }}
+        >
+          <CloseIcon />
+        </Button>
+        <h2>Confirm Delete</h2>
+        <p>Are you sure you want to delete {organizationToDelete}?</p>
+        <Button
+          style={{
+            top: "20px",
+          }}
+          onClick={confirmDelete}
+          variant="contained"
+          color="primary"
+        >
+          Yes, Delete
+        </Button>
+      </Modal>
       </div>
     </>
   );

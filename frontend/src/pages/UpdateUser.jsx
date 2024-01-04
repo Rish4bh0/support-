@@ -4,21 +4,40 @@ import {
   selectUserById,
   updateUser,
 } from "../features/auth/authSlice";
-import { useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import Spinner from "../components/Spinner";
 import { toast } from "react-toastify";
 import { getAllOrganization } from "../features/organization/organizationSlice";
+import {
+  Button,
+  TextField,
+  Grid,
+  Select,
+  MenuItem,
+  FormControl,
+  InputLabel,
+  Typography,
+  Alert,
+  IconButton,
+  Card,
+  CardContent,
+} from "@mui/material";
+import SendIcon from "@mui/icons-material/Send";
+import BackButton from "../components/BackButton";
+
 const UpdateUser = () => {
   const user = useSelector(
     (state) => state.auth.selectedUser
   );
+  const { isLoading, isError, isSuccess, message } = useSelector((state) => state.auth);
   const userRole = useSelector((state) => state.auth.user?.role);
   const allowedRoles = ["ADMIN", "SUPERVISOR", "EMPLOYEE"];
   const organizations = useSelector((state) => state.organizations.organizations);
   const { id } = useParams();
   const dispatch = useDispatch();
   const [password, setPassword] = useState("");
+  const navigate = useNavigate();
   // State to store form data
   const [formData, setFormData] = useState({
     name: "",
@@ -26,6 +45,21 @@ const UpdateUser = () => {
     role: "",
     organization: "",
   });
+
+  useEffect(() => {
+    if (isError) {
+      toast.error(message);
+    }
+    if (isSuccess) {
+      const updatedUserId = user._id;
+      const updatedUserOrganizationId = user.organization; 
+      
+      navigate(`/organizations/${updatedUserOrganizationId}`);
+      toast.success("User updated!");
+      dispatch(reset());
+    }
+  }, [dispatch, isError, isSuccess, navigate, message, reset]);
+
 
   // Function to handle form input changes except for password
   const handleChange = (e) => {
@@ -81,85 +115,113 @@ const UpdateUser = () => {
 
   return (
     <>
-      <h2>Update User</h2>
-      <form onSubmit={handleSubmit}>
-        <div className="form-group">
-          <label htmlFor="name">Name</label>
-          <input
-            type="text"
-            id="name"
-            name="name"
+
+<BackButton url="/" />
+      <section className="flex items-center justify-center ">
+        <div>
+          <Typography variant="h4" component="h1" gutterBottom>
+          Update User
+          </Typography>
+          <Typography variant="body2">
+            Please fill out the form below
+          </Typography>
+          <Typography variant="body2">
+            User ID: {user._id}
+          </Typography>
+        </div>
+      </section>
+
+      <form onSubmit={handleSubmit} className="p-6">
+      <Grid container spacing={3}>
+      <Grid item xs={6}>
+            <TextField
+              label="Name"
+              placeholder="Name"
+              name="name"
             value={formData.name}
             onChange={handleChange}
-            required
-          />
-        </div>
-        <div className="form-group">
-          <label htmlFor="email">Email</label>
-          <input
-            type="email"
-            id="email"
-            name="email"
-            value={formData.email}
-            onChange={handleChange}
-            required
-          />
-        </div>
-        <div className="form-group">
-          <label htmlFor="password">New user password:</label>
-          <input
-            type="password"
-            id="password"
-            name="password"
-            value={password}
-            placeholder="Enter your password"
-            onChange={handlePasswordChange}  // Use the separate handler
-          />
-        </div>
-        {(userRole && allowedRoles.includes(userRole)) && (
-        <div className="form-group">
-            <label htmlFor="role">Role</label>
-            <select
-              name="role"
-              id="role"
-              value={formData.role}
+              fullWidth
+            />
+          </Grid>
+          <Grid item xs={6}>
+            <TextField
+              label=" Email"
+              placeholder="Email"
+              name="email"
+              value={formData.email}
               onChange={handleChange}
-            >
-              <option value="USER">USER</option>
-              <option value="ADMIN">
-              ADMIN
-              </option>
-              <option value="SUPERVISOR">SUPERVISOR</option>
-              <option value="EMPLOYEE">EMPLOYEE</option>
-              <option value="ORGAGENT">ORGAGENT</option>
-            </select>
-          </div>
-        )}
+              fullWidth
+            />
+          </Grid>
+          <Grid item xs={6}>
+            <TextField
+              label=" Password"
+              name="Password"
+              value={password}
+              placeholder ='Enter your password'
+              onChange={handlePasswordChange} 
+              fullWidth
+            />
+          </Grid>
+
+          {userRole && allowedRoles.includes(userRole) && (
+            <Grid item xs={6}>
+              <FormControl fullWidth>
+                <InputLabel htmlFor="priority">Priority</InputLabel>
+                <Select
+                  name="priority"
+                  id="priority"
+                  value={formData.role}
+              onChange={handleChange}
+                >
+                  <MenuItem value="">Select One</MenuItem>
+                  <MenuItem value="USER">USER</MenuItem>
+                  <MenuItem value="ADMIN">ADMIN</MenuItem>
+                  <MenuItem value="SUPERVISOR">SUPERVISOR</MenuItem>
+                  <MenuItem value="EMPLOYEE">EMPLOYEE</MenuItem>
+                  <MenuItem value="ORGAGENT">ORGAGENT</MenuItem>
+                </Select>
+              </FormControl>
+            </Grid>
+          )}
+
          {(userRole && allowedRoles.includes(userRole)) && (
-          <div className="form-group">
-              <label htmlFor="organization">Organization</label>
-              <select
+          <Grid item xs={12}>
+            <FormControl fullWidth>
+            <InputLabel htmlFor="organization">Organization</InputLabel>
+              <Select
                 name="organization"
                 id="organization"
                 value={formData.organization}
               onChange={handleChange}
               >
-                <option value="">Select One</option>
+                <MenuItem value="">Select One</MenuItem>
                 {organizations && organizations.length > 0 ? (
                   organizations.map((organization) => (
-                    <option key={organization._id} value={organization._id}>
+                    <MenuItem key={organization._id} value={organization._id}>
                       {organization.name}
-                    </option>
+                    </MenuItem>
                   ))
                 ) : (
-                  <option value="" disabled>
+                  <MenuItem value="" disabled>
                     No organization available
-                  </option>
+                  </MenuItem>
                 )}
-              </select>
-            </div>
+              </Select>
+              </FormControl>
+          </Grid>
          )}
-        <button className="btn btn-reverse btn-block" type="submit">Update</button>
+         </Grid>
+         <div className="form-group mt-6">
+          <Button
+            variant="contained"
+            color="success"
+            endIcon={<SendIcon />}
+            type="submit"
+          >
+            Update User
+          </Button>
+        </div>
       </form>
     </>
   );

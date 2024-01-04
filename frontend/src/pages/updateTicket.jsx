@@ -1,10 +1,28 @@
 import { React,  useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { updateTicketAsync, getTicket } from '../features/tickets/ticketSlice';
-import { useParams } from 'react-router-dom';
+import { updateTicketAsync, getTicket, reset } from '../features/tickets/ticketSlice';
+import { useNavigate, useParams } from 'react-router-dom';
 import { fetchAllUsers } from '../features/auth/authSlice';
 import { getAllIssueTypes } from '../features/issues/issueSlice';
 import { getAllOrganization } from '../features/organization/organizationSlice';
+import { toast } from 'react-toastify';
+import Spinner from "../components/Spinner";
+import {
+  Button,
+  TextField,
+  Grid,
+  Select,
+  MenuItem,
+  FormControl,
+  InputLabel,
+  Typography,
+  Alert,
+  IconButton,
+  Card,
+  CardContent,
+} from "@mui/material";
+import SendIcon from "@mui/icons-material/Send";
+import BackButton from '../components/BackButton';
 
 const UpdateProductPage = () => {
   const { ticketId } = useParams();
@@ -33,6 +51,13 @@ const UpdateProductPage = () => {
   const [isEmailValid, setIsEmailValid] = useState(false);
   const [filteredUsers, setFilteredUsers] = useState([]);
 
+  const { isLoading, isError, message, isSuccess } = useSelector(
+    (state) => state.tickets
+  );
+ 
+
+  // Define an array of roles that should see the "Dashboard" link
+  const allowedRoles = ["ADMIN", "SUPERVISOR"];
   useEffect(() => {
     // Fetch the list of registered users when the component loads
     dispatch(fetchAllUsers());
@@ -40,6 +65,19 @@ const UpdateProductPage = () => {
     dispatch(getAllIssueTypes());
     dispatch(getAllOrganization());
   }, [dispatch]);
+  const navigate = useNavigate();
+  useEffect(() => {
+    if (isError) {
+      toast.error(message);
+    }
+    if (isSuccess) {
+      
+      navigate(`/ticket/${ticket._id}`);
+      toast.success("Ticket updated!");
+      dispatch(reset());
+    }
+  }, [dispatch, isError, isSuccess, navigate, message, reset]);
+
 
   useEffect(() => {
     // Fetch the ticket data from the store and update the form data
@@ -54,6 +92,7 @@ const UpdateProductPage = () => {
         customerEmail: ticket.customerEmail,
         organization: ticket.organization,
         customerContact: ticket.customerContact,
+        title : ticket.title
       });
     } else {
       // If the ticket data is not available in the store, fetch it
@@ -114,7 +153,7 @@ const UpdateProductPage = () => {
     };
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = (e, status) => {
     e.preventDefault();
     
     // Dispatch the updateTicketAsync action with media data
@@ -132,6 +171,9 @@ const UpdateProductPage = () => {
         issueType: formData.issueType,
         customerEmail: formData.customerEmail,
         customerContact: formData.customerContact,
+        title: formData.title,
+        status: status === "new" ? "new" : status
+
         },
       })
     );
@@ -149,202 +191,259 @@ const UpdateProductPage = () => {
     </div>
   );
 }
-  return (
-    <div>
-      <h1>Update Ticket</h1>
-      <h4>Ticket ID: {ticket._id}</h4>
-      <form onSubmit={handleSubmit}>
-      <div className="form-group">
-            <label htmlFor="customerName">Customer Name</label>
-            <input
-              className="form-control"
-              placeholder="customerName"
-              value={formData.customerName}
-              name="customerName"
-              id="customerName"
-              onChange={handleChange}
-            ></input>
-          </div>
-        <div className="form-group" >
-            <label htmlFor="customerEmail">Customer Email</label>
-            <input
-              className="form-control"
-              placeholder="customerEmail"
-              value={formData.customerEmail}
-              name="customerEmail"
-              id="customerEmail"
-              onChange={handleChange}
-            />
-           
-          </div>
 
-          <div className="form-group">
-            <label htmlFor="customerContact">Customer Contact</label>
-            <input
-              className="form-control"
-              placeholder="customerContact"
-              value={formData.customerContact}
-              name="customerContact"
-              id="customerContact"
-              onChange={handleChange}
-            ></input>
-          </div>
-          <div className="form-group">
-            <label htmlFor="organization">Organization</label>
-            <select
-              name="organization"
-              id="organization"
-              value={formData.organization}
-              onChange={handleChange}
-            >
-              <option value="">Select One</option>
-             
-              {organizations && organizations.length > 0 ? (
-                organizations.map((organization) => (
-                  <option key={organization._id} value={organization._id}>
-                    {organization.name}
-                  </option>
-                ))
-              ) : (
-                <option value="" disabled>
-                  No organization available
-                </option>
-              )}
-            </select>
-          </div>
-          <div className="form-group">
-        <label htmlFor="assignedTo">Assign To</label>
-        {filteredUsers ? (
-          <select
-            name="assignedTo"
-            id="assignedTo"
-            value={formData.assignedTo}
-            onChange={handleChange}
-          >
-            <option value="">Select One</option>
-            {filteredUsers.length > 0 ? (
-              filteredUsers.map((user) => (
-                <option key={user._id} value={user._id}>
-                  {user.name}
-                </option>
-              ))
-            ) : (
-              <option value="" disabled>
-                No users available for the selected organization and role
-              </option>
-            )}
-          </select>
-        ) : (
-          <p>Loading users...</p>
-        )}
+if (isLoading) return <Spinner />;
+
+  return (
+    <>
+    <BackButton url="/" />
+    <section className="flex items-center justify-center ">
+      <div>
+        <Typography variant="h4" component="h1" gutterBottom>
+        Update Ticket
+        </Typography>
+        <Typography variant="body2">
+          Please fill out the form below
+        </Typography>
+        <Typography variant="body2">
+        Ticket ID: {ticket._id}
+        </Typography>
+       
       </div>
-          <div className="form-group">
-            <label htmlFor="product">Product Name</label>
-            <select
-              name="product"
-              id="product"
-              value={formData.product}
-              onChange={handleChange}
-            >
-              <option value="Ecommernce">Ecommerce</option>
-              <option value="Employee management system">
-                Employee management system
-              </option>
-              <option value="HR management system">HR management system</option>
-              <option value="CMS">CMS</option>
-            </select>
-          </div>
-          <div className="form-group">
-            <label htmlFor="priority">Priority</label>
-            <select
-              name="priority"
-              id="priority"
-              value={formData.priority}
-              onChange={handleChange}
-            >
-              <option value="High">High</option>
-              <option value="Low">Low</option>
-            </select>
-          </div>
-          <div className="form-group">
-            <label htmlFor="issueType">Issue Type</label>
-            <select
-              name="issueType"
-              id="issueType"
-              value={formData.issueType}
-              onChange={handleChange}
-            >
-              <option value="">Select One</option>
-              {issues && issues.length > 0 ? (
-                issues.map((issue) => (
-                  <option key={issue._id} value={issue._id}>
-                    {issue.name}
-                  </option>
+    </section>
+   
+      <form onSubmit={handleSubmit} className="p-6">
+        <Grid container spacing={3}>
+        <Grid item xs={12}>
+            <TextField
+              label=" Ticket title"
+              name="title"
+              value={formData.title}
+              fullWidth
+            />
+          </Grid>
+          <Grid item xs={6}>
+            <TextField
+              label="Customer Name"
+              name="customerName"
+              value={formData.customerName}
+              fullWidth
+            />
+          </Grid>
+          <Grid item xs={6}>
+            <TextField
+              label="Customer Email"
+              name="customerEmail"
+              value={formData.customerEmail}
+              fullWidth
+            />
+          </Grid>
+          <Grid item xs={6}>
+            <TextField
+              label="Customer Contact"
+              name="customerContact"
+              value={formData.customerContact}
+              fullWidth
+            />
+          </Grid>
+          <Grid item xs={6}>
+            <FormControl fullWidth>
+              <InputLabel htmlFor="organization">Organization</InputLabel>
+              <Select
+                name="organization"
+                id="organization"
+                value={formData.organization}
+                onChange={handleChange}
+              >
+                <MenuItem value="">Select One</MenuItem>
+                {organizations && organizations.length > 0 ? (
+                organizations.map((organization) => (
+                  <MenuItem key={organization._id} value={organization._id}>
+                    {organization.name}
+                  </MenuItem>
                 ))
               ) : (
-                <option value="" disabled>
-                  No issue available
-                </option>
+                <MenuItem value="" disabled>
+                  No organization available
+                </MenuItem>
               )}
-            </select>
-          </div>
-          <div className="form-group">
-            <label htmlFor="description">Description of the issue</label>
-            <textarea
-              className="form-control"
-              placeholder="Description"
-              value={formData.description}
-              name="description"
-              id="description"
+              </Select>
+            </FormControl>
+          </Grid>
+
+          {userRole && allowedRoles.includes(userRole) && (
+            <Grid item xs={6}>
+              <FormControl fullWidth>
+                <InputLabel htmlFor="assignedTo">Assign To</InputLabel>
+                <Select
+                  name="assignedTo"
+                  id="assignedTo"
+                  value={formData.assignedTo}
+            onChange={handleChange}
+                >
+                  <MenuItem value="">Select One</MenuItem>
+                  {filteredUsers.length > 0 ? (
+                    filteredUsers.map((user) => (
+                      <MenuItem key={user._id} value={user._id}>
+                        {user.name}
+                      </MenuItem>
+                    ))
+                  ) : (
+                    <MenuItem value="" disabled>
+                      No users available for the selected organization
+                    </MenuItem>
+                  )}
+                </Select>
+                
+              </FormControl>
+            </Grid>
+          )}
+
+<Grid item xs={6}>
+            <FormControl fullWidth>
+              <InputLabel htmlFor="product">Product Name</InputLabel>
+              <Select
+                name="product"
+                id="product"
+                value={formData.product}
+                onChange={handleChange}
+              >
+                <MenuItem value="Ecommerce">Ecommerce</MenuItem>
+                <MenuItem value="Employee management system">
+                  Employee management system
+                </MenuItem>
+                <MenuItem value="HR management system">
+                  HR management system
+                </MenuItem>
+                <MenuItem value="CMS">CMS</MenuItem>
+              </Select>
+            </FormControl>
+          </Grid>
+
+          {userRole && allowedRoles.includes(userRole) && (
+            <Grid item xs={6}>
+              <FormControl fullWidth>
+                <InputLabel htmlFor="priority">Priority</InputLabel>
+                <Select
+                  name="priority"
+                  id="priority"
+                  value={formData.priority}
               onChange={handleChange}
-            ></textarea>
-          </div>
-        
-        {/* File input for media */}
-        <div className='form-group'>
-        <div className="form-outline mb-4">
-              <input
-                onChange={handleMedia}
-                type="file"
-                id="formupload"
-                name="media"
-                className="form-control"
-                multiple // Allow multiple file selection
-              />
-              <label className="form-label" htmlFor="formupload">
-                Media (Images and Videos)
+                >
+                  <MenuItem value="">Select One</MenuItem>
+                  <MenuItem value="High">High</MenuItem>
+                  <MenuItem value="Low">Low</MenuItem>
+                </Select>
+              </FormControl>
+            </Grid>
+          )}
+ 
+ <Grid item xs={6}>
+            <FormControl fullWidth>
+              <InputLabel htmlFor="issueType">Issue Type</InputLabel>
+              <Select
+                name="issueType"
+                id="issueType"
+                value={formData.issueType}
+                onChange={handleChange}
+              >
+                <MenuItem value="">Select One</MenuItem>
+                {issues && issues.length > 0 ? (
+                  issues.map((issue) => (
+                    <MenuItem key={issue._id} value={issue._id}>
+                      {issue.name}
+                    </MenuItem>
+                  ))
+                ) : (
+                  <MenuItem value="" disabled>
+                    No issue available
+                  </MenuItem>
+                )}
+              </Select>
+            </FormControl>
+          </Grid>
+
+          <Grid item xs={12}>
+            <TextField
+              label="Description of the issue"
+              name="description"
+              value={formData.description}
+              onChange={handleChange}
+              fullWidth
+              multiline
+              rows={4}
+            />
+          </Grid>
+
+          <Grid item xs={12}>
+            <div className="form-outline mb-4">
+              <label
+                htmlFor="formupload"
+                className="bg-yellow-500 text-white py-2 px-4 rounded cursor-pointer hover:bg-yellow-700"
+              >
+                Update Media (Images and Videos)
+                <input
+                    onChange={handleMedia}
+                  type="file"
+                  id="formupload"
+                  name="media"
+                  className="hidden"
+                  accept="image/*, video/*"
+                  multiple
+                />
               </label>
             </div>
-
-        {/* Display selected media files */}
-        {media.length > 0 && (
+            {media.length > 0 && (
           <div className="selected-media">
-            <h3>Selected Media:</h3>
+            <Typography variant="body2" gutterBottom>
+                  Selected Media:
+                </Typography>
+                <div className="media-items-container">
             {media.map((mediaItem, index) => (
               <div key={index} className="media-item">
                 {mediaItem.startsWith('data:image') ? (
                   <img
                     src={mediaItem}
                     alt={`Selected Image ${index + 1}`}
-                    style={{ maxWidth: '100px', maxHeight: '100px' }}
+                    className="img-preview max-w-full max-h-32"
                   />
                 ) : (
                   <video
                     controls
                     src={mediaItem}
                     alt={`Selected Video ${index + 1}`}
-                    style={{ maxWidth: '100px', maxHeight: '100px' }}
+                    className="video-preview max-w-full max-h-32"
                   />
                 )}
               </div>
             ))}
+            </div>
           </div>
         )}
+          </Grid>
+          </Grid>
+       
+        <div className="form-group mt-6 space-x-6">
+          <Button
+            variant="contained"
+            color="primary"
+            endIcon={<SendIcon />}
+            type="submit"
+          >
+            Update Ticket
+          </Button>
+          <Button
+            variant="contained"
+            color="success"
+            endIcon={<SendIcon />}
+            onClick={(e) => handleSubmit(e, "new")}
+          >
+            Submit as New
+          </Button>
         </div>
-
-        <button type="submit" >Update Ticket</button>
+       
       </form>
-    </div>
+    </>
   );
 };
 

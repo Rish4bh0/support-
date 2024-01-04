@@ -29,10 +29,13 @@ function Login() {
     // Redirect when logged in
     if (isSuccess || user) {
       if (user) {
-        if (["ADMIN", "SUPERVISOR", "EMPLOYEE"].includes(user.role)) {
-          navigate("/dash"); // Redirect to the dashboard route for ADMIN, SUPERVISOR, EMPLOYEE
+        if (["ADMIN"].includes(user.role)) {
+          navigate("/admindash"); // Redirect to the dashboard route for ADMIN, SUPERVISOR, EMPLOYEE
         } else if (user.role === "ORGAGENT") {
-          navigate("/organization"); // Redirect to the organization route for ORGAGENT
+          navigate("/dash"); // Redirect to the organization route for ORGAGENT
+        }
+        else if (user.role === "SUPERVISOR") {
+          navigate("/dash"); // Redirect to the organization route for ORGAGENT
         } else {
           navigate("/"); // Redirect to the home route for other roles
         }

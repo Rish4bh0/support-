@@ -3,7 +3,7 @@ import { useDispatch, useSelector} from "react-redux";
 import { useParams, Link} from "react-router-dom";
 import Spinner from "../components/Spinner";
 import { getAllOrganization, selectOrganizationById } from "../features/organization/organizationSlice";
-import { createUser, deleteUser, fetchAllUsers } from "../features/auth/authSlice";
+import { createUser, deleteUser, fetchAllUsers, reset } from "../features/auth/authSlice";
 import CloseIcon from "@mui/icons-material/Close";
 import Modal from "react-modal";
 import {
@@ -27,6 +27,7 @@ import { styled } from '@mui/material/styles';
 import Box from '@mui/material/Box';
 import Paper from '@mui/material/Paper';
 import Grid from '@mui/material/Grid';
+
 
 const OrganizationDetail = () => {
   const { id } = useParams();
@@ -53,10 +54,21 @@ const OrganizationDetail = () => {
   const myorganization = useSelector(
     (state) => state.organizations.selectedOrganization
   );
+
+  const { isLoading, isError, isSuccess, message } = useSelector((state) => state.auth);
+  const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
+  const [userIdToDelete, setUserIdToDelete] = useState(null);
+  const [userNameToDelete, setUserNameToDelete] = useState(null);
   const users = useSelector((state) => state.auth.users);
   const openModal = () => {
     setIsModalOpen(true);
   };
+
+  useEffect(() => {
+    if (isError) {
+      toast.error(message);
+    }
+  }, [dispatch, isError, message]);
 
   const closeModal = () => {
     setIsModalOpen(false);
@@ -71,23 +83,49 @@ const OrganizationDetail = () => {
   const handleCreateUser = (e) => {
     e.preventDefault();
     console.log(role, id)
-    dispatch(createUser({ name, email, password, role, organization: id }));
+    dispatch(createUser({ name, email, password, role, organization: id }))
+    .then(() => {
+      // After successfully creating a new user, fetch all users
+      dispatch(fetchAllUsers());
+      
+      toast.success("User created successfully");
+      closeModal();
+      dispatch(reset())
+    })
+    .catch((error) => {
+      toast.error(`Error creating User: ${error.message}`);
+    });
     setNewUserName("");
     setEmail("");
     setPassword("");
     setRole(""); // Clear the role input field
     closeModal();
   };
-  const handleDeleteUser = (userId) => {
+  const handleDeleteUser = (userId, userName) => {
+    setUserIdToDelete(userId);
+    setUserNameToDelete(userName);
+    setIsDeleteModalOpen(true);
+  };
 
-    
-    dispatch(deleteUser(userId))
+  const confirmDelete = () => {
+    const token = "your-token-here";
+
+    dispatch(deleteUser(userIdToDelete, token))
       .then(() => {
-        toast.success("User deleted successfully");
+        toast.success(`${userNameToDelete} deleted successfully`);
       })
       .catch((error) => {
-        toast.error(`Error deleting User: ${error.message}`);
+        toast.error(`Error deleting ${userNameToDelete}: ${error.message}`);
+      })
+      .finally(() => {
+        setIsDeleteModalOpen(false);
+        setUserIdToDelete(null);
       });
+  };
+
+  const cancelDelete = () => {
+    setIsDeleteModalOpen(false);
+    setUserIdToDelete(null);
   };
   // Filter users based on the organization of the authenticated user
   const filteredUsers = users.filter(user => user.organization === authUser.organization);
@@ -156,7 +194,7 @@ const OrganizationDetail = () => {
             },
             content: {
               width: "500px",
-              height: "300px",
+              height: "500px",
               margin: "0 auto",
               backgroundColor: "white",
               borderRadius: "4px",
@@ -216,6 +254,10 @@ const OrganizationDetail = () => {
                 onChange={(e) => setRole(e.target.value)}
               >
                 <option value="">Select One</option> 
+                <option value="ADMIN">ADMIN</option>
+                <option value="USER">USER</option>
+                <option value="SUPERVISOR">SUPERVISOR</option>
+                <option value="EMPLOYEE">EMPLOYEE</option>
                 <option value="ORGAGENT">ORGAGENT</option>
               </select>
             </div>
@@ -240,7 +282,7 @@ columns={[
   {field: "role", headerName: "User role", flex: 1 },
   { 
     field: "organization", 
-    headerName: "Organization", 
+    headerName: "Office", 
     width: 200,
     renderCell: (params) => (
       organizationMap[params.value] || "Unassigned"
@@ -260,7 +302,7 @@ columns={[
         </Link>
 
         <button
-          onClick={() => handleDeleteUser(params.row.id)}
+          onClick={() => handleDeleteUser(params.row._id,  params.row.name)}
           className="group"
         >
           <DeleteIcon className="text-red-500 group-hover:text-red-700 mr-8" />
@@ -273,8 +315,56 @@ pageSize={5}
   checkboxSelection
   onSelectionModelChange={(newSelection) => {}}
   getRowId={(row) => row.id}
+  loading={isLoading}
+  components={{
+    loadingOverlay: () => <Spinner />,
+  }}
 />
-       
+        {/* Delete Confirmation Modal */}
+      <Modal
+        isOpen={!!isDeleteModalOpen}
+        onRequestClose={cancelDelete}
+        contentLabel="Delete User Confirmation Modal"
+        style={{
+          overlay: {
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "center",
+            backgroundColor: "rgba(0, 0, 0, 0.3)",
+          },
+          content: {
+            width: "370px",
+            height: "160px",
+            backgroundColor: "white",
+            borderRadius: "4px",
+            padding: "20px",
+            position: "relative",
+          },
+        }}
+      >
+        <Button
+          onClick={cancelDelete}
+          style={{
+            position: "absolute",
+            top: "10px",
+            right: "2px",
+          }}
+        >
+          <CloseIcon />
+        </Button>
+        <h2>Confirm Delete</h2>
+        <p>Are you sure you want to delete {userNameToDelete}?</p>
+        <Button
+          style={{
+            top: "20px",
+          }}
+          onClick={confirmDelete}
+          variant="contained"
+          color="primary"
+        >
+          Yes, Delete
+        </Button>
+      </Modal>
       </div>
     </>
   );

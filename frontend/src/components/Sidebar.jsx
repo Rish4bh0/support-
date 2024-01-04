@@ -37,6 +37,7 @@ const userRole = useSelector((state) => state.auth.user?.role);
 // Define an array of roles that should see the "Dashboard" link
 const allowedRoles = ["ADMIN", "SUPERVISOR", "EMPLOYEE", ];
 const allowedRolesOrg = ["ADMIN", "SUPERVISOR", "EMPLOYEE", "ORGAGENT"];
+const allowedRolesAdmin = ["ADMIN"];
 
   return (
     <div
@@ -74,6 +75,30 @@ const allowedRolesOrg = ["ADMIN", "SUPERVISOR", "EMPLOYEE", "ORGAGENT"];
             </TooltipComponent>
           </div>
           <div className="mt-10">
+          {(userRole && allowedRolesAdmin.includes(userRole)) && (
+            <div>
+              <p
+                className="text-gray-400 m-3
+                mt-4 uppercase"
+              >
+                Admin Dashboard
+              </p>
+
+              <NavLink
+                to={`/admindash`}
+                onClick={handleCloseSideBar}
+                style={({ isActive }) => ({
+                  backgroundColor: isActive ? currentColor : "",
+                })}
+                className={({ isActive }) =>
+                  isActive ? activeLink : normalLink
+                }
+              >
+                <DashboardIcon />
+                <span className="capitalize">Admin Dashboard</span>
+              </NavLink>
+            </div>
+            )}
           {(userRole && allowedRolesOrg.includes(userRole)) && (
             <div>
               <p
