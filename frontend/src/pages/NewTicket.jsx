@@ -50,11 +50,12 @@ function NewTicket() {
   const [issueType, setIssueType] = useState("");
   const [description, setDescription] = useState("");
   const [assignedTo, setAssignedTo] = useState("");
-  const [media, setMedia] = useState([]);
+  //const [media, setMedia] = useState([]);
   const [organization, setOrganization] = useState("");
   const [showAlert, setShowAlert] = useState(false); // For empty form alert
   const [filteredUsers, setFilteredUsers] = useState([]);
-
+  const [media, setMedia] = useState([]);
+  const [uploading, setUploading] = useState(false);
   const dispatch = useDispatch();
   const navigate = useNavigate();
 
@@ -64,6 +65,15 @@ function NewTicket() {
     dispatch(getAllIssueTypes());
   }, [dispatch]);
 
+  const handleFileChange = (e) => {
+    const files = e.target.files;
+    // Ensure that files is converted to an array, even if it's a FileList
+    const filesArray = Array.from(files);
+    setMedia(filesArray);
+  };
+  
+  
+{/*
   const handleMedia = (e) => {
     const selectedMedia = e.target.files;
     const mediaArray = [];
@@ -79,6 +89,7 @@ function NewTicket() {
       });
     }
   };
+*/}
   useEffect(() => {
     loadDraftFromLocalStorage();
   }, []);
@@ -90,7 +101,7 @@ function NewTicket() {
       callback(base64Media);
     };
   };
-
+/*
   useEffect(() => {
     if (isError) {
       toast.error(message);
@@ -101,7 +112,7 @@ function NewTicket() {
       toast.success("New ticket created!");
     }
   }, [dispatch, isError, isSuccess, navigate, message, reset]);
-
+*/
   const saveDraftToLocalStorage = () => {
     const draftData = {
       title,
@@ -114,7 +125,7 @@ function NewTicket() {
       issueType,
       description,
       assignedTo,
-      media,
+      //media,
       organization,
     };
 
@@ -140,7 +151,7 @@ function NewTicket() {
       setIssueType(draftData.issueType || "");
       setDescription(draftData.description || "");
       setAssignedTo(draftData.assignedTo || "");
-      setMedia(draftData.media || []);
+     // setMedia(draftData.media || []);
       setOrganization(draftData.organization || "");
     }
   };
@@ -212,12 +223,12 @@ function NewTicket() {
     }
   }, [organization, users]);
 
-  const onSubmit = (e, status) => {
+  const onSubmit = async (e, status) => {
     e.preventDefault();
 
     const ticketData = {
       product,
-      media,
+      //media,
       description,
       priority,
       assignedTo,
@@ -229,9 +240,47 @@ function NewTicket() {
       title,
       status: status === "draft" ? "draft" : "new",
     };
-    console.log(ticketData);
-    dispatch(createTicket(ticketData));
-    localStorage.removeItem("ticketDraft");
+    try {
+      // Create the ticket and get the response
+      const response = await dispatch(createTicket(ticketData));
+  
+      // Extract ticket ID from the API response
+      const newTicketID = response.payload._id;
+  
+      // If media files are present, upload them
+      if (media.length > 0) {
+        setUploading(true);
+  
+        const formData = new FormData();
+        media.forEach((file) => {
+          formData.append("media", file);
+        });
+  
+        // Append ticket ID to the media upload data
+        formData.append("ticketID", newTicketID);
+  
+        // Send a request to the media upload endpoint (http://localhost:5000/upload)
+        const mediaResponse = await fetch("http://localhost:5000/upload", {
+          method: "POST",
+          body: formData,
+        });
+  
+        // Handle the media upload response as needed
+        const mediaUploadData = await mediaResponse.json();
+        console.log("Media upload response:", mediaUploadData);
+      }
+  
+      // Reset form, navigate to tickets page, and show success toast
+      dispatch(reset());
+      navigate("/ticketss");
+      toast.success("New ticket created!");
+      localStorage.removeItem("ticketDraft");
+    } catch (error) {
+      console.error("Error creating ticket:", error);
+      toast.error("Error creating new ticket");
+    } finally {
+      setUploading(false);
+    }
   };
   const userRole = useSelector((state) => state.auth.user?.role);
 
@@ -298,6 +347,8 @@ function NewTicket() {
               fullWidth
             />
           </Grid>
+          
+
           <Grid item xs={6}>
             <FormControl fullWidth>
               <InputLabel htmlFor="organization">Organization</InputLabel>
@@ -429,6 +480,16 @@ function NewTicket() {
             />
           </Grid>
           <Grid item xs={12}>
+          <input
+  type="file"
+  id="media"
+  name="media"
+  multiple
+  onChange={handleFileChange}
+/>
+</Grid>
+          {/*
+          <Grid item xs={12}>
             <div className="form-outline mb-4">
               <label
                 htmlFor="formupload"
@@ -474,6 +535,7 @@ function NewTicket() {
               </div>
             )}
           </Grid>
+          */}
           {/*
           <Grid item xs={12}>
             <div className="form-outline mb-4">
@@ -521,14 +583,16 @@ function NewTicket() {
                       */}
         </Grid>
         <div className="form-group mt-6 space-x-6">
-          <Button
-            variant="contained"
-            color="success"
-            endIcon={<SendIcon />}
-            onClick={(e) => onSubmit(e, "new")}
-          >
-            Submit as New
-          </Button>
+        <Button
+  variant="contained"
+  color="success"
+  endIcon={<SendIcon />}
+  onClick={(e) => onSubmit(e, "new")}
+  disabled={uploading}
+>
+  {uploading ? "Uploading..." : "Submit as New"}
+</Button>
+
           <Button
             variant="contained"
             color="primary"

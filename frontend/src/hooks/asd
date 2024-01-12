@@ -1,0 +1,729 @@
+import React, { useState, useEffect } from "react";
+import { useSelector, useDispatch } from "react-redux";
+import { useNavigate } from "react-router-dom";
+import { toast } from "react-toastify";
+import { createTicket, reset } from "../features/tickets/ticketSlice";
+import { fetchAllUsers } from "../features/auth/authSlice";
+import Spinner from "../components/Spinner";
+import BackButton from "../components/BackButton";
+import SendIcon from "@mui/icons-material/Send";
+import CloudUploadIcon from "@mui/icons-material/CloudUpload";
+import {
+  Button,
+  TextField,
+  Grid,
+  Select,
+  MenuItem,
+  FormControl,
+  InputLabel,
+  Typography,
+  Alert,
+  IconButton,
+  Card,
+  CardContent,
+} from "@mui/material";
+import CreateIcon from "@mui/icons-material/Create";
+import CloseIcon from "@mui/icons-material/Close";
+import { getAllOrganization } from "../features/organization/organizationSlice";
+import { getAllIssueTypes } from "../features/issues/issueSlice";
+
+
+function NewTicket() {
+  const { user } = useSelector((state) => state.auth);
+  const { isLoading, isError, message, isSuccess } = useSelector(
+    (state) => state.tickets
+  );
+
+  const users = useSelector((state) => state.auth.users);
+  const issues = useSelector((state) => state.issueTypes.issueTypes);
+  const organizations = useSelector(
+    (state) => state.organizations.organizations
+  );
+
+  const [title, setTitle] = useState("");
+  const [customerName, setCustomerName] = useState("");
+  const [customerEmail, setCustomerEmail] = useState("");
+  const [isEmailValid, setIsEmailValid] = useState(false);
+  const [customerContact, setCustomerContact] = useState("");
+  const [product, setProduct] = useState("");
+  const [priority, setPriority] = useState("");
+  const [issueType, setIssueType] = useState("");
+  const [description, setDescription] = useState("");
+  const [assignedTo, setAssignedTo] = useState("");
+  const [organization, setOrganization] = useState("");
+  const [showAlert, setShowAlert] = useState(false); // For empty form alert
+  const [filteredUsers, setFilteredUsers] = useState([]);
+  const [ticketID, setTicketID] = useState(null);
+  const { ticketData } = useSelector((state) => state.tickets);
+  const dispatch = useDispatch();
+  const navigate = useNavigate();
+
+  useEffect(() => {
+    dispatch(fetchAllUsers());
+    dispatch(getAllOrganization());
+    dispatch(getAllIssueTypes());
+  }, [dispatch]);
+
+  useEffect(() => {
+    loadDraftFromLocalStorage();
+  }, []);
+ 
+
+  const saveDraftToLocalStorage = () => {
+    const draftData = {
+      title,
+      customerName,
+      customerEmail,
+      isEmailValid,
+      customerContact,
+      product,
+      priority,
+      issueType,
+      description,
+      assignedTo,
+      //media,
+      organization,
+    };
+
+    // Save the draft data to local storage
+    localStorage.setItem("ticketDraft", JSON.stringify(draftData));
+  };
+
+  const loadDraftFromLocalStorage = () => {
+    // Load the draft data from local storage
+    const storedDraft = localStorage.getItem("ticketDraft");
+
+    if (storedDraft) {
+      const draftData = JSON.parse(storedDraft);
+
+      // Set the form fields with the loaded draft data
+      setTitle(draftData.title || "");
+      setCustomerName(draftData.customerName || "");
+      setCustomerEmail(draftData.customerEmail || "");
+      setIsEmailValid(draftData.isEmailValid || false);
+      setCustomerContact(draftData.customerContact || "");
+      setProduct(draftData.product || "");
+      setPriority(draftData.priority || "");
+      setIssueType(draftData.issueType || "");
+      setDescription(draftData.description || "");
+      setAssignedTo(draftData.assignedTo || "");
+     // setMedia(draftData.media || []);
+      setOrganization(draftData.organization || "");
+    }
+  };
+
+  useEffect(() => {
+    // Load the draft data when the component mounts
+    loadDraftFromLocalStorage();
+  }, []);
+
+  const handleInputChange = (e) => {
+    // Update the state and save the draft to local storage when the input changes
+    const { name, value, files } = e.target;
+    if (name) {
+      switch (name) {
+        case "title":
+          setTitle(value);
+          break;
+        case "customerName":
+          setCustomerName(value);
+          break;
+        case "customerEmail":
+          setCustomerEmail(value);
+          break;
+        case "customerContact":
+          setCustomerContact(value);
+          break;
+        case "product":
+          setProduct(value);
+          break;
+        case "priority":
+          setPriority(value);
+          break;
+        case "issueType":
+          setIssueType(value);
+          break;
+        case "description":
+          setDescription(value);
+          break;
+        case "assignedTo":
+          setAssignedTo(value);
+          break;
+        case "organization":
+          setOrganization(value);
+          break;
+        /*
+          case "media":
+            if (files) {
+              // Only call handleMedia when files are present
+              handleMedia(files);
+            }
+            break;
+          */
+        default:
+          break;
+      }
+
+      // Save the draft to local storage
+      saveDraftToLocalStorage();
+    }
+  };
+
+  useEffect(() => {
+    // Filter users based on the selected organization initially
+    if (organization) {
+      const selectedOrganizationId = organization;
+      setFilteredUsers(
+        users.filter((user) => user.organization === selectedOrganizationId)
+      );
+    }
+  }, [organization, users]);
+
+  const onSubmit = async (e, status) => {
+    e.preventDefault();
+  
+    const ticketData = {
+      product,
+      description,
+      priority,
+      assignedTo,
+      issueType,
+      customerName,
+      customerEmail,
+      customerContact,
+      organization,
+      title,
+      status: status === 'draft' ? 'draft' : 'new',
+    };
+  
+    try {
+      const response = await dispatch(createTicket(ticketData));
+      const newTicketID = response.payload._id; // Assuming the API response contains the ticket ID
+      console.log('New Ticket ID:', newTicketID);
+      dispatch(reset());
+      navigate('/ticketss');
+      toast.success('New ticket created!');
+      localStorage.removeItem('ticketDraft');
+    } catch (error) {
+      console.error('Error creating ticket:', error);
+      toast.error('Error creating new ticket');
+    }
+  };
+  const userRole = useSelector((state) => state.auth.user?.role);
+
+  // Define an array of roles that should see the "Dashboard" link
+  const allowedRoles = ["ADMIN", "SUPERVISOR"];
+
+  const allowedRolesReview = ["ADMIN", "SUPERVISOR", "ORGAGENT"];
+
+  if (isLoading) return <Spinner />;
+
+  return (
+    <>
+      <BackButton url="/" />
+      <section className="flex items-center justify-center ">
+        <div>
+          <Typography variant="h4" component="h1" gutterBottom>
+            Create New Ticket
+          </Typography>
+          <Typography variant="body2">
+            Please fill out the form below
+          </Typography>
+        </div>
+      </section>
+
+      <form onSubmit={onSubmit} className="p-6">
+        <Grid container spacing={3}>
+          <Grid item xs={12}>
+            <TextField
+              label=" Ticket title"
+              placeholder="Ticket title"
+              name="title"
+              value={title}
+              onChange={handleInputChange}
+              fullWidth
+            />
+          </Grid>
+          <Grid item xs={6}>
+            <TextField
+              label="Customer Name"
+              name="customerName"
+              placeholder="Customer Name"
+              value={customerName}
+              onChange={handleInputChange}
+              fullWidth
+            />
+          </Grid>
+          <Grid item xs={6}>
+            <TextField
+              label="Customer Email"
+              name="customerEmail"
+              placeholder="Customer Email"
+              value={customerEmail}
+              onChange={handleInputChange}
+              fullWidth
+            />
+          </Grid>
+          <Grid item xs={6}>
+            <TextField
+              label="Customer Contact"
+              name="customerContact"
+              placeholder="Customer Contact"
+              value={customerContact}
+              onChange={handleInputChange}
+              fullWidth
+            />
+          </Grid>
+          <Grid item xs={6}>
+            <FormControl fullWidth>
+              <InputLabel htmlFor="organization">Organization</InputLabel>
+              <Select
+                name="organization"
+                id="organization"
+                value={organization}
+                onChange={handleInputChange}
+              >
+                <MenuItem value="">Select One</MenuItem>
+                {user &&
+                user.organization &&
+                organizations &&
+                organizations.length > 0 ? (
+                  organizations
+                    .filter((org) => org._id === user.organization)
+                    .map((organization) => (
+                      <MenuItem key={organization._id} value={organization._id}>
+                        {organization.name}
+                      </MenuItem>
+                    ))
+                ) : (
+                  <MenuItem value="" disabled>
+                    No organization available
+                  </MenuItem>
+                )}
+              </Select>
+            </FormControl>
+          </Grid>
+
+          {userRole && allowedRoles.includes(userRole) && (
+            <Grid item xs={6}>
+              <FormControl fullWidth>
+                <InputLabel htmlFor="assignedTo">Assign To</InputLabel>
+                <Select
+                  name="assignedTo"
+                  id="assignedTo"
+                  value={assignedTo}
+                  onChange={handleInputChange}
+                >
+                  <MenuItem value="">Select One</MenuItem>
+                  {filteredUsers.length > 0 ? (
+                    filteredUsers.map((user) => (
+                      <MenuItem key={user._id} value={user._id}>
+                        {user.name}
+                      </MenuItem>
+                    ))
+                  ) : (
+                    <MenuItem value="" disabled>
+                      No users available for the selected organization
+                    </MenuItem>
+                  )}
+                </Select>
+              </FormControl>
+            </Grid>
+          )}
+
+          <Grid item xs={6}>
+            <FormControl fullWidth>
+              <InputLabel htmlFor="product">Product Name</InputLabel>
+              <Select
+                name="product"
+                id="product"
+                value={product}
+                onChange={(e) => setProduct(e.target.value)}
+              >
+                <MenuItem value="Ecommerce">Ecommerce</MenuItem>
+                <MenuItem value="Employee management system">
+                  Employee management system
+                </MenuItem>
+                <MenuItem value="HR management system">
+                  HR management system
+                </MenuItem>
+                <MenuItem value="CMS">CMS</MenuItem>
+              </Select>
+            </FormControl>
+          </Grid>
+          {userRole && allowedRoles.includes(userRole) && (
+            <Grid item xs={6}>
+              <FormControl fullWidth>
+                <InputLabel htmlFor="priority">Priority</InputLabel>
+                <Select
+                  name="priority"
+                  id="priority"
+                  value={priority}
+                  onChange={handleInputChange}
+                >
+                  <MenuItem value="">Select One</MenuItem>
+                  <MenuItem value="High">High</MenuItem>
+                  <MenuItem value="Low">Low</MenuItem>
+                </Select>
+              </FormControl>
+            </Grid>
+          )}
+          <Grid item xs={6}>
+            <FormControl fullWidth>
+              <InputLabel htmlFor="issueType">Issue Type</InputLabel>
+              <Select
+                name="issueType"
+                id="issueType"
+                value={issueType}
+                onChange={handleInputChange}
+              >
+                <MenuItem value="">Select One</MenuItem>
+                {issues && issues.length > 0 ? (
+                  issues.map((issue) => (
+                    <MenuItem key={issue._id} value={issue._id}>
+                      {issue.name}
+                    </MenuItem>
+                  ))
+                ) : (
+                  <MenuItem value="" disabled>
+                    No issue available
+                  </MenuItem>
+                )}
+              </Select>
+            </FormControl>
+          </Grid>
+          <Grid item xs={12}>
+            <TextField
+              label="Description of the issue"
+              name="description"
+              placeholder="Description"
+              value={description}
+              onChange={handleInputChange}
+              fullWidth
+              multiline
+              rows={4}
+            />
+          </Grid>
+
+        </Grid>
+        <div className="form-group mt-6 space-x-6">
+          <Button
+            variant="contained"
+            color="success"
+            endIcon={<SendIcon />}
+            onClick={(e) => onSubmit(e, "new")}
+          >
+            Submit as New
+          </Button>
+          <Button
+            variant="contained"
+            color="primary"
+            startIcon={<CloudUploadIcon />}
+            onClick={(e) => onSubmit(e, "draft")}
+          >
+            Save as Draft
+          </Button>
+        </div>
+      </form>
+    </>
+  );
+}
+
+export default NewTicket;
+
+
+
+const createTicket = asyncHandler(async (req, res) => {
+    const {
+      product,
+      priority,
+      issueType,
+      assignedTo,
+      description,
+      customerName,
+      customerEmail,
+      customerContact,
+      organization,
+      //media,
+      title,
+      status
+    } = req.body;
+
+    try {
+  
+      const user = await User.findById(req.user.id);
+  
+      if (!user) {
+        res.status(401);
+        throw new Error("User not found");
+      }
+  
+      // Define the assignedToUser variable to be used later
+      let assignedToUser = null;
+     let org = null;
+  
+      if (assignedTo) {
+        assignedToUser = await User.findById(assignedTo);
+  
+        if (!assignedToUser) {
+          res.status(400);
+          throw new Error('Assigned user not found');
+        }
+      }
+  
+      if (organization) {
+        // Assuming you have an "Organization" model, you can fetch the organization.
+        org = await Organization.findById(organization);
+  
+        if (!org) {
+          res.status(400);
+          throw new Error('Organization not found');
+        }
+      }
+  
+      const ticket = await Ticket.create({
+        product,
+        priority: priority || "Unknown",
+        issueType: issueType || null,
+        assignedTo: assignedToUser ? assignedToUser.id : null,
+        description,
+        customerName,
+        customerEmail,
+        customerContact,
+        user: req.user.id,
+        status,
+        organization: org ? org._id : null,
+        title
+      });
+  
+      
+  
+      // Send email to logged-in user
+      const userEmail = user.email; // Assuming you have an 'email' field in your User model
+      const ticketId = ticket._id; // Retrieve the ticket ID
+      const ticketLink = `https://localhost:3000/ticket/${ticketId}`;
+  
+      await transporter.sendMail({
+        from: 'helpdeskx1122@gmail.com', // Replace with your Gmail email address
+        to: userEmail,
+        subject: 'Ticket Created',
+        html: `<p style="text-align: left;">Dear ${user.name},</p>
+        <p style="text-align: left;">A request for support has been created and assigned (ID: ${ticketId})  A reppresentative will follow-up with you as soon as possible. You can <a href="${ticketLink}">link</a> to view this ticket's progress online</p>
+        <p style="text-align: left;">Best Regards,</p>`,
+      });
+      // Send email to the assignedTo user if provided
+      if (assignedToUser) {
+        const assignedToEmail = assignedToUser.email; // Assuming you have an 'email' field in your User model
+        await transporter.sendMail({
+          from: 'helpdeskx1122@gmail.com', // Replace with your Gmail email address
+          to: assignedToEmail,
+          subject: 'New Ticket Assignment',
+          html: `<p style="text-align: left;">Dear ${assignedToUser.name},</p>
+            <p style="text-align: left;">You have been assigned a new ticket (ID: ${ticketId}). Please click this <a href="${ticketLink}">link</a> to view the ticket.</p>
+            <p style="text-align: left;">Best Regards,</p>`,
+        });
+      }
+  
+     
+  
+      res.status(201).json(ticket);
+    } catch (error) {
+      // Handle any errors that occur during user, media, or ticket creation
+      res.status(500).json({ error: "Ticket creation failed" });
+    }
+  });
+
+
+  // server.js
+const express = require('express');
+const multer = require('multer');
+const dotenv = require('dotenv').config();
+const { errorHandler } = require('./middleware/errorMiddleware');
+const connectDB = require('./config/db');
+const path = require('path');
+const bodyParser = require('body-parser');
+const cors = require('cors');
+const mongoose = require('mongoose');
+const fs = require('fs').promises; // For working with the file system
+
+// Connect to the database
+connectDB();
+
+const app = express();
+const PORT = process.env.PORT || 5000;
+
+// Enable Cross-Origin Resource Sharing (CORS)
+app.use(cors());
+// Define a Mongoose schema for media (images and videos)
+const mediaSchema = new mongoose.Schema({
+  mediaItems: [
+    {
+      mediaUrl: String,
+      mediaType: String, // 'image' or 'video'
+    },
+  ],
+  ticket: {
+    type: mongoose.Schema.Types.ObjectId,
+    required: true,
+    ref: 'Ticket'
+  },
+});
+
+const Media = mongoose.model('Media', mediaSchema);
+// Set up Multer for media uploads
+const storage = multer.diskStorage({
+  destination: function (req, file, cb) {
+    cb(null, 'uploads/');
+  },
+  filename: function (req, file, cb) {
+    cb(null, Date.now() + '-' + file.originalname);
+  },
+});
+
+const upload = multer({ 
+  storage: storage,
+  limits: {
+    fileSize: 10 * 1024 * 1024 * 1024, // Set the limit to 10 GB (in bytes)
+  },
+});
+// Socket.io must be declared before API routes
+const server = require('http').createServer(app);
+const io = require('socket.io')(server, {
+  transports: ['polling'],
+  cors: { origin: '*' },
+});
+
+// Socket.io initialization
+require('./socketio.js')(io);
+
+// Middleware for parsing incoming requests with JSON payloads
+app.use(express.json({ limit: '50mb' }));
+
+// Middleware for parsing incoming requests with URL-encoded payloads
+app.use(express.urlencoded({ extended: true, limit: '50mb' }));
+
+// API routes
+app.use('/api/users', require('./routes/userRoutes'));
+app.use('/api/tickets', require('./routes/ticketRoutes'));
+app.use('/api/issues', require('./routes/issueRoutes'));
+app.use('/api/organizations', require('./routes/organizationRoutes'));
+app.use('/api/notifications', require('./routes/notificationRoutes'));
+
+app.post('/upload', upload.array('media', 10), async (req, res) => {
+  try {
+    const { ticketID } = req.body; // Assuming ticketID is sent in the request body
+
+    // Ensure ticketID is valid (perform necessary validation)
+
+    // Check if media items already exist for the provided ticketID
+    let existingMediaDocument = await Media.findOne({ ticket: ticketID });
+
+    if (!existingMediaDocument) {
+      // If no existing media document, create a new one
+      existingMediaDocument = await Media.create({
+        mediaItems: [],
+        ticket: ticketID,
+      });
+    }
+
+    // Save the media URLs in MongoDB with forward slashes
+    const mediaItems = req.files.map((file) => ({
+      mediaUrl: 'http://localhost:5000/' + file.path.replace(/\\/g, '/'),
+      mediaType: file.mimetype.startsWith('image') ? 'image' : 'video',
+    }));
+
+    // Update or insert media items in the existing media document
+    existingMediaDocument.mediaItems = [...existingMediaDocument.mediaItems, ...mediaItems];
+    await existingMediaDocument.save();
+
+    res.json({ mediaUrls: mediaItems.map((item) => item.mediaUrl) });
+  } catch (error) {
+    console.error('Error uploading media:', error);
+    res.status(500).json({ error: 'Internal Server Error' });
+  }
+});
+
+
+app.get('/media', async (req, res) => {
+  try {
+    const { ticketID } = req.query;
+
+    // Validate ticketID
+    if (!mongoose.isValidObjectId(ticketID)) {
+      return res.status(400).json({ error: 'Invalid ticketID' });
+    }
+
+    // Query the Media collection to find media items associated with the given ticketID
+    const mediaDocument = await Media.findOne({ ticket: ticketID }).populate('ticket');
+
+    if (!mediaDocument) {
+      return res.status(404).json({ error: 'Media not found for the specified ticket' });
+    }
+
+    const mediaItems = mediaDocument.mediaItems;
+    res.json(mediaItems);
+  } catch (error) {
+    console.error('Error fetching media:', error);
+    res.status(500).json({ error: 'Internal Server Error' });
+  }
+});
+
+app.delete('/media/:id', async (req, res) => {
+  const mediaItemId = req.params.id;
+
+  try {
+    let mediaDocument = await Media.findOne({ 'mediaItems._id': mediaItemId });
+
+    if (!mediaDocument) {
+      return res.status(404).json({ error: 'Media item not found' });
+    }
+
+    // Find the index of the media item in the array
+    const mediaItemIndex = mediaDocument.mediaItems.findIndex(item => item._id == mediaItemId);
+
+    if (mediaItemIndex === -1) {
+      return res.status(404).json({ error: 'Media item not found' });
+    }
+
+    // Extract the filename from the URL
+    const filename = path.basename(mediaDocument.mediaItems[mediaItemIndex].mediaUrl);
+
+    // Construct the local file path for deletion
+    const filePath = path.join(__dirname, '../uploads', filename);
+
+    // Delete the media file from the server
+    await fs.unlink(filePath);
+
+    // Remove the media item from the array
+    mediaDocument.mediaItems.splice(mediaItemIndex, 1);
+
+    // Save the updated document to the database
+    await mediaDocument.save();
+
+    res.json({ message: 'Media item deleted successfully' });
+  } catch (error) {
+    console.error('Error deleting media item:', error);
+    res.status(500).json({ error: 'Internal Server Error' });
+  }
+});
+
+// Serve uploaded images statically
+app.use('/uploads', express.static(path.join(__dirname, '../uploads')));
+// Serve Frontend
+// Set the build folder as a static folder
+app.use(express.static(path.join(__dirname, '../frontend/build')));
+
+// Serve the React app for any other route
+app.get('*', (req, res) => {
+  res.sendFile(path.join(__dirname, '../frontend/build/index.html'));
+});
+
+// Custom error handling middleware
+app.use(errorHandler);
+
+// Start the server
+server.listen(PORT, () => {
+  console.log(`Server is running on port ${PORT}`);
+});
+
+  

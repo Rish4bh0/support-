@@ -17,6 +17,8 @@ import DomainAddIcon from '@mui/icons-material/DomainAdd';
 import AddCircleIcon from '@mui/icons-material/AddCircle';
 import RoomPreferencesIcon from '@mui/icons-material/RoomPreferences';
 import { useSelector } from "react-redux";
+import SpellcheckIcon from '@mui/icons-material/Spellcheck';
+import ReportGmailerrorredIcon from '@mui/icons-material/ReportGmailerrorred';
 
 
 const Sidebar = () => {
@@ -95,7 +97,7 @@ const allowedRolesAdmin = ["ADMIN"];
                 }
               >
                 <DashboardIcon />
-                <span className="capitalize">Admin Dashboard</span>
+                <span className="capitalize">Admin Analytics</span>
               </NavLink>
             </div>
             )}
@@ -119,7 +121,7 @@ const allowedRolesAdmin = ["ADMIN"];
                 }
               >
                 <DashboardIcon />
-                <span className="capitalize">Analytics</span>
+                <span className="capitalize">Office Analytics</span>
               </NavLink>
             </div>
             )}
@@ -165,7 +167,7 @@ const allowedRolesAdmin = ["ADMIN"];
                 }
               >
                 <AssignmentTurnedInIcon />
-                <span className="capitalize">Assigned</span>
+                <span className="capitalize">Assigned to me</span>
               </NavLink>
               <NavLink
                 to={`allticket`}
@@ -295,6 +297,34 @@ const allowedRolesAdmin = ["ADMIN"];
               >
                 <CorporateFareIcon />
                 <span className="capitalize">Office Tickets</span>
+              </NavLink>
+              {/*
+              <NavLink
+                to={`/office-assigned`}
+                onClick={handleCloseSideBar}
+                style={({ isActive }) => ({
+                  backgroundColor: isActive ? currentColor : "",
+                })}
+                className={({ isActive }) =>
+                  isActive ? activeLink : normalLink
+                }
+              >
+                <SpellcheckIcon />
+                <span className="capitalize">Office Assigned Tickets</span>
+              </NavLink>
+              */}
+              <NavLink
+                to={`/office-unassigned`}
+                onClick={handleCloseSideBar}
+                style={({ isActive }) => ({
+                  backgroundColor: isActive ? currentColor : "",
+                })}
+                className={({ isActive }) =>
+                  isActive ? activeLink : normalLink
+                }
+              >
+                <ReportGmailerrorredIcon />
+                <span className="capitalize">Office Unassigned Tickets</span>
               </NavLink>
             </div>
             

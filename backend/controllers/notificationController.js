@@ -68,13 +68,22 @@ const markOneNotificationasread = async (req, res) => {
   if (!id || !id.match(/^[0-9a-fA-F]{24}$/)) {
     return res.status(400).json({ message: `You must give a valid id: ${id}` });
   }
-  const updateNotification = await notification.find({ id }).exec();
-  if (!updateNotification) {
-    return res.status(400).json({ message: 'No notifications found' });
+
+  try {
+    const updateNotification = await notification.findById(id).exec();
+
+    if (!updateNotification) {
+      return res.status(400).json({ message: 'Notification not found' });
+    }
+
+    updateNotification.read = true; // Assuming you want to mark it as read
+    await updateNotification.save();
+
+    res.json(updateNotification);
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ message: 'Internal Server Error' });
   }
-  updateNotification.read = false;
-  await updateNotification.save();
-  res.json(updateNotification);
 };
 // @desc Mark All Notifications As Read
 // @Route Patch /notifications/All

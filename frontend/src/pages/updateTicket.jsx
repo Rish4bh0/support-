@@ -23,6 +23,7 @@ import {
 } from "@mui/material";
 import SendIcon from "@mui/icons-material/Send";
 import BackButton from '../components/BackButton';
+import MediaUpload from './ImageUpload';
 
 const UpdateProductPage = () => {
   const { ticketId } = useParams();
@@ -47,7 +48,7 @@ const UpdateProductPage = () => {
   });
 
   // State to store selected media files
-  const [media, setMedia] = useState([]);
+ // const [media, setMedia] = useState([]);
   const [isEmailValid, setIsEmailValid] = useState(false);
   const [filteredUsers, setFilteredUsers] = useState([]);
 
@@ -125,7 +126,7 @@ const UpdateProductPage = () => {
       setFilteredUsers(users);
     }
   }, [formData.organization, users]);
-
+/*
   // Function to handle media file selection
   const handleMedia = (e) => {
     const selectedMedia = e.target.files;
@@ -152,7 +153,7 @@ const UpdateProductPage = () => {
       callback(base64Media);
     };
   };
-
+*/
   const handleSubmit = (e, status) => {
     e.preventDefault();
     
@@ -163,7 +164,7 @@ const UpdateProductPage = () => {
         updatedTicketData: {
           customerName: formData.customerName,
           description: formData.description,
-          media, // Include the selected media files
+        //  media, // Include the selected media files
           product: formData.product,
         priority: formData.priority,
         assignedTo: formData.assignedTo,
@@ -374,7 +375,7 @@ if (isLoading) return <Spinner />;
               rows={4}
             />
           </Grid>
-
+{/*
           <Grid item xs={12}>
             <div className="form-outline mb-4">
               <label
@@ -421,8 +422,9 @@ if (isLoading) return <Spinner />;
           </div>
         )}
           </Grid>
+          */}
           </Grid>
-       
+          <MediaUpload ticketID={ticket._id} />
         <div className="form-group mt-6 space-x-6">
           <Button
             variant="contained"
@@ -443,6 +445,7 @@ if (isLoading) return <Spinner />;
         </div>
        
       </form>
+     
     </>
   );
 };

@@ -220,7 +220,7 @@ const createTicket = asyncHandler(async (req, res) => {
     customerEmail,
     customerContact,
     organization,
-    media,
+    //media,
     title,
     status
   } = req.body;
@@ -231,6 +231,8 @@ const createTicket = asyncHandler(async (req, res) => {
   }*/
 
   try {
+
+    {/*
     const mediaPromises = [];
 
     for (const mediaItem of media) {
@@ -258,7 +260,7 @@ const createTicket = asyncHandler(async (req, res) => {
         url: result.secure_url,
       });
     }
-
+  */}
     const user = await User.findById(req.user.id);
 
     if (!user) {
@@ -300,7 +302,7 @@ const createTicket = asyncHandler(async (req, res) => {
       customerContact,
       user: req.user.id,
       status,
-      media: mediaPromises,
+      //media: mediaPromises,
       organization: org ? org._id : null,
       title
     });
@@ -483,7 +485,7 @@ const updateTicket = asyncHandler(async (req, res) => {
 const updateTicket = asyncHandler(async (req, res) => {
   const ticketId = req.params.id;
   const updatedTicketData = req.body;
-
+{/*
   // Check if the request includes media updates
   if (updatedTicketData.media && updatedTicketData.media.length > 0) {
     const mediaPromises = [];
@@ -522,6 +524,7 @@ const updateTicket = asyncHandler(async (req, res) => {
     const existingTicket = await Ticket.findById(ticketId);
     updatedTicketData.media = existingTicket.media;
   }
+*/}
 
   // Check if the request includes a status update
   if (req.body.status === 'close') {

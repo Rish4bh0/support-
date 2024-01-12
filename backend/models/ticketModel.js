@@ -77,6 +77,10 @@ const ticketSchema = mongoose.Schema(
       ref: 'Organization',
 
     },
+
+    mediaUrl: String,
+    
+    mediaType: String,
    
   },
   {

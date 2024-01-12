@@ -58,11 +58,12 @@ function TicketItem({ ticket }) {
       <div>{organizationName}</div>
      
       <div className="icon-buttons">
-      {(userRole && allowedRolesOrg.includes(userRole)) && (
-        <IconButton component={Link} to={`/ticket/${ticket._id}`} className="btn btn-reverse btn-sm">
-          <VisibilityIcon />
-        </IconButton>
-        )}
+      {(userRole && allowedRolesOrg.includes(userRole) && ticket.status !== 'draft') && (
+  <IconButton component={Link} to={`/ticket/${ticket._id}`} className="btn btn-reverse btn-sm">
+    <VisibilityIcon />
+  </IconButton>
+)}
+
 
 {(ticket.status === 'draft' || (userRole && allowedRoles.includes(userRole))) && (
           <IconButton component={Link} to={`/ticket/${ticket._id}/update`} className="btn btn-reverse btn-sm">

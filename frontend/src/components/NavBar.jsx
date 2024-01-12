@@ -17,7 +17,7 @@ import LoginIcon from "@mui/icons-material/Login";
 import LogoutIcon from "@mui/icons-material/Logout";
 import { getAllOrganization } from "../features/organization/organizationSlice";
 import useSocketIo from "../hooks/useSocketio";
-
+import NotificationModal from '../pages/NotificationModal';
 
 const NavButton = ({ title, customFunc, icon, color, dotColor }) => (
   <TooltipComponent content={title} position="BottomCenter">
@@ -46,7 +46,7 @@ const NavBar = () => {
     screenSize,
     setscreenSize,
   } = useStateContext();
-
+  const [isNotificationModalOpen, setIsNotificationModalOpen] = useState(false);
   const organizations = useSelector(
     (state) => state.organizations.organizations
   );
@@ -102,26 +102,41 @@ const NavBar = () => {
   useEffect(() => {
     if (socket) {
       console.log("Socket connected");
+  
+      // Set user ID for socket
       socket.emit("setUserId", id);
-      // Getting first notifications length
+  
+      // Get initial notifications length
       socket.emit("getNotificationsLength", id);
+  
+      // Listen for notifications length updates
       socket.on("notificationsLength", (data) => {
         console.log("Received notificationsLength:", data);
         setNotificationsLength(data);
       });
-      const timer = setTimeout(() => {
+  
+      // Listen for socket event to update notification length
+      socket.on("updateNotificationsLength", () => {
+        console.log("Received updateNotificationsLength event");
+        socket.emit("getNotificationsLength", id);
+      });
+  
+      // Set up periodic timer to fetch notifications length
+      const timer = setInterval(() => {
         console.log("Fetching notifications length...");
         socket.emit("getNotificationsLength", id);
       }, 5000); // run every 5 seconds
-
+  
+      // Cleanup on component unmount
       return () => {
-        socket.off("connect");
-        socket.off("disconnect");
+        console.log("Component unmounted. Cleaning up...");
+        clearInterval(timer);
         socket.off("notificationsLength");
-        clearTimeout(timer);
+        socket.off("updateNotificationsLength");
       };
     }
   }, [id, setNotificationsLength, socket]);
+  
   return (
     <div className="flex justify-between p-2 md:mx-6 relative">
       <div className="mt-0.5">
@@ -140,14 +155,12 @@ const NavBar = () => {
       </div>
       <div className="flex ">
      
-        <div className="mt-2">
-          {user ? (
-            <button
+      <div className="mt-2">
+        {user ? (
+          <button
             type="button"
-            onClick={() => {
-              navigate("/notifications");
-            }}
-            style={{ display: "flex", alignItems: "center" }}
+            onClick={() => setIsNotificationModalOpen(true)}
+            style={{ display: 'flex', alignItems: 'center' }}
           >
             <div style={{ position: "relative",
             right: 22,
@@ -227,6 +240,10 @@ const NavBar = () => {
           </div>
         )}
       </div>
+      <NotificationModal
+        isOpen={isNotificationModalOpen}
+        onClose={() => setIsNotificationModalOpen(false)}
+      />
     </div>
   );
 };

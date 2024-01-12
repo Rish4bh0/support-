@@ -2,7 +2,8 @@ import React from 'react';
 import {
   BarChart, Bar, XAxis, YAxis, Tooltip, Legend, Label, Line, LineChart, PieChart, Pie, Cell ,AreaChart, Area
 } from 'recharts';
-import { Table, TableContainer, TableHead, TableRow, TableCell, TableBody } from '@mui/material';
+import Box from '@mui/material/Box';
+import { Table, TableContainer, TableHead, TableRow, TableCell, TableBody, Typography } from '@mui/material';
 
 const valueFormatter = (value) => `${value} tickets`;
 
@@ -33,8 +34,13 @@ const TicketStatusChart = ({ allTicket }) => {
   }));
 
   return (
-    <div style={{ display: 'flex', justifyContent: 'space-around' }} >
-      <div className='border border-gray-300 rounded-2xl'>
+    <div style={{ display: 'flex', justifyContent: 'space-around' }} className="flex flex-wrap lg:flex-nowrap justify-center mb-20" >
+       <div className='border border-gray-300 rounded-2xl mb-10'>
+      <Box display="flex" alignItems="center" justifyContent="center" mb={2}>
+        <Typography variant="h6" className='pt-5'>
+         Bar Chart
+        </Typography>
+      </Box>
         <BarChart
           width={500}
           height={300}
@@ -96,25 +102,30 @@ const TicketStatusChart = ({ allTicket }) => {
         */}
       </div>
 
-      <div className='border border-gray-300 rounded-2xl'>
-        <PieChart width={500} height={300}>
-          <Tooltip />
-          <Legend />
-          <Pie
-            dataKey="value"
-            nameKey="name"
-            data={totalTicketsByStatus}
-            cx="50%"
-            cy="50%"
-            outerRadius={80}
-            label={({ name, percent }) => `${name} ${(percent * 100).toFixed(0)}%`}
-          >
-            {totalTicketsByStatus.map((entry, index) => (
-              <Cell key={`cell-${index}`} fill={getRandomColor()} />
-            ))}
-          </Pie>
-        </PieChart>
-      </div>
+      <div className='border border-gray-300 rounded-2xl mb-10'>
+      <Box display="flex" alignItems="center" justifyContent="center" mb={2}>
+        <Typography variant="h6" className='pt-5'>
+          Pie Chart
+        </Typography>
+      </Box>
+      <PieChart width={500} height={300}>
+        <Tooltip />
+        <Legend />
+        <Pie
+          dataKey="value"
+          nameKey="name"
+          data={totalTicketsByStatus}
+          cx="50%"
+          cy="50%"
+          outerRadius={80}
+          label={({ name, percent }) => `${name} ${(percent * 100).toFixed(0)}%`}
+        >
+          {totalTicketsByStatus.map((entry, index) => (
+            <Cell key={`cell-${index}`} fill={getRandomColor()} />
+          ))}
+        </Pie>
+      </PieChart>
+    </div>
     </div>
   );
 };

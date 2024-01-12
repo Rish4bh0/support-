@@ -43,6 +43,8 @@ import AdminPage from './pages/AdminPage.js';
 import ChatBox from "./components/ChatBox.js";
 import Dashboardd from "./pages/Dashboard/Dashboard.js";
 import Admindash from "./pages/Dashboard.jsx"
+import ImageUpload from "./pages/ImageUpload.jsx"
+import OfficeUnssigned from "./pages/officeUnssigned.jsx"
 
 
 function App() {
@@ -99,7 +101,7 @@ function App() {
                 <Route path="/register" element={<Register />} />
                 <Route path="/forget" element={<Forget />} />
                 <Route path="/dash" element={<Dash />} />
-                
+                <Route path="/img" element={<ImageUpload />} />
                 <Route
                   path="/reset-password/:token"
                   element={<ResetPassword />}
@@ -119,6 +121,9 @@ function App() {
                 </Route>
                 <Route path="/unassigned" element={<PrivateRoute />}>
                   <Route path="/unassigned" element={<Unassigned />} />
+                </Route>
+                <Route path="/office-unassigned" element={<PrivateRoute />}>
+                  <Route path="/office-unassigned" element={<OfficeUnssigned />} />
                 </Route>
                 <Route path="/notifications" element={<PrivateRoute />}>
                   <Route path="/notifications" element={<Notification />} />

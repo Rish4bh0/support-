@@ -14,11 +14,12 @@ import {
   reset as notesReset,
 } from "../features/notes/noteSlice";
 import Spinner from "../components/Spinner";
+import MediaUpload from "./ImageUpload";
 
 import { useParams, useNavigate } from "react-router-dom";
 import { useEffect, useState } from "react";
 import { toast } from "react-toastify";
-import NoteItem from "../components/NoteItem";
+//import NoteItem from "../components/NoteItem";
 import Modal from "react-modal";
 import { FaPlus } from "react-icons/fa";
 import { fetchAllUsers } from "../features/auth/authSlice";
@@ -29,14 +30,13 @@ import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 import { DemoContainer } from "@mui/x-date-pickers/internals/demo";
 import { TimePicker } from "@mui/x-date-pickers/TimePicker";
 import { DataGrid } from "@mui/x-data-grid";
-import { Carousel } from "react-responsive-carousel";
-import FsLightbox from "fslightbox-react";
 import {
   Button,
 } from "@mui/material";
 import SendIcon from "@mui/icons-material/Send";
-import ImageIcon from '@mui/icons-material/Image';
 import "react-responsive-carousel/lib/styles/carousel.min.css";
+import CloudUploadIcon from "@mui/icons-material/CloudUpload";
+import CloseIcon from '@mui/icons-material/Close';
 
 const customStyles = {
   content: {
@@ -69,7 +69,6 @@ function Ticket() {
   const [isTimerRunning, setIsTimerRunning] = useState(false);
   const [elapsedTime, setElapsedTime] = useState(0);
   const [timerIntervalId, setTimerIntervalId] = useState(null);
-  const [toggler, setToggler] = useState(false);
 
   const organizations = useSelector(
     (state) => state.organizations.organizations
@@ -106,26 +105,7 @@ function Ticket() {
     dispatch(saveElapsedTime({ ticketId, timeSpent: updatedTimeSpent }));
   };
 
-  // Handle timer start/stop button click
-  const handleTimerButtonClick = () => {
-    if (isTimerRunning) {
-      // If the timer is running, stop it
-      stopTimer();
-    } else {
-      // If the timer is not running, start it
-      startTimer();
-    }
-  };
 
-  // Format the elapsed time in HH:MM:SS format
-  const formatElapsedTime = (milliseconds) => {
-    const seconds = Math.floor((milliseconds / 1000) % 60);
-    const minutes = Math.floor((milliseconds / 1000 / 60) % 60);
-    const hours = Math.floor(milliseconds / 1000 / 60 / 60);
-    return `${hours.toString().padStart(2, "0")}:${minutes
-      .toString()
-      .padStart(2, "0")}:${seconds.toString().padStart(2, "0")}`;
-  };
   const { ticket, isLoading, isError, message } = useSelector(
     (state) => state.tickets
   );
@@ -370,10 +350,15 @@ function Ticket() {
       <Modal
         isOpen={modalIsOpen}
         onRequestClose={closeModal}
-        style={customStyles} // Define your custom styles
+         style={{
+    ...customStyles,
+    zIndex: 1,
+    position: 'absolute', 
+  }}
         contentLabel="Add Task"
+        
       >
-        <h2>Add activity</h2>
+        <h2>Add task</h2>
         <button className="btn-close" onClick={closeModal}>
           X
         </button>
@@ -389,31 +374,31 @@ function Ticket() {
               onChange={(e) => settext(e.target.value)}
             ></textarea>
           </div>
-          <div className="form-group">
+          <div >
             <label htmlFor="toTimee">Start Time:</label>
             <LocalizationProvider dateAdapter={AdapterDayjs}>
               <DemoContainer components={["TimePicker"]}>
                 <TimePicker
-                  label="To Time"
+                  
                   value={toTimee}
                   onChange={(newToTime) => settoTimee(newToTime)}
                 />
               </DemoContainer>
             </LocalizationProvider>
           </div>
-          <div className="form-group">
+          <div >
             <label htmlFor="fromTimee">End Time:</label>
             <LocalizationProvider dateAdapter={AdapterDayjs}>
               <DemoContainer components={["TimePicker"]}>
                 <TimePicker
-                  label="From Time"
+                  
                   value={fromTimee}
                   onChange={(newFromTime) => setfromTimee(newFromTime)}
                 />
               </DemoContainer>
             </LocalizationProvider>
           </div>
-          <div className="form-group">
+          <div className="form-group mt-10">
             <button className="btn" type="submit">
               Submit
             </button>
@@ -421,7 +406,7 @@ function Ticket() {
         </form>
       </Modal>
 
-      <div style={{ height: 400, width: "100%", marginBottom: 30}}>
+      <div style={{ height: 400, width: "100%", marginBottom: 30, position: 'relative', zIndex: 0 }}>
         <DataGrid
           rows={rows}
           columns={columns}
@@ -470,8 +455,11 @@ function Ticket() {
         <p>No media available</p>
       )}
 */}
- <div>
-
+{ticket.status !== "close" && (
+<MediaUpload ticketID={ticket._id} />
+)}
+ <div className="form-group mt-6 space-x-6 flex justify-center">
+ {/*
  <Button
             variant="contained"
             color="primary"
@@ -486,13 +474,61 @@ function Ticket() {
       
 
       {ticket && ticket.media && ticket.media.length > 0 ? (
+        console.log(ticket.media.map((mediaItem) => mediaItem.url)),
         <FsLightbox
           toggler={toggler}
           sources={ticket.media.map((mediaItem) => mediaItem.url)}
         />
       ) : null}
-    </div>
+    
+*/}
 
+    
+    {userRole &&
+        allowedRolesReview.includes(userRole) &&
+        ticket.status !== "review" &&
+        ticket.status !== "close" && (
+          <Button
+            variant="contained"
+            color="success"
+            endIcon={<SendIcon />}
+            onClick={onTicketSendForReview}
+          >
+              Send ticket for review
+          </Button>
+
+)}
+
+{ticket.status !== "close" &&
+        userRole &&
+        allowedRoles.includes(userRole) && (
+          <Button
+  variant="contained"
+  color="primary"
+  startIcon={<CloseIcon />}
+  onClick={onTicketClose}
+  style={{ backgroundColor: 'red', color: 'white' }}
+>
+  Close Ticket
+</Button>
+
+          )}
+
+{(ticket.status === "draft" || (ticket.status === "close" && userRole &&
+        allowedRoles.includes(userRole))) && (
+          <Button
+            variant="contained"
+            color="primary"
+            startIcon={<CloudUploadIcon />}
+            onClick={onTicketOpen}
+          >
+            Open Ticket
+          </Button>
+          )}
+        </div>
+
+
+{/*
       {userRole &&
         allowedRolesReview.includes(userRole) &&
         ticket.status !== "review" &&
@@ -519,7 +555,7 @@ function Ticket() {
     Open Ticket
   </button>
 )}
-
+*/}
 
       {/*
       {ticket.status !== "close" && (
