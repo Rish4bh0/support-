@@ -121,7 +121,7 @@ function ListTickets() {
   return (
     <>
      <div className="flex items-center justify-between mb-4">
-      <BackButton url="/" />
+     <BackButton url="/" />
      
         <div className="flex items-center">
           <label htmlFor="status-dropdown" className="mr-2">Status:</label>
@@ -138,17 +138,6 @@ function ListTickets() {
             ))}
           </select>
         </div>
-      </div>
-      <div className="tab-buttons">
-        {statusOptions.map((status) => (
-          <button
-            key={status}
-            className={`btn btn-reverse btn-back ${activeTab === status ? "active" : ""}`}
-            onClick={() => handleTabChange(status)}
-          >
-            {status === "all" ? "All Tickets" : `${status.charAt(0).toUpperCase()}${status.slice(1)} Tickets`}
-          </button>
-        ))}
       </div>
       <div className="tickets">
         <div className="ticket-headings">

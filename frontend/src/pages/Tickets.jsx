@@ -114,7 +114,7 @@ function Tickets() {
   return (
     <>
       <div className="flex items-center justify-between mb-4">
-        <BackButton url="/" />
+      <BackButton url="/" />
         <div className="flex items-center">
           <label htmlFor="status-dropdown" className="mr-2">Status:</label>
           <select
@@ -131,6 +131,7 @@ function Tickets() {
           </select>
         </div>
       </div>
+      {/*
       <div className="tab-buttons">
         {statusOptions.map((status) => (
           <button
@@ -142,6 +143,7 @@ function Tickets() {
           </button>
         ))}
       </div>
+      */}
       <div className="tickets">
         <div className="ticket-headings">
           <div>Date</div>

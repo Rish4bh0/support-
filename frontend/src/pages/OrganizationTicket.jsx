@@ -20,6 +20,7 @@ function ORGTICKET() {
     review: 1,
     close: 1,
   });
+  const [selectedStatus, setSelectedStatus] = useState("all");
   const itemsPerPage = 4;
   const maxPageButtons = 5;
 
@@ -40,13 +41,24 @@ function ORGTICKET() {
 
   const newTickets = allTickets.filter((ticket) => ticket.status === "new");
   const openTickets = allTickets.filter((ticket) => ticket.status === "open");
+  const draftTickets = allTickets.filter((ticket) => ticket.status === "draft");
   const closedTickets = allTickets.filter((ticket) => ticket.status === "close");
   const reviewTickets = allTickets.filter((ticket) => ticket.status === "review");
 
 
+  const allTicketss = [...allTickets];
   const filteredTickets =
-    activeTab === "new" ? newTickets : activeTab === "open" ? openTickets : activeTab === "review" ? reviewTickets : closedTickets;
-
+    selectedStatus === "all"
+      ? allTicketss
+      : selectedStatus === "new"
+      ? newTickets
+      : selectedStatus === "draft"
+      ? draftTickets
+      : selectedStatus === "open"
+      ? openTickets
+      : selectedStatus === "review"
+      ? reviewTickets
+      : closedTickets;
   // Filter tickets based on the user's organization ID
   const ticketsForUserOrganization = filteredTickets.filter((ticket) => {
     return ticket.organization === userOrganization;
@@ -54,7 +66,7 @@ function ORGTICKET() {
 
   const startIndex = (currentPage[activeTab] - 1) * itemsPerPage;
   const endIndex = startIndex + itemsPerPage;
-  const sortedTickets = ticketsForUserOrganization.sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
+  const sortedTickets = [...ticketsForUserOrganization].sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
   const paginatedTickets = sortedTickets.slice(startIndex, endIndex);
   const totalPages = Math.ceil(ticketsForUserOrganization.length / itemsPerPage);
   const handlePageChange = (page, status) => {
@@ -105,6 +117,18 @@ function ORGTICKET() {
     });
   };
 
+
+  const handleStatusChange = (status) => {
+    setActiveTab(status);
+    setSelectedStatus(status);
+    setCurrentPage({
+      ...currentPage,
+      [status]: 1,
+    });
+  };
+
+  const statusOptions = ["all", "draft", "new", "open", "review", "close"];
+
   // Check if the user has one of the allowed roles
   if (!["ADMIN", "SUPERVISOR", "EMPLOYEE", "ORGAGENT"].includes(userRole)) {
     // Handle unauthorized access, e.g., redirect or show an error message
@@ -118,33 +142,24 @@ function ORGTICKET() {
 
   return (
     <>
-      <BackButton url="/" />
-      <div className="tab-buttons">
-        <button
-          className={`btn btn-reverse btn-back ${activeTab === "new" ? "active" : ""}`}
-          onClick={() => handleTabChange("new")}
-        >
-          New Tickets
-        </button>
-        <button
-          className={`btn btn-reverse btn-back ${activeTab === "open" ? "active" : ""}`}
-          onClick={() => handleTabChange("open")}
-        >
-          Open Tickets
-        </button>
-        <button
-          className={`btn btn-reverse btn-back ${activeTab === "review" ? "active" : ""}`}
-          onClick={() => handleTabChange("review")}
-        >
-          Tickets on review
-        </button>
-        <button
-          className={`btn btn-reverse btn-back ${activeTab === "close" ? "active" : ""}`}
-          onClick={() => handleTabChange("close")}
-        >
-          Closed Tickets
-        </button>
-      </div>
+    <div className="flex items-center justify-between mb-4">
+    <BackButton url="/" />
+      <div className="flex items-center">
+          <label htmlFor="status-dropdown" className="mr-2">Status:</label>
+          <select
+            id="status-dropdown"
+            className="px-2 py-1 border border-gray-300 rounded"
+            value={selectedStatus}
+            onChange={(e) => handleStatusChange(e.target.value)}
+          >
+            {statusOptions.map((status) => (
+              <option key={status} value={status}>
+                {status === "all" ? "All Tickets" : `${status.charAt(0).toUpperCase()}${status.slice(1)} Tickets`}
+              </option>
+            ))}
+          </select>
+        </div>
+        </div>
       <div className="tickets">
         <div className="ticket-headings">
           <div>Date</div>
@@ -184,6 +199,7 @@ function ORGTICKET() {
           </button>
         </div>
       </div>
+      
     </>
   );
 }

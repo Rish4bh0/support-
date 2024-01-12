@@ -229,7 +229,7 @@ function NewTicket() {
 
   return (
     <>
-      <BackButton url="/" />
+     <BackButton url="/" />
       <section className="flex items-center justify-center ">
     
           <div>

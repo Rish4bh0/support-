@@ -21,11 +21,13 @@ import {
   IconButton,
   Card,
   CardContent,
+  CircularProgress,
 } from "@mui/material";
 import CreateIcon from "@mui/icons-material/Create";
 import CloseIcon from "@mui/icons-material/Close";
 import { getAllOrganization } from "../features/organization/organizationSlice";
 import { getAllIssueTypes } from "../features/issues/issueSlice";
+import axios from "axios";
 
 
 function NewTicket() {
@@ -56,6 +58,7 @@ function NewTicket() {
   const [filteredUsers, setFilteredUsers] = useState([]);
   const [media, setMedia] = useState([]);
   const [uploading, setUploading] = useState(false);
+  const [uploadProgress, setUploadProgress] = useState(0);
   const dispatch = useDispatch();
   const navigate = useNavigate();
 
@@ -260,14 +263,21 @@ function NewTicket() {
         formData.append("ticketID", newTicketID);
   
         // Send a request to the media upload endpoint (http://localhost:5000/upload)
-        const mediaResponse = await fetch("http://localhost:5000/upload", {
-          method: "POST",
-          body: formData,
-        });
+        const mediaResponse = await axios.post('http://localhost:5000/upload', formData, {
+        headers: {
+          'Content-Type': 'multipart/form-data',
+        },
+        onUploadProgress: (progressEvent) => {
+          const progress = Math.round((progressEvent.loaded / progressEvent.total) * 100);
+          console.log(progress)
+          setUploadProgress(progress);
+
+        },
+      });
   
         // Handle the media upload response as needed
-        const mediaUploadData = await mediaResponse.json();
-        console.log("Media upload response:", mediaUploadData);
+        //const mediaUploadData = await mediaResponse.json();
+       // console.log("Media upload response:", mediaUploadData);
       }
   
       // Reset form, navigate to tickets page, and show success toast
@@ -279,8 +289,10 @@ function NewTicket() {
       console.error("Error creating ticket:", error);
       toast.error("Error creating new ticket");
     } finally {
-      setUploading(false);
+     
     }
+     setUploading(false);
+  setUploadProgress(0)
   };
   const userRole = useSelector((state) => state.auth.user?.role);
 
@@ -289,11 +301,12 @@ function NewTicket() {
 
   const allowedRolesReview = ["ADMIN", "SUPERVISOR", "ORGAGENT"];
 
-  if (isLoading) return <Spinner />;
-
+  if (isLoading) return <Spinner/>;
+  if (uploading) return <Spinner uploadProgress={uploadProgress} />;
+  
   return (
     <>
-      <BackButton url="/" />
+     <BackButton url="/" />
       <section className="flex items-center justify-center ">
         <div>
           <Typography variant="h4" component="h1" gutterBottom>
@@ -488,6 +501,14 @@ function NewTicket() {
   onChange={handleFileChange}
 />
 </Grid>
+{/*
+{uploading && (
+    <div>
+      <Spinner uploadProgress={uploadProgress} />
+      <span>{uploadProgress}% Uploading media</span>
+    </div>
+  )}
+*/}
           {/*
           <Grid item xs={12}>
             <div className="form-outline mb-4">
