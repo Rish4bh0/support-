@@ -45,7 +45,7 @@ const [loading, setLoading] = useState(true);
         return;
       }
   
-      const response = await axios.get(`http://localhost:5000/media?ticketID=${ticketID}`);
+      const response = await axios.get(`https://nea-support.onrender.com/media?ticketID=${ticketID}`);
       setMediaItems(response.data);
     } catch (error) {
       console.error('Error fetching media:', error);
@@ -74,7 +74,7 @@ const [loading, setLoading] = useState(true);
 
       formData.append('ticketID', ticketID);
 
-      const response = await axios.post('http://localhost:5000/upload', formData, {
+      const response = await axios.post('https://nea-support.onrender.com/upload', formData, {
         headers: {
           'Content-Type': 'multipart/form-data',
         },

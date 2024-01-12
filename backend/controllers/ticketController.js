@@ -312,7 +312,7 @@ const createTicket = asyncHandler(async (req, res) => {
     // Send email to logged-in user
     const userEmail = user.email; // Assuming you have an 'email' field in your User model
     const ticketId = ticket._id; // Retrieve the ticket ID
-    const ticketLink = `https://localhost:3000/ticket/${ticketId}`;
+    const ticketLink = `https://nea-support.onrender.com/ticket/${ticketId}`;
 
     await transporter.sendMail({
       from: 'helpdeskx1122@gmail.com', // Replace with your Gmail email address
