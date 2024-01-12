@@ -14,7 +14,7 @@ import { useSelector } from "react-redux";
 
 const ENDPOINT =
   window.location.host.indexOf("localhost") >= 0
-    ? "http://localhost:5000"
+    ? "https://nea-support.onrender.com"
     : window.location.host;
 
 export default function ChatBox() {

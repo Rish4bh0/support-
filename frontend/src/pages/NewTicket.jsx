@@ -263,7 +263,7 @@ function NewTicket() {
         formData.append("ticketID", newTicketID);
   
         // Send a request to the media upload endpoint (http://localhost:5000/upload)
-        const mediaResponse = await axios.post('http://localhost:5000/upload', formData, {
+        const mediaResponse = await axios.post('https://nea-support.onrender.com/upload', formData, {
         headers: {
           'Content-Type': 'multipart/form-data',
         },

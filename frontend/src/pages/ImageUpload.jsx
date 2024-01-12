@@ -106,7 +106,7 @@ const [loading, setLoading] = useState(true);
       setDeleting(true);
       setMediaToDelete(mediaId);
   
-      const response = await axios.delete(`http://localhost:5000/media/${mediaId}`, {
+      const response = await axios.delete(`https://nea-support.onrender.com/media/${mediaId}`, {
         onDownloadProgress: (progressEvent) => {
           const progress = Math.round((progressEvent.loaded / progressEvent.total) * 100);
           setDeleteProgress(progress);
