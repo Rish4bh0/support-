@@ -7,6 +7,7 @@ import TicketItem from "../components/TicketItem";
 import { fetchAllUsers } from "../features/auth/authSlice";
 import { getAllIssueTypes } from "../features/issues/issueSlice";
 import { FaArrowLeft, FaArrowRight } from "react-icons/fa";
+import { getAllProject } from "../features/project/projectSlice";
 
 function ORGTICKET() {
   const { allTickets, isLoading } = useSelector((state) => state.tickets);
@@ -27,6 +28,7 @@ function ORGTICKET() {
   useEffect(() => {
     dispatch(fetchAllUsers());
     dispatch(getAllIssueTypes());
+    dispatch(getAllProject());
   }, [dispatch]);
 
   useEffect(() => {

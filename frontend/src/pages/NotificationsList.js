@@ -21,7 +21,7 @@ const NotificationsList = () => {
     const getNotifications = async () => {
       try {
         const result = await axios.post(
-          'https://nea-support.onrender.com/api/notifications',
+          'http://localhost:5000/api/notifications',
           {
             id: user._id,
             limit: 2,
@@ -51,7 +51,7 @@ const NotificationsList = () => {
 
   const handleMarkOneAsRead = async (notificationId) => {
     try {
-      const result = await axios.patch('https://nea-support.onrender.com/api/notifications', { id: notificationId });
+      const result = await axios.patch('http://localhost:5000/api/notifications', { id: notificationId });
 
       // Create a new array with updated read status for the specific notification
       const newData = {
@@ -80,7 +80,7 @@ const NotificationsList = () => {
 
   const handleMarkAllAsRead = async () => {
     try {
-      const result = await axios.patch('https://nea-support.onrender.com/api/notifications/all', { id: user._id });
+      const result = await axios.patch('http://localhost:5000/api/notifications/all', { id: user._id });
 
       // Create a new array with updated read status
       const newData = {
@@ -104,7 +104,7 @@ const NotificationsList = () => {
 
   const handleDeleteNotification = async (notificationId) => {
     try {
-      const result = await axios.delete('https://nea-support.onrender.com/api/notifications', { data: { id: notificationId } });
+      const result = await axios.delete('http://localhost:5000/api/notifications', { data: { id: notificationId } });
       const newNotifications = data?.notifications?.filter((item) => item._id !== notificationId);
       console.log(newNotifications);
 
@@ -123,7 +123,7 @@ const NotificationsList = () => {
 
   const handleDeleteAll = async () => {
     try {
-      const result = await axios.delete('https://nea-support.onrender.com/api/notifications/all', { data: { id: user._id } });
+      const result = await axios.delete('http://localhost:5000/api/notifications/all', { data: { id: user._id } });
       setData(null);
       setMessage(result?.data?.message);
        socket.emit("updateNotificationsLength", id);

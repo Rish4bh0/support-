@@ -37,6 +37,16 @@ function TicketItem({ ticket }) {
   const issueTypeName = ticketIssueType ? ticketIssueType.name : "Unknown Issue Type";
 
   // Access the issueTypes array from the Redux state (assuming you have it there)
+  const projects = useSelector((state) => state.project.project);
+
+  // Find the issueType object with the same ID as the ticket's issueType ID
+  const ticketProject = projects.find((project) => project._id === ticket.project);
+
+  // Extract the name of the issueType (if found)
+  const projectName = ticketProject ? ticketProject.name : "Unknown Project";
+
+
+  // Access the issueTypes array from the Redux state (assuming you have it there)
   const organizations = useSelector((state) => state.organizations.organizations);
 
   // Find the issueType object with the same ID as the ticket's issueType ID
@@ -50,7 +60,7 @@ function TicketItem({ ticket }) {
   return (
     <div className="ticket">
       <div>{new Date(ticket.createdAt).toLocaleString("en-US", options)}</div>
-      <div>{ticket.product}</div>
+      <div>{projectName}</div>
       <div>{assignedToName}</div>
       <div className={`priority priority-${ticket.priority}`}>{ticket.priority}</div>
       <div>{issueTypeName}</div> {/* Display the issue type's name */}

@@ -211,7 +211,7 @@ const createTicket = asyncHandler(async (req, res) => {
 
 const createTicket = asyncHandler(async (req, res) => {
   const {
-    product,
+    project,
     priority,
     issueType,
     assignedTo,
@@ -292,8 +292,8 @@ const createTicket = asyncHandler(async (req, res) => {
     }
 
     const ticket = await Ticket.create({
-      product,
-      priority: priority || "Unknown",
+      project,
+      priority: priority || "Low",
       issueType: issueType || null,
       assignedTo: assignedToUser ? assignedToUser.id : null,
       description,

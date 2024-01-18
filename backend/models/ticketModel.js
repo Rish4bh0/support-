@@ -27,20 +27,16 @@ const ticketSchema = mongoose.Schema(
       type: mongoose.Schema.Types.ObjectId,
       ref: 'User',
     },
-    product: {
-      type: String,
+    project: {
+      type: mongoose.Schema.Types.ObjectId,
       //required: [true, 'Please select a product'],
-      enum: [
-        'Ecommerce',
-        'Employee management system',
-        'HR management system',
-        'CMS',
-      ],
+     ref: 'project',
     },
     priority: {
       type: String,
-      enum: ['High', 'Low', 'Unknown'],
+      enum: ['High', 'Low'],
       required: false,
+      default: 'Low',
     },
     issueType: {
       type: mongoose.Schema.Types.ObjectId,

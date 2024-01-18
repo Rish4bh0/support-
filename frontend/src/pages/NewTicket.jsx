@@ -28,7 +28,7 @@ import CloseIcon from "@mui/icons-material/Close";
 import { getAllOrganization } from "../features/organization/organizationSlice";
 import { getAllIssueTypes } from "../features/issues/issueSlice";
 import axios from "axios";
-
+import { getAllProject } from "../features/project/projectSlice";
 
 function NewTicket() {
   const { user } = useSelector((state) => state.auth);
@@ -38,6 +38,7 @@ function NewTicket() {
 
   const users = useSelector((state) => state.auth.users);
   const issues = useSelector((state) => state.issueTypes.issueTypes);
+  const projects = useSelector((state) => state.project.project);
   const organizations = useSelector(
     (state) => state.organizations.organizations
   );
@@ -50,6 +51,7 @@ function NewTicket() {
   const [product, setProduct] = useState("");
   const [priority, setPriority] = useState("");
   const [issueType, setIssueType] = useState("");
+  const [project, setProject] = useState("");
   const [description, setDescription] = useState("");
   const [assignedTo, setAssignedTo] = useState("");
   //const [media, setMedia] = useState([]);
@@ -66,6 +68,7 @@ function NewTicket() {
     dispatch(fetchAllUsers());
     dispatch(getAllOrganization());
     dispatch(getAllIssueTypes());
+    dispatch(getAllProject());
   }, [dispatch]);
 
   const handleFileChange = (e) => {
@@ -74,9 +77,9 @@ function NewTicket() {
     const filesArray = Array.from(files);
     setMedia(filesArray);
   };
-  
-  
-{/*
+
+  {
+    /*
   const handleMedia = (e) => {
     const selectedMedia = e.target.files;
     const mediaArray = [];
@@ -92,7 +95,8 @@ function NewTicket() {
       });
     }
   };
-*/}
+*/
+  }
   useEffect(() => {
     loadDraftFromLocalStorage();
   }, []);
@@ -104,7 +108,7 @@ function NewTicket() {
       callback(base64Media);
     };
   };
-/*
+  /*
   useEffect(() => {
     if (isError) {
       toast.error(message);
@@ -123,7 +127,7 @@ function NewTicket() {
       customerEmail,
       isEmailValid,
       customerContact,
-      product,
+      project,
       priority,
       issueType,
       description,
@@ -149,12 +153,12 @@ function NewTicket() {
       setCustomerEmail(draftData.customerEmail || "");
       setIsEmailValid(draftData.isEmailValid || false);
       setCustomerContact(draftData.customerContact || "");
-      setProduct(draftData.product || "");
+      setProject(draftData.project || "");
       setPriority(draftData.priority || "");
       setIssueType(draftData.issueType || "");
       setDescription(draftData.description || "");
       setAssignedTo(draftData.assignedTo || "");
-     // setMedia(draftData.media || []);
+      // setMedia(draftData.media || []);
       setOrganization(draftData.organization || "");
     }
   };
@@ -181,8 +185,8 @@ function NewTicket() {
         case "customerContact":
           setCustomerContact(value);
           break;
-        case "product":
-          setProduct(value);
+        case "project":
+          setProject(value);
           break;
         case "priority":
           setPriority(value);
@@ -230,7 +234,7 @@ function NewTicket() {
     e.preventDefault();
 
     const ticketData = {
-      product,
+      project,
       //media,
       description,
       priority,
@@ -246,40 +250,45 @@ function NewTicket() {
     try {
       // Create the ticket and get the response
       const response = await dispatch(createTicket(ticketData));
-  
+
       // Extract ticket ID from the API response
       const newTicketID = response.payload._id;
-  
+
       // If media files are present, upload them
       if (media.length > 0) {
         setUploading(true);
-  
+
         const formData = new FormData();
         media.forEach((file) => {
           formData.append("media", file);
         });
-  
+
         // Append ticket ID to the media upload data
         formData.append("ticketID", newTicketID);
-  
-        // Send a request to the media upload endpoint (http://localhost:5000/upload)
-        const mediaResponse = await axios.post('https://nea-support.onrender.com/upload', formData, {
-        headers: {
-          'Content-Type': 'multipart/form-data',
-        },
-        onUploadProgress: (progressEvent) => {
-          const progress = Math.round((progressEvent.loaded / progressEvent.total) * 100);
-          console.log(progress)
-          setUploadProgress(progress);
 
-        },
-      });
-  
+        // Send a request to the media upload endpoint (http://localhost:5000/upload)
+        const mediaResponse = await axios.post(
+          "http://localhost:5000/upload",
+          formData,
+          {
+            headers: {
+              "Content-Type": "multipart/form-data",
+            },
+            onUploadProgress: (progressEvent) => {
+              const progress = Math.round(
+                (progressEvent.loaded / progressEvent.total) * 100
+              );
+              console.log(progress);
+              setUploadProgress(progress);
+            },
+          }
+        );
+
         // Handle the media upload response as needed
         //const mediaUploadData = await mediaResponse.json();
-       // console.log("Media upload response:", mediaUploadData);
+        // console.log("Media upload response:", mediaUploadData);
       }
-  
+
       // Reset form, navigate to tickets page, and show success toast
       dispatch(reset());
       navigate("/ticketss");
@@ -289,10 +298,9 @@ function NewTicket() {
       console.error("Error creating ticket:", error);
       toast.error("Error creating new ticket");
     } finally {
-     
     }
-     setUploading(false);
-  setUploadProgress(0)
+    setUploading(false);
+    setUploadProgress(0);
   };
   const userRole = useSelector((state) => state.auth.user?.role);
 
@@ -301,12 +309,12 @@ function NewTicket() {
 
   const allowedRolesReview = ["ADMIN", "SUPERVISOR", "ORGAGENT"];
 
-  if (isLoading) return <Spinner/>;
+  if (isLoading) return <Spinner />;
   if (uploading) return <Spinner uploadProgress={uploadProgress} />;
-  
+
   return (
     <>
-     <BackButton url="/" />
+      <BackButton url="/" />
       <section className="flex items-center justify-center ">
         <div>
           <Typography variant="h4" component="h1" gutterBottom>
@@ -360,7 +368,6 @@ function NewTicket() {
               fullWidth
             />
           </Grid>
-          
 
           <Grid item xs={6}>
             <FormControl fullWidth>
@@ -421,21 +428,25 @@ function NewTicket() {
 
           <Grid item xs={6}>
             <FormControl fullWidth>
-              <InputLabel htmlFor="product">Product Name</InputLabel>
+              <InputLabel htmlFor="project">Project</InputLabel>
               <Select
-                name="product"
-                id="product"
-                value={product}
-                onChange={(e) => setProduct(e.target.value)}
+                name="project"
+                id="project"
+                value={project}
+                onChange={handleInputChange}
               >
-                <MenuItem value="Ecommerce">Ecommerce</MenuItem>
-                <MenuItem value="Employee management system">
-                  Employee management system
-                </MenuItem>
-                <MenuItem value="HR management system">
-                  HR management system
-                </MenuItem>
-                <MenuItem value="CMS">CMS</MenuItem>
+                <MenuItem value="">Select One</MenuItem>
+                {projects && projects.length > 0 ? (
+                  projects.map((project) => (
+                    <MenuItem key={project._id} value={project._id}>
+                      {project.name}
+                    </MenuItem>
+                  ))
+                ) : (
+                  <MenuItem value="" disabled>
+                    No project available
+                  </MenuItem>
+                )}
               </Select>
             </FormControl>
           </Grid>
@@ -493,15 +504,15 @@ function NewTicket() {
             />
           </Grid>
           <Grid item xs={12}>
-          <input
-  type="file"
-  id="media"
-  name="media"
-  multiple
-  onChange={handleFileChange}
-/>
-</Grid>
-{/*
+            <input
+              type="file"
+              id="media"
+              name="media"
+              multiple
+              onChange={handleFileChange}
+            />
+          </Grid>
+          {/*
 {uploading && (
     <div>
       <Spinner uploadProgress={uploadProgress} />
@@ -604,15 +615,15 @@ function NewTicket() {
                       */}
         </Grid>
         <div className="form-group mt-6 space-x-6">
-        <Button
-  variant="contained"
-  color="success"
-  endIcon={<SendIcon />}
-  onClick={(e) => onSubmit(e, "new")}
-  disabled={uploading}
->
-  {uploading ? "Uploading..." : "Submit as New"}
-</Button>
+          <Button
+            variant="contained"
+            color="success"
+            endIcon={<SendIcon />}
+            onClick={(e) => onSubmit(e, "new")}
+            disabled={uploading}
+          >
+            {uploading ? "Uploading..." : "Submit as New"}
+          </Button>
 
           <Button
             variant="contained"
@@ -1190,7 +1201,7 @@ function NewTicket() {
 }
 
 export default NewTicket;
-*/
+*/ /*
 
 /*
 import React, { useState, useEffect } from "react";
@@ -1739,7 +1750,8 @@ function NewTicket() {
               onChange={(e) => setCustomerName(e.target.value)}
             ></input>
           </div>
-          <div className="form-group"/*className={`form-group ${isEmailValid ? "valid" : "invalid"}`}*/ /*
+          <div className="form-group"/*className={`form-group ${isEmailValid ? "valid" : "invalid"}`}*/
+          /*
             <label htmlFor="customerEmail">Customer Email</label>
             <input
               className="form-control"

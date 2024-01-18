@@ -8,6 +8,9 @@ import { fetchAllUsers } from "../features/auth/authSlice";
 import { getAllIssueTypes } from "../features/issues/issueSlice";
 import { getAllOrganization } from "../features/organization/organizationSlice";
 import { FaArrowLeft, FaArrowRight } from "react-icons/fa";
+import { getAllProject } from "../features/project/projectSlice";
+
+
 function ListTickets() {
   const { allTickets, isLoading } = useSelector((state) => state.tickets);
   const dispatch = useDispatch();
@@ -27,6 +30,7 @@ function ListTickets() {
     dispatch(fetchAllUsers());
     dispatch(getAllIssueTypes());
     dispatch(getAllOrganization());
+    dispatch(getAllProject());
   }, [dispatch]);
 
   useEffect(() => {

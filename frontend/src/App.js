@@ -16,6 +16,7 @@ import Ticket from "./pages/Ticket";
 import ListTickets from "./pages/ListTickets";
 import Dashboard from "./pages/Dashboard";
 import IssueTypeList from "./pages/issues";
+import ProjectList from "./pages/project";
 import IssueTypeid from "./pages/issueaction";
 import UpdateTicket from "./pages/updateTicket.jsx";
 import ResetPassword from "./pages/Resetpassword";
@@ -153,6 +154,11 @@ function App() {
                 <Route path="/issues/:id" element={<PrivateRoute />}>
                   <Route path="/issues/:id" element={<IssueTypeid />} />
                 </Route>
+
+                <Route path="/projects" element={<PrivateRoute />}>
+                  <Route path="/projects" element={<ProjectList />} />
+                </Route>
+
                 <Route
                   path="/ticket/:ticketId/update"
                   element={<PrivateRoute />}

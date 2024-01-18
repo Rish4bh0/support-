@@ -30,6 +30,7 @@ const UpdateProductPage = () => {
   const { ticket } = useSelector((state) => state.tickets);
   const users = useSelector((state) => state.auth.users);
   const issues = useSelector((state) => state.issueTypes.issueTypes);
+  const projects = useSelector((state) => state.project.project);
   const userRole = useSelector(state => state.auth.user.role); 
   const organizations = useSelector(state => state.organizations.organizations);
   const dispatch = useDispatch();
@@ -38,7 +39,7 @@ const UpdateProductPage = () => {
   const [formData, setFormData] = useState({
     customerName: '',
     description: '',
-    product: '',
+    project: '',
     priority: '',
     assignedTo: '',
     organization: '',
@@ -86,7 +87,7 @@ const UpdateProductPage = () => {
       setFormData({
         customerName: ticket.customerName,
         description: ticket.description,
-        product: ticket.product,
+        project: ticket.project,
         priority: ticket.priority,
         assignedTo: ticket.assignedTo,
         issueType: ticket.issueType,
@@ -165,7 +166,7 @@ const UpdateProductPage = () => {
           customerName: formData.customerName,
           description: formData.description,
         //  media, // Include the selected media files
-          product: formData.product,
+        project: formData.project,
         priority: formData.priority,
         assignedTo: formData.assignedTo,
         organization: formData.organization,
@@ -299,24 +300,27 @@ if (isLoading) return <Spinner />;
               </FormControl>
             </Grid>
           )}
-
-<Grid item xs={6}>
+          <Grid item xs={6}>
             <FormControl fullWidth>
-              <InputLabel htmlFor="product">Product Name</InputLabel>
+              <InputLabel htmlFor="project">Project</InputLabel>
               <Select
-                name="product"
-                id="product"
-                value={formData.product}
+                name="project"
+                id="project"
+                value={formData.project}
                 onChange={handleChange}
               >
-                <MenuItem value="Ecommerce">Ecommerce</MenuItem>
-                <MenuItem value="Employee management system">
-                  Employee management system
-                </MenuItem>
-                <MenuItem value="HR management system">
-                  HR management system
-                </MenuItem>
-                <MenuItem value="CMS">CMS</MenuItem>
+                <MenuItem value="">Select One</MenuItem>
+                {projects && projects.length > 0 ? (
+                  projects.map((project) => (
+                    <MenuItem key={project._id} value={project._id}>
+                      {project.name}
+                    </MenuItem>
+                  ))
+                ) : (
+                  <MenuItem value="" disabled>
+                    No project available
+                  </MenuItem>
+                )}
               </Select>
             </FormControl>
           </Grid>

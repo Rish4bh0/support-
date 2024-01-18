@@ -8,6 +8,7 @@ import { fetchAllUsers } from "../features/auth/authSlice";
 import { FaArrowLeft, FaArrowRight } from "react-icons/fa";
 import { getAllIssueTypes } from "../features/issues/issueSlice";
 import { getAllOrganization } from "../features/organization/organizationSlice";
+import { getAllProject } from "../features/project/projectSlice";
 
 function Ticketss() {
   const { ticketss, isLoading } = useSelector((state) => state.tickets);
@@ -30,6 +31,7 @@ function Ticketss() {
     dispatch(fetchAllUsers());
     dispatch(getAllIssueTypes());
     dispatch(getAllOrganization());
+    dispatch(getAllProject());
   }, [dispatch]);
 
   useEffect(() => {
@@ -140,7 +142,7 @@ function Ticketss() {
       <div className="tickets">
         <div className="ticket-headings">
           <div>Date</div>
-          <div>Product</div>
+          <div>Project</div>
           <div>Assigned To</div>
           <div>Priority</div>
           <div>Issue Type</div>

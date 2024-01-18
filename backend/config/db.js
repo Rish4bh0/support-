@@ -2,8 +2,9 @@
 
 
 const mongoose = require("mongoose");
+const MONGODB_URI = process.env.MONGODB_URI
 const connectDB = async ()=>{
-  MONGODB_URI="mongodb+srv://neatest:nea@nea.dxajwtx.mongodb.net/?retryWrites=true&w=majority"
+ 
     try {
         mongoose.set('strictQuery', false);
         const conn = await mongoose.connect(MONGODB_URI, {

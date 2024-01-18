@@ -10,6 +10,7 @@ import { getAllOrganization } from "../features/organization/organizationSlice";
 
 // Import icons for "Next" and "Previous" buttons
 import { FaArrowLeft, FaArrowRight } from "react-icons/fa";
+import { getAllProject } from "../features/project/projectSlice";
 
 function Tickets() {
   const { tickets, isLoading } = useSelector((state) => state.tickets);
@@ -39,6 +40,7 @@ function Tickets() {
     dispatch(fetchAllUsers());
     dispatch(getAllIssueTypes());
     dispatch(getAllOrganization());
+    dispatch(getAllProject());
   }, [dispatch]);
 
   if (isLoading) return <Spinner />;

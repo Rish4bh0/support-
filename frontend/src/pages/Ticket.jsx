@@ -37,6 +37,7 @@ import SendIcon from "@mui/icons-material/Send";
 import "react-responsive-carousel/lib/styles/carousel.min.css";
 import CloudUploadIcon from "@mui/icons-material/CloudUpload";
 import CloseIcon from '@mui/icons-material/Close';
+import { getAllProject } from "../features/project/projectSlice";
 
 const customStyles = {
   content: {
@@ -79,6 +80,17 @@ function Ticket() {
   organizations.forEach((organization) => {
     organizationMap[organization._id] = organization.name;
   });
+
+  const projects = useSelector(
+    (state) => state.project.project
+  );
+  const projectMap = {};
+
+  // Create a mapping of organization IDs to their names
+  projects.forEach((project) => {
+    projectMap[project._id] = project.name;
+  });
+
 
   // Define a function to start the timer
   const startTimer = () => {
@@ -144,6 +156,7 @@ function Ticket() {
     // Load the initial issue list when the component mounts
     dispatch(getAllIssueTypes());
     dispatch(getAllOrganization());
+    dispatch(getAllProject());
   }, [dispatch]);
 
   // Access user data from the Redux store
@@ -312,7 +325,9 @@ function Ticket() {
           Date Submitted:{" "}
           {new Date(ticket.createdAt).toLocaleString("en-US", options)}
         </h3>
-        <h3>Product: {ticket.product}</h3>
+        <h3>Project: {ticket.project
+            ? projectMap[ticket.project]
+            : "Unassigned"}</h3>
         <h3>Assigned To: {getUserNameById(ticket.assignedTo)}</h3>
         <h3>Priority: {ticket.priority}</h3>
         <h3>Issue Type: {issueById(ticket.issueType)}</h3>

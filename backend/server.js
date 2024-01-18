@@ -1,7 +1,7 @@
 // server.js
 const express = require('express');
 const multer = require('multer');
-const dotenv = require('dotenv').config();
+require('dotenv').config()
 const { errorHandler } = require('./middleware/errorMiddleware');
 const connectDB = require('./config/db');
 const path = require('path');
@@ -14,11 +14,13 @@ const Media = require('./models/mediaModel.js');
 // Connect to the database
 connectDB();
 
+
 const app = express();
 const PORT = process.env.PORT || 5000;
 
 // Enable Cross-Origin Resource Sharing (CORS)
 app.use(cors());
+
 // Define a Mongoose schema for media (images and videos)
 
 // Set up Multer for media uploads
@@ -57,6 +59,7 @@ app.use(express.urlencoded({ extended: true, limit: '50mb' }));
 app.use('/api/users', require('./routes/userRoutes'));
 app.use('/api/tickets', require('./routes/ticketRoutes'));
 app.use('/api/issues', require('./routes/issueRoutes'));
+app.use('/api/project', require('./routes/projectRoutes'));
 app.use('/api/organizations', require('./routes/organizationRoutes'));
 app.use('/api/notifications', require('./routes/notificationRoutes'));
 
@@ -79,7 +82,7 @@ app.post('/upload', upload.array('media', 10), async (req, res) => {
 
     // Save the media URLs in MongoDB with forward slashes
     const mediaItems = req.files.map((file) => ({
-      mediaUrl: 'https://nea-support.onrender.com/' + file.path.replace(/\\/g, '/'),
+      mediaUrl: 'http://http://localhost:5000/' + file.path.replace(/\\/g, '/'),
       mediaType: file.mimetype.startsWith('image') ? 'image' : 'video',
     }));
 
