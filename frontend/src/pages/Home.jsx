@@ -1,5 +1,3 @@
-
-
 function Home() {
   return (
     <>
@@ -15,15 +13,14 @@ function Home() {
           <div className="relative pt-36 ml-auto">
             <div className="lg:w-2/3 text-center mx-auto">
               <h1 className="text-gray-900 dark:text-white font-bold text-2xl md:text-5xl xl:text-6xl">
-                NEA customer support{" "}
-                
+                Welcome to Dryice support center!{" "}
               </h1>
               <p className="mt-8 text-gray-700 dark:text-gray-300">
                 Welcome to our cutting-edge ticketing and support system. We are
                 dedicated to providing you with top-tier customer service and
                 assistance. Our innovative solutions and passionate team are
                 here to make your experience as smooth as possible, so you can
-                focus on what you do best. 
+                focus on what you do best.
               </p>
               <div className="mt-16 flex flex-wrap justify-center gap-y-4 gap-x-6">
                 <a
@@ -68,7 +65,6 @@ function Home() {
                 </div>
               </div>
             </div>
-            
           </div>
         </container>
       </div>
