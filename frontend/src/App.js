@@ -28,6 +28,7 @@ import OrganizationDetail from "./pages/OrganizationDetail";
 import AllOrganization from "./pages/AllOrganization";
 import Forget from "./pages/Forgotpassword";
 import ORGTICKET from "./pages/OrganizationTicket";
+import CCTICKET from "./pages/CCticket.jsx"
 import "./App.css";
 import { FiSettings } from "react-icons/fi";
 import { TooltipComponent } from "@syncfusion/ej2-react-popups";
@@ -80,7 +81,7 @@ function App() {
           <div
             className={
               activeMenu
-                ? "bg-main-bg dark:bg-main-dark-bg  w-full min-h-screen flex-2  "
+                ? "dark:bg-main-dark-bg  bg-main-bg min-h-screen md:ml-72 w-full  "
                 : "bg-main-bg dark:bg-main-dark-bg  w-full min-h-screen flex-2 "
             }
           >
@@ -131,6 +132,9 @@ function App() {
                 </Route>
                 <Route path="/org-ticket" element={<PrivateRoute />}>
                   <Route path="/org-ticket" element={<ORGTICKET />} />
+                </Route>
+                <Route path="/ccticket" element={<PrivateRoute />}>
+                  <Route path="/ccticket" element={<CCTICKET />} />
                 </Route>
                 <Route path="/tickets" element={<PrivateRoute />}>
                   <Route path="/tickets" element={<Tickets />} />

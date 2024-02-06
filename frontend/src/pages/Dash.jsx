@@ -18,6 +18,7 @@ import RateReviewIcon from '@mui/icons-material/RateReview';
 import DraftsIcon from '@mui/icons-material/Drafts';
 import FiberNewIcon from '@mui/icons-material/FiberNew';
 import { getAllOrganization } from "../features/organization/organizationSlice";
+import AccessTimeIcon from "@mui/icons-material/AccessTime";
 
 const getRandomColor = () => `#${Math.floor(Math.random() * 16777215).toString(16)}`;
 const Ecommerce = () => {
@@ -33,6 +34,8 @@ const Ecommerce = () => {
   const { user, isLoading, isError, isSuccess, message } = useSelector(
     (state) => state.auth
   );
+
+ 
 
   useEffect(() => {
     dispatch(getTickets());
@@ -112,7 +115,18 @@ useEffect(() => {
   }
   return (
     <>
-      <div className="mt-24 md:mr-0 md:ml-20">
+      <div className="mt-2 md:mr-0 md:ml-20">
+      <div className="flex justify-around items-center mb-4">
+          <div className="flex items-center space-x-2">
+        
+            <Typography variant="h5" fontWeight="bold">
+            Welcome to {organizationMap[user.organization] || ""} Dashboard
+            </Typography>
+          </div>
+          <div className="flex-1"></div>
+          
+        </div>
+        {/*
       <div className=" p-4 text-white mt-10 rounded-2xl mx-auto" style={{ backgroundColor: getRandomColor(), width: "60%"  }}>
           <div className="flex items-center justify-center">
             <DashboardIcon fontSize="large" className="mr-2 mb-3" />
@@ -121,51 +135,33 @@ useEffect(() => {
             </Typography>
           </div>
         </div>
-
-        <div className="mt-24 mr-20">
-        <div className="flex flex-wrap lg:flex-nowrap justify-center mb-20">
+*/}
+        <div className="mt-2 ">
+        <div className="flex flex-wrap  justify-around items-center mb-5">
   
-  <div className="bg-white dark:text-gray-200 dark:bg-secondary-dark-bg h-44 rounded-xl w-full lg:w-80 p-8 pt-9 m-3 bg-hero-pattern bg-no-repeat bg-cover bg-center border border-gray-300">
-    <div className="flex justify-between items-center">
+        <div className="bg-white dark:text-gray-200 dark:bg-secondary-dark-bg h-44 rounded-xl md:w-32 p-8 pt-9 m-3 bg-hero-pattern bg-no-repeat bg-cover bg-center border border-gray-300">
+    <div className="flex justify-around items-center">
       <div>
         <p className="font-bold text-gray-400">All Ticket</p>
         <p className="text-2xl">{allTicketsCount}</p>
       </div>
       <Link to="/ticketss">
-      <button
-        type="button"
-        style={{ backgroundColor: getRandomColor() }}
-        className="text-2xl opacity-0.9 text-white hover:drop-shadow-xl rounded-full p-4"
-        
-      >
-        
-      </button>
+        <button
+          type="button"
+          style={{ backgroundColor: getRandomColor() }}
+          className="text-2xl opacity-0.9 text-white hover:drop-shadow-xl rounded-full p-4"
+        ></button>
       </Link>
     </div>
     <div className="mt-6"></div>
-  </div>
+</div>
+
 <div className="flex m-3 flex-wrap justify-center gap-1 items-center">
-<div className="bg-white h-44 dark:text-gray-200 dark:bg-secondary-dark-bg md:w-56 p-4 pt-9 rounded-2xl border border-gray-300">
-  <button
-    type="button"
-    style={{ backgroundColor: getRandomColor() }}
-    className="text-2xl opacity-0.9 text-white hover:drop-shadow-xl rounded-full p-4"
-  >
-    <FiberNewIcon/>
-  </button>
-  <p className="mt-3">
-    <span className="text-lg font-semibold">{newTicketsCount}</span>
-    <span className={`text-sm text-14 ml-2`}></span>
-  </p>
-  <p className="text-sm text-gray-400 mt-1">New Ticket</p>
-</div>
-</div>
-    <div className="flex m-3 flex-wrap justify-center gap-1 items-center">
-      <div className="bg-white h-44 dark:text-gray-200 dark:bg-secondary-dark-bg md:w-56 p-4 pt-9 rounded-2xl border border-gray-300">
+      <div className="bg-white h-44 dark:text-gray-200 dark:bg-secondary-dark-bg md:w-40 p-4 pt-9 rounded-2xl border border-gray-300">
       <Link to="/ticketss">
         <button
          type="button"
-         style={{ backgroundColor: getRandomColor() }}
+         style={{ backgroundColor: '#fbe032' }}
          className="text-2xl opacity-0.9 text-white hover:drop-shadow-xl rounded-full  p-4"
         >
           <DraftsIcon/>
@@ -177,15 +173,32 @@ useEffect(() => {
            
           </span>
         </p>
-        <p className="text-sm text-gray-400 mt-1">Tickets in draft</p>
+        <p className="text-sm text-gray-400 mt-1">Draft</p>
       </div>
     </div>
+<div className="flex m-3 flex-wrap justify-center gap-1 items-center">
+<div className="bg-white h-44 dark:text-gray-200 dark:bg-secondary-dark-bg md:w-40 p-4 pt-9 rounded-2xl border border-gray-300">
+  <button
+    type="button"
+    style={{ backgroundColor: "#008000" }}
+    className="text-2xl opacity-0.9 text-white hover:drop-shadow-xl rounded-full p-4"
+  >
+    <FiberNewIcon/>
+  </button>
+  <p className="mt-3">
+    <span className="text-lg font-semibold">{newTicketsCount}</span>
+    <span className={`text-sm text-14 ml-2`}></span>
+  </p>
+  <p className="text-sm text-gray-400 mt-1">New Ticket</p>
+</div>
+</div>
+    
     <div className="flex m-3 flex-wrap justify-center gap-1 items-center">
-      <div className="bg-white h-44 dark:text-gray-200 dark:bg-secondary-dark-bg md:w-56 p-4 pt-9 rounded-2xl border border-gray-300">
+      <div className="bg-white h-44 dark:text-gray-200 dark:bg-secondary-dark-bg md:w-40 p-4 pt-9 rounded-2xl border border-gray-300">
       <Link to="/ticketss">
         <button
          type="button"
-         style={{ backgroundColor: getRandomColor() }}
+         style={{ backgroundColor: '#4682b4' }}
          className="text-2xl opacity-0.9 text-white hover:drop-shadow-xl rounded-full  p-4"
         >
           <ConfirmationNumberIcon/>
@@ -201,11 +214,11 @@ useEffect(() => {
       </div>
     </div>
     <div className="flex m-3 flex-wrap justify-center gap-1 items-center">
-      <div className="bg-white h-44 dark:text-gray-200 dark:bg-secondary-dark-bg md:w-56 p-4 pt-9 rounded-2xl border border-gray-300">
+      <div className="bg-white h-44 dark:text-gray-200 dark:bg-secondary-dark-bg md:w-40 p-4 pt-9 rounded-2xl border border-gray-300">
       <Link to="/ticketss">
         <button
          type="button"
-         style={{ backgroundColor: getRandomColor() }}
+         style={{ backgroundColor: '#f8a54c' }}
          className="text-2xl opacity-0.9 text-white hover:drop-shadow-xl rounded-full  p-4"
         >
           <RateReviewIcon/>
@@ -217,15 +230,15 @@ useEffect(() => {
             
           </span>
         </p>
-        <p className="text-sm text-gray-400 mt-1">Tickets in review</p>
+        <p className="text-sm text-gray-400 mt-1">Review</p>
       </div>
     </div>
     <div className="flex m-3 flex-wrap justify-center gap-1 items-center">
-      <div className="bg-white h-44 dark:text-gray-200 dark:bg-secondary-dark-bg md:w-56 p-4 pt-9 rounded-2xl border border-gray-300">
+      <div className="bg-white h-44 dark:text-gray-200 dark:bg-secondary-dark-bg md:w-40 p-4 pt-9 rounded-2xl border border-gray-300">
       <Link to="/ticketss">
         <button
          type="button"
-         style={{ backgroundColor: getRandomColor() }}
+         style={{ backgroundColor: '#8b0000' }}
          className="text-2xl opacity-0.9 text-white hover:drop-shadow-xl rounded-full  p-4"
         >
           <CloseIcon/>
@@ -409,8 +422,9 @@ useEffect(() => {
         </div>
       </div>
                   */}
-          <TicketStatusPie allTicket={organizationTickets} className="mt-20" />
-          <Report className="mt-20" />
+          <TicketStatusPie allTicket={organizationTickets} className="mt-2" />
+        
+       
         </div>
       </div>
     </>

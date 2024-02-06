@@ -194,7 +194,7 @@ function UserList() {
   }, [selectedUserId, dispatch]);
 
   
-  
+  /*
 
   if (!["ADMIN", "SUPERVISOR", "EMPLOYEE"].includes(userRole)) {
     return (
@@ -204,7 +204,7 @@ function UserList() {
       </div>
     );
   }
-
+*/
   return (
     <>
       <BackButton url="/" />

@@ -3,6 +3,7 @@ import React, { useEffect, useRef, useState } from 'react';
 import { useSelector } from 'react-redux';
 import { MdArrowForwardIos, MdDeleteOutline, MdDeleteSweep, MdDoneAll, MdOutlineCheckCircleOutline } from 'react-icons/md';
 import useSocketIo from "../hooks/useSocketio";
+import Spinner from "../components/Spinner";
 const NotificationsList = () => {
   const user = useSelector((state) => state.auth.user);
   const [data, setData] = useState({ notifications: [] });
@@ -136,7 +137,7 @@ const NotificationsList = () => {
   
 
   if (error) return <div>{error.message}</div>;
-  if (isLoading) return <div>Loading...</div>;
+  if (isLoading) return <Spinner/>;
   
   let content;
   if (data && data.notifications && data.notifications.length > 0) {

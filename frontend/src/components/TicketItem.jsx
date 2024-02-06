@@ -43,7 +43,7 @@ function TicketItem({ ticket }) {
   const ticketProject = projects.find((project) => project._id === ticket.project);
 
   // Extract the name of the issueType (if found)
-  const projectName = ticketProject ? ticketProject.name : "Unknown Project";
+  const projectName = ticketProject ? ticketProject.projectName : "Unknown Project";
 
 
   // Access the issueTypes array from the Redux state (assuming you have it there)
@@ -55,12 +55,12 @@ function TicketItem({ ticket }) {
   // Extract the name of the issueType (if found)
   const organizationName = ticketorganizations ? ticketorganizations.name : "Unknown Organization";
 
- 
+  
 
   return (
     <div className="ticket">
+      <div>{ticket.ticketID}</div>
       <div>{new Date(ticket.createdAt).toLocaleString("en-US", options)}</div>
-      <div>{projectName}</div>
       <div>{assignedToName}</div>
       <div className={`priority priority-${ticket.priority}`}>{ticket.priority}</div>
       <div>{issueTypeName}</div> {/* Display the issue type's name */}

@@ -203,9 +203,9 @@ const getSelectedHoverBackgroundColor = (color, mode) =>
   });
 
   const rows = filteredTickets.map((ticket) => ({
-    id: ticket._id,
+    id: ticket.ticketID,
     createdAt: ticket.createdAt,
-    product: ticket.product,
+    project: ticket.project,
     assignedTo: ticket.assignedTo ? ticket.assignedTo : 'Unassigned',
     priority: ticket.priority,
     issueType: issueMap[ticket.issueType] ? issueMap[ticket.issueType] : 'Unassigned',
@@ -214,6 +214,7 @@ const getSelectedHoverBackgroundColor = (color, mode) =>
   }));
 
   const columns = [
+    { field: "id", headerName: "Ticket ID", flex: 1 },
     {
       field: "createdAt",
       headerName: "Created At",
@@ -226,7 +227,7 @@ const getSelectedHoverBackgroundColor = (color, mode) =>
         return formattedTime;
       },
     },
-    { field: "product", headerName: "Product", flex: 1 },
+   
     { field: "assignedTo", headerName: "Assigned To", flex: 1 },
     {
       field: "priority",

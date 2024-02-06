@@ -34,7 +34,8 @@ export default function AdminPage() {
         if (socket) {
             socket.on('message', (data) => {
                 if (selectedUser.name === data.from) {
-                    setMessages([...messages, data]);
+                    setMessages((prevMessages) => [...prevMessages, data]);
+
                 } else {
                     const existUser = users.find((user) => user.name === data.from);
                     if (existUser) {
@@ -65,6 +66,14 @@ export default function AdminPage() {
             socket.on('selectUser', (user) => {
                 setMessages(user.messages);
             });
+
+            return () => {
+                // Clean up event listeners here
+                socket.off('message');
+                socket.off('updateUser');
+                socket.off('listUsers');
+                socket.off('selectUser');
+            };
         } else {
             const sk = io(ENDPOINT);
             setSocket(sk);
@@ -119,9 +128,9 @@ export default function AdminPage() {
                             .filter((x) => x.name !== 'Admin')
                             .map((user) => (
                                 <ListItem
-                                    button
+                                    action
                                     key={user.name}
-                                    selected={user.name === selectedUser.name}
+                                    variant={user.name === selectedUser.name}
                                     onClick={() => selectUser(user)}
                                 >
                                     <Badge

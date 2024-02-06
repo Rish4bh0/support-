@@ -7,19 +7,35 @@ import { Table, TableContainer, TableHead, TableRow, TableCell, TableBody, Typog
 
 const valueFormatter = (value) => `${value} tickets`;
 
+const statusColors = {
+  draft: '#fbe032',
+  new: '#008000',
+  open: '#4682b4',
+  review: '#f8a54c',
+  close: '#8b0000',
+};
 const getRandomColor = () => `#${Math.floor(Math.random() * 16777215).toString(16)}`;
+
+const getShortMonth = (fullMonth) => {
+  const [year, month] = fullMonth.split('-');
+  const monthNames = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+  const shortMonth = monthNames[parseInt(month, 10) - 1];
+  return `${year}-${shortMonth}`;
+};
 
 const TicketStatusChart = ({ allTicket }) => {
   const transformedData = allTicket.reduce((acc, ticket) => {
     const month = ticket.createdAt.substring(0, 7);
+    const shortMonth = getShortMonth(month);
+    console.log("mon"+ shortMonth)
     const status = ticket.status.toLowerCase();
 
-    const existingStatus = acc.find((item) => item.month === month);
+    const existingStatus = acc.find((item) => item.shortMonth === shortMonth);
 
     if (existingStatus) {
       existingStatus[status] = (existingStatus[status] || 0) + 1;
     } else {
-      const newStatus = { month, [status]: 1 };
+      const newStatus = {  shortMonth, [status]: 1 };
       acc.push(newStatus);
     }
 
@@ -28,36 +44,41 @@ const TicketStatusChart = ({ allTicket }) => {
 
   const uniqueStatusValues = Array.from(new Set(allTicket.map((ticket) => ticket.status.toLowerCase())));
 
-  const totalTicketsByStatus = uniqueStatusValues.map((status) => ({
+  const legendOrder = ["draft", "new", "open", "review", "close"];
+
+  const totalTicketsByStatus = legendOrder.map((status) => ({
     name: status,
     value: transformedData.reduce((acc, row) => acc + (row[status] || 0), 0),
   }));
+   // Filter out entries with a value of 0
+   const filteredTotalTicketsByStatus = totalTicketsByStatus.filter(entry => entry.value !== 0);
 
   return (
-    <div style={{ display: 'flex', justifyContent: 'space-around' }} className="flex flex-wrap lg:flex-nowrap justify-center mb-20" >
-       <div className='border border-gray-300 rounded-2xl mb-10'>
-      <Box display="flex" alignItems="center" justifyContent="center" mb={2}>
+    <>
+    <div  className="flex flex-wrap lg:flex-nowrap justify-around items-center mb-2" >
+       <div className='border border-gray-300 rounded-2xl mb-4'>
+      <Box display="flex" alignItems="left"  mb={2} marginLeft={5}>
         <Typography variant="h6" className='pt-5'>
          Bar Chart
         </Typography>
       </Box>
-        <BarChart
+      <BarChart
           width={500}
-          height={300}
+          height={250}
           data={transformedData}
-          margin={{ top: 20, right: 30, left: 20, bottom: 5 }}
+          margin={{ top: 20, right: 30, left: 20, bottom: 2 }}
         >
-          <XAxis dataKey="month" />
+          <XAxis dataKey="shortMonth" />
           <YAxis />
           <Tooltip />
           <Legend />
 
-          {uniqueStatusValues.map((status, index) => (
+          {filteredTotalTicketsByStatus.map((status, index) => (
             <Bar
-              key={status}
-              dataKey={status}
+              key={status.name}
+              dataKey={status.name}
               stackId="a"
-              fill={getRandomColor()} // Unique color for each status
+              fill={statusColors[status.name]} // Unique color for each status
             >
               <Label
                 content={({ value }) => `${value} tickets`}
@@ -66,12 +87,12 @@ const TicketStatusChart = ({ allTicket }) => {
             </Bar>
           ))}
 
-          {uniqueStatusValues.map((status, index) => (
+          {filteredTotalTicketsByStatus.map((status, index) => (
             <Line
-              key={status}
+              key={status.name}
               type="monotone"
-              dataKey={status}
-              stroke={getRandomColor()} // Unique color for each status
+              dataKey={status.name}
+              stroke={statusColors[status.name]} // Unique color for each status
               yAxisId={0}
             />
           ))}
@@ -102,32 +123,128 @@ const TicketStatusChart = ({ allTicket }) => {
         */}
       </div>
 
-      <div className='border border-gray-300 rounded-2xl mb-10'>
-      <Box display="flex" alignItems="center" justifyContent="center" mb={2}>
+      <div className='border border-gray-300 rounded-2xl mb-2'>
+      <Box display="flex" alignItems="left"  mb={2} marginLeft={5}>
         <Typography variant="h6" className='pt-5'>
           Pie Chart
         </Typography>
       </Box>
-      <PieChart width={500} height={300}>
+      
+      <PieChart width={500} height={250}>
         <Tooltip />
         <Legend />
         <Pie
           dataKey="value"
           nameKey="name"
-          data={totalTicketsByStatus}
+          data={filteredTotalTicketsByStatus}
           cx="50%"
           cy="50%"
           outerRadius={80}
           label={({ name, percent }) => `${name} ${(percent * 100).toFixed(0)}%`}
         >
-          {totalTicketsByStatus.map((entry, index) => (
-            <Cell key={`cell-${index}`} fill={getRandomColor()} />
+          {filteredTotalTicketsByStatus.map((entry, index) => (
+            <Cell key={`cell-${index}`} fill={statusColors[entry.name]} />
           ))}
         </Pie>
       </PieChart>
     </div>
     </div>
+{/*
+    <div  className="flex flex-wrap lg:flex-nowrap justify-around items-center mb-4" >
+       <div className='border border-gray-300 rounded-2xl mb-10'>
+      <Box display="flex" alignItems="left"  mb={2} marginLeft={5}>
+        <Typography variant="h6" className='pt-5'>
+         Line Chart
+        </Typography>
+      </Box>
+      <LineChart width={500} height={250} data={transformedData} margin={{ top: 20, right: 30, left: 20, bottom: 5 }}>
+  <XAxis dataKey="shortMonth" />
+  <YAxis />
+  <Tooltip />
+  <Legend />
+  {filteredTotalTicketsByStatus.map((status, index) => (
+    <Line
+      key={status.name}
+      type="monotone"
+      dataKey={status.name}
+      stroke={statusColors[status.name]} // Unique color for each status
+      yAxisId={0}
+    />
+  ))}
+</LineChart>
+
+
+      </div>
+
+      <div className='border border-gray-300 rounded-2xl mb-10'>
+      <Box display="flex" alignItems="left"  mb={2} marginLeft={5}>
+        <Typography variant="h6" className='pt-5'>
+         Area Chart
+        </Typography>
+      </Box>
+      
+      <AreaChart width={500} height={250} data={transformedData} margin={{ top: 20, right: 30, left: 20, bottom: 5 }}>
+  <XAxis dataKey="shortMonth" />
+  <YAxis />
+  <Tooltip />
+  <Legend />
+  {filteredTotalTicketsByStatus.map((status, index) => (
+    <Area
+      key={status.name}
+      type="monotone"
+      dataKey={status.name}
+      stackId="1"
+      stroke={statusColors[status.name]} // Unique color for each status
+      fill={statusColors[status.name]}
+    />
+  ))}
+</AreaChart>
+
+    </div>
+    </div>
+  */}
+    </>
   );
 };
 
 export default TicketStatusChart;
+
+
+
+{/*
+
+<LineChart width={500} height={250} data={transformedData} margin={{ top: 20, right: 30, left: 20, bottom: 5 }}>
+  <XAxis dataKey="shortMonth" />
+  <YAxis />
+  <Tooltip />
+  <Legend />
+  {filteredTotalTicketsByStatus.map((status, index) => (
+    <Line
+      key={status.name}
+      type="monotone"
+      dataKey={status.name}
+      stroke={statusColors[status.name]} // Unique color for each status
+      yAxisId={0}
+    />
+  ))}
+</LineChart>
+
+
+<AreaChart width={500} height={250} data={transformedData} margin={{ top: 20, right: 30, left: 20, bottom: 5 }}>
+  <XAxis dataKey="shortMonth" />
+  <YAxis />
+  <Tooltip />
+  <Legend />
+  {filteredTotalTicketsByStatus.map((status, index) => (
+    <Area
+      key={status.name}
+      type="monotone"
+      dataKey={status.name}
+      stackId="1"
+      stroke={statusColors[status.name]} // Unique color for each status
+      fill={statusColors[status.name]}
+    />
+  ))}
+</AreaChart>
+
+*/}

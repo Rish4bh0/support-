@@ -12,21 +12,21 @@ const createProject = asyncHandler(async (req, res) => {
     throw new Error("User not found");
   }
 
-  const { name } = req.body;
+  const {  projectName } = req.body;
 
-  if (!name) {
+  if (! projectName) {
     res.status(400).json({ error: "Please provide a name for the project" });
     return;
   }
 
-  const existingProject = await Project.findOne({ name });
+  const existingProject = await Project.findOne({  projectName });
 
   if (existingProject) {
     res.status(400).json({ error: "Project already exists" });
     return;
   }
 
-  const project = await Project.create({ name });
+  const project = await Project.create({  projectName });
 
   res.status(201).json(project);
 });
@@ -45,7 +45,7 @@ const getAllProject = asyncHandler(async (req, res) => {
 });
 
 const updateProject = asyncHandler(async (req, res) => {
-  const { name } = req.body;
+  const {  projectName} = req.body;
 
   if (!name) {
     res.status(400).json({ error: "Please provide a name for the project" });
@@ -54,7 +54,7 @@ const updateProject = asyncHandler(async (req, res) => {
 
   const updatedProject = await Project.findByIdAndUpdate(
     req.params.id,
-    { name },
+    {  projectName },
     { new: true } // Return the updated document
   );
 

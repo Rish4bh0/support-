@@ -78,7 +78,7 @@ function ProjectList() {
     e.preventDefault();
 
     const projectData = {
-      name: selectedProjectId ? updateName : newProjectName,
+      projectName: selectedProjectId ? updateName : newProjectName,
     };
   
 
@@ -183,14 +183,14 @@ function ProjectList() {
             onClick={openModal}
             style={{ marginBottom: "10px" }}
           >
-            <AddCircleOutlineIcon /> Add Issue
+            <AddCircleOutlineIcon /> Add Project
           </Button>
         </div>
 
         <DataGrid
           rows={projects.map((project, index) => ({ ...project, id: index }))}
           columns={[
-            { field: "name", headerName: "Project Name", flex: 1 },
+            { field: "projectName", headerName: "Project Name", flex: 1 },
             { field: "_id", headerName: "Project ID", flex: 1 },
             {
               field: "actions",
@@ -254,7 +254,7 @@ function ProjectList() {
           <h2>Add Project</h2>
           <form onSubmit={handleFormSubmit}>
             <div className="form-group">
-              <label htmlFor="name">New Issue Name:</label>
+              <label htmlFor="name">New Project Name:</label>
               <input
                 type="text"
                 id="name"

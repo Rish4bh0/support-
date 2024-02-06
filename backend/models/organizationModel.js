@@ -20,6 +20,16 @@ const organizationSchema = mongoose.Schema({
   focalPersonEmail:{
     type: String
   },
+  payment: {
+    type: String,
+    enum: [
+      'Paid',
+      'PaidAmc',
+      'FreeSupport',
+      'FreeSupportPeriodUnderAMC',
+      'SupportContract',
+    ],
+  },
 });
 
 module.exports = mongoose.model('Organization', organizationSchema);

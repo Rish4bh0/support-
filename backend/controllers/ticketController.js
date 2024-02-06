@@ -5,6 +5,8 @@ const Ticket = require("../models/ticketModel");
 const cloudinary = require("../config/cloudinary");
 const transporter = require ('../middleware/nodeMailer')
 const Note = require('../models/noteModel');
+const notification = require('../models/notification')
+const Project = require('../models/projectModel')
 // @desc    Get user tickets
 // @route   GET /api/tickets
 // @access  Private
@@ -41,6 +43,46 @@ const getTicketss = asyncHandler(async (req, res) => {
 
   res.status(200).json(tickets);
 });
+
+async function generateTicketID(organizationId) {
+  try {
+    // Fetch organization prefix
+    const organization = await Organization.findById(organizationId);
+    const organizationPrefix = organization.name.substring(0, 2).toUpperCase();
+    console.log('Organization Prefix:', organizationPrefix);
+
+    // Fetch the latest ticket for the organization
+    const latestTicket = await Ticket.findOne({ organization: organizationId })
+      .sort({ ticketID: -1 })
+     
+
+    console.log('Latest Ticket:', latestTicket);
+
+    // Initialize or increment the ticket number
+    let ticketNumber = 1;
+
+    if (latestTicket && latestTicket.ticketID) {
+      const match = latestTicket.ticketID.match(/\d+/);
+      const lastTicketNumber = match ? parseInt(match[0], 10) : NaN;
+
+      if (!isNaN(lastTicketNumber)) {
+        ticketNumber = lastTicketNumber + 1;
+      }
+    }
+
+    // Format the ticket ID with prefix and padded ticket number
+    const ticketID = `${organizationPrefix}00${ticketNumber.toString().padStart(2, '0')}`;
+    console.log('Generated Ticket ID:', ticketID);
+
+    return ticketID;
+  } catch (error) {
+    console.error('Error generating ticket ID:', error);
+    throw error;
+  }
+}
+
+
+
 
 // @desc    Get all tickets
 // @route   GET /api/tickets/all
@@ -86,129 +128,6 @@ const getTicket = asyncHandler(async (req, res) => {
   res.status(200).json(ticket);
 });
 
-
-
-/*
-const createTicket = asyncHandler(async (req, res) => {
-  const {
-    product,
-    priority,
-    issueType,
-    assignedTo,
-    description,
-    customerName,
-    customerEmail,
-    customerContact,
-    organization,
-    media, // Expect an array of mixed media data (images and videos)
-  } = req.body;
-
-  if (
-    !product ||
-    !priority ||
-    !issueType ||
-    !description 
-  ) {
-    res.status(400);
-    throw new Error("Please provide all required fields");
-  }
-
-  try {
-    const mediaPromises = [];
-
-    for (const mediaItem of media) {
-      let result;
-
-      if (mediaItem.startsWith("data:image")) {
-        // Handle image upload
-        result = await cloudinary.uploader.upload(mediaItem, {
-          resource_type: "image", // Specify that you're uploading an image
-          folder: "tickets/images", // Store images in a different folder
-        });
-      } else if (mediaItem.startsWith("data:video")) {
-        // Handle video upload
-        result = await cloudinary.uploader.upload(mediaItem, {
-          resource_type: "video", // Specify that you're uploading a video
-          folder: "tickets/videos", // Store videos in a different folder
-        });
-      } else {
-        // Handle unsupported media type (you can customize this part)
-        throw new Error("Unsupported media type");
-      }
-
-      mediaPromises.push({
-        public_id: result.public_id,
-        url: result.secure_url,
-      });
-    }
-
-    const user = await User.findById(req.user.id);
-
-    if (!user) {
-      res.status(401);
-      throw new Error("User not found");
-    }
-
-    const ticket = await Ticket.create({
-      product,
-      priority,
-      issueType,
-      assignedTo,
-      description,
-      customerName,
-      customerEmail,
-      customerContact,
-      user: req.user.id,
-      status: "new",
-      media: mediaPromises,
-      organization 
-    });
-
-    
-   /*
-
-    // Send email to logged-in user
-    const userEmail = user.email; // Assuming you have an 'email' field in your User model
-    const ticketId = ticket._id; // Retrieve the ticket ID
-    const ticketLink = `https://supportdesk-1eot.onrender.com/ticket/${ticketId}`;
-    await transporter.sendMail({
-      from: 'helpdeskx1122@gmail.com', // Replace with your Gmail email address
-      to: userEmail,
-      subject: 'Ticket Created',
-      html: `<p style="text-align: left;">Dear ${user.name},</p>
-      <p style="text-align: left;">A request for support has been created and assigned (ID: ${ticketId})  A reppresentative will follow-up with you as soon as possible. You can <a href="${ticketLink}">link</a> to view this ticket's progress online</p>
-      <p style="text-align: left;">Best Regards,</p>`,
-    });
-
-    // Retrieve the email address of the assignedTo user
-    const assignedToUser = await User.findById(assignedTo);
-
-    if (!assignedToUser) {
-      res.status(400);
-      throw new Error('Assigned user not found');
-    }
-
-    const assignedToEmail = assignedToUser.email; // Assuming you have an 'email' field in your User model
-
-    // Send email to assignedTo user
-    await transporter.sendMail({
-      from: 'helpdeskx1122@gmail.com', // Replace with your Gmail email address
-      to: assignedToEmail,
-      subject: 'New Ticket Assignment',
-      html: `<p style="text-align: left;">Dear ${assignedToUser.name},</p>
-        <p style="text-align: left;">You have been assigned a new ticket (ID: ${ticketId}). Please click this <a href="${ticketLink}">link</a> to view the ticket.</p>
-        <p style="text-align: left;">Best Regards,</p>`,
-    });
-    
-
-    res.status(201).json(ticket);
-  } catch (error) {
-    // Handle any errors that occur during user, media, or ticket creation
-    res.status(500).json({ error: "Ticket creation failed" });
-  }
-});
-*/
-
 const createTicket = asyncHandler(async (req, res) => {
   const {
     project,
@@ -216,57 +135,23 @@ const createTicket = asyncHandler(async (req, res) => {
     issueType,
     assignedTo,
     description,
-    customerName,
-    customerEmail,
-    customerContact,
+    cc,
     organization,
     //media,
     title,
-    status
+    status,
+    
   } = req.body;
-/*
-  if (!product || !priority || !issueType || !description) {
-    res.status(400);
-    throw new Error("Please provide all required fields");
-  }*/
-
   try {
 
-    {/*
-    const mediaPromises = [];
-
-    for (const mediaItem of media) {
-      let result;
-
-      if (mediaItem.startsWith("data:image")) {
-        // Handle image upload
-        result = await cloudinary.uploader.upload(mediaItem, {
-          resource_type: "image", // Specify that you're uploading an image
-          folder: "tickets/images", // Store images in a different folder
-        });
-      } else if (mediaItem.startsWith("data:video")) {
-        // Handle video upload
-        result = await cloudinary.uploader.upload(mediaItem, {
-          resource_type: "video", // Specify that you're uploading a video
-          folder: "tickets/videos", // Store videos in a different folder
-        });
-      } else {
-        // Handle unsupported media type (you can customize this part)
-        throw new Error("Unsupported media type");
-      }
-
-      mediaPromises.push({
-        public_id: result.public_id,
-        url: result.secure_url,
-      });
-    }
-  */}
     const user = await User.findById(req.user.id);
 
     if (!user) {
       res.status(401);
       throw new Error("User not found");
     }
+
+    const ticketID = await generateTicketID(organization);
 
     // Define the assignedToUser variable to be used later
     let assignedToUser = null;
@@ -292,19 +177,19 @@ const createTicket = asyncHandler(async (req, res) => {
     }
 
     const ticket = await Ticket.create({
-      project,
+      ticketID,
+      project: project || null,
       priority: priority || "Low",
       issueType: issueType || null,
       assignedTo: assignedToUser ? assignedToUser.id : null,
       description,
-      customerName,
-      customerEmail,
-      customerContact,
+      cc: cc || [],
       user: req.user.id,
       status,
       //media: mediaPromises,
       organization: org ? org._id : null,
-      title
+      title,
+   
     });
 
     
@@ -312,7 +197,7 @@ const createTicket = asyncHandler(async (req, res) => {
     // Send email to logged-in user
     const userEmail = user.email; // Assuming you have an 'email' field in your User model
     const ticketId = ticket._id; // Retrieve the ticket ID
-    const ticketLink = `https://nea-support.onrender.com/ticket/${ticketId}`;
+    const ticketLink = `http://localhost:5000/ticket/${ticketId}`;
 
     await transporter.sendMail({
       from: 'helpdeskx1122@gmail.com', // Replace with your Gmail email address
@@ -330,9 +215,45 @@ const createTicket = asyncHandler(async (req, res) => {
         to: assignedToEmail,
         subject: 'New Ticket Assignment',
         html: `<p style="text-align: left;">Dear ${assignedToUser.name},</p>
-          <p style="text-align: left;">You have been assigned a new ticket (ID: ${ticketId}). Please click this <a href="${ticketLink}">link</a> to view the ticket.</p>
+          <p style="text-align: left;">You have been assigned a new ticket (ID: ${ticketID}). Please click this <a href="${ticketLink}">link</a> to view the ticket.</p>
           <p style="text-align: left;">Best Regards,</p>`,
       });
+
+      // add notification for login
+  await notification.create({
+    user: assignedToUser._id,
+    title: 'Ticket Assignment',
+    type: 1,
+    text: `Ticket assigned at ${new Date()} (ID: ${ticketID})`,
+    read: false,
+  })
+    }
+
+    // Send notifications to CC users
+    for (const ccUser of cc) {
+      const ccUserObject = await User.findById(ccUser);
+
+      if (ccUserObject) {
+        const ccUserEmail = ccUserObject.email;
+
+        await transporter.sendMail({
+          from: 'helpdeskx1122@gmail.com',
+          to: ccUserEmail,
+          subject: 'New Ticket CC',
+          html: `<p style="text-align: left;">Dear ${ccUserObject.name},</p>
+            <p style="text-align: left;">You have been CC'd on a new ticket (ID: ${ticketID}). Please click this <a href="${ticketLink}">link</a> to view the ticket.</p>
+            <p style="text-align: left;">Best Regards,</p>`,
+        });
+
+        // add notification for ccUser
+        await notification.create({
+          user: ccUserObject._id,
+          title: 'New Ticket CC',
+          type: 1,
+          text: `New ticket CC at ${new Date()} (ID: ${ticketID})`,
+          read: false,
+        });
+      }
     }
 
    
@@ -375,33 +296,49 @@ const deleteTicket = asyncHandler(async (req, res) => {
 
   res.status(200).json({ success: true });
 });
-/*
-// @desc    Update ticket
-// @route   PUT /api/tickets/:id
-// @access  Private
+
+
+
 const updateTicket = asyncHandler(async (req, res) => {
-  
- 
-  // Get user using the id and JWT
-  const user = await User.findById(req.user.id)
+  try {
+    const ticketId = req.params.id;
+    const updatedTicketData = req.body;
+    const assignedTo = req.body.assignedTo;
+    const cc = req.body.cc; 
+    const id = req.body.ticketID;
 
-  if (!user) {
-    res.status(401)
-    throw new Error('User not found')
-  }
+    let assignedToUser = null;
 
-  const ticket = await Ticket.findById(req.params.id)
+    if (assignedTo) {
+      assignedToUser = await User.findById(assignedTo);
 
-  if (!ticket) {
-    res.status(404)
-    throw new Error('Ticket not found')
-  }
+      if (!assignedToUser) {
+        res.status(400);
+        throw new Error('Assigned user not found');
+      }
+    }
 
-  // Check if ticket belongs to user
-  if (ticket.user.toString() !== req.user.id) {
-    res.status(401)
-    throw new Error('Not authorized')
-  }
+    const ticketLink = `http://localhost:5000/ticket/${ticketId}`;
+    if (assignedToUser) {
+      const assignedToEmail = assignedToUser.email;
+      await transporter.sendMail({
+        from: 'helpdeskx1122@gmail.com',
+        to: assignedToEmail,
+        subject: 'Ticket Updated',
+        html: `<p style="text-align: left;">Dear ${assignedToUser.name},</p>
+        <p style="text-align: left;">You have been assigned a new ticket (ID: ${id}). Please click this <a href="${ticketLink}">link</a> to view the ticket.</p>
+        <p style="text-align: left;">Best Regards,</p>`,
+      });
+
+      // add notification for assignedToUser
+      await notification.create({
+        user: assignedToUser._id,
+        title: 'Ticket Assignment',
+        type: 1,
+        text: `Ticket assigned at ${new Date()} (ID: ${id})`,
+        read: false,
+      });
+    }
 
     // Check if the request includes a status update
     if (req.body.status === 'close') {
@@ -409,123 +346,105 @@ const updateTicket = asyncHandler(async (req, res) => {
       req.body.closedAt = new Date();
     }
 
-  const updatedTicket = await Ticket.findByIdAndUpdate(
-    req.params.id,
-    req.body,
-    {
-      new: true
-    }
-  )
+    // If cc is provided, update the cc field
+    if (cc) {
+      // Ensure cc is an array of user ObjectId values
+      const ccArray = Array.isArray(cc) ? cc : [cc];
 
-  res.status(200).json(updatedTicket)
-})
+      // Update cc field in the updatedTicketData
+      updatedTicketData.cc = ccArray;
 
-*/
-/*
-// @desc    Update ticket
-// @route   PUT /api/tickets/:id
-// @access  Private
-const updateTicket = asyncHandler(async (req, res) => {
-  const ticketId = req.params.id;
-  const updatedTicketData = req.body;
+      // Send emails and notifications to CC users
+      for (const ccUser of ccArray) {
+        const ccUserObject = await User.findById(ccUser);
 
-  // Check if the request includes media updates
-  if (updatedTicketData.media && updatedTicketData.media.length > 0) {
-    const mediaPromises = [];
+        if (ccUserObject) {
+          const ccUserEmail = ccUserObject.email;
 
-    for (const mediaItem of updatedTicketData.media) {
-      let result;
+          // Send email to CC user
+          await transporter.sendMail({
+            from: 'helpdeskx1122@gmail.com',
+            to: ccUserEmail,
+            subject: 'Ticket Updated (CC)',
+            html: `<p style="text-align: left;">Dear ${ccUserObject.name},</p>
+              <p style="text-align: left;">The ticket (ID: ${id}) has been updated. Please click this <a href="${ticketLink}">link</a> to view the ticket.</p>
+              <p style="text-align: left;">Best Regards,</p>`,
+          });
 
-      if (mediaItem.startsWith('data:image')) {
-        // Handle image upload
-        result = await cloudinary.uploader.upload(mediaItem, {
-          resource_type: 'image', // Specify that you're uploading an image
-          folder: 'tickets/images', // Store images in a different folder
-        });
-      } else if (mediaItem.startsWith('data:video')) {
-        // Handle video upload
-        result = await cloudinary.uploader.upload(mediaItem, {
-          resource_type: 'video', // Specify that you're uploading a video
-          folder: 'tickets/videos', // Store videos in a different folder
-        });
-      } else {
-        // Handle unsupported media type (you can customize this part)
-        res.status(400);
-        throw new Error('Unsupported media type');
+          // Add notification for CC user
+          await notification.create({
+            user: ccUserObject._id,
+            title: 'Ticket Update (CC)',
+            type: 1,
+            text: `Ticket updated at ${new Date()} (ID: ${id})`,
+            read: false,
+          });
+        }
       }
-
-      mediaPromises.push({
-        public_id: result.public_id,
-        url: result.secure_url,
-      });
     }
 
-    // Update the updatedTicketData's media with the new media information
-    updatedTicketData.media = mediaPromises;
-  }
+    // Use findByIdAndUpdate to update the ticket with the new data
+    const updatedTicket = await Ticket.findByIdAndUpdate(
+      ticketId,
+      updatedTicketData,
+      {
+        new: true,
+      }
+    );
 
-  // Use findByIdAndUpdate to update the ticket with the new data
-  const updatedTicket = await Ticket.findByIdAndUpdate(
-    ticketId,
-    updatedTicketData,
-    {
-      new: true,
+    if (!updatedTicket) {
+      res.status(404);
+      throw new Error('Ticket not found');
     }
-  );
 
-  if (!updatedTicket) {
-    res.status(404);
-    throw new Error('Ticket not found');
+    res.status(200).json(updatedTicket);
+  } catch (error) {
+    res.status(500).json({ error: 'Ticket update failed' });
   }
-
-  res.status(200).json(updatedTicket);
 });
-*/
 
+
+{/*
 const updateTicket = asyncHandler(async (req, res) => {
   const ticketId = req.params.id;
   const updatedTicketData = req.body;
-{/*
-  // Check if the request includes media updates
-  if (updatedTicketData.media && updatedTicketData.media.length > 0) {
-    const mediaPromises = [];
+  const assignedTo = req.body.assignedTo;
 
-    for (const mediaItem of updatedTicketData.media) {
-      let result;
+let assignedToUser = null;
 
-      if (mediaItem.startsWith('data:image')) {
-        // Handle image upload
-        result = await cloudinary.uploader.upload(mediaItem, {
-          resource_type: 'image', // Specify that you're uploading an image
-          folder: 'tickets/images', // Store images in a different folder
-        });
-      } else if (mediaItem.startsWith('data:video')) {
-        // Handle video upload
-        result = await cloudinary.uploader.upload(mediaItem, {
-          resource_type: 'video', // Specify that you're uploading a video
-          folder: 'tickets/videos', // Store videos in a different folder
-        });
-      } else {
-        // Handle unsupported media type (you can customize this part)
-        res.status(400);
-        throw new Error('Unsupported media type');
-      }
 
-      mediaPromises.push({
-        public_id: result.public_id,
-        url: result.secure_url,
-      });
-    }
+ if (assignedTo) {
+   assignedToUser = await User.findById(assignedTo);
 
-    // Update the updatedTicketData's media with the new media information
-    updatedTicketData.media = mediaPromises;
-  } else {
-    // If there is no media in the request, retain the old media in the updatedTicketData
-    const existingTicket = await Ticket.findById(ticketId);
-    updatedTicketData.media = existingTicket.media;
-  }
-*/}
+   if (!assignedToUser) {
+     res.status(400);
+     throw new Error('Assigned user not found');
+   }
+ }
 
+
+ 
+    const ticketLink = `http://localhost:5000/ticket/${ticketId}`;
+ if (assignedToUser) {
+  const assignedToEmail = assignedToUser.email; // Assuming you have an 'email' field in your User model
+  await transporter.sendMail({
+    from: 'helpdeskx1122@gmail.com', // Replace with your Gmail email address
+    to: assignedToEmail,
+    subject: 'Ticket Updated',
+    html: `<p style="text-align: left;">Dear ${assignedToUser.name},</p>
+      <p style="text-align: left;">You have been assigned a new ticket (ID: ${ticketId}). Please click this <a href="${ticketLink}">link</a> to view the ticket.</p>
+      <p style="text-align: left;">Best Regards,</p>`,
+  });
+
+  // add notification for login
+await notification.create({
+user: assignedToUser._id,
+title: 'Ticket Assignment',
+type: 1,
+text: `Ticket assigned at ${new Date()} (ID: ${ticketId})`,
+read: false,
+})
+}
   // Check if the request includes a status update
   if (req.body.status === 'close') {
     // Set the 'closedAt' field to the current date and time
@@ -540,6 +459,16 @@ const updateTicket = asyncHandler(async (req, res) => {
     }
   );
 
+    // If cc is provided, update the cc field
+    if (cc) {
+      // Ensure cc is an array of user ObjectId values
+      const ccArray = Array.isArray(cc) ? cc : [cc];
+  
+      // Update cc field in the ticket
+      updatedTicketData.cc = ccArray;
+    }
+  
+
   if (!updatedTicket) {
     res.status(404);
     throw new Error('Ticket not found');
@@ -548,26 +477,32 @@ const updateTicket = asyncHandler(async (req, res) => {
   res.status(200).json(updatedTicket);
 });
 
-
+*/}
 
 const report = async (req, res) => {
   try {
-    const notes = await Note.find().populate({
+    const notes = await Note.find({}).populate({
       path: 'ticket',
-      populate: {
-        path: 'organization', // Populate the organization field in the Ticket model
-      },
+      match: { status: 'close' }, // Only populate closed tickets
+      populate: [
+        {
+          path: 'organization',
+        },
+        {
+          path: 'project',
+        },
+      ],
     });
 
     const totalTimeSpentPerTicket = {};
 
-    // Iterate through the notes and calculate total time spent for each closed ticket in hours
     for (const note of notes) {
-      const ticket = note.ticket; // Access the populated ticket details
-      const ticketId = ticket._id.toString(); // Convert ObjectId to string
+      const ticket = note.ticket;
 
-      // Check if the status is "close"
-      if (ticket.status === 'close') {
+      // Check if the ticket is not null before accessing its properties
+      if (ticket && ticket._id) {
+        const ticketId = ticket._id.toString();
+
         const timeEntries = note.timeEntries;
 
         let totalSpent = 0;
@@ -590,7 +525,6 @@ const report = async (req, res) => {
       }
     }
 
-    // Convert the result to hours and make it always positive
     for (const ticketId in totalTimeSpentPerTicket) {
       totalTimeSpentPerTicket[ticketId].totalSpent = Math.abs(totalTimeSpentPerTicket[ticketId].totalSpent / 3600000);
     }
@@ -602,92 +536,6 @@ const report = async (req, res) => {
   }
 };
 
-/*
-const report = async (req, res) => {
-  try {
-    const notes = await Note.find().populate('ticket'); // Use populate to join the Ticket model
-
-    const totalTimeSpentPerTicket = {};
-
-    // Iterate through the notes and calculate total time spent for each ticket in hours
-    notes.forEach((note) => {
-      const ticket = note.ticket; // Access the populated ticket details
-      const ticketId = ticket._id.toString(); // Convert ObjectId to string
-      const timeEntries = note.timeEntries;
-
-      let totalSpent = 0;
-
-      timeEntries.forEach((entry) => {
-        const toTime = new Date(entry.toTime);
-        const fromTime = new Date(entry.fromTime);
-        const entryTimeSpent = toTime - fromTime;
-        totalSpent += entryTimeSpent;
-      });
-
-      if (!totalTimeSpentPerTicket[ticketId]) {
-        totalTimeSpentPerTicket[ticketId] = {
-          totalSpent: 0,
-          ticketDetails: ticket,
-        };
-      }
-
-      totalTimeSpentPerTicket[ticketId].totalSpent += totalSpent;
-    });
-
-    // Convert the result to hours and make it always positive
-    for (const ticketId in totalTimeSpentPerTicket) {
-      totalTimeSpentPerTicket[ticketId].totalSpent = Math.abs(totalTimeSpentPerTicket[ticketId].totalSpent / 3600000);
-    }
-
-    res.json(totalTimeSpentPerTicket);
-  } catch (error) {
-    console.error(error);
-    res.status(500).json({ error: 'An error occurred while calculating total time spent for all tickets individually.' });
-  }
-};
-*/
-/*
-const report = async (req, res) => {
-  try {
-    const notes = await Note.find(); // Retrieve all notes from the database
-
-    const totalTimeSpentPerTicket = {};
-
-    // Iterate through the notes and calculate total time spent for each ticket in hours
-    notes.forEach((note) => {
-      const ticketId = note.ticket.toString(); // Convert ObjectId to string
-      const timeEntries = note.timeEntries;
-
-      let totalSpent = 0;
-
-      timeEntries.forEach((entry) => {
-        const toTime = new Date(entry.toTime);
-        const fromTime = new Date(entry.fromTime);
-        const entryTimeSpent = toTime - fromTime;
-        totalSpent += entryTimeSpent;
-      });
-
-      if (!totalTimeSpentPerTicket[ticketId]) {
-        totalTimeSpentPerTicket[ticketId] = 0;
-      }
-
-      totalTimeSpentPerTicket[ticketId] += totalSpent;
-    });
-
-    // Convert the result to hours and make it always positive
-    for (const ticketId in totalTimeSpentPerTicket) {
-      totalTimeSpentPerTicket[ticketId] = Math.abs(totalTimeSpentPerTicket[ticketId] / 3600000);
-    }
-
-    res.json(totalTimeSpentPerTicket);
-  } catch (error) {
-    console.error(error);
-    res.status(500).json({ error: 'An error occurred while calculating total time spent for all tickets individually.' });
-  }
-};
-
-*/
-
 module.exports = {
   getTickets,
   getTicketss,
@@ -696,6 +544,7 @@ module.exports = {
   getTicket,
   deleteTicket,
   updateTicket,
-  report
+  report,
+  generateTicketID
  
 };

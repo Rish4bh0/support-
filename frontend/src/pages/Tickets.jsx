@@ -148,8 +148,8 @@ function Tickets() {
       */}
       <div className="tickets">
         <div className="ticket-headings">
+        <div>Ticket ID</div>
           <div>Date</div>
-          <div>Product</div>
           <div>Assigned To</div>
           <div>Priority</div>
           <div>Issue Type</div>
@@ -157,6 +157,10 @@ function Tickets() {
           <div>Office</div>
           <div>Actions</div>
         </div>
+        {filteredTickets.length === 0 ? (
+          <div className="mt-28 mb-28">No tickets available</div>
+        
+        ): null }
         {paginatedTickets.map((ticket) => (
           <TicketItem key={ticket._id} ticket={ticket} />
         ))}

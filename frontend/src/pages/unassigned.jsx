@@ -6,6 +6,7 @@ import { reset, getAllTickets } from "../features/tickets/ticketSlice";
 import { fetchAllUsers } from "../features/auth/authSlice";
 import { getAllIssueTypes } from "../features/issues/issueSlice";
 import { getAllOrganization } from "../features/organization/organizationSlice";
+import { getAllProject } from "../features/project/projectSlice";
 import { DataGrid } from "@mui/x-data-grid";
 import { makeStyles } from "@mui/styles";
 import { Link } from "react-router-dom";
@@ -38,6 +39,7 @@ const useStyles = makeStyles({
 function UnassignedTickets() {
   const { allTickets, isLoading } = useSelector((state) => state.tickets);
   const organizations = useSelector((state) => state.organizations.organizations);
+  const projects = useSelector((state) => state.project.project);
   const issues = useSelector((state) => state.issueTypes.issueTypes);
   const dispatch = useDispatch();
   const userRole = useSelector((state) => state.auth.user.role);
@@ -169,6 +171,7 @@ const getSelectedHoverBackgroundColor = (color, mode) =>
     dispatch(fetchAllUsers());
     dispatch(getAllIssueTypes());
     dispatch(getAllOrganization());
+    dispatch(getAllProject())
   }, [dispatch]);
 
   useEffect(() => {
@@ -186,7 +189,11 @@ const getSelectedHoverBackgroundColor = (color, mode) =>
     issueMap[issue._id] = issue.name;
   }) 
 
-  
+  const projectMap = {}
+  projects.forEach((project)=>{
+    projectMap[project._id] = project.projectName;
+  });
+
   const organizationMap = {};
   organizations.forEach((organization) => {
     organizationMap[organization._id] = organization.name;
@@ -199,9 +206,9 @@ const getSelectedHoverBackgroundColor = (color, mode) =>
   });
 
   const rows = filteredTickets.map((ticket) => ({
-    id: ticket._id,
+    id: ticket.ticketID,
     createdAt: ticket.createdAt,
-    product: ticket.product,
+    project: projectMap[ticket.project] ? projectMap[ticket.project] : 'Unknown',
     assignedTo: ticket.assignedTo ? ticket.assignedTo : 'Unassigned',
     priority: ticket.priority,
     issueType: issueMap[ticket.issueType] ? issueMap[ticket.issueType] : 'Unassigned',
@@ -210,6 +217,7 @@ const getSelectedHoverBackgroundColor = (color, mode) =>
   }));
 
   const columns = [
+    { field: "id", headerName: "Ticket ID", flex: 1 },
     {
       field: "createdAt",
       headerName: "Created At",
@@ -222,7 +230,7 @@ const getSelectedHoverBackgroundColor = (color, mode) =>
         return formattedTime;
       },
     },
-    { field: "product", headerName: "Product", flex: 1 },
+   
     { field: "assignedTo", headerName: "Assigned To", flex: 1 },
     {
       field: "priority",
@@ -230,12 +238,16 @@ const getSelectedHoverBackgroundColor = (color, mode) =>
       flex: 1,
       renderCell: (params) => (
         <div
-          className={
-            params.value === "high" ? classes.highPriority : classes.lowPriority
-          }
-        >
-          {params.value}
-        </div>
+        
+      >
+        
+         <span className={`priority priority-${params.value}`}>
+        {params.value}
+      </span>
+
+
+       
+      </div>
       )
       },
     
@@ -249,25 +261,18 @@ const getSelectedHoverBackgroundColor = (color, mode) =>
       headerName: "Status",
       flex: 1,
       renderCell: (params) => (
+
+        
         <div
-        style={{
-          display: 'flex',
-          alignItems: 'center',
-          borderRadius: '8px',
-          padding: '8px',
-        }}
+        
       >
-        {params.value === 'new' ? (
-          <>
-            <CheckCircleOutlineIcon style={{ color: '#fff', marginRight: '4px' }} />
-            <span style={{ color: '#fff' }}>{params.value}</span>
-          </>
-        ) : (
-          <>
-            <CancelOutlinedIcon style={{ color: '#000', marginRight: '4px' }} />
-            <span style={{ color: '#000' }}>{params.value}</span>
-          </>
-        )}
+        
+         <span className={`status status-${params.value}`}>
+        {params.value}
+      </span>
+
+
+       
       </div> )
       },
     
@@ -295,8 +300,8 @@ const getSelectedHoverBackgroundColor = (color, mode) =>
       <div className="tab-buttons">
        
       </div>
-      <div style={{ height: 400, width: "100%" }}>
-        <StyledDataGrid
+      <div style={{ height: 400, width: "99%" }} >
+        <StyledDataGrid 
         getRowClassName={(params) => `super-app-theme--${params.row.status}`}
           rows={rows}
           columns={columns}

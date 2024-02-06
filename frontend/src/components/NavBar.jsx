@@ -230,6 +230,7 @@ const NavBar = () => {
               customFunc={handleLoginClick}
               icon={<LoginIcon />}
             />
+            {/*
             <NavButton
               title="Register"
               //dotColor="#03c9d7"
@@ -237,6 +238,7 @@ const NavBar = () => {
               customFunc={handleRegisterClick}
               icon={<PersonAddIcon />}
             />
+            */}
           </div>
         )}
       </div>

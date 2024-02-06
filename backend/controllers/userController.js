@@ -76,7 +76,7 @@ const loginUser = asyncHandler(async (req, res) => {
       organization: user.organization,
       token: generateToken(user._id)
     })
-
+/*
     // add notification for login
   await notification.create({
     user: user._id,
@@ -85,7 +85,7 @@ const loginUser = asyncHandler(async (req, res) => {
     text: `New login at ${new Date()}`,
     read: false,
   })
-
+*/
   } else {
     res.status(401) // Unauthorized
     throw new Error('Invalid credentials')

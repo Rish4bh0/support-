@@ -259,7 +259,7 @@ const TicketTable = ({ tickets }) => {
           <TableBody>
             {displayedTickets.map((ticket) => (
               <TableRow key={ticket._id}>
-                <TableCellStyled>{ticket._id}</TableCellStyled>
+                <TableCellStyled>{ticket.ticketID}</TableCellStyled>
                 <TableCellStyled>
                   {ticket.customerName ? ticket.customerName : "Unassigned"}
                 </TableCellStyled>

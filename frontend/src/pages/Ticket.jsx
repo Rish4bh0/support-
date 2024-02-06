@@ -15,7 +15,7 @@ import {
 } from "../features/notes/noteSlice";
 import Spinner from "../components/Spinner";
 import MediaUpload from "./ImageUpload";
-
+import DoneIcon from '@mui/icons-material/Done';
 import { useParams, useNavigate } from "react-router-dom";
 import { useEffect, useState } from "react";
 import { toast } from "react-toastify";
@@ -61,7 +61,7 @@ function Ticket() {
   // Define an array of roles that should see the "Dashboard" link
   const allowedRoles = ["ADMIN", "SUPERVISOR"];
 
-  const allowedRolesReview = ["ADMIN", "SUPERVISOR", "ORGAGENT"];
+  const allowedRolesReview = ["ADMIN", "SUPERVISOR", "EMPLOYEE"];
 
   const [modalIsOpen, setModalIsOpen] = useState(false);
   const [text, settext] = useState("");
@@ -88,7 +88,7 @@ function Ticket() {
 
   // Create a mapping of organization IDs to their names
   projects.forEach((project) => {
-    projectMap[project._id] = project.name;
+    projectMap[project._id] = project.projectName;
   });
 
 
@@ -135,6 +135,13 @@ function Ticket() {
 
   // Find the user object with the same ID as the ticket's assignedTo ID
   const assignedUser = users.find((user) => user._id === ticket.assignedTo);
+
+  // Access CC users from the Redux state
+  const ccUsers = ticket && ticket.cc ? 
+    ticket.cc.map((ccUserId) => {
+      const ccUser = users.find((user) => user._id === ccUserId);
+      return ccUser ? ccUser.name : "Unknown User";
+    }) : [];
 
   // Extract the name of the assigned user (if found)
   const assignedToName = assignedUser ? assignedUser.name : "Unassigned";
@@ -187,20 +194,20 @@ function Ticket() {
   const onTicketClose = () => {
     dispatch(closeTicket(ticketId));
     toast.success("Ticket Closed");
-    navigate("/");
+    navigate("/allticket");
   };
 
   // Close ticket
   const onTicketOpen = () => {
     dispatch(openTicket(ticketId));
     toast.success("Ticket Opened");
-    navigate("/");
+    navigate("/allticket");
   };
   // Close ticket
   const onTicketSendForReview = () => {
     dispatch(reviewTicket(ticketId));
     toast.success("Ticket Sent For Review");
-    navigate("/");
+    navigate("/allticket");
   };
 
   // Open/Close Modal
@@ -315,7 +322,7 @@ function Ticket() {
       <header className="ticket-header">
       <BackButton url="/" />
         <h2>
-          Ticket ID: {ticket._id}
+          Ticket ID: {ticket.ticketID}
           <span className={`status status-${ticket.status}`}>
             {ticket.status}
           </span>
@@ -329,6 +336,13 @@ function Ticket() {
             ? projectMap[ticket.project]
             : "Unassigned"}</h3>
         <h3>Assigned To: {getUserNameById(ticket.assignedTo)}</h3>
+        <div className="cc-tags">
+          {ccUsers.map((ccUser, index) => (
+            <span key={index} className="tag">
+             CC: {ccUser}
+            </span>
+          ))}
+        </div>
         <h3>Priority: {ticket.priority}</h3>
         <h3>Issue Type: {issueById(ticket.issueType)}</h3>
         <h3>
@@ -428,76 +442,10 @@ function Ticket() {
           pageSize={5} // You can adjust the number of rows per page
         />
       </div>
-
-      {/*
-      {notes && Array.isArray(notes) ? (
-        notes.map((note) => <NoteItem key={note._id} note={note} />)
-      ) : (
-        <p>No notes available</p>
-      )}
-*/}
-
-{/*
-      {ticket.media && ticket.media.length > 0 ? (
-        <div className="media-container">
-             <Carousel useKeyboardArrows={true}>
-          {ticket.media.map((mediaItem) => (
-            <div key={mediaItem.public_id} className="media-item">
-              {mediaItem.url.startsWith("https://res.cloudinary.com") ? (
-                mediaItem.url.endsWith(".mp4") ? (
-                  <video
-                    src={mediaItem.url}
-                    controls // This adds video controls (play, pause, volume, etc.)
-                    className="media-video" // Apply the media-video style
-                  >
-                    Your browser does not support the video tag.
-                  </video>
-                ) : (
-                  <img
-                    src={mediaItem.url}
-                    alt={`Image ${mediaItem.public_id}`}
-                    className="media-image" // Apply the media-image style
-                  />
-                )
-              ) : (
-                <p>Unsupported media format</p>
-              )}
-            </div>
-          ))}
-           </Carousel>
-        </div>
-      ) : (
-        <p>No media available</p>
-      )}
-*/}
 {ticket.status !== "close" && (
 <MediaUpload ticketID={ticket._id} />
 )}
  <div className="form-group mt-6 space-x-6 flex justify-center">
- {/*
- <Button
-            variant="contained"
-            color="primary"
-            endIcon={<ImageIcon />}
-            onClick={() => setToggler((prevToggler) => !prevToggler)}
-            className="mt-10" 
-            >
-            {ticket && ticket.media && ticket.media.length > 0
-              ? 'Preview Media'
-              : 'No media available'}
-          </Button>
-      
-
-      {ticket && ticket.media && ticket.media.length > 0 ? (
-        console.log(ticket.media.map((mediaItem) => mediaItem.url)),
-        <FsLightbox
-          toggler={toggler}
-          sources={ticket.media.map((mediaItem) => mediaItem.url)}
-        />
-      ) : null}
-    
-*/}
-
     
     {userRole &&
         allowedRolesReview.includes(userRole) &&
@@ -534,51 +482,13 @@ function Ticket() {
           <Button
             variant="contained"
             color="primary"
-            startIcon={<CloudUploadIcon />}
+            startIcon={<DoneIcon />}
             onClick={onTicketOpen}
           >
             Open Ticket
           </Button>
           )}
         </div>
-
-
-{/*
-      {userRole &&
-        allowedRolesReview.includes(userRole) &&
-        ticket.status !== "review" &&
-        ticket.status !== "close" && (
-          <button
-            onClick={onTicketSendForReview}
-            className="btn btn-reverse btn-block"
-          >
-            Send ticket for review
-          </button>
-        )}
-
-      {ticket.status !== "close" &&
-        userRole &&
-        allowedRoles.includes(userRole) && (
-          <button onClick={onTicketClose} className="btn btn-block btn-danger">
-            Close Ticket
-          </button>
-        )}
-
-{(ticket.status === "draft" || (ticket.status === "close" && userRole &&
-        allowedRoles.includes(userRole))) && (
-  <button onClick={onTicketOpen} className="btn btn-block btn-danger">
-    Open Ticket
-  </button>
-)}
-*/}
-
-      {/*
-      {ticket.status !== "close" && (
-        <button onClick={onTicketClose} className="btn btn-block btn-danger">
-          Close Ticket
-        </button>
-      )}
-*/}
     </div>
   );
 }

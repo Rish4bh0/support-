@@ -5,8 +5,10 @@ import { FaSignInAlt } from "react-icons/fa";
 import { useSelector, useDispatch } from "react-redux";
 import { login, reset } from "../features/auth/authSlice";
 import Spinner from "../components/Spinner";
+import { useStateContext } from "../contexts/ContextProvider";
 
 function Login() {
+  const { activeMenu, setactiveMenu } = useStateContext();
   const [formData, setFormData] = useState({
     email: "",
     password: "",
@@ -28,8 +30,9 @@ function Login() {
 
     // Redirect when logged in
     if (isSuccess || user) {
+      setactiveMenu(true)
       if (user) {
-        if (["ADMIN"].includes(user.role)) {
+        if (["ADMIN", "EMPLOYEE", "SUPERVISOR"].includes(user.role)) {
           navigate("/admindash"); // Redirect to the dashboard route for ADMIN, SUPERVISOR, EMPLOYEE
         } else if (user.role === "ORGAGENT") {
           navigate("/dash"); // Redirect to the organization route for ORGAGENT
@@ -37,7 +40,7 @@ function Login() {
         else if (user.role === "SUPERVISOR") {
           navigate("/dash"); // Redirect to the organization route for ORGAGENT
         } else {
-          navigate("/"); // Redirect to the home route for other roles
+          navigate("/new-ticket"); // Redirect to the home route for other roles
         }
       }
       dispatch(reset());

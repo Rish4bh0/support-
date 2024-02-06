@@ -19,13 +19,15 @@ import RoomPreferencesIcon from '@mui/icons-material/RoomPreferences';
 import { useSelector } from "react-redux";
 import SpellcheckIcon from '@mui/icons-material/Spellcheck';
 import ReportGmailerrorredIcon from '@mui/icons-material/ReportGmailerrorred';
+import PlaylistAddIcon from '@mui/icons-material/PlaylistAdd';
+import GroupAddIcon from '@mui/icons-material/GroupAdd';
 
 
 const Sidebar = () => {
   const { currentColor, activeMenu, setactiveMenu, screenSize } =
     useStateContext();
   const handleCloseSideBar = () => {
-    if (activeMenu && screenSize <= 900) {
+    if (activeMenu && screenSize <= 700) {
       setactiveMenu(false);
     }
   };
@@ -77,7 +79,7 @@ const allowedRolesAdmin = ["ADMIN"];
             </TooltipComponent>
           </div>
           <div className="mt-10">
-          {(userRole && allowedRolesAdmin.includes(userRole)) && (
+          {(userRole && allowedRoles.includes(userRole)) && (
             <div>
               <p
                 className="text-gray-400 m-3
@@ -167,7 +169,20 @@ const allowedRolesAdmin = ["ADMIN"];
                 }
               >
                 <AssignmentTurnedInIcon />
-                <span className="capitalize">Assigned to me</span>
+                <span className="capitalize">Assigned</span>
+              </NavLink>
+              <NavLink
+                to={`/ccticket`}
+                onClick={handleCloseSideBar}
+                style={({ isActive }) => ({
+                  backgroundColor: isActive ? currentColor : "",
+                })}
+                className={({ isActive }) =>
+                  isActive ? activeLink : normalLink
+                }
+              >
+                <GroupAddIcon />
+                <span className="capitalize">CC</span>
               </NavLink>
               <NavLink
                 to={`allticket`}
@@ -197,7 +212,7 @@ const allowedRolesAdmin = ["ADMIN"];
                 <span className="capitalize">Unassigned</span>
               </NavLink>
               </>
-              )}
+              )}      
               <NavLink
                 to={`/ticketss`}
                 onClick={handleCloseSideBar}
@@ -209,7 +224,7 @@ const allowedRolesAdmin = ["ADMIN"];
                 }
               >
                 <AssignmentIndIcon />
-                <span className="capitalize">Tickets created by me</span>
+                <span className="capitalize">My tickets</span>
               </NavLink>
             </div>
             {(userRole && allowedRoles.includes(userRole)) && (
@@ -260,6 +275,19 @@ const allowedRolesAdmin = ["ADMIN"];
               >
                 <AddCircleIcon />
                 <span className="capitalize">Issue</span>
+              </NavLink>
+              <NavLink
+                to={`/projects`}
+                onClick={handleCloseSideBar}
+                style={({ isActive }) => ({
+                  backgroundColor: isActive ? currentColor : "",
+                })}
+                className={({ isActive }) =>
+                  isActive ? activeLink : normalLink
+                }
+              >
+                <PlaylistAddIcon  />
+                <span className="capitalize">Project</span>
               </NavLink>
             </div>
             )}

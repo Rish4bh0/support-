@@ -190,12 +190,18 @@ function IssueList() {
         <DataGrid
           rows={issues.map((issue, index) => ({ ...issue, id: index }))}
           columns={[
-            { field: "name", headerName: "Issue Name", flex: 1 },
-            { field: "_id", headerName: "Issue ID", flex: 1 },
+            { field: "name", headerName: "Issue Name", flex: 1, minWidth: 150, // Set a minimum width for the column
+            headerClassName: "text-sm md:text-base", // Adjust font size for responsiveness
+            cellClassName: "text-sm md:text-base", },
+            { field: "_id", headerName: "Issue ID", flex: 1,  minWidth: 150, // Set a minimum width for the column
+            headerClassName: "text-sm md:text-base", // Adjust font size for responsiveness
+            cellClassName: "text-sm md:text-base",},
             {
               field: "actions",
               headerName: "Action",
-              flex: 1,
+              flex: 1,  minWidth: 150, // Set a minimum width for the column
+              headerClassName: "text-sm md:text-base", // Adjust font size for responsiveness
+              cellClassName: "text-sm md:text-base",
               renderCell: (params) => (
                 <div>
                   <button onClick={() => handleUpdateIssue(params.row._id)}>
@@ -219,6 +225,7 @@ function IssueList() {
           components={{
             loadingOverlay: () => <Spinner />, // Custom spinner component
           }}
+          className="min-w-full overflow-x-auto md:w-full"
         />
 
         <Modal

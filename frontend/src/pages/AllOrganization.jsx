@@ -46,6 +46,7 @@ function OrganizationList() {
   const [newFocalPersonName, setFocalPersonName] = useState("");
   const [newFocalPersonContact, setFocalPersonContact] = useState("");
   const [newFocalPersonEmail, setFocalPersonEmail] = useState("");
+  const [payment, setPayment] = useState("");
   
   const [updateName, setUpdateOrganizationName] = useState("");
   const [updateEmail, setUpdateEmail] = useState("");
@@ -53,6 +54,7 @@ function OrganizationList() {
   const [updateFocalPersonName, setUpdateFocalPersonName] = useState("");
   const [updatefocalPersonContact, setUpdateFocalPersonContact] = useState("");
   const [updateFocalPersonEmail, setUpdateFocalPersonEmail] = useState("");
+  const [updatePayment, setUpdatePayment] = useState("");
   
   const dispatch = useDispatch();
 
@@ -87,6 +89,7 @@ function OrganizationList() {
         setUpdateFocalPersonContact(selectedOrganization.focalPersonContact);
         setUpdateFocalPersonEmail(selectedOrganization.focalPersonEmail);
         setUpdateFocalPersonName(selectedOrganization.focalPersonName);
+        setUpdatePayment(selectedOrganization.payment);
       }
   
       // Open the modal for updating
@@ -141,6 +144,7 @@ function OrganizationList() {
     setFocalPersonContact("");
     setFocalPersonEmail("");
     setFocalPersonName("");
+    setPayment("");
 
     setUpdateOrganizationName("");
     setUpdateEmail("");
@@ -148,6 +152,7 @@ function OrganizationList() {
     setUpdateFocalPersonContact("");
     setUpdateFocalPersonEmail("");
     setUpdateFocalPersonName("");
+    setUpdatePayment("");
   };
 
   const closeModal = () => {
@@ -159,6 +164,7 @@ function OrganizationList() {
     setFocalPersonContact("");
     setFocalPersonEmail("");
     setFocalPersonName("");
+    setPayment("");
 
     setUpdateOrganizationName("");
     setUpdateEmail("");
@@ -166,6 +172,7 @@ function OrganizationList() {
     setUpdateFocalPersonContact("");
     setUpdateFocalPersonEmail("");
     setUpdateFocalPersonName("");
+    setUpdatePayment("");
   };
 
   const handleFormSubmit = (e) => {
@@ -178,6 +185,7 @@ function OrganizationList() {
       focalPersonContact: selectedOrganizationId ? updatefocalPersonContact : newFocalPersonContact,
       focalPersonEmail: selectedOrganizationId ? updateFocalPersonEmail : newFocalPersonEmail,
       focalPersonName: selectedOrganizationId ? updateFocalPersonName : newFocalPersonName,
+      payment: selectedOrganizationId? updatePayment : payment,
     };
   
      
@@ -210,6 +218,7 @@ function OrganizationList() {
     setFocalPersonContact("");
     setFocalPersonEmail("");
     setFocalPersonName("");
+    setPayment("");
 
     setUpdateOrganizationName("");
     setUpdateEmail("");
@@ -217,6 +226,7 @@ function OrganizationList() {
     setUpdateFocalPersonContact("");
     setUpdateFocalPersonEmail("");
     setUpdateFocalPersonName("");
+    setUpdatePayment("");
     setSelectedOrganizationId("");
   };
 
@@ -248,7 +258,6 @@ function OrganizationList() {
     { field: "focalPersonName", headerName: "Focal Person Name", flex: 1 },
     { field: "focalPersonContact", headerName: "Focal Person Contact", flex: 1 },
     { field: "focalPersonEmail", headerName: "Focal Person Email", flex: 1 },
-
     {
       field: "actions",
       headerName: "Action",
@@ -408,6 +417,7 @@ function OrganizationList() {
                 onChange={(e) => setFocalPersonContact(e.target.value)}
               />
             </div>
+            
             <div className="form-group">
               <Button type="submit" variant="contained" color="primary">
                 Create Office
@@ -514,6 +524,22 @@ function OrganizationList() {
                 onChange={(e) => setUpdateFocalPersonContact(e.target.value)}
               />
             </div>
+            <div className="form-group">
+            <label htmlFor="payment">Payment Type</label>
+            <select
+              name="payment"
+              id="payment"
+              value={updatePayment}
+              onChange={(e) => setUpdatePayment(e.target.value)}
+            >
+              <option value="">Select One</option>
+              <option value="Paid">Paid</option>
+              <option value="PaidAmc">Paid AMC</option>
+              <option value="FreeSupport">Free Support</option>
+              <option value="FreeSupportPeriodUnderAMC">Free Support Period Under AMC</option>
+              <option value="SupportContract">Support Contract</option>
+            </select>
+          </div>
           <div className="form-group">
             <Button type="submit" variant="contained" color="primary">
               Update Office

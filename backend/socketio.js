@@ -81,16 +81,8 @@ module.exports = function (io) {
       users[userId]?.emit('notificationsLength', notificationsLength);
       io.to(userId).emit('notificationsLength', notificationsLength);
     });
-    socket.on('disconnect', () => {
-      const disconnectedUserId = Object.keys(users).find(
-        (userId) => users[userId] === socket
-      );
 
-      if (disconnectedUserId) {
-        console.log(`🔥 User with id ${disconnectedUserId} disconnected from socket`);
-        users[disconnectedUserId] = null;
-      }
-    });
+    
  
     // Chat Logic
     socket.on('onLogin', (user) => {
@@ -117,6 +109,17 @@ module.exports = function (io) {
     });
 
     socket.on('disconnect', () => {
+      const disconnectedUserId = Object.keys(users).find(
+        (userId) => users[userId] === socket
+      );
+
+      if (disconnectedUserId) {
+        console.log(`🔥 User with id ${disconnectedUserId} disconnected from socket`);
+        users[disconnectedUserId] = null;
+      }
+    });
+
+    socket.on('disconnect', () => {
       const user = users.find((x) => x.socketId === socket.id);
       if (user) {
         user.online = false;
@@ -124,13 +127,14 @@ module.exports = function (io) {
         if (admin) {
           io.to(admin.socketId).emit('updateUser', user);
         }
+        io.emit('listUsers', users.filter(Boolean));
       }
     });
 
-    socket.on('onUserSelected', (selectedUser) => {
+    socket.on('onUserSelected', (user) => {
       const admin = users.find((x) => x.name === 'Admin' && x.online);
       if (admin) {
-        const existUser = users.find((x) => x.name === selectedUser.name);
+        const existUser = users.find((x) => x.name === user.name);
         io.to(admin.socketId).emit('selectUser', existUser);
       }
     });

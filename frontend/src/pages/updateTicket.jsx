@@ -4,6 +4,7 @@ import { updateTicketAsync, getTicket, reset } from '../features/tickets/ticketS
 import { useNavigate, useParams } from 'react-router-dom';
 import { fetchAllUsers } from '../features/auth/authSlice';
 import { getAllIssueTypes } from '../features/issues/issueSlice';
+import { getAllProject } from '../features/project/projectSlice';
 import { getAllOrganization } from '../features/organization/organizationSlice';
 import { toast } from 'react-toastify';
 import Spinner from "../components/Spinner";
@@ -22,12 +23,14 @@ import {
   CardContent,
 } from "@mui/material";
 import SendIcon from "@mui/icons-material/Send";
+import UpdateIcon from '@mui/icons-material/Update';
 import BackButton from '../components/BackButton';
 import MediaUpload from './ImageUpload';
 
 const UpdateProductPage = () => {
   const { ticketId } = useParams();
   const { ticket } = useSelector((state) => state.tickets);
+  const { user } = useSelector((state) => state.auth);
   const users = useSelector((state) => state.auth.users);
   const issues = useSelector((state) => state.issueTypes.issueTypes);
   const projects = useSelector((state) => state.project.project);
@@ -46,6 +49,7 @@ const UpdateProductPage = () => {
     issueType: '',
     customerEmail: '',
     customerContact: '',
+    cc: [],
   });
 
   // State to store selected media files
@@ -66,6 +70,7 @@ const UpdateProductPage = () => {
     // Load the initial issue list when the component mounts
     dispatch(getAllIssueTypes());
     dispatch(getAllOrganization());
+    dispatch(getAllProject());
   }, [dispatch]);
   const navigate = useNavigate();
   useEffect(() => {
@@ -94,7 +99,8 @@ const UpdateProductPage = () => {
         customerEmail: ticket.customerEmail,
         organization: ticket.organization,
         customerContact: ticket.customerContact,
-        title : ticket.title
+        title : ticket.title,
+        cc: ticket.cc || [],
       });
     } else {
       // If the ticket data is not available in the store, fetch it
@@ -105,28 +111,18 @@ const UpdateProductPage = () => {
    const handleChange = (e) => {
     const { name, value } = e.target;
 
-    // Update formData state
-    setFormData({ ...formData, [name]: value });
-
+     // Update formData state
+  setFormData((prevData) => ({
+    ...prevData,
+    [name]: Array.isArray(value) ? value : value === "null" ? null : value, 
+  }));
    
   };
 
   useEffect(() => {
-    // Check if organization is selected
-    if (formData.organization) {
-      // Filter users based on roles whenever the organization or users data changes
-      const allowedRoles = ["ADMIN", "SUPERVISOR", "ORGAGENT"];
-      const filteredUsersByRole = users.filter(
-        (user) => user.organization === formData.organization && allowedRoles.includes(user.role)
-      );
-
-      // Update the filteredUsers state
-      setFilteredUsers(filteredUsersByRole);
-    } else {
-      // If no organization is selected, set filteredUsers to the entire list of users
-      setFilteredUsers(users);
-    }
-  }, [formData.organization, users]);
+    // Filter users based on role
+    setFilteredUsers(users.filter((user) => ["ADMIN", "EMPLOYEE", "SUPERVISOR"].includes(user.role)));
+  }, [users]);
 /*
   // Function to handle media file selection
   const handleMedia = (e) => {
@@ -174,8 +170,8 @@ const UpdateProductPage = () => {
         customerEmail: formData.customerEmail,
         customerContact: formData.customerContact,
         title: formData.title,
-        status: status === "new" ? "new" : status
-
+        status: status === "new" ? "new" : status,
+        cc: formData.cc,
         },
       })
     );
@@ -208,7 +204,7 @@ if (isLoading) return <Spinner />;
           Please fill out the form below
         </Typography>
         <Typography variant="body2">
-        Ticket ID: {ticket._id}
+        Ticket ID: {ticket.ticketID}
         </Typography>
        
       </div>
@@ -225,53 +221,55 @@ if (isLoading) return <Spinner />;
             />
           </Grid>
           <Grid item xs={6}>
-            <TextField
-              label="Customer Name"
-              name="customerName"
-              value={formData.customerName}
-              fullWidth
-            />
-          </Grid>
-          <Grid item xs={6}>
-            <TextField
-              label="Customer Email"
-              name="customerEmail"
-              value={formData.customerEmail}
-              fullWidth
-            />
-          </Grid>
-          <Grid item xs={6}>
-            <TextField
-              label="Customer Contact"
-              name="customerContact"
-              value={formData.customerContact}
-              fullWidth
-            />
-          </Grid>
-          <Grid item xs={6}>
-            <FormControl fullWidth>
-              <InputLabel htmlFor="organization">Organization</InputLabel>
-              <Select
-                name="organization"
-                id="organization"
-                value={formData.organization}
-                onChange={handleChange}
-              >
-                <MenuItem value="">Select One</MenuItem>
-                {organizations && organizations.length > 0 ? (
-                organizations.map((organization) => (
-                  <MenuItem key={organization._id} value={organization._id}>
-                    {organization.name}
-                  </MenuItem>
-                ))
-              ) : (
-                <MenuItem value="" disabled>
-                  No organization available
-                </MenuItem>
-              )}
-              </Select>
-            </FormControl>
-          </Grid>
+  <FormControl fullWidth>
+    <InputLabel htmlFor="organization">Organization</InputLabel>
+    <Select
+      name="organization"
+      id="organization"
+      value={formData.organization}
+      onChange={handleChange}
+    >
+      <MenuItem value="">Select One</MenuItem>
+      {user && user.role === "ADMIN" ? (
+        // Render all organizations if user's role is admin
+        organizations && organizations.length > 0 ? (
+          organizations.map((organization) => (
+            <MenuItem key={organization._id} value={organization._id}>
+              {organization.name}
+            </MenuItem>
+          ))
+        ) : (
+          // Render a disabled option if no organizations are available
+          <MenuItem value="" disabled>
+            No organization available
+          </MenuItem>
+        )
+      ) : user && user.organization ? (
+        // Render organizations based on user's organization
+        organizations && organizations.length > 0 ? (
+          organizations
+            .filter((org) => org._id === user.organization)
+            .map((org) => (
+              <MenuItem key={org._id} value={org._id}>
+                {org.name}
+              </MenuItem>
+            ))
+        ) : (
+          // Render a disabled option if no organizations are available
+          <MenuItem value="" disabled>
+            No organization available
+          </MenuItem>
+        )
+      ) : (
+        // Render a disabled option if no organizations are available
+        <MenuItem value="" disabled>
+          No organization available
+        </MenuItem>
+      )}
+    </Select>
+  </FormControl>
+</Grid>
+
 
           {userRole && allowedRoles.includes(userRole) && (
             <Grid item xs={6}>
@@ -283,7 +281,7 @@ if (isLoading) return <Spinner />;
                   value={formData.assignedTo}
             onChange={handleChange}
                 >
-                  <MenuItem value="">Select One</MenuItem>
+                  <MenuItem value="null">Select One</MenuItem>
                   {filteredUsers.length > 0 ? (
                     filteredUsers.map((user) => (
                       <MenuItem key={user._id} value={user._id}>
@@ -300,31 +298,31 @@ if (isLoading) return <Spinner />;
               </FormControl>
             </Grid>
           )}
-          <Grid item xs={6}>
+
+<Grid item xs={6}>
             <FormControl fullWidth>
-              <InputLabel htmlFor="project">Project</InputLabel>
+              <InputLabel htmlFor="cc">CC Users</InputLabel>
               <Select
-                name="project"
-                id="project"
-                value={formData.project}
+                name="cc"
+                id="cc"
+                multiple
+                value={formData.cc}
                 onChange={handleChange}
               >
-                <MenuItem value="">Select One</MenuItem>
-                {projects && projects.length > 0 ? (
-                  projects.map((project) => (
-                    <MenuItem key={project._id} value={project._id}>
-                      {project.name}
+                {filteredUsers.length > 0 ? (
+                  filteredUsers.map((user) => (
+                    <MenuItem key={user._id} value={user._id}>
+                      {user.name}
                     </MenuItem>
                   ))
                 ) : (
                   <MenuItem value="" disabled>
-                    No project available
+                    No users available for CC
                   </MenuItem>
                 )}
               </Select>
             </FormControl>
           </Grid>
-
           {userRole && allowedRoles.includes(userRole) && (
             <Grid item xs={6}>
               <FormControl fullWidth>
@@ -433,19 +431,21 @@ if (isLoading) return <Spinner />;
           <Button
             variant="contained"
             color="primary"
-            endIcon={<SendIcon />}
+            endIcon={<UpdateIcon />}
             type="submit"
           >
             Update Ticket
           </Button>
-          <Button
-            variant="contained"
-            color="success"
-            endIcon={<SendIcon />}
-            onClick={(e) => handleSubmit(e, "new")}
-          >
-            Submit as New
-          </Button>
+          {ticket.status === "draft" && (
+      <Button
+        variant="contained"
+        color="success"
+        endIcon={<SendIcon />}
+        onClick={(e) => handleSubmit(e, "new")}
+      >
+        Submit as New
+      </Button>
+    )}
         </div>
        
       </form>
