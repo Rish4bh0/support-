@@ -417,6 +417,22 @@ function OrganizationList() {
                 onChange={(e) => setFocalPersonContact(e.target.value)}
               />
             </div>
+            <div className="form-group">
+            <label htmlFor="payment">Payment Type</label>
+            <select
+              name="payment"
+              id="payment"
+              value={payment}
+              onChange={(e) => setPayment(e.target.value)}
+            >
+              <option value="">Select One</option>
+              <option value="Paid">Paid</option>
+              <option value="PaidAmc">Paid AMC</option>
+              <option value="FreeSupport">Free Support</option>
+              <option value="FreeSupportPeriodUnderAMC">Free Support Period Under AMC</option>
+              <option value="SupportContract">Support Contract</option>
+            </select>
+          </div>
             
             <div className="form-group">
               <Button type="submit" variant="contained" color="primary">
