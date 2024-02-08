@@ -17,7 +17,7 @@ import LoginIcon from "@mui/icons-material/Login";
 import LogoutIcon from "@mui/icons-material/Logout";
 import { getAllOrganization } from "../features/organization/organizationSlice";
 import useSocketIo from "../hooks/useSocketio";
-import NotificationModal from '../pages/NotificationModal';
+import NotificationModal from "../pages/NotificationModal";
 
 const NavButton = ({ title, customFunc, icon, color, dotColor }) => (
   <TooltipComponent content={title} position="BottomCenter">
@@ -25,7 +25,7 @@ const NavButton = ({ title, customFunc, icon, color, dotColor }) => (
       type="button"
       onClick={() => customFunc()}
       style={{ color }}
-      className="relative text-xl rounded-full p-3 hover:bg-light-gray"
+      className="rounded-lg bg-blue-500 px-3 py-2 shadow-sm hover:bg-blue-700"
     >
       <span
         style={{ background: dotColor }}
@@ -102,31 +102,31 @@ const NavBar = () => {
   useEffect(() => {
     if (socket) {
       console.log("Socket connected");
-  
+
       // Set user ID for socket
       socket.emit("setUserId", id);
-  
+
       // Get initial notifications length
       socket.emit("getNotificationsLength", id);
-  
+
       // Listen for notifications length updates
       socket.on("notificationsLength", (data) => {
         console.log("Received notificationsLength:", data);
         setNotificationsLength(data);
       });
-  
+
       // Listen for socket event to update notification length
       socket.on("updateNotificationsLength", () => {
         console.log("Received updateNotificationsLength event");
         socket.emit("getNotificationsLength", id);
       });
-  
+
       // Set up periodic timer to fetch notifications length
       const timer = setInterval(() => {
         console.log("Fetching notifications length...");
         socket.emit("getNotificationsLength", id);
       }, 5000); // run every 5 seconds
-  
+
       // Cleanup on component unmount
       return () => {
         console.log("Component unmounted. Cleaning up...");
@@ -136,101 +136,133 @@ const NavBar = () => {
       };
     }
   }, [id, setNotificationsLength, socket]);
-  
+
   return (
-    <div className="flex justify-between p-2 md:mx-6 relative">
-      <div className="mt-0.5">
-        {user ? (
-          <NavButton
-            title="Menu"
-            customFunc={() =>
-              setactiveMenu((prevActiveMenu) => !prevActiveMenu)
-            }
-            color="black"
-            icon={<AiOutlineMenu />}
-          />
-        ) : (
-          <AiOutlineMenu className="text-white" />
-        )}
-      </div>
-      <div className="flex ">
-     
-      <div className="mt-2">
-        {user ? (
-          <button
-            type="button"
-            onClick={() => setIsNotificationModalOpen(true)}
-            style={{ display: 'flex', alignItems: 'center' }}
-          >
-            <div style={{ position: "relative",
-            right: 22,
-           }}>
-              {notificationsLength ? (
-                <MdNotificationsActive
-                  size={25}
-                  style={{ marginTop: 8 }}
+    <nav
+      className={
+        "flex justify-between relative py-4 bg-white" +
+        (user ? " px-4" : " px-40 z-10")
+      }
+    >
+      <div class="w-full">
+        <div class="relative flex items-center justify-between">
+          <div>
+            {user ? (
+              <div class="md:mx-6">
+                <NavButton
+                  title="Menu"
+                  customFunc={() =>
+                    setactiveMenu((prevActiveMenu) => !prevActiveMenu)
+                  }
+                  color="black"
+                  icon={<AiOutlineMenu />}
                 />
-              ) : (
-                <MdNotificationsNone
-                  size={25}
-                  style={{ marginTop: 8 }}
+              </div>
+            ) : (
+              // <AiOutlineMenu className="text-white" />
+              <div class="flex flex-shrink-0 items-center">
+                <img
+                  class="h-8 w-auto"
+                  src="/static/media/dryice-logo.4296ab853306efcf5617.png"
+                  alt="Your Company"
                 />
-              )}
-              {notificationsLength > 0 && (
-                <span
-                  style={{
-                    position: "absolute",
-                    top: -8,
-                    right: -23, 
-                    background: "#03C9D7",
-                    borderRadius: "50%",
-                    padding: "2px 6px",
-                    fontSize: "12px",
-                    color: "white",
-                  }}
+              </div>
+            )}
+          </div>
+
+          <div className="flex items-center space-x-4">
+            {user ? (
+              <button
+                type="button"
+                onClick={() => setIsNotificationModalOpen(true)}
+                className="flex align-middle"
+              >
+                <div style={{ position: "relative", right: 22 }}>
+                  {notificationsLength ? (
+                    <MdNotificationsActive size={25} style={{ marginTop: 8 }} />
+                  ) : (
+                    <MdNotificationsNone size={25} style={{ marginTop: 8 }} />
+                  )}
+                  {notificationsLength > 0 && (
+                    <span
+                      style={{
+                        position: "absolute",
+                        top: -8,
+                        right: -23,
+                        background: "#03C9D7",
+                        borderRadius: "50%",
+                        padding: "2px 6px",
+                        fontSize: "12px",
+                        color: "white",
+                      }}
+                    >
+                      {notificationsLength}
+                    </span>
+                  )}
+                </div>
+              </button>
+            ) : (
+              <div class="flex space-x-4">
+                <a
+                  href="#"
+                  class="text-gray-900 rounded-md px-3 py-2 text-sm font-bold"
+                  aria-current="page"
                 >
-                  {notificationsLength}
-                </span>
-              )}
-            </div>
-          </button>
-          
-          
-          ) : null}
-        </div>
-        {user ? (
-          <TooltipComponent content="Profile" position="BottomCenter">
-            <div
-              className="flex items-center gap-2 cursor-pointer p-1 hover:bg-light-gray rounded-lg"
-              onClick={() => handleClick("userProfile")}
-            >
-              <p>
-                <span className="text-gray-400 text-14">Hi, </span>{" "}
-                <span className="text-gray-400 font-bold ml-1 text-14">
-                  {user.name} {organizationMap[user.organization] || ""}
-                </span>
-              </p>
-              <MdKeyboardArrowDown className="text-gray-400 text-14" />
-              <NavButton
-                title="Logout"
-                // dotColor="#03c9d7"
-                color="black"
-                customFunc={onLogout}
-                icon={<LogoutIcon />}
-              />
-              
-            </div>
-          </TooltipComponent>
-        ) : (
-          <div className="flex items-center gap-2 cursor-pointer mt-1 p-1 hover-bg-light-gray rounded-lg">
-            <NavButton
-              title="Login"
-              // dotColor="#03c9d7"
-              color="black"
-              customFunc={handleLoginClick}
-              icon={<LoginIcon />}
-            />
-            {/*
+                  Dashboard
+                </a>
+                <a
+                  href="#"
+                  class="text-gray-900 rounded-md px-3 py-2 text-sm font-bold"
+                >
+                  Team
+                </a>
+                <a
+                  href="#"
+                  class="text-gray-900 rounded-md px-3 py-2 text-sm font-bold"
+                >
+                  Projects
+                </a>
+                <a
+                  href="#"
+                  class="text-gray-900 rounded-md px-3 py-2 text-sm font-bold"
+                >
+                  Calendar
+                </a>
+              </div>
+            )}
+
+            {user ? (
+              <TooltipComponent content="Profile" position="BottomCenter">
+                <div
+                  className="flex items-center gap-2 cursor-pointer hover:bg-light-gray rounded-lg"
+                  onClick={() => handleClick("userProfile")}
+                >
+                  <p>
+                    <span className="text-gray-400 text-14">Hi, </span>{" "}
+                    <span className="text-gray-400 font-bold ml-1 text-14">
+                      {user.name} {organizationMap[user.organization] || ""}
+                    </span>
+                  </p>
+                  <MdKeyboardArrowDown className="text-gray-400 text-14" />
+                  <NavButton
+                    title="Logout"
+                    // dotColor="#03c9d7"
+                    color="black"
+                    customFunc={onLogout}
+                    icon={<LogoutIcon />}
+                  />
+                </div>
+              </TooltipComponent>
+            ) : (
+              <div className="flex items-center gap-2 cursor-pointer hover-bg-dark-gray rounded-lg">
+                <NavButton
+                  title="Login"
+                  // dotColor="#03c9d7"
+                  color="white"
+                  customFunc={handleLoginClick}
+                  icon={<LoginIcon />}
+                />
+                {/*
             <NavButton
               title="Register"
               //dotColor="#03c9d7"
@@ -239,14 +271,16 @@ const NavBar = () => {
               icon={<PersonAddIcon />}
             />
             */}
+              </div>
+            )}
           </div>
-        )}
+        </div>
       </div>
       <NotificationModal
         isOpen={isNotificationModalOpen}
         onClose={() => setIsNotificationModalOpen(false)}
       />
-    </div>
+    </nav>
   );
 };
 

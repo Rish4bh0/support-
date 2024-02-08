@@ -1,4 +1,3 @@
-
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
@@ -28,26 +27,26 @@ import OrganizationDetail from "./pages/OrganizationDetail";
 import AllOrganization from "./pages/AllOrganization";
 import Forget from "./pages/Forgotpassword";
 import ORGTICKET from "./pages/OrganizationTicket";
-import CCTICKET from "./pages/CCticket.jsx"
+import CCTICKET from "./pages/CCticket.jsx";
 import "./App.css";
 import { FiSettings } from "react-icons/fi";
 import { TooltipComponent } from "@syncfusion/ej2-react-popups";
 import { NavBar, Footer, Sidebar } from "./components";
-import  Table  from "./pages/Table.jsx"
+import Table from "./pages/Table.jsx";
 import { useStateContext } from "./contexts/ContextProvider";
 import { useSelector } from "react-redux";
-import  Unassigned from "./pages/unassigned";
-import  Report from "./pages/report";
-import One from "./pages/one"
-import Dash from "./pages/Dash"
-import Notification from './pages/NotificationsList.js'
-import AdminPage from './pages/AdminPage.js';
+import Unassigned from "./pages/unassigned";
+import Report from "./pages/report";
+import One from "./pages/one";
+import Dash from "./pages/Dash";
+import Notification from "./pages/NotificationsList.js";
+import AdminPage from "./pages/AdminPage.js";
 import ChatBox from "./components/ChatBox.js";
 import Dashboardd from "./pages/Dashboard/Dashboard.js";
-import Admindash from "./pages/Dashboard.jsx"
-import ImageUpload from "./pages/ImageUpload.jsx"
-import OfficeUnssigned from "./pages/officeUnssigned.jsx"
-
+import Admindash from "./pages/Dashboard.jsx";
+import ImageUpload from "./pages/ImageUpload.jsx";
+import OfficeUnssigned from "./pages/officeUnssigned.jsx";
+import backgroundImage from "./assets/support-image.jpg"; // Adjust the path as per your folder structure
 
 function App() {
   const { activeMenu, setactiveMenu } = useStateContext();
@@ -55,19 +54,20 @@ function App() {
   return (
     <>
       <Router>
-        <div className="flex relative dark:bg-main-dark-bg">
-        {user ? (
-          <div className="fixed right-4 bottom-4" style={{ zIndex: "1000" }}>
-            <TooltipComponent content="Chat" position="Top">
-             
+        <div className="flex relative">
+          {user ? (
+            <div className="fixed right-4 bottom-4" style={{ zIndex: "1000" }}>
+              <TooltipComponent content="Chat" position="Top">
                 <ChatBox />
-              
-            </TooltipComponent>
-          </div>
-        ) :null }
+              </TooltipComponent>
+            </div>
+          ) : null}
           {user ? (
             activeMenu ? (
-              <div className="w-72 fixed sidebar dark:bg-secondary-dark-bg bg-white " style={{ zIndex: "1000" }}>
+              <div
+                className="w-72 fixed sidebar dark:bg-secondary-dark-bg bg-white "
+                style={{ zIndex: "1000" }}
+              >
                 <Sidebar />
               </div>
             ) : (
@@ -93,12 +93,31 @@ function App() {
               <NavBar />
             </div>
 
-            <div className="container">
+            <div
+              className={user ? "container" : ""}
+              style={{
+                position: "relative",
+                backgroundImage: user ? "none" : `url(${backgroundImage})`,
+                backgroundSize: "cover",
+              }}
+            >
+              {!user && (
+                <div
+                  style={{
+                    position: "absolute",
+                    top: 0,
+                    left: 0,
+                    width: "100%",
+                    height: "100%",
+                    backgroundColor: "rgba(0, 0, 0, 0.5)",
+                  }}
+                ></div>
+              )}
               <Routes>
                 <Route path="/" element={<Home />} />
                 <Route path="/one" element={<One />} />
                 <Route path="/table" element={<Table />} />
-                <Route path="/report" element={<Report/>} />
+                <Route path="/report" element={<Report />} />
                 <Route path="/login" element={<Login />} />
                 <Route path="/register" element={<Register />} />
                 <Route path="/forget" element={<Forget />} />
@@ -125,7 +144,10 @@ function App() {
                   <Route path="/unassigned" element={<Unassigned />} />
                 </Route>
                 <Route path="/office-unassigned" element={<PrivateRoute />}>
-                  <Route path="/office-unassigned" element={<OfficeUnssigned />} />
+                  <Route
+                    path="/office-unassigned"
+                    element={<OfficeUnssigned />}
+                  />
                 </Route>
                 <Route path="/notifications" element={<PrivateRoute />}>
                   <Route path="/notifications" element={<Notification />} />
