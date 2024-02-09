@@ -30,14 +30,13 @@ function Login() {
 
     // Redirect when logged in
     if (isSuccess || user) {
-      setactiveMenu(true)
+      setactiveMenu(true);
       if (user) {
         if (["ADMIN", "EMPLOYEE", "SUPERVISOR"].includes(user.role)) {
           navigate("/admindash"); // Redirect to the dashboard route for ADMIN, SUPERVISOR, EMPLOYEE
         } else if (user.role === "ORGAGENT") {
           navigate("/dash"); // Redirect to the organization route for ORGAGENT
-        }
-        else if (user.role === "SUPERVISOR") {
+        } else if (user.role === "SUPERVISOR") {
           navigate("/dash"); // Redirect to the organization route for ORGAGENT
         } else {
           navigate("/new-ticket"); // Redirect to the home route for other roles
@@ -71,47 +70,52 @@ function Login() {
 
   return (
     <>
-      <section className="heading ">
-        <h1>
-          <FaSignInAlt /> Login
-        </h1>
-        <p>Please log in to get support</p>
-      </section>
+      <div className="absolute">
+        <div className="bg-white rounded-lg w-96">
+          <div className="text-center mb-4 p-6">
+            <div className="font-bold text-lg mb-2">Log In</div>
+            <div>Welcome ! Please log in.</div>
+          </div>
+          <section className="form pb-6">
+            <form onSubmit={onSubmit}>
+              <div className="form-group">
+                <label className="font-bold text-sm">Email Address</label>
+                <input
+                  type="email"
+                  id="email"
+                  name="email"
+                  value={email}
+                  onChange={onChange}
+                  placeholder="Enter your email"
+                  className="form-control"
+                  required
+                />
+              </div>
 
-      <section className="form pb-20 mt-20">
-        <form onSubmit={onSubmit}>
-          <div className="form-group">
-            <input
-              type="email"
-              id="email"
-              name="email"
-              value={email}
-              onChange={onChange}
-              placeholder="Enter your email"
-              className="form-control"
-              required
-            />
-          </div>
-          <div className="form-group">
-            <input
-              type="password"
-              id="password"
-              name="password"
-              value={password}
-              onChange={onChange}
-              placeholder="Enter your password"
-              className="form-control"
-              required
-            />
-          </div>
-          <div className="form-group">
-            <button className="btn btn-block">Submit</button>
-          </div>
-          <div className="form-group">
-            <Link to="/forget">Forgot Password?</Link>
-          </div>
-        </form>
-      </section>
+              <div className="form-group">
+                <label className="font-bold text-sm">Password</label>
+                <input
+                  type="password"
+                  id="password"
+                  name="password"
+                  value={password}
+                  onChange={onChange}
+                  placeholder="Enter your password"
+                  className="form-control"
+                  required
+                />
+                <div className="text-sm">
+                  <Link to="/forget">Forgot Password?</Link>
+                </div>
+              </div>
+
+              <div className="form-group mt-8">
+                <button className="btn btn-block">Submit</button>
+              </div>
+            </form>
+          </section>
+        </div>
+      </div>
     </>
   );
 }

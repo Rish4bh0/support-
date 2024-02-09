@@ -6,8 +6,8 @@ import GitHubIcon from "@mui/icons-material/GitHub";
 export default function Footer() {
   return (
     <>
-      <footer className="relative top-20 left-4 bg-blueGray-200 pt-8 pb-6">
-        <div
+      <footer className="fixed bottom-0 w-full">
+        {/* <div
           className="bottom-auto top-0 left-0 right-0 w-50% absolute pointer-events-none overflow-hidden -mt-20 h-20"
           style={{ transform: "translateZ(0)" }}
         >
@@ -19,12 +19,10 @@ export default function Footer() {
             viewBox="0 0 2560 100"
             x="0"
             y="0"
-          >
-            
-          </svg>
-        </div>
+          ></svg>
+        </div> */}
         <div className="container mx-auto px-4">
-          <div className="flex flex-wrap text-center lg:text-left">
+          <div>
             {/*
             <div className="w-full lg:w-6/12 px-4">
               <h4 className="text-3xl font-semibold">Let's keep in touch!</h4>
@@ -150,12 +148,8 @@ export default function Footer() {
             */}
           </div>
           <hr className="my-6 border-blueGray-300" />
-          <div className="flex flex-wrap items-center md:justify-between justify-center">
-            <div className="w-full md:w-4/12 px-4 mx-auto text-center">
-              <div className="text-sm text-blueGray-500 font-semibold py-1">
-                Copyright © {new Date().getFullYear()} Nepal Electricity Authority
-              </div>
-            </div>
+          <div className="text-sm text-blueGray-500 font-semibold py-1">
+            Copyright © {new Date().getFullYear()} Nepal Electricity Authority
           </div>
         </div>
       </footer>

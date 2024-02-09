@@ -1,16 +1,9 @@
 function Home() {
   return (
     <>
-      <div className="relative" id="home">
-        <div
-          aria-hidden="true"
-          className="absolute inset-0 grid grid-cols-2 -space-x-52 opacity-40 dark:opacity-20"
-        >
-          <div className="blur-[106px] h-56 bg-gradient-to-br from-primary to-purple-400 dark:from-blue-700" />
-          <div className="blur-[106px] h-32 bg-gradient-to-r from-cyan-400 to-sky-300 dark:to-indigo-600" />
-        </div>
+      <div className="absolute inset-x-44 top-64" id="home">
         <div className="flex flex-col items-center justify-center text-white">
-          <h1 className="font-bold text-2xl md:text-2xl xl:text-4xl mb-6">
+          <h1 className="font-bold text-2xl mb-6">
             Welcome to Dryice support center!{" "}
           </h1>
           <a
@@ -26,26 +19,23 @@ function Home() {
             make your experience as smooth as possible, so you can focus on what
             you do best.
           </p> */}
-
-          <div className="py-8 mt-16 sm:flex justify-between gap-4">
-            <div className="text-left">
-              <h6 className="text-lg font-semibold">Unmatched Reliability</h6>
-              <p className="mt-2">Count on us for uninterrupted service.</p>
-            </div>
-            <div className="text-left">
-              <h6 className="text-lg font-semibold">
-                Exceptional User Experience
-              </h6>
-              <p className="mt-2">
-                Easy-to-use interface for a seamless experience.
-              </p>
-            </div>
-            <div className="text-left">
-              <h6 className="text-lg font-semibold">24/7 Expert Support</h6>
-              <p className="mt-2">
-                Round-the-clock assistance from our experts.
-              </p>
-            </div>
+        </div>
+        <div className="bg-white p-8 mt-44 sm:flex justify-between gap-4 rounded-lg border">
+          <div className="text-left">
+            <h6 className="text-base font-semibold">Unmatched Reliability</h6>
+            <p className="mt-2">Count on us for uninterrupted service.</p>
+          </div>
+          <div className="text-left">
+            <h6 className="text-base font-semibold">
+              Exceptional User Experience
+            </h6>
+            <p className="mt-2">
+              Easy-to-use interface for a seamless experience.
+            </p>
+          </div>
+          <div className="text-left">
+            <h6 className="text-base font-semibold">24/7 Expert Support</h6>
+            <p className="mt-2">Round-the-clock assistance from our experts.</p>
           </div>
         </div>
       </div>

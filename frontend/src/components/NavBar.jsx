@@ -138,12 +138,7 @@ const NavBar = () => {
   }, [id, setNotificationsLength, socket]);
 
   return (
-    <nav
-      className={
-        "flex justify-between relative py-4 bg-white" +
-        (user ? " px-4" : " px-40 z-10")
-      }
-    >
+    <nav className={"py-4 bg-white" + (user ? " px-4" : " px-40 z-10 ")}>
       <div class="w-full">
         <div class="relative flex items-center justify-between">
           <div>

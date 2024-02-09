@@ -74,7 +74,7 @@ useEffect(() => {
 
   return (
     <>
-    <div className="mt-2 md:mr-0 md:ml-20">
+    <div className="md:mr-0 md:ml-20">
     <div className="flex justify-around items-center mb-4">
         <div className="flex items-center space-x-2">
       
