@@ -28,7 +28,7 @@ li {
   line-height: 2.2;
 }
 
-h1,
+/* h1,
 h2,
 h3 {
   font-weight: 600;
@@ -40,7 +40,7 @@ h3 {
   margin: 0 auto;
   padding: 0 20px;
   text-align: center;
-}
+} */
 
 .header {
   display: flex;
@@ -620,4 +620,17 @@ p.status-complete {
   top: 71px;
   background-image: url("././assets/support-image.jpg");
   background-size: cover;
+}
+
+::-webkit-scrollbar {
+  width: 3px;
+  height: 5px;
+}
+
+::-webkit-scrollbar-thumb {
+  background-color: rgb(195, 195, 195);
+}
+
+.sidebar svg {
+  width: 20px;
 }

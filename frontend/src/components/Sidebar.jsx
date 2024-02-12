@@ -31,9 +31,9 @@ const Sidebar = () => {
     }
   };
   const activeLink =
-    "flex items-center gap-5 pl-4 pt-3 pb-2.5 rounded-lg text-white text-md m-2";
+    "flex items-center gap-3 p-2 mt-2 rounded-lg text-white text-sm";
   const normalLink =
-    "flex items-center gap-5 pl-4 pt-3 pb-2.5 rounded-lg text-md text-gray-700 dark:text-gray-200 dark:hover:text-black hover:bg-light-gray m-2";
+    "flex items-center gap-3 p-2 mt-2 rounded-lg text-sm text-gray-700 dark:text-gray-200 dark:hover:text-black hover:bg-light-gray";
   // Access the user's role from Redux state
   const userRole = useSelector((state) => state.auth.user?.role);
 
@@ -43,50 +43,24 @@ const Sidebar = () => {
   const allowedRolesAdmin = ["ADMIN"];
 
   return (
-    <div
-      className="ml-3 h-screen 
-    md:overflow-hidden
-    overflow-auto md:hover:overflow-auto pb-10"
-    >
+    <div className="sidebar h-screen border-r-1">
       {activeMenu && (
         <>
-          <div
-            className="flex justify-between
-        items-center"
-          >
+          <div className="h-16 mb-4 sticky top-0 bg-white z-10">
             <Link
               to="/"
               onClick={handleCloseSideBar}
-              className="items-center gap-3 ml-3
-            mt-4 flex text-xl font-extrabold first-letter:tracking-tight dark:text-white
-            text-slate-900"
+              className="flex items-center justify-center p-3"
             >
-              <img
-                src={Logo}
-                alt="DryIce Logo"
-                className="w-24 h-25 ml-10 mt-4"
-              />
+              <img src={Logo} alt="DryIce Logo" className="w-24 h-25" />
             </Link>
-            <TooltipComponent content="Menu" position="BottomCenter">
-              <button
-                type="button"
-                onClick={() =>
-                  setactiveMenu((prevActiveMenu) => !prevActiveMenu)
-                }
-                className="text-xl rounded-full
-               p-3 hover:bg-light-gray mt-4 block
-               " //md:hidden
-              >
-                <MdOutlineCancel />
-              </button>
-            </TooltipComponent>
           </div>
-          <div className="mt-10">
+          <div className="mt-2 px-4 overflow-auto h-screen">
             {userRole && allowedRoles.includes(userRole) && (
-              <div>
+              <div className="mb-4">
                 <p
-                  className="text-gray-400 m-3
-                mt-4 uppercase"
+                  className="text-gray-500
+                mb-2 uppercase text-xs font-semibold"
                 >
                   Admin Dashboard
                 </p>
@@ -107,10 +81,10 @@ const Sidebar = () => {
               </div>
             )}
             {userRole && allowedRolesOrg.includes(userRole) && (
-              <div>
+              <div className="mb-4">
                 <p
-                  className="text-gray-400 m-3
-                mt-4 uppercase"
+                  className="text-gray-500
+                 mb-2 uppercase text-xs font-semibold"
                 >
                   Dashboard
                 </p>
@@ -130,11 +104,8 @@ const Sidebar = () => {
                 </NavLink>
               </div>
             )}
-            <div>
-              <p
-                className="text-gray-400 m-3
-                mt-4 uppercase"
-              >
+            <div className="mb-4">
+              <p className="text-gray-500 mb-2 uppercase text-xs font-semibold">
                 New
               </p>
 
@@ -152,11 +123,8 @@ const Sidebar = () => {
                 <span className="capitalize">Create Ticket</span>
               </NavLink>
             </div>
-            <div>
-              <p
-                className="text-gray-400 m-3
-                mt-4 uppercase"
-              >
+            <div className="mb-4">
+              <p className="text-gray-500 mb-2 uppercase text-xs font-semibold">
                 Tickets
               </p>
               {userRole && allowedRoles.includes(userRole) && (
@@ -231,11 +199,8 @@ const Sidebar = () => {
               </NavLink>
             </div>
             {userRole && allowedRoles.includes(userRole) && (
-              <div>
-                <p
-                  className="text-gray-400 m-3
-                mt-4 uppercase"
-                >
+              <div className="mb-4">
+                <p className="text-gray-500 mb-4 uppercase text-xs font-semibold">
                   Manage
                 </p>
 
@@ -294,11 +259,8 @@ const Sidebar = () => {
               </div>
             )}
             {userRole && allowedRolesOrg.includes(userRole) && (
-              <div>
-                <p
-                  className="text-gray-400 m-3
-                mt-4 uppercase"
-                >
+              <div className="mb-4">
+                <p className="text-gray-500 mb-4 uppercase text-xs font-semibold">
                   Office
                 </p>
 

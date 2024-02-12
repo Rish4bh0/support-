@@ -9,6 +9,7 @@ module.exports = {
     extend: {
       fontSize: {
         14: "14px",
+        "10xl": ["10rem", { lineHeight: "1" }],
       },
 
       backgroundColor: {
