@@ -1,9 +1,16 @@
-import axios from 'axios';
-import React, { useEffect, useRef, useState } from 'react';
-import { useSelector } from 'react-redux';
-import { MdArrowForwardIos, MdDeleteOutline, MdDeleteSweep, MdDoneAll, MdOutlineCheckCircleOutline } from 'react-icons/md';
+import axios from "axios";
+import React, { useEffect, useRef, useState } from "react";
+import { useSelector } from "react-redux";
+import {
+  MdArrowForwardIos,
+  MdDeleteOutline,
+  MdDeleteSweep,
+  MdDoneAll,
+  MdOutlineCheckCircleOutline,
+} from "react-icons/md";
 import useSocketIo from "../hooks/useSocketio";
 import Spinner from "../components/Spinner";
+
 const NotificationsList = () => {
   const user = useSelector((state) => state.auth.user);
   const [data, setData] = useState({ notifications: [] });
@@ -22,7 +29,7 @@ const NotificationsList = () => {
     const getNotifications = async () => {
       try {
         const result = await axios.post(
-          'http://localhost:5000/api/notifications',
+          "http://localhost:5000/api/notifications",
           {
             id: user._id,
             limit: 2,
@@ -33,7 +40,7 @@ const NotificationsList = () => {
           }
         );
 
-        console.log('Database Response:', result);
+        console.log("Database Response:", result);
         setData(result?.data);
       } catch (err) {
         setData(null);
@@ -49,10 +56,12 @@ const NotificationsList = () => {
     };
   }, [user._id, page]);
 
-
   const handleMarkOneAsRead = async (notificationId) => {
     try {
-      const result = await axios.patch('http://localhost:5000/api/notifications', { id: notificationId });
+      const result = await axios.patch(
+        "http://localhost:5000/api/notifications",
+        { id: notificationId }
+      );
 
       // Create a new array with updated read status for the specific notification
       const newData = {
@@ -78,10 +87,12 @@ const NotificationsList = () => {
     }
   };
 
-
   const handleMarkAllAsRead = async () => {
     try {
-      const result = await axios.patch('http://localhost:5000/api/notifications/all', { id: user._id });
+      const result = await axios.patch(
+        "http://localhost:5000/api/notifications/all",
+        { id: user._id }
+      );
 
       // Create a new array with updated read status
       const newData = {
@@ -105,8 +116,13 @@ const NotificationsList = () => {
 
   const handleDeleteNotification = async (notificationId) => {
     try {
-      const result = await axios.delete('http://localhost:5000/api/notifications', { data: { id: notificationId } });
-      const newNotifications = data?.notifications?.filter((item) => item._id !== notificationId);
+      const result = await axios.delete(
+        "http://localhost:5000/api/notifications",
+        { data: { id: notificationId } }
+      );
+      const newNotifications = data?.notifications?.filter(
+        (item) => item._id !== notificationId
+      );
       console.log(newNotifications);
 
       socket.emit("updateNotificationsLength", id);
@@ -119,67 +135,97 @@ const NotificationsList = () => {
       messageRef.current && messageRef.current.focus(); // Check if messageRef is defined before calling focus
     }
   };
-  
-  
 
   const handleDeleteAll = async () => {
     try {
-      const result = await axios.delete('http://localhost:5000/api/notifications/all', { data: { id: user._id } });
+      const result = await axios.delete(
+        "http://localhost:5000/api/notifications/all",
+        { data: { id: user._id } }
+      );
       setData(null);
       setMessage(result?.data?.message);
-       socket.emit("updateNotificationsLength", id);
+      socket.emit("updateNotificationsLength", id);
       messageRef.current && messageRef.current.focus(); // Check if messageRef is defined before calling focus
     } catch (err) {
       setMessage(err?.response?.data?.message);
       messageRef.current && messageRef.current.focus(); // Check if messageRef is defined before calling focus
     }
   };
-  
 
   if (error) return <div>{error.message}</div>;
-  if (isLoading) return <Spinner/>;
-  
+  if (isLoading) return <Spinner />;
+
   let content;
   if (data && data.notifications && data.notifications.length > 0) {
     content = (
       <>
-        <h1 className="text-2xl font-bold mb-4">Notifications list</h1>
-        <ul>
+        <div className="card-header border-b-2 p-4 flex justify-between items-center">
+          <div className="font-semibold">Notifications list</div>
+          <div className="flex gap-3 text-xs">
+            <button
+              type="button"
+              disabled={!data?.notifications?.length}
+              className={` text-blue-700 flex items-center ${
+                !data?.notifications?.length && "opacity-50 cursor-not-allowed"
+              }`}
+              onClick={handleMarkAllAsRead}
+            >
+              <MdDoneAll size={20} className="mr-2" />
+              Mark all as read
+            </button>
+            <button
+              type="button"
+              disabled={!data?.notifications?.length}
+              className={`text-black ${
+                !data?.notifications?.length && "opacity-50 cursor-not-allowed"
+              }`}
+              onClick={handleDeleteAll}
+            >
+              <MdDeleteSweep size={20} className="mr-2" />
+            </button>
+          </div>
+        </div>
+        <div className="card-body">
           {data.notifications.map((notification) => (
-            <div key={notification._id} className="mb-4">
-              <li className="flex items-center justify-between" style={{ height: '100%' }}>
-                <div className="flex-1 mr-4">
-                  <h3 className="flex items-center text-lg">
-                    <MdArrowForwardIos className="mr-2" />
-                    {notification.title}
-                  </h3>
-                  <hr className="border-t border-gray-300 my-2" />
-                  <p className="break-words">{notification.text}</p>
-                  <p className="mt-2">{notification.read ? '✅ read' : '❌ Not read'}</p>
+            <div
+              key={notification._id}
+              className={
+                "flex items-start justify-between gap-8 border-b-1 p-4" +
+                (notification.read ? " bg-white" : " bg-blue-50")
+              }
+            >
+              <div className={"flex items-start gap-2"}>
+                <div className="bg-blue-200 text-blue-950 flex items-center justify-center h-10 w-10 rounded-full">
+                  <MdOutlineCheckCircleOutline />
                 </div>
                 <div>
-                  <button
-                    type="button"
-                    onClick={() => {
-                      handleMarkOneAsRead(notification._id);
-                    }}
-                    className="mr-2"
-                  >
-                    <MdOutlineCheckCircleOutline />
-                  </button>
-                  <button
-                    type="button"
-                    onClick={() => {
-                      handleDeleteNotification(notification._id);
-                    }}
-                  >
-                    <MdDeleteOutline />
-                  </button>
+                  <p className="font-semibold mb-1">{notification.title}</p>
+                  <p className="break-words w-64 text-xs">
+                    {notification.text}
+                  </p>
                 </div>
-              </li>
+              </div>
+              <div className="flex gap-2">
+                <button
+                  type="button"
+                  onClick={() => {
+                    handleMarkOneAsRead(notification._id);
+                  }}
+                >
+                  <MdOutlineCheckCircleOutline />
+                </button>
+                <button
+                  type="button"
+                  onClick={() => {
+                    handleDeleteNotification(notification._id);
+                  }}
+                >
+                  <MdDeleteOutline />
+                </button>
+              </div>
             </div>
           ))}
-        </ul>
+        </div>
       </>
     );
   } else {
@@ -192,71 +238,48 @@ const NotificationsList = () => {
   }
 
   return (
-    <div className="flex flex-col items-center">
+    <div>
       {content}
-    
-      <div className="flex space-x-4 mt-4">
-  <button
-    type="button"
-    disabled={!data?.notifications?.length}
-    className={`bg-blue-500 text-white px-4 py-2 rounded ${
-      !data?.notifications?.length && 'opacity-50 cursor-not-allowed'
-    }`}
-    onClick={handleMarkAllAsRead}
-    style={{ width: '150px' }}
-  >
-    <MdDoneAll size={20} className="mr-2" />
-    Mark all as read
-  </button>
-  <button
-    type="button"
-    disabled={!data?.notifications?.length}
-    className={`bg-red-500 text-white px-4 py-2 rounded ${
-      !data?.notifications?.length && 'opacity-50 cursor-not-allowed'
-    }`}
-    onClick={handleDeleteAll}
-    style={{ width: '150px' }} 
-  >
-    <MdDeleteSweep size={20} className="mr-2" />
-    Delete all
-  </button>
-</div>
 
-<div className="flex items-center space-x-4 mt-4">
-  <button
-    type="button"
-    disabled={page === 0}
-    onClick={() => {
-      setPage((prev) => prev - 1);
-    }}
-    className={`text-blue-500 px-4 py-2 ${page === 0 && 'cursor-not-allowed'}`}
-  >
-    {'<'}
-  </button>
-  <div className="flex items-center">
-    <div className="mx-2 text-gray-500">
-      Page: {page + 1} / {data?.totalpage ?? '-'}
-    </div>
-  </div>
-  <button
-    type="button"
-    disabled={data?.totalpage === page + 1}
-    onClick={() => {
-      setPage((prev) => prev + 1);
-    }}
-    className={`text-blue-500 px-4 py-2 ${data?.totalpage === page + 1 && 'cursor-not-allowed'}`}
-  >
-    {'>'}
-  </button>
-</div>
-
+      <div className="flex items-center justify-center space-x-4 mt-4">
+        <button
+          type="button"
+          disabled={page === 0}
+          onClick={() => {
+            setPage((prev) => prev - 1);
+          }}
+          className={`text-blue-500 px-4 py-2 ${
+            page === 0 && "cursor-not-allowed"
+          }`}
+        >
+          {"<"}
+        </button>
+        <div className="flex items-center">
+          <div className="mx-2 text-gray-500">
+            Page: {page + 1} / {data?.totalpage ?? "-"}
+          </div>
+        </div>
+        <button
+          type="button"
+          disabled={data?.totalpage === page + 1}
+          onClick={() => {
+            setPage((prev) => prev + 1);
+          }}
+          className={`text-blue-500 px-4 py-2 ${
+            data?.totalpage === page + 1 && "cursor-not-allowed"
+          }`}
+        >
+          {">"}
+        </button>
+      </div>
     </div>
   );
 };
 
 export default NotificationsList;
 
-{/*
+{
+  /*
 import axios from 'axios';
 import React, { useEffect, useState } from 'react';
 import { useSelector } from 'react-redux';
@@ -334,4 +357,5 @@ const NotificationsList = () => {
 };
 
 export default NotificationsList;
-*/}
+*/
+}
