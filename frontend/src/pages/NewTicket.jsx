@@ -5,10 +5,10 @@ import { toast } from "react-toastify";
 import { createTicket, reset } from "../features/tickets/ticketSlice";
 import { fetchAllUsers } from "../features/auth/authSlice";
 import Spinner from "../components/Spinner";
-import BackButton from "../components/BackButton";
+// import BackButton from "../components/BackButton";
 import SendIcon from "@mui/icons-material/Send";
 import CloudUploadIcon from "@mui/icons-material/CloudUpload";
-import DraftsIcon from '@mui/icons-material/Drafts';
+import DraftsIcon from "@mui/icons-material/Drafts";
 import {
   Button,
   TextField,
@@ -188,9 +188,13 @@ function NewTicket() {
 
   useEffect(() => {
     // Filter users based on role
-    setFilteredUsers(users.filter((user) => ["ADMIN", "EMPLOYEE", "SUPERVISOR"].includes(user.role)));
+    setFilteredUsers(
+      users.filter((user) =>
+        ["ADMIN", "EMPLOYEE", "SUPERVISOR"].includes(user.role)
+      )
+    );
   }, [users]);
-  
+
   const onSubmit = async (e, status) => {
     e.preventDefault();
 
@@ -280,7 +284,7 @@ function NewTicket() {
 
   return (
     <>
-      <BackButton url="/" />
+      {/* <BackButton url="/" /> */}
       <section className="flex items-center justify-center ">
         <div>
           <Typography variant="h4" component="h1" gutterBottom>

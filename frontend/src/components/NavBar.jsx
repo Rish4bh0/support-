@@ -174,61 +174,31 @@ const NavBar = () => {
             <button
               type="button"
               onClick={() => setIsNotificationModalOpen(true)}
-              className="flex align-middle"
+              className="flex align-middle relative"
             >
-              <div>
-                {notificationsLength ? (
-                  <MdNotificationsActive size={25} style={{ marginTop: 8 }} />
-                ) : (
-                  <MdNotificationsNone size={25} style={{ marginTop: 8 }} />
-                )}
-                {notificationsLength > 0 && (
-                  <span
-                    style={{
-                      position: "absolute",
-                      top: -8,
-                      right: -23,
-                      background: "#03C9D7",
-                      borderRadius: "50%",
-                      padding: "2px 6px",
-                      fontSize: "12px",
-                      color: "white",
-                    }}
-                  >
-                    {notificationsLength}
-                  </span>
-                )}
-              </div>
+              {notificationsLength ? (
+                <MdNotificationsActive size={25} style={{ marginTop: 8 }} />
+              ) : (
+                <MdNotificationsNone size={25} style={{ marginTop: 8 }} />
+              )}
+              {notificationsLength > 0 && (
+                <span
+                  style={{
+                    position: "absolute",
+                    top: -8,
+                    right: -23,
+                    background: "#03C9D7",
+                    borderRadius: "50%",
+                    padding: "2px 6px",
+                    fontSize: "12px",
+                    color: "white",
+                  }}
+                >
+                  {notificationsLength}
+                </span>
+              )}
             </button>
-          ) : (
-            <div class="flex space-x-4">
-              <a
-                href="#"
-                class="text-gray-900 rounded-md px-3 py-2 text-sm font-bold"
-                aria-current="page"
-              >
-                Dashboard
-              </a>
-              <a
-                href="#"
-                class="text-gray-900 rounded-md px-3 py-2 text-sm font-bold"
-              >
-                Team
-              </a>
-              <a
-                href="#"
-                class="text-gray-900 rounded-md px-3 py-2 text-sm font-bold"
-              >
-                Projects
-              </a>
-              <a
-                href="#"
-                class="text-gray-900 rounded-md px-3 py-2 text-sm font-bold"
-              >
-                Calendar
-              </a>
-            </div>
-          )}
+          ) : null}
 
           {user ? (
             <TooltipComponent content="Profile" position="BottomCenter">
