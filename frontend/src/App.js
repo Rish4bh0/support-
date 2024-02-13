@@ -2,8 +2,6 @@ import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import Header from "./components/Header";
-
-import DefaultSidebar from "./components/Sidebar";
 import { PrivateRoute } from "./components/PrivateRoute";
 import Home from "./pages/Home";
 import Login from "./pages/Login";
@@ -42,7 +40,6 @@ import Dash from "./pages/Dash";
 import Notification from "./pages/NotificationsList.js";
 import AdminPage from "./pages/AdminPage.js";
 import ChatBox from "./components/ChatBox.js";
-import Dashboardd from "./pages/Dashboard/Dashboard.js";
 import Admindash from "./pages/Dashboard.jsx";
 import ImageUpload from "./pages/ImageUpload.jsx";
 import OfficeUnssigned from "./pages/officeUnssigned.jsx";
@@ -116,9 +113,6 @@ function App() {
                 </Route>
                 <Route path="/admindash" element={<PrivateRoute />}>
                   <Route path="/admindash" element={<Admindash />} />
-                </Route>
-                <Route path="/dashboardd" element={<PrivateRoute />}>
-                  <Route path="/dashboardd" element={<Dashboardd />} />
                 </Route>
                 <Route path="/admin" element={<PrivateRoute />}>
                   <Route path="/admin" element={<AdminPage />} />

@@ -79,7 +79,7 @@ const Dashboard = () => {
       <div className="flex justify-around items-center mb-4">
         <div className="flex items-center space-x-2">
           <Typography variant="h6" className="text-sm">
-            Welcome to Dryice Dashboard
+            Welcome to Dryice Admin Dashboard
           </Typography>
         </div>
         <div className="flex-1"></div>
