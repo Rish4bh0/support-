@@ -170,7 +170,12 @@ const NavBar = () => {
         </div>
 
         <div className="flex items-center space-x-4">
+          
           {user ? (
+           <NotificationModal
+           isOpen={isNotificationModalOpen}
+           onClose={() => setIsNotificationModalOpen(false)}
+         />,
             <button
               type="button"
               onClick={() => setIsNotificationModalOpen(true)}
@@ -182,12 +187,13 @@ const NavBar = () => {
                 ) : (
                   <MdNotificationsNone size={25} style={{ marginTop: 8 }} />
                 )}
+                
                 {notificationsLength > 0 && (
                   <span
                     style={{
                       position: "absolute",
                       top: -8,
-                      right: -23,
+                      right: 266,
                       background: "#03C9D7",
                       borderRadius: "50%",
                       padding: "2px 6px",
@@ -199,7 +205,9 @@ const NavBar = () => {
                   </span>
                 )}
               </div>
+              
             </button>
+            
           ) : (
             <div class="flex space-x-4">
               <a

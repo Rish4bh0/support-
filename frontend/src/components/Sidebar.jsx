@@ -55,7 +55,7 @@ const Sidebar = () => {
               <img src={Logo} alt="DryIce Logo" className="w-24 h-25" />
             </Link>
           </div>
-          <div className="mt-2 px-4 overflow-auto h-screen">
+          <div className="mt-2 px-4 overflow-auto max-h-[88vh]">
             {userRole && allowedRoles.includes(userRole) && (
               <div className="mb-4">
                 <p
