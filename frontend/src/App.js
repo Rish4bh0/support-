@@ -39,7 +39,7 @@ import One from "./pages/one";
 import Dash from "./pages/Dash";
 import Notification from "./pages/NotificationsList.js";
 import AdminPage from "./pages/AdminPage.js";
-import ChatBox from "./components/ChatBox.js";
+import ChatBox from "./pages/ChatWidget/page.js";
 import Admindash from "./pages/Dashboard.jsx";
 import ImageUpload from "./pages/ImageUpload.jsx";
 import OfficeUnssigned from "./pages/officeUnssigned.jsx";

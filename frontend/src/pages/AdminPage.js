@@ -12,7 +12,7 @@ import { io } from 'socket.io-client';
 
 const ENDPOINT =
     window.location.host.indexOf('localhost') >= 0
-        ? 'http://localhost:5000'
+        ? 'https://dryicesupport.onrender.com'
         : window.location.host;
 
 export default function AdminPage() {

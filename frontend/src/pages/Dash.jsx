@@ -84,64 +84,36 @@ const Ecommerce = () => {
   }, [user.organization, allTickets, dispatch]);
 
   {
-    /*
-
-useEffect(() => {
   
-
-  if (user.organization) {
-    dispatch(getAllTickets(user.organization)).then((response) => {
-      if (response.payload) {
-        setAllTicketsCount(response.payload.length);
-        setNewTicketsCount(
-          response.payload.filter((ticket) => ticket.status === "new").length
-        );
-        setOpenTicketsCount(
-          response.payload.filter((ticket) => ticket.status === "open").length
-        );
-        setReviewTicketsCount(
-          response.payload.filter((ticket) => ticket.status === "review").length
-        );
-        setClosedTicketsCount(
-          response.payload.filter((ticket) => ticket.status === "close").length
-        );
-      }
-    });
-  }
-}, [user, dispatch]);
-
-*/
   }
   return (
     <>
-      <div className="flex justify-around items-center mb-4">
-        <div className="flex items-center space-x-2">
-          <Typography variant="h6" className="text-sm">
-            Welcome to {organizationMap[user.organization] || ""} Dashboard
-          </Typography>
-        </div>
-        <div className="flex-1"></div>
+            <div className="font-semibold text-lg mb-5">
+        Welcome to Dashboard , {user.name}{" "}
+        {organizationMap[user.organization] || ""} !
       </div>
       <div>
         <div className="flex flex-wrap justify-between items-center mb-5">
-          <div className="bg-white h-40 dark:text-gray-200 dark:bg-secondary-dark-bg md:w-48 p-4 rounded-2xl border border-gray-300 flex flex-col items-center">
+          <div className="bg-white dark:text-gray-200 dark:bg-secondary-dark-bg md:w-48 p-4 rounded border flex flex-col items-center">
             <Link to="/ticketss">
               <button
                 type="button"
                 style={{ backgroundColor: getRandomColor() }}
-                className="text-2xl opacity-0.9 text-white hover:drop-shadow-xl rounded-full p-4 h-12 w-12 flex flex-col items-center justify-center mb-3"
-              ></button>
+                className="text-2xl opacity-0.9 text-white hover:drop-shadow-xl rounded-lg p-4 h-12 w-12 flex flex-col items-center justify-center mb-3"
+              >
+                <ConfirmationNumberIcon />
+              </button>
             </Link>
             <div className="text-lg font-semibold">{allTicketsCount}</div>
             <div className="text-sm font-semibold">All Ticket</div>
           </div>
 
-          <div className="bg-white h-40 dark:text-gray-200 dark:bg-secondary-dark-bg md:w-48 p-4 rounded-2xl border border-gray-300 flex flex-col items-center">
+          <div className="bg-white dark:text-gray-200 dark:bg-secondary-dark-bg md:w-48 p-4 rounded border flex flex-col items-center">
             <Link to="/ticketss">
               <button
                 type="button"
                 style={{ backgroundColor: "#fbe032" }}
-                className="text-2xl opacity-0.9 text-white hover:drop-shadow-xl rounded-full p-4 h-12 w-12 flex flex-col items-center justify-center mb-3"
+                className="text-2xl opacity-0.9 text-white hover:drop-shadow-xl rounded-lg p-4 h-12 w-12 flex flex-col items-center justify-center mb-3"
               >
                 <DraftsIcon />
               </button>
@@ -150,11 +122,11 @@ useEffect(() => {
             <div className="text-sm font-semibold">Draft</div>
           </div>
 
-          <div className="bg-white h-40 dark:text-gray-200 dark:bg-secondary-dark-bg md:w-48 p-4 rounded-2xl border border-gray-300 flex flex-col items-center">
+          <div className="bg-white dark:text-gray-200 dark:bg-secondary-dark-bg md:w-48 p-4 rounded border flex flex-col items-center">
             <button
               type="button"
               style={{ backgroundColor: "#008000" }}
-              className="text-2xl opacity-0.9 text-white hover:drop-shadow-xl rounded-full p-4 h-12 w-12 flex flex-col items-center justify-center mb-3"
+              className="text-2xl opacity-0.9 text-white hover:drop-shadow-xl rounded-lg p-4 h-12 w-12 flex flex-col items-center justify-center mb-3"
             >
               <FiberNewIcon />
             </button>
@@ -162,12 +134,12 @@ useEffect(() => {
             <div className="text-sm font-semibold">New Ticket</div>
           </div>
 
-          <div className="bg-white h-40 dark:text-gray-200 dark:bg-secondary-dark-bg md:w-48 p-4 rounded-2xl border border-gray-300 flex flex-col items-center">
+          <div className="bg-white dark:text-gray-200 dark:bg-secondary-dark-bg md:w-48 p-4 rounded border flex flex-col items-center">
             <Link to="/ticketss">
               <button
                 type="button"
                 style={{ backgroundColor: "#4682b4" }}
-                className="text-2xl opacity-0.9 text-white hover:drop-shadow-xl rounded-full p-4 h-12 w-12 flex flex-col items-center justify-center mb-3"
+                className="text-2xl opacity-0.9 text-white hover:drop-shadow-xl rounded-lg p-4 h-12 w-12 flex flex-col items-center justify-center mb-3"
               >
                 <ConfirmationNumberIcon />
               </button>
@@ -176,12 +148,12 @@ useEffect(() => {
             <div className="text-sm font-semibold">Open Ticket</div>
           </div>
 
-          <div className="bg-white h-40 dark:text-gray-200 dark:bg-secondary-dark-bg md:w-48 p-4 rounded-2xl border border-gray-300 flex flex-col items-center">
+          <div className="bg-white dark:text-gray-200 dark:bg-secondary-dark-bg md:w-48 p-4 rounded border flex flex-col items-center">
             <Link to="/ticketss">
               <button
                 type="button"
                 style={{ backgroundColor: "#f8a54c" }}
-                className="text-2xl opacity-0.9 text-white hover:drop-shadow-xl rounded-full p-4 h-12 w-12 flex flex-col items-center justify-center mb-3"
+                className="text-2xl opacity-0.9 text-white hover:drop-shadow-xl rounded-lg p-4 h-12 w-12 flex flex-col items-center justify-center mb-3"
               >
                 <RateReviewIcon />
               </button>
@@ -190,12 +162,12 @@ useEffect(() => {
             <div className="text-sm font-semibold">Review</div>
           </div>
 
-          <div className="bg-white h-40 dark:text-gray-200 dark:bg-secondary-dark-bg md:w-48 p-4 rounded-2xl border border-gray-300 flex flex-col items-center">
+          <div className="bg-white dark:text-gray-200 dark:bg-secondary-dark-bg md:w-48 p-4 rounded border flex flex-col items-center">
             <Link to="/ticketss">
               <button
                 type="button"
                 style={{ backgroundColor: "#8b0000" }}
-                className="text-2xl opacity-0.9 text-white hover:drop-shadow-xl rounded-full p-4 h-12 w-12 flex flex-col items-center justify-center mb-3"
+                className="text-2xl opacity-0.9 text-white hover:drop-shadow-xl rounded-lg p-4 h-12 w-12 flex flex-col items-center justify-center mb-3"
               >
                 <CloseIcon />
               </button>

@@ -83,7 +83,7 @@ app.post('/upload', upload.array('media', 10), async (req, res) => {
 
     // Save the media URLs in MongoDB with forward slashes
     const mediaItems = req.files.map((file) => ({
-      mediaUrl: 'http://localhost:5000/' + file.path.replace(/\\/g, '/'),
+      mediaUrl: 'https://dryicesupport.onrender.com/' + file.path.replace(/\\/g, '/'),
       mediaType: file.mimetype.startsWith('image') ? 'image' : 'video',
     }));
 
