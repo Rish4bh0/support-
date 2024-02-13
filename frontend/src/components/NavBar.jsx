@@ -170,73 +170,49 @@ const NavBar = () => {
         </div>
 
         <div className="flex items-center space-x-4">
-          
-          {user ? (
-           <NotificationModal
-           isOpen={isNotificationModalOpen}
-           onClose={() => setIsNotificationModalOpen(false)}
-         />,
-            <button
-              type="button"
-              onClick={() => setIsNotificationModalOpen(true)}
-              className="flex align-middle"
-            >
-              <div>
-                {notificationsLength ? (
-                  <MdNotificationsActive size={25} style={{ marginTop: 8 }} />
-                ) : (
-                  <MdNotificationsNone size={25} style={{ marginTop: 8 }} />
-                )}
-                
-                {notificationsLength > 0 && (
-                  <span
-                    style={{
-                      position: "absolute",
-                      top: -8,
-                      right: 266,
-                      background: "#03C9D7",
-                      borderRadius: "50%",
-                      padding: "2px 6px",
-                      fontSize: "12px",
-                      color: "white",
-                    }}
-                  >
-                    {notificationsLength}
-                  </span>
-                )}
-              </div>
-              
-            </button>
-            
-          ) : (
-            <div class="flex space-x-4">
-              <a
-                href="#"
-                class="text-gray-900 rounded-md px-3 py-2 text-sm font-bold"
-                aria-current="page"
-              >
-                Dashboard
-              </a>
-              <a
-                href="#"
-                class="text-gray-900 rounded-md px-3 py-2 text-sm font-bold"
-              >
-                Team
-              </a>
-              <a
-                href="#"
-                class="text-gray-900 rounded-md px-3 py-2 text-sm font-bold"
-              >
-                Projects
-              </a>
-              <a
-                href="#"
-                class="text-gray-900 rounded-md px-3 py-2 text-sm font-bold"
-              >
-                Calendar
-              </a>
-            </div>
-          )}
+          {user
+            ? ((
+                <NotificationModal
+                  isOpen={isNotificationModalOpen}
+                  onClose={() => setIsNotificationModalOpen(false)}
+                />
+              ),
+              (
+                <button
+                  type="button"
+                  onClick={() => setIsNotificationModalOpen(true)}
+                  className="flex align-middle"
+                >
+                  <div>
+                    {notificationsLength ? (
+                      <MdNotificationsActive
+                        size={25}
+                        style={{ marginTop: 8 }}
+                      />
+                    ) : (
+                      <MdNotificationsNone size={25} style={{ marginTop: 8 }} />
+                    )}
+
+                    {notificationsLength > 0 && (
+                      <span
+                        style={{
+                          position: "absolute",
+                          top: -8,
+                          right: 266,
+                          background: "#03C9D7",
+                          borderRadius: "50%",
+                          padding: "2px 6px",
+                          fontSize: "12px",
+                          color: "white",
+                        }}
+                      >
+                        {notificationsLength}
+                      </span>
+                    )}
+                  </div>
+                </button>
+              ))
+            : null}
 
           {user ? (
             <TooltipComponent content="Profile" position="BottomCenter">
@@ -368,7 +344,7 @@ const NavBar = () => {
           customFunc={() => handleClick("notification")}
           color="black"
           icon={<RiNotification3Line />}
-        />
+        /> 
         <TooltipComponent content="Profile" position="BottomCenter">
           {user ? (
             <div

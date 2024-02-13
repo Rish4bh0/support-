@@ -43,6 +43,7 @@ import ChatBox from "./pages/ChatWidget/page.js";
 import Admindash from "./pages/Dashboard.jsx";
 import ImageUpload from "./pages/ImageUpload.jsx";
 import OfficeUnssigned from "./pages/officeUnssigned.jsx";
+import BasicBreadcrumbs from "./components/Breadcrumb.jsx";
 
 function App() {
   const { activeMenu, setactiveMenu } = useStateContext();
@@ -87,6 +88,7 @@ function App() {
                 user ? "p-4" : "min-h-screen flex items-center justify-center"
               }
             >
+              <BasicBreadcrumbs />
               <div
                 className={
                   !user &&

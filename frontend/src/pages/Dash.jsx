@@ -7,20 +7,21 @@ import product9 from "../data/product9.jpg";
 import Report from "./report";
 import { getAllTickets, getTickets } from "../features/tickets/ticketSlice";
 import { useDispatch, useSelector } from "react-redux";
-import ConfirmationNumberIcon from '@mui/icons-material/ConfirmationNumber';
+import ConfirmationNumberIcon from "@mui/icons-material/ConfirmationNumber";
 import { Typography } from "@mui/material";
 import DashboardIcon from "@mui/icons-material/Dashboard";
-import TicketStatusChart from '../components/TicketStatusChart';
-import TicketStatusPie from '../components/TicketStatusPie';
-import { Link } from 'react-router-dom';
-import CloseIcon from '@mui/icons-material/Close';
-import RateReviewIcon from '@mui/icons-material/RateReview';
-import DraftsIcon from '@mui/icons-material/Drafts';
-import FiberNewIcon from '@mui/icons-material/FiberNew';
+import TicketStatusChart from "../components/TicketStatusChart";
+import TicketStatusPie from "../components/TicketStatusPie";
+import { Link } from "react-router-dom";
+import CloseIcon from "@mui/icons-material/Close";
+import RateReviewIcon from "@mui/icons-material/RateReview";
+import DraftsIcon from "@mui/icons-material/Drafts";
+import FiberNewIcon from "@mui/icons-material/FiberNew";
 import { getAllOrganization } from "../features/organization/organizationSlice";
 import AccessTimeIcon from "@mui/icons-material/AccessTime";
 
-const getRandomColor = () => `#${Math.floor(Math.random() * 16777215).toString(16)}`;
+const getRandomColor = () =>
+  `#${Math.floor(Math.random() * 16777215).toString(16)}`;
 const Ecommerce = () => {
   const { currentColor, currentMode } = useStateContext();
   const [newTicketsCount, setNewTicketsCount] = useState(0);
@@ -34,8 +35,6 @@ const Ecommerce = () => {
   const { user, isLoading, isError, isSuccess, message } = useSelector(
     (state) => state.auth
   );
-
- 
 
   useEffect(() => {
     dispatch(getTickets());
@@ -115,10 +114,10 @@ useEffect(() => {
   }
   return (
     <>
-            <div className="flex justify-around items-center mb-4">
+      <div className="flex justify-around items-center mb-4">
         <div className="flex items-center space-x-2">
           <Typography variant="h6" className="text-sm">
-          Welcome to {organizationMap[user.organization] || ""} Dashboard
+            Welcome to {organizationMap[user.organization] || ""} Dashboard
           </Typography>
         </div>
         <div className="flex-1"></div>
@@ -205,11 +204,8 @@ useEffect(() => {
             <div className="text-sm font-semibold">Closed Ticket</div>
           </div>
         </div>
-          <TicketStatusPie allTicket={organizationTickets} className="mt-2" />
-        
-       
-        </div>
-      
+        <TicketStatusPie allTicket={organizationTickets} className="mt-2" />
+      </div>
     </>
   );
 };
