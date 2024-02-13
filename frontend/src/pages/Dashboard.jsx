@@ -82,20 +82,9 @@ const Dashboard = () => {
 
   return (
     <>
-<<<<<<< HEAD
       <div className="font-semibold text-lg mb-5">
         Welcome to Dashboard , {user.name}{" "}
         {organizationMap[user.organization] || ""} !
-=======
-      {/* <Breadcrumb /> */}
-      <div className="flex justify-around items-center mb-4">
-        <div className="flex items-center space-x-2">
-          <Typography variant="h6" className="text-sm">
-            Welcome to Dryice Admin Dashboard
-          </Typography>
-        </div>
-        <div className="flex-1"></div>
->>>>>>> 4f8f44f2ee202933438ab72a026502a60c0db755
       </div>
       <div>
         <div className="flex flex-wrap justify-between items-center mb-5">
