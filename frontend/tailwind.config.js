@@ -23,6 +23,7 @@ module.exports = {
       borderWidth: {
         1: "1px",
       },
+
       borderColor: {
         color: "rgba(0, 0, 0, 0.1)",
       },
@@ -46,5 +47,5 @@ module.exports = {
       },
     },
   },
-  plugins: [],
+  plugins: [require("@tailwindcss/forms")],
 };

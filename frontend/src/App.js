@@ -87,9 +87,7 @@ function App() {
             </div>
             <div
               className={
-                user
-                  ? "container"
-                  : "min-h-screen flex items-center justify-center"
+                user ? "p-4" : "min-h-screen flex items-center justify-center"
               }
             >
               <div

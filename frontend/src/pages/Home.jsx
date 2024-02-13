@@ -5,6 +5,7 @@ function Home() {
         <div className="flex flex-col items-center justify-center text-white">
           <h1 className="font-bold text-2xl mb-6">
             Welcome to Dryice support center!{" "}
+           
           </h1>
           <a
             href="/new-ticket"
@@ -12,6 +13,7 @@ function Home() {
           >
             <span className="relative">Create Ticket</span>
           </a>
+
           {/* <p className="mt-8 text-gray-700 dark:text-gray-300">
             Welcome to our cutting-edge ticketing and support system. We are
             dedicated to providing you with top-tier customer service and

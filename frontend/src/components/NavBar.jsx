@@ -176,7 +176,7 @@ const NavBar = () => {
               onClick={() => setIsNotificationModalOpen(true)}
               className="flex align-middle"
             >
-              <div style={{ position: "relative", right: 22 }}>
+              <div>
                 {notificationsLength ? (
                   <MdNotificationsActive size={25} style={{ marginTop: 8 }} />
                 ) : (
