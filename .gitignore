@@ -4,5 +4,4 @@ nginx
 .env
 .DS_Store
 *.mp4
-*.jpg
-*.PNG
+
