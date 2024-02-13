@@ -62,6 +62,7 @@ app.use('/api/issues', require('./routes/issueRoutes'));
 app.use('/api/project', require('./routes/projectRoutes'));
 app.use('/api/organizations', require('./routes/organizationRoutes'));
 app.use('/api/notifications', require('./routes/notificationRoutes'));
+app.use('/api/chat', require('./routes/chatRoutes'));
 
 app.post('/upload', upload.array('media', 10), async (req, res) => {
   try {
