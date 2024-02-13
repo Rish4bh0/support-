@@ -1,59 +1,10 @@
-
-/*
 const user = require('./models/userModel');
 const notification = require('./models/notification');
-let usersio = {};
+const clientModel = require("./models/clientModel");
+const chatModel = require("./models/chatModel");
 
-module.exports = function (io) {
-  io.on('connection', (socket) => {
-    socket.on('setUserId', async (userId) => {
-      if (userId) {
-        const oneUser = await user.findById(userId).lean().exec();
-        if (oneUser) {
-          // Join a room based on userId
-          socket.join(userId);
-          usersio[userId] = socket;
-          console.log(`⚡ Socket: User with id ${userId} connected`);
-        } else {
-          console.log(`🚩 Socket: No user with id ${userId}`);
-        }
-      }
-    });
-
-    socket.on('getNotificationsLength', async (userId) => {
-      const notifications = await notification
-        .find({ user: userId, read: false })
-        .lean();
-
-      const notificationsLength = notifications.length || 0;
-
-      // Emit the notifications length to the user who requested it
-      usersio[userId]?.emit('notificationsLength', notificationsLength);
-
-      // Broadcast the notifications length to all sockets in the room
-      io.to(userId).emit('notificationsLength', notificationsLength);
-    });
-
-    socket.on('disconnect', () => {
-      const disconnectedUserId = Object.keys(usersio).find(
-        (userId) => usersio[userId] === socket
-      );
-
-      if (disconnectedUserId) {
-        console.log(`🔥 User with id ${disconnectedUserId} disconnected from socket`);
-        usersio[disconnectedUserId] = null;
-      }
-    });
-  });
-};
-*/
-
-
-
-const user = require('./models/userModel');
-const notification = require('./models/notification');
 const users = [];
-//let usersio = {};
+const connectedHosts = [];
 
 module.exports = function (io) {
   io.on('connection', (socket) => {
@@ -82,177 +33,123 @@ module.exports = function (io) {
       io.to(userId).emit('notificationsLength', notificationsLength);
     });
 
+
+    //chat logic
+    socket.on('start chat', async (userData) => {
+      console.log('User started a chat:', userData);
+
+      try{
+      //find user
+      let user = await clientModel.findOne({email: userData.email});
+
+      //Creating new user
+      if(!user){
+          console.log("new user");
+          user = new clientModel({
+              name: userData.name,
+              email: userData.email,
+              phone: userData.phone,
+            });
+
+          await user.save();
+      }
+
+      //find Chat for the user
+      let chat = await chatModel.findOne({userId: user._id});
+
+      if(!chat){
+      // Create a new chat instance for the user
+      chat = new chatModel({
+          userId: user._id,
+          messages: [],
+      });
+      await chat.save();
+      }
+
+      // Add the user to their own room
+      socket.join(user._id.toString());
+
+      //Notify user that chat is initialized and send chat history
+      io.to(socket.id).emit('chat initialized',{userId: user._id, chatId: chat._id, messages: chat.messages});
+
+      //Notify All connected host if a chat is added 
+      for(let i = 0; i < connectedHosts.length; i++){
+          console.log(connectedHosts[i]);
+          io.to(connectedHosts[i]).emit("chat added");
+      }
+
+      }catch(error){
+          console.log(error);
+      }
     
+    });
+
+    socket.on('chat message',async (msg) => {
+      console.log('Message:', msg);
+
+      try{
+
+          const chatMessage = {
+              content: msg.message,
+              timestamp: new Date(),
+              createdBy: msg.sentBy === "user" ? "user" : "host"
+            };
+          
+            await chatModel.findOneAndUpdate({userId: msg.userId}, { $push: { messages: chatMessage } });
+    
+            //Notify user and host in a room that a message is added
+            io.to(msg.userId.toString()).emit('chat received', {createdBy: msg.sentBy, message: msg.message});
+
+      }catch(error){
+          console.log(error);
+      }
+    
+    });
+
+  socket.on('host connect',() => {
+      console.log('host connected');
+      //Store the currently connected hosts
+      connectedHosts.push(socket.id);
+  });  
+
+  socket.on('host disconnect', () => {
+      console.log('Host disconnected');
+      //Remove the disconnected host from connect hosts array
+      const index = connectedHosts.indexOf(socket);
+      if (index !== -1) {
+        connectedHosts.splice(index, 1);
+      }
+  });
+
+  socket.on('join chat', (hostData) => {
+      console.log('Host joined the chat:', hostData);
+
+      try{
+          const userId = hostData._id.toString();
+    
+          //join a room or chat started by user
+          socket.join(userId);
+      }catch(error){
+          console.log(error);
+      }
+    
+  });
+
+  socket.on('leave chat', (hostData) => {
+      console.log('Host leave the chat:', hostData);
+
+      try{
+          const userId = hostData._id.toString();
+
+          //leave the user room
+          socket.leave(userId, function (err) {
+              console.log(err);
+          });
+      }catch(error){
+          console.log(error);
+      }
+    });
  
-    // Chat Logic
-    socket.on('onLogin', (user) => {
-      const updatedUser = {
-        ...user,
-        online: true,
-        socketId: socket.id,
-        messages: [],
-      };
-      const existUser = users.find((x) => x.name === updatedUser.name);
-      if (existUser) {
-        existUser.socketId = socket.id;
-        existUser.online = true;
-      } else {
-        users.push(updatedUser);
-      }
-      const admin = users.find((x) => x.name === 'Admin' && x.online);
-      if (admin) {
-        io.to(admin.socketId).emit('updateUser', updatedUser);
-      }
-      if (updatedUser.name === 'Admin') {
-        io.to(updatedUser.socketId).emit('listUsers', users);
-      }
-    });
-
-    socket.on('disconnect', () => {
-      const disconnectedUserId = Object.keys(users).find(
-        (userId) => users[userId] === socket
-      );
-
-      if (disconnectedUserId) {
-        console.log(`🔥 User with id ${disconnectedUserId} disconnected from socket`);
-        users[disconnectedUserId] = null;
-      }
-    });
-
-    socket.on('disconnect', () => {
-      const user = users.find((x) => x.socketId === socket.id);
-      if (user) {
-        user.online = false;
-        const admin = users.find((x) => x.name === 'Admin' && x.online);
-        if (admin) {
-          io.to(admin.socketId).emit('updateUser', user);
-        }
-        io.emit('listUsers', users.filter(Boolean));
-      }
-    });
-
-    socket.on('onUserSelected', (user) => {
-      const admin = users.find((x) => x.name === 'Admin' && x.online);
-      if (admin) {
-        const existUser = users.find((x) => x.name === user.name);
-        io.to(admin.socketId).emit('selectUser', existUser);
-      }
-    });
-
-    socket.on('onMessage', (message) => {
-      if (message.from === 'Admin') {
-        const user = users.find((x) => x.name === message.to && x.online);
-        if (user) {
-          io.to(user.socketId).emit('message', message);
-          user.messages.push(message);
-        } else {
-          io.to(socket.id).emit('message', {
-            from: 'System',
-            to: 'Admin',
-            body: 'User Is Not Online',
-          });
-        }
-      } else {
-        const admin = users.find((x) => x.name === 'Admin' && x.online);
-        if (admin) {
-          io.to(admin.socketId).emit('message', message);
-          const user = users.find((x) => x.name === message.from && x.online);
-          if (user) {
-            user.messages.push(message);
-          }
-        } else {
-          io.to(socket.id).emit('message', {
-            from: 'System',
-            to: message.from,
-            body: 'Sorry. Admin is not online right now',
-          });
-        }
-      }
-    });
+    
   });
 };
-
-
-
-
-/*
-const user = require('./models/userModel');
-const notification = require('./models/notification');
-let usersio = [];
-
-module.exports = function (io) {
-  io.on('connection', (socket) => {
-    socket.on('setUserId', async (userId) => {
-      if (userId) {
-        const oneUser = await user.findById(userId).lean().exec();
-        if (oneUser) {
-          usersio[userId] = socket;
-          console.log(`⚡ Socket: User with id ${userId} connected`);
-        } else {
-          console.log(`🚩 Socket: No user with id ${userId}`);
-        }
-      }
-    });
-
-    socket.on('getNotificationsLength', async (userId) => {
-      const notifications = await notification
-        .find({ user: userId, read: false })
-        .lean();
-      
-      const notificationsLength = notifications.length || 0;
-
-      // Emit the notifications length to the user who requested it
-      usersio[userId]?.emit('notificationsLength', notificationsLength);
-
-      // Broadcast the notifications length to all connected users
-      io.emit('notificationsLength', notificationsLength);
-    });
-
-    socket.on('disconnect', () => {
-      const disconnectedUserId = Object.keys(usersio).find(
-        (userId) => usersio[userId] === socket
-      );
-
-      if (disconnectedUserId) {
-        console.log(`🔥 User with id ${disconnectedUserId} disconnected from socket`);
-        usersio[disconnectedUserId] = null;
-      }
-    });
-  });
-};
-*/
-
-
-/*
-const user = require('./models/userModel');
-const notification = require('./models/notification');
-let usersio = [];
-
-module.exports = function (io) {
-  io.on('connection', (socket) => {
-    socket.on('setUserId', async (userId) => {
-      if (userId) {
-        const oneUser = await user.findById(userId).lean().exec();
-        if (oneUser) {
-          usersio[userId] = socket;
-          console.log(`⚡ Socket: User with id ${userId} connected`);
-        } else {
-          console.log(`🚩 Socket: No user with id ${userId}`);
-        }
-      }
-    });
-    socket.on('getNotificationsLength', async (userId) => {
-      const notifications = await notification
-        .find({ user: userId, read: false })
-        .lean();
-      usersio[userId]?.emit('notificationsLength', notifications.length || 0);
-    });
-
-    socket.on('disconnect', (userId) => {
-      console.log(`🔥 user with id ${userId} disconnected from socket`);
-      usersio[userId] = null;
-    });
-  });
-};
-
-*/

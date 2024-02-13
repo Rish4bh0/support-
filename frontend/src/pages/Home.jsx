@@ -1,7 +1,10 @@
+import banner from "../assets/support-image.jpg"
 function Home() {
+  
   return (
     <>
-      <div className="absolute inset-x-44 top-64" id="home">
+      <div className="absolute inset-x-44 top-64 " id="home">
+     
         <div className="flex flex-col items-center justify-center text-white">
           <h1 className="font-bold text-2xl mb-6">
             Welcome to Dryice support center!{" "}
@@ -45,61 +48,3 @@ function Home() {
   );
 }
 export default Home;
-
-/*
-import { FaQuestionCircle, FaTicketAlt, FaHistory, FaList, FaInfo, FaUserPlus, FaPlus, FaBoxTissue } from "react-icons/fa";
-import { useSelector } from "react-redux";
-import { Link } from "react-router-dom";
-
-function Home() {
-  // Access the user's role from Redux state
-  const userRole = useSelector((state) => state.auth.user?.role);
-
-  // Define an array of roles that should see the "Dashboard" link
-  const allowedRoles = ["ADMIN", "SUPERVISOR", "EMPLOYEE"];
-  const allowedRolesOrg = ["ADMIN", "SUPERVISOR", "EMPLOYEE", "ORGAGENT"];
-
-  return (
-    <>
-      <section className="heading">
-        <h1>What do you need help with?</h1>
-        <p>Please create a ticket for sales related enquiry</p>
-        <p>And login to create detailed ticket</p>
-      </section>
-
-      <Link to="/new-ticket" className="btn btn-reverse btn-block">
-        <FaQuestionCircle /> Create New Ticket
-      </Link>
-      {(userRole && allowedRoles.includes(userRole)) && (
-      <Link to="/tickets" className="btn btn-reverse btn-block">
-        <FaTicketAlt /> View Tickets Assigned To Me
-      </Link>
-      )}
-      {(userRole && allowedRoles.includes(userRole)) && (
-      <Link to="/allticket" className="btn btn-reverse btn-block">
-        <FaList /> View All Tickets
-      </Link>
-      )}
-      <Link to="/ticketss" className="btn btn-reverse btn-block">
-        <FaTicketAlt /> View My Tickets
-      </Link>
-      {(userRole && allowedRoles.includes(userRole)) && (
-      <Link to="/issues" className="btn btn-reverse btn-block">
-        <FaBoxTissue /> Issues
-      </Link>
-      )}
-       {(userRole && allowedRolesOrg.includes(userRole)) && (
-      <Link to="/organization" className="btn btn-reverse btn-block">
-        <FaInfo/> My Organization
-      </Link>
-      )}
-
-      
-
-
-    </>
-  );
-}
-
-export default Home;
-*/

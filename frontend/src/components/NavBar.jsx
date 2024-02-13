@@ -170,35 +170,49 @@ const NavBar = () => {
         </div>
 
         <div className="flex items-center space-x-4">
-          {user ? (
-            <button
-              type="button"
-              onClick={() => setIsNotificationModalOpen(true)}
-              className="flex align-middle relative"
-            >
-              {notificationsLength ? (
-                <MdNotificationsActive size={25} style={{ marginTop: 8 }} />
-              ) : (
-                <MdNotificationsNone size={25} style={{ marginTop: 8 }} />
-              )}
-              {notificationsLength > 0 && (
-                <span
-                  style={{
-                    position: "absolute",
-                    top: -8,
-                    right: -23,
-                    background: "#03C9D7",
-                    borderRadius: "50%",
-                    padding: "2px 6px",
-                    fontSize: "12px",
-                    color: "white",
-                  }}
+          {user
+            ? ((
+                <NotificationModal
+                  isOpen={isNotificationModalOpen}
+                  onClose={() => setIsNotificationModalOpen(false)}
+                />
+              ),
+              (
+                <button
+                  type="button"
+                  onClick={() => setIsNotificationModalOpen(true)}
+                  className="flex align-middle"
                 >
-                  {notificationsLength}
-                </span>
-              )}
-            </button>
-          ) : null}
+                  <div>
+                    {notificationsLength ? (
+                      <MdNotificationsActive
+                        size={25}
+                        style={{ marginTop: 8 }}
+                      />
+                    ) : (
+                      <MdNotificationsNone size={25} style={{ marginTop: 8 }} />
+                    )}
+
+                    {notificationsLength > 0 && (
+                      <span
+                        style={{
+                          position: "absolute",
+                          top: -8,
+                          right: 266,
+                          background: "#03C9D7",
+                          borderRadius: "50%",
+                          padding: "2px 6px",
+                          fontSize: "12px",
+                          color: "white",
+                        }}
+                      >
+                        {notificationsLength}
+                      </span>
+                    )}
+                  </div>
+                </button>
+              ))
+            : null}
 
           {user ? (
             <TooltipComponent content="Profile" position="BottomCenter">
