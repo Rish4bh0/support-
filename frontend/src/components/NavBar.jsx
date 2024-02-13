@@ -344,7 +344,7 @@ const NavBar = () => {
           customFunc={() => handleClick("notification")}
           color="black"
           icon={<RiNotification3Line />}
-        />
+        /> 
         <TooltipComponent content="Profile" position="BottomCenter">
           {user ? (
             <div
