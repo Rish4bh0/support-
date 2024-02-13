@@ -238,7 +238,7 @@ function NewTicket() {
 
         // Send a request to the media upload endpoint (http://localhost:5000/upload)
         const mediaResponse = await axios.post(
-          "http://localhost:5000/upload",
+          "https://dryicesupport.onrender.com/upload",
           formData,
           {
             headers: {

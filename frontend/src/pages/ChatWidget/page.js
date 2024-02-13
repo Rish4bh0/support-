@@ -5,7 +5,7 @@ import io from 'socket.io-client';
 const ChatPage = () => {
     const user = useSelector((state) => state.auth.user);
   useEffect(() => {
-    const socket = io('http://localhost:5000');
+    const socket = io('https://dryicesupport.onrender.com');
    
     const chatButton = document.createElement('div');
     chatButton.id = 'chat-button';
