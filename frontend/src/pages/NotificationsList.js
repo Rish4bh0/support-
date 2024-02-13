@@ -10,6 +10,7 @@ import {
 } from "react-icons/md";
 import useSocketIo from "../hooks/useSocketio";
 import Spinner from "../components/Spinner";
+import ConfirmationNumberIcon from "@mui/icons-material/ConfirmationNumber";
 
 const NotificationsList = () => {
   const user = useSelector((state) => state.auth.user);
@@ -165,12 +166,11 @@ const NotificationsList = () => {
             <button
               type="button"
               disabled={!data?.notifications?.length}
-              className={` text-blue-700 flex items-center ${
+              className={` text-dark ${
                 !data?.notifications?.length && "opacity-50 cursor-not-allowed"
               }`}
               onClick={handleMarkAllAsRead}
             >
-              <MdDoneAll size={20} className="mr-2" />
               Mark all as read
             </button>
             <button
@@ -196,7 +196,7 @@ const NotificationsList = () => {
             >
               <div className={"flex items-start gap-2"}>
                 <div className="bg-blue-200 text-blue-950 flex items-center justify-center h-10 w-10 rounded-full">
-                  <MdOutlineCheckCircleOutline />
+                  <ConfirmationNumberIcon />
                 </div>
                 <div>
                   <p className="font-semibold mb-1">{notification.title}</p>
@@ -241,22 +241,20 @@ const NotificationsList = () => {
     <div>
       {content}
 
-      <div className="flex items-center justify-center space-x-4 mt-4">
+      <div className="flex items-center justify-center space-x-2 my-4 font-semibold">
         <button
           type="button"
           disabled={page === 0}
           onClick={() => {
             setPage((prev) => prev - 1);
           }}
-          className={`text-blue-500 px-4 py-2 ${
-            page === 0 && "cursor-not-allowed"
-          }`}
+          className={` px-4  ${page === 0 && "cursor-not-allowed"}`}
         >
           {"<"}
         </button>
         <div className="flex items-center">
           <div className="mx-2 text-gray-500">
-            Page: {page + 1} / {data?.totalpage ?? "-"}
+            {page + 1} / {data?.totalpage ?? "-"}
           </div>
         </div>
         <button
@@ -265,7 +263,7 @@ const NotificationsList = () => {
           onClick={() => {
             setPage((prev) => prev + 1);
           }}
-          className={`text-blue-500 px-4 py-2 ${
+          className={` px-4  ${
             data?.totalpage === page + 1 && "cursor-not-allowed"
           }`}
         >
