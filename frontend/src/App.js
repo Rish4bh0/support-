@@ -44,6 +44,7 @@ import Admindash from "./pages/Dashboard.jsx";
 import ImageUpload from "./pages/ImageUpload.jsx";
 import OfficeUnssigned from "./pages/officeUnssigned.jsx";
 import BasicBreadcrumbs from "./components/Breadcrumb.jsx";
+import AdminChat from "./pages/AdminPanelChat/page.jsx"
 
 function App() {
   const { activeMenu, setactiveMenu } = useStateContext();
@@ -112,6 +113,9 @@ function App() {
 
                 <Route path="/new-ticket" element={<PrivateRoute />}>
                   <Route path="/new-ticket" element={<NewTicket />} />
+                </Route>
+                <Route path="/admin-chat" element={<PrivateRoute />}>
+                  <Route path="/admin-chat" element={<AdminChat />} />
                 </Route>
                 <Route path="/admindash" element={<PrivateRoute />}>
                   <Route path="/admindash" element={<Admindash />} />
