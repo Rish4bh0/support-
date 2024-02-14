@@ -44,6 +44,18 @@ import Admindash from "./pages/Dashboard.jsx";
 import ImageUpload from "./pages/ImageUpload.jsx";
 import OfficeUnssigned from "./pages/officeUnssigned.jsx";
 import BasicBreadcrumbs from "./components/Breadcrumb.jsx";
+import { createTheme, ThemeProvider } from "@mui/material/styles";
+
+const theme = createTheme({
+  typography: {
+    fontFamily: "Inter, sans-serif",
+    fontSize: 12,
+    h6: {
+      fontSize: 14,
+      fontWeight: 600,
+    },
+  },
+});
 
 function App() {
   const { activeMenu, setactiveMenu } = useStateContext();
@@ -215,4 +227,10 @@ function App() {
   );
 }
 
-export default App;
+const ThemedApp = () => (
+  <ThemeProvider theme={theme}>
+    <App />
+  </ThemeProvider>
+);
+
+export default ThemedApp;
