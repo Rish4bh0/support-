@@ -11,6 +11,7 @@ import MenuItem from "@mui/material/MenuItem";
 import { getAllProject } from "../features/project/projectSlice";
 import { Link } from "react-router-dom";
 import VisibilityIcon from "@mui/icons-material/Visibility";
+import Button from "@mui/material/Button";
 
 const getRandomColor = () =>
   `#${Math.floor(Math.random() * 16777215).toString(16)}`;
@@ -164,9 +165,9 @@ const Report = ({ organzationName }) => {
       renderCell: (params) => (
         <div>
           <Link to={`/ticket/${params.row.id}`}>
-            <button className="group">
-              <VisibilityIcon className="text-blue-500 group-hover:text-blue-700 mr-8" />
-            </button>
+            <Button variant="outlined" size="small">
+              <VisibilityIcon className="text-blue-500" />
+            </Button>
           </Link>
         </div>
       ),
@@ -258,7 +259,7 @@ const Report = ({ organzationName }) => {
             </div>
           </div>
           <div>
-            <div>
+            <div className="timespent">
               <DataGrid
                 rows={filteredReportArray}
                 columns={columns}

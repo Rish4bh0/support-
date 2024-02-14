@@ -2,22 +2,20 @@ import React, { useEffect, useState } from "react";
 import { AiOutlineMenu } from "react-icons/ai";
 import { BsChatLeft } from "react-icons/bs";
 import { RiNotification3Line } from "react-icons/ri";
-import {
-  MdKeyboardArrowDown,
-  MdNotificationsActive,
-  MdNotificationsNone,
-} from "react-icons/md";
-import { TooltipComponent } from "@syncfusion/ej2-react-popups";
+import { MdNotificationsActive, MdNotificationsNone } from "react-icons/md";
 import { useStateContext } from "../contexts/ContextProvider";
 import { useSelector, useDispatch } from "react-redux";
 import { logout, reset } from "../features/auth/authSlice";
 import { useNavigate } from "react-router-dom";
-import PersonAddIcon from "@mui/icons-material/PersonAdd";
 import LoginIcon from "@mui/icons-material/Login";
-import LogoutIcon from "@mui/icons-material/Logout";
+
 import { getAllOrganization } from "../features/organization/organizationSlice";
 import useSocketIo from "../hooks/useSocketio";
 import NotificationModal from "../pages/NotificationModal";
+import { Button, Menu, MenuItem } from "@mui/material";
+import PersonIcon from "@mui/icons-material/Person";
+import SettingsIcon from "@mui/icons-material/Settings";
+import PowerSettingsNewIcon from "@mui/icons-material/PowerSettingsNew";
 
 const NavButton = ({
   title,
@@ -26,22 +24,17 @@ const NavButton = ({
   color,
   dotColor,
   backgroundColor,
+  className,
 }) => (
-  <TooltipComponent position="BottomCenter">
-    <button
-      type="button"
-      onClick={() => customFunc()}
-      style={{ color: color, backgroundColor: backgroundColor }}
-      className="rounded-lg px-3 py-2 cursor-pointer"
-    >
-      {/* <span
-        style={{ background: dotColor }}
-        className="absolute inline-flex rounded-full h-2 w-2 right-2 top-2"
-      /> */}{" "}
-      {title}
-      {icon}
-    </button>
-  </TooltipComponent>
+  <button
+    type="button"
+    onClick={() => customFunc()}
+    style={{ color: color, backgroundColor: backgroundColor }}
+    className={`cursor-pointer w-full text-start  ${className}`}
+  >
+    {icon}
+    {title}
+  </button>
 );
 
 const NavBar = () => {
@@ -145,6 +138,20 @@ const NavBar = () => {
     }
   }, [id, setNotificationsLength, socket]);
 
+  // ........
+
+  const [anchorEl, setAnchorEl] = React.useState(null);
+
+  const handleClickNew = (event) => {
+    setAnchorEl(event.currentTarget);
+  };
+
+  const handleClose = () => {
+    setAnchorEl(null);
+  };
+
+  // ......
+
   return (
     <nav className={"py-4" + (user ? " px-4" : " px-40")}>
       <div class="relative flex items-center justify-between">
@@ -190,7 +197,7 @@ const NavBar = () => {
                         style={{ marginTop: 8 }}
                       />
                     ) : (
-                      <MdNotificationsNone size={25} style={{ marginTop: 8 }} />
+                      <MdNotificationsNone size={25} />
                     )}
 
                     {notificationsLength > 0 && (
@@ -215,28 +222,41 @@ const NavBar = () => {
             : null}
 
           {user ? (
-            <TooltipComponent content="Profile" position="BottomCenter">
-              <div
-                className="flex items-center gap-2 cursor-pointer hover:bg-light-gray rounded-lg"
-                onClick={() => handleClick("userProfile")}
-              >
-                <p>
-                  <span className="text-gray-400 text-14">Hi, </span>{" "}
-                  <span className="text-gray-400 font-bold ml-1 text-14">
+            <div>
+              <div>
+                <Button
+                  aria-controls="simple-menu"
+                  aria-haspopup="true"
+                  onClick={handleClickNew}
+                  className="cursor-pointer"
+                >
+                  <PersonIcon />
+                  <span className="text-gray-400 font-bold ml-1 capitalize">
                     {user.name} {organizationMap[user.organization] || ""}
                   </span>
-                </p>
-                <MdKeyboardArrowDown className="text-gray-400 text-14" />
-                <NavButton
-                  title="Logout"
-                  // dotColor="#03c9d7"
-                  color="white"
-                  backgroundColor="blue"
-                  customFunc={onLogout}
-                  icon={<LogoutIcon />}
-                />
+                </Button>
+                <Menu
+                  id="simple-menu"
+                  PaperProps={{ className: "w-48" }}
+                  anchorEl={anchorEl}
+                  keepMounted
+                  open={Boolean(anchorEl)}
+                  onClose={handleClose}
+                >
+                  <MenuItem onClick={handleClose}>
+                    <NavButton
+                      title="Logout"
+                      color="black"
+                      customFunc={onLogout}
+                      icon={<PowerSettingsNewIcon className="mr-2" />}
+                    />
+                  </MenuItem>
+                  <MenuItem onClick={handleClose}>
+                    <SettingsIcon className="mr-2" /> Settings
+                  </MenuItem>
+                </Menu>
               </div>
-            </TooltipComponent>
+            </div>
           ) : (
             <div className="flex items-center gap-2 hover-bg-dark-gray rounded-lg">
               <NavButton
@@ -244,6 +264,7 @@ const NavBar = () => {
                 // dotColor="#03c9d7"
                 color="white"
                 backgroundColor="blue"
+                className="p-2 rounded text-sm"
                 customFunc={handleLoginClick}
                 icon={<LoginIcon />}
               />
