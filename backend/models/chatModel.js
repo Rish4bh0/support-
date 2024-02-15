@@ -9,7 +9,7 @@ const chatMessageSchema = new Schema({
     },
     createdBy: {
       type: String,
-      enum: ['client', 'host'],
+      enum: ['user', 'host'],
     },
 });
   

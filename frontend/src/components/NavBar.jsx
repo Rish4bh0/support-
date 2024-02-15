@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import { AiOutlineMenu } from "react-icons/ai";
 import { BsChatLeft } from "react-icons/bs";
 import { RiNotification3Line } from "react-icons/ri";
-import { MdNotificationsActive, MdNotificationsNone } from "react-icons/md";
+import { MdNotificationsActive, MdNotificationsNone, MdKeyboardArrowDown } from "react-icons/md";
 import { useStateContext } from "../contexts/ContextProvider";
 import { useSelector, useDispatch } from "react-redux";
 import { logout, reset } from "../features/auth/authSlice";
@@ -16,6 +16,7 @@ import { Button, Menu, MenuItem } from "@mui/material";
 import PersonIcon from "@mui/icons-material/Person";
 import SettingsIcon from "@mui/icons-material/Settings";
 import PowerSettingsNewIcon from "@mui/icons-material/PowerSettingsNew";
+import PersonAddIcon from "@mui/icons-material/PersonAdd";
 
 const NavButton = ({
   title,
@@ -30,7 +31,7 @@ const NavButton = ({
     type="button"
     onClick={() => customFunc()}
     style={{ color: color, backgroundColor: backgroundColor }}
-    className={`cursor-pointer w-full text-start  ${className}`}
+    className={`cursor-pointer w-50 text-start  ${className}`}
   >
     {icon}
     {title}
@@ -204,8 +205,8 @@ const NavBar = () => {
                       <span
                         style={{
                           position: "absolute",
-                          top: -8,
-                          right: 266,
+                          top: -1,
+                         
                           background: "#03C9D7",
                           borderRadius: "50%",
                           padding: "2px 6px",
@@ -234,6 +235,7 @@ const NavBar = () => {
                   <span className="text-gray-400 font-bold ml-1 capitalize">
                     {user.name} {organizationMap[user.organization] || ""}
                   </span>
+                  <MdKeyboardArrowDown className="text-gray-400 text-14" />
                 </Button>
                 <Menu
                   id="simple-menu"
@@ -258,25 +260,25 @@ const NavBar = () => {
               </div>
             </div>
           ) : (
-            <div className="flex items-center gap-2 hover-bg-dark-gray rounded-lg">
+            <div className="flex items-center gap-3 hover-bg-dark-gray rounded-lg">
               <NavButton
                 title="Login"
-                // dotColor="#03c9d7"
                 color="white"
                 backgroundColor="blue"
-                className="p-2 rounded text-sm"
+                className="p-2 rounded text-sm flex-2"
                 customFunc={handleLoginClick}
                 icon={<LoginIcon />}
+                
               />
-              {/*
+           
             <NavButton
               title="Register"
-              //dotColor="#03c9d7"
-              color="black"
+              color="white"
+                backgroundColor="blue"
+                className="p-2 rounded text-sm flex-2"
               customFunc={handleRegisterClick}
               icon={<PersonAddIcon />}
             />
-            */}
             </div>
           )}
         </div>
@@ -290,104 +292,3 @@ const NavBar = () => {
 };
 
 export default NavBar;
-
-/*
-import React, { useEffect } from "react";
-import { AiOutlineMenu } from "react-icons/ai";
-import { FiShoppingCart } from "react-icons/fi";
-import { BsChatLeft } from "react-icons/bs";
-import { RiNotification3Line } from "react-icons/ri";
-import { MdKeyboardArrowDown } from "react-icons/md";
-import { TooltipComponent } from "@syncfusion/ej2-react-popups";
-
-
-import { Chat, Notification, UserProfile } from ".";
-import { useStateContext } from "../contexts/ContextProvider";
-import { useSelector } from "react-redux";
-
-const NavButton = ({ title, customFunc, icon, color, dotColor }) => (
-  <TooltipComponent content={title} position="BottomCenter">
-    <button
-      type="button"
-      onClick={() => customFunc()}
-      style={{ color }}
-      className="relative text-xl rounded-full p-3 hover:bg-light-gray"
-    >
-      <span
-        style={{ background: dotColor }}
-        className="absolute inline-flex rounded-full h-2 w-2 right-2 top-2"
-      />
-      {icon}
-    </button>
-  </TooltipComponent>
-);
-const NavBar = () => {
-  const { activeMenu, setactiveMenu, handleClick, isClicked, setisClicked, screenSize, setscreenSize} = useStateContext();
-  useEffect(() => {
-    const handleResize = ( ) => setscreenSize(window.innerWidth);
-
-    window.addEventListener('resize', handleResize)
-
-    handleResize();
-
-    return () => window.removeEventListener('resize', handleResize);
-  }, []);
-
-  useEffect(() => {
-    if(screenSize <= 900) {
-      setactiveMenu(false);
-    } else {
-      setactiveMenu(true);
-    }
-  }, [screenSize]);
-  
-  
-  const user = useSelector((state) => state.auth.user);
-  return (
-    <div className="flex justify-between p-2 md:mx-6 relative">
-      <NavButton
-        title="Menu"
-        customFunc={() => setactiveMenu((prevActiveMenu) => !prevActiveMenu)}
-        color="black"
-        icon={<AiOutlineMenu />}
-      />
-      <div className="flex">
-        <NavButton
-          title="Chat"
-          dotColor="#03c9d7"
-          customFunc={() => handleClick("chat")}
-          color="black"
-          icon={<BsChatLeft />}
-        />
-        <NavButton
-          title="Notifications"
-          dotColor="#03c9d7"
-          customFunc={() => handleClick("notification")}
-          color="black"
-          icon={<RiNotification3Line />}
-        /> 
-        <TooltipComponent content="Profile" position="BottomCenter">
-          {user ? (
-            <div
-              className="flex items-center gap-2 cursor-pointer mt-1 p-1 hover:bg-light-gray rounded-lg"
-              onClick={() => handleClick("userProfile")}
-            >
-              <p>
-                <span className="text-gray-400 text-14">Hi, </span>{" "}
-                <span className="text-gray-400 font-bold ml-1 text-14">
-                  {user.name}
-                </span>
-              </p>
-              <MdKeyboardArrowDown className="text-gray-400 text-14" />
-            </div>
-          ) : null}
-        </TooltipComponent>
-
-       
-      </div>
-    </div>
-  );
-};
-
-export default NavBar;
-*/

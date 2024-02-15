@@ -16,25 +16,10 @@ function Register() {
 
   const { name, email, password, password2 } = formData; // destructuring
 
-  /**
-   * useDispatch() returns a reference to the dispatch function
-   * from the Redux store. You may use it to dispatch actions
-   * as needed.
-   */
-
-  /**
-   * By using 'useSelector' and 'useDispatch' from 'react-redux',
-   * we can read state from a Redux store and dispatch any
-   * action from a component, respectively.
-   */
   const dispatch = useDispatch();
 
   const navigate = useNavigate();
 
-  /**
-   * useSelector() allows you to extract data from the Redux store state,
-   * using a selector function.
-   */
   const { user, isLoading, isError, isSuccess, message } = useSelector(
     (state) => state.auth
   );
@@ -81,16 +66,16 @@ function Register() {
 
   return (
     <>
-      <section className="heading">
-        <h1>
-          <FaUser /> Register
-        </h1>
-        <p>Please create an account</p>
-      </section>
-
-      <section className="form pb-20">
+    <div className="absolute">
+        <div className="bg-white rounded-lg w-96">
+          <div className="text-center mb-4 p-6">
+            <div className="font-bold text-lg mb-2">Register</div>
+            <div>Welcome ! Please Register.</div>
+          </div>
+      <section className="form pb-6">
         <form onSubmit={onSubmit}>
           <div className="form-group">
+          <label className="font-bold text-sm">Name</label>
             <input
               type="text"
               id="name"
@@ -103,6 +88,7 @@ function Register() {
             />
           </div>
           <div className="form-group">
+          <label className="font-bold text-sm">Email</label>
             <input
               type="email"
               id="email"
@@ -115,6 +101,7 @@ function Register() {
             />
           </div>
           <div className="form-group">
+          <label className="font-bold text-sm">Password</label>
             <input
               type="password"
               id="password"
@@ -127,6 +114,7 @@ function Register() {
             />
           </div>
           <div className="form-group">
+          <label className="font-bold text-sm">Confirm Password</label>
             <input
               type="password"
               id="password2"
@@ -143,6 +131,8 @@ function Register() {
           </div>
         </form>
       </section>
+      </div>
+      </div>
     </>
   );
 }

@@ -4,7 +4,7 @@ import { useEffect, useState } from 'react';
 const useSocketIo = () => {
   const [socket, setSocket] = useState(null);
   useEffect(() => {
-    const connect = io.connect("https://dryicesupport.onrender.com");
+    const connect = io.connect("http://localhost:5000");
     setSocket(connect);
   }, []);
   return { socket };

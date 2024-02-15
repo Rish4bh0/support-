@@ -22,6 +22,7 @@ const userSchema = mongoose.Schema(
     organization: {
       type: mongoose.Schema.Types.ObjectId,
       ref: 'Organization',
+      default: mongoose.Types.ObjectId('65c1f65226c16a4a38b2b81d')
 
     },
     role: {

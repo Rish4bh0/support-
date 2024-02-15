@@ -15,15 +15,10 @@ function BreadcrumbsComponent() {
         </Link>
         {pathnames.map((pathname, index) => {
           const routeTo = `/${pathnames.slice(0, index + 1).join("/")}`;
-          const isLast = index === pathnames.length - 1;
-          const separator = index > 0 && !isLast ? "/" : "";
           return (
-            <React.Fragment key={index}>
-              {separator}
-              <Link underline="hover" color="inherit" href={routeTo}>
-                {pathname.replace(/^\w/, (c) => c.toUpperCase())}
-              </Link>
-            </React.Fragment>
+            <Link key={index} underline="hover" color="inherit" href={routeTo}>
+              {pathname.replace(/^\w/, (c) => c.toUpperCase())}
+            </Link>
           );
         })}
       </Breadcrumbs>
