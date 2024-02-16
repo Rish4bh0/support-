@@ -148,7 +148,6 @@ function CCTICKET() {
   return (
     <>
     <div className="flex items-center justify-between mb-4">
-    <BackButton url="/" />
       <div className="flex items-center">
           <label htmlFor="status-dropdown" className="mr-2">Status:</label>
           <select

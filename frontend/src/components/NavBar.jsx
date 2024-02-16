@@ -232,8 +232,9 @@ const NavBar = () => {
                   className="cursor-pointer"
                 >
                   <PersonIcon />
-                  <span className="text-gray-400 font-bold ml-1 capitalize">
-                    {user.name} {organizationMap[user.organization] || ""}
+                  <span className="text-gray-400 font-bold ml-3 capitalize">
+                    <p>{user.name}</p> 
+                    <p> {organizationMap[user.organization] || ""} </p> 
                   </span>
                   <MdKeyboardArrowDown className="text-gray-400 text-14" />
                 </Button>

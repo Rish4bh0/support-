@@ -49,8 +49,6 @@ function Tickets() {
     dispatch(getAllProject());
   }, [dispatch]);
 
-  if (isLoading) return <Spinner />;
-
   const newTickets = tickets.filter((ticket) => ticket.status === "new");
   const openTickets = tickets.filter((ticket) => ticket.status === "open");
   const closedTickets = tickets.filter((ticket) => ticket.status === "close");
@@ -132,10 +130,12 @@ function Tickets() {
   return (
     <>
       <div className="flex items-center justify-between mb-4">
-        {/* <BackButton url="/" /> */}
         <h6>Page Title</h6>
-        <div className="flex items-center text-sm">
-          <label htmlFor="status-dropdown" className="mr-2 font-semibold">
+        <div className="flex items-center">
+          <label
+            htmlFor="status-dropdown"
+            className="mr-2 text-sm font-semibold"
+          >
             Status:
           </label>
           <select
@@ -156,19 +156,7 @@ function Tickets() {
           </select>
         </div>
       </div>
-      {/*
-      <div className="tab-buttons">
-        {statusOptions.map((status) => (
-          <button
-            key={status}
-            className={`btn btn-reverse btn-back ${activeTab === status ? "active" : ""}`}
-            onClick={() => handleTabChange(status)}
-          >
-            {status === "all" ? "All Tickets" : `${status.charAt(0).toUpperCase()}${status.slice(1)} Tickets`}
-          </button>
-        ))}
-      </div>
-      */}
+
       <div className="tickets text-xs">
         <div className="ticket-headings font-semibold">
           <div>Ticket ID</div>
@@ -180,9 +168,15 @@ function Tickets() {
           <div>Office</div>
           <div>Actions</div>
         </div>
+        {isLoading && (
+          <div className="text-center my-4">
+            <Spinner />
+          </div>
+        )}
         {filteredTickets.length === 0 ? (
           <div className="mt-28 mb-28">No tickets available</div>
         ) : null}
+
         {paginatedTickets.map((ticket) => (
           <TicketItem key={ticket._id} ticket={ticket} />
         ))}
@@ -217,5 +211,4 @@ function Tickets() {
     </>
   );
 }
-
 export default Tickets;

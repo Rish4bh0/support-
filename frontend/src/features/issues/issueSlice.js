@@ -31,6 +31,7 @@ export const getAllIssueTypes = createAsyncThunk(
   async (_, thunkAPI) => {
     try {
       const token = thunkAPI.getState().auth.user.token;
+     
       return await issueTypeService.getAllIssueTypes(token);
     } catch (error) {
       return thunkAPI.rejectWithValue(error.message);

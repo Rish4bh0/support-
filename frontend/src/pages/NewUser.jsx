@@ -207,7 +207,6 @@ function UserList() {
 */
   return (
     <>
-      <BackButton url="/" />
       <div>
         <h1 className="text-xl font-extrabold text-14">
           {" "}

@@ -1,6 +1,6 @@
 import axios from 'axios';
 
-const API_URL = 'https://dryicesupport.onrender.com/api/organizations/';
+const API_URL = 'http://localhost:5000/api/organizations/';
 
 const createOrganization = async (organizationData, token) => {
   const config = {

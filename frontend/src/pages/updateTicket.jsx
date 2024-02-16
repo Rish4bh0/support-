@@ -40,6 +40,7 @@ const UpdateProductPage = () => {
 
   // State for form data including media
   const [formData, setFormData] = useState({
+    ticketID: '',
     customerName: '',
     description: '',
     project: '',
@@ -90,6 +91,7 @@ const UpdateProductPage = () => {
     // Fetch the ticket data from the store and update the form data
     if (ticket && ticket._id === ticketId) {
       setFormData({
+        ticketID: ticket.ticketID,
         customerName: ticket.customerName,
         description: ticket.description,
         project: ticket.project,
@@ -157,11 +159,12 @@ const UpdateProductPage = () => {
     // Dispatch the updateTicketAsync action with media data
     dispatch(
       updateTicketAsync({
+        
         ticketId,
         updatedTicketData: {
           customerName: formData.customerName,
           description: formData.description,
-        //  media, // Include the selected media files
+          ticketID: formData.ticketID,
         project: formData.project,
         priority: formData.priority,
         assignedTo: formData.assignedTo,
@@ -194,7 +197,7 @@ if (isLoading) return <Spinner />;
 
   return (
     <>
-    <BackButton url="/" />
+  
     <section className="flex items-center justify-center ">
       <div>
         <Typography variant="h4" component="h1" gutterBottom>

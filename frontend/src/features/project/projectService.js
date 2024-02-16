@@ -1,6 +1,6 @@
 import axios from 'axios';
 
-const API_URL = 'https://dryicesupport.onrender.com/api/project/';
+const API_URL = 'http://localhost:5000/api/project/';
 
 const createProject = async (projectData, token) => {
   const config = {

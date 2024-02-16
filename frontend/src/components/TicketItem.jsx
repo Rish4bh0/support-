@@ -16,8 +16,9 @@ function TicketItem({ ticket }) {
 
   // Define an array of roles that should see the "Dashboard" link
   const allowedRolesOrg = ["ADMIN", "SUPERVISOR", "ORGAGENT", "USER"];
-
   const allowedRoles = ["ADMIN", "SUPERVISOR"];
+  const allowedRolesor = ["ADMIN", "SUPERVISOR", "EMPLOYEE"];
+  const org = ["ORGAGENT", "USER"];
   // Access the users array from the Redux state
   const users = useSelector((state) => state.auth.users);
 
@@ -71,14 +72,23 @@ function TicketItem({ ticket }) {
   return (
     <div className="ticket">
       <div>{ticket.ticketID}</div>
+      {userRole && org.includes(userRole) && (
+        <div className="w-48">{ticket.title}</div>
+      )}
       <div>{new Date(ticket.createdAt).toLocaleString("en-US", options)}</div>
-      <div>{assignedToName}</div>
-      <div className={`priority priority-${ticket.priority}`}>
-        {ticket.priority}
-      </div>
+      {userRole && allowedRolesor.includes(userRole) && (
+        <div>{assignedToName}</div>
+      )}
+      {userRole && allowedRolesor.includes(userRole) && (
+        <div className={`priority priority-${ticket.priority}`}>
+          {ticket.priority}
+        </div>
+      )}
       <div>{issueTypeName}</div> {/* Display the issue type's name */}
       <div className={`status status-${ticket.status}`}>{ticket.status}</div>
-      <div>{organizationName}</div>
+      {userRole && allowedRolesor.includes(userRole) && (
+        <div>{organizationName}</div>
+      )}
       <div className="icon-buttons">
         {userRole &&
           allowedRolesOrg.includes(userRole) &&
@@ -86,12 +96,11 @@ function TicketItem({ ticket }) {
             <IconButton
               component={Link}
               to={`/ticket/${ticket._id}`}
-              className=""
+              className="btn btn-reverse btn-sm"
             >
               <VisibilityIcon />
             </IconButton>
           )}
-
         {(ticket.status === "draft" ||
           (userRole && allowedRoles.includes(userRole))) && (
           <IconButton
