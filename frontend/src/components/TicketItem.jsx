@@ -15,9 +15,9 @@ function TicketItem({ ticket }) {
   const userRole = useSelector((state) => state.auth.user?.role);
 
   // Define an array of roles that should see the "Dashboard" link
-  const allowedRolesOrg = ["ADMIN", "SUPERVISOR", "ORGAGENT","USER" ];
+  const allowedRolesOrg = ["ADMIN", "SUPERVISOR", "ORGAGENT", "USER"];
 
-  const  allowedRoles = ["ADMIN", "SUPERVISOR",  ];
+  const allowedRoles = ["ADMIN", "SUPERVISOR"];
   // Access the users array from the Redux state
   const users = useSelector((state) => state.auth.users);
 
@@ -31,57 +31,78 @@ function TicketItem({ ticket }) {
   const issueTypes = useSelector((state) => state.issueTypes.issueTypes);
 
   // Find the issueType object with the same ID as the ticket's issueType ID
-  const ticketIssueType = issueTypes.find((issueType) => issueType._id === ticket.issueType);
+  const ticketIssueType = issueTypes.find(
+    (issueType) => issueType._id === ticket.issueType
+  );
 
   // Extract the name of the issueType (if found)
-  const issueTypeName = ticketIssueType ? ticketIssueType.name : "Unknown Issue Type";
+  const issueTypeName = ticketIssueType
+    ? ticketIssueType.name
+    : "Unknown Issue Type";
 
   // Access the issueTypes array from the Redux state (assuming you have it there)
   const projects = useSelector((state) => state.project.project);
 
   // Find the issueType object with the same ID as the ticket's issueType ID
-  const ticketProject = projects.find((project) => project._id === ticket.project);
+  const ticketProject = projects.find(
+    (project) => project._id === ticket.project
+  );
 
   // Extract the name of the issueType (if found)
-  const projectName = ticketProject ? ticketProject.projectName : "Unknown Project";
-
+  const projectName = ticketProject
+    ? ticketProject.projectName
+    : "Unknown Project";
 
   // Access the issueTypes array from the Redux state (assuming you have it there)
-  const organizations = useSelector((state) => state.organizations.organizations);
+  const organizations = useSelector(
+    (state) => state.organizations.organizations
+  );
 
   // Find the issueType object with the same ID as the ticket's issueType ID
-  const ticketorganizations = organizations.find((organization) => organization._id === ticket.organization);
+  const ticketorganizations = organizations.find(
+    (organization) => organization._id === ticket.organization
+  );
 
   // Extract the name of the issueType (if found)
-  const organizationName = ticketorganizations ? ticketorganizations.name : "Unknown Organization";
-
-  
+  const organizationName = ticketorganizations
+    ? ticketorganizations.name
+    : "Unknown Organization";
 
   return (
     <div className="ticket">
       <div>{ticket.ticketID}</div>
       <div>{new Date(ticket.createdAt).toLocaleString("en-US", options)}</div>
       <div>{assignedToName}</div>
-      <div className={`priority priority-${ticket.priority}`}>{ticket.priority}</div>
+      <div className={`priority priority-${ticket.priority}`}>
+        {ticket.priority}
+      </div>
       <div>{issueTypeName}</div> {/* Display the issue type's name */}
       <div className={`status status-${ticket.status}`}>{ticket.status}</div>
       <div>{organizationName}</div>
-     
       <div className="icon-buttons">
-      {(userRole && allowedRolesOrg.includes(userRole) && ticket.status !== 'draft') && (
-  <IconButton component={Link} to={`/ticket/${ticket._id}`} className="btn btn-reverse btn-sm">
-    <VisibilityIcon />
-  </IconButton>
-)}
+        {userRole &&
+          allowedRolesOrg.includes(userRole) &&
+          ticket.status !== "draft" && (
+            <IconButton
+              component={Link}
+              to={`/ticket/${ticket._id}`}
+              className=""
+            >
+              <VisibilityIcon />
+            </IconButton>
+          )}
 
-
-{(ticket.status === 'draft' || (userRole && allowedRoles.includes(userRole))) && (
-          <IconButton component={Link} to={`/ticket/${ticket._id}/update`} className="btn btn-reverse btn-sm">
+        {(ticket.status === "draft" ||
+          (userRole && allowedRoles.includes(userRole))) && (
+          <IconButton
+            component={Link}
+            to={`/ticket/${ticket._id}/update`}
+            className="btn btn-reverse btn-sm"
+          >
             <EditIcon />
           </IconButton>
         )}
       </div>
-      
     </div>
   );
 }
