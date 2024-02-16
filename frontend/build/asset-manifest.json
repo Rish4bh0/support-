@@ -1,16 +1,16 @@
 {
   "files": {
-    "main.css": "/static/css/main.d8098c9e.css",
-    "main.js": "/static/js/main.4e763a3a.js",
+    "main.css": "/static/css/main.914e9dbf.css",
+    "main.js": "/static/js/main.d34da499.js",
     "static/media/support-image.jpg": "/static/media/support-image.c904af60736dc653f95d.jpg",
     "static/media/dryice-logo.png": "/static/media/dryice-logo.4296ab853306efcf5617.png",
     "static/media/product9.jpg": "/static/media/product9.f6e9447d93a9413bd9e5.jpg",
     "index.html": "/index.html",
-    "main.d8098c9e.css.map": "/static/css/main.d8098c9e.css.map",
-    "main.4e763a3a.js.map": "/static/js/main.4e763a3a.js.map"
+    "main.914e9dbf.css.map": "/static/css/main.914e9dbf.css.map",
+    "main.d34da499.js.map": "/static/js/main.d34da499.js.map"
   },
   "entrypoints": [
-    "static/css/main.d8098c9e.css",
-    "static/js/main.4e763a3a.js"
+    "static/css/main.914e9dbf.css",
+    "static/js/main.d34da499.js"
   ]
 }
