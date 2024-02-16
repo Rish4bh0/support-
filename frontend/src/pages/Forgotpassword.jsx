@@ -7,7 +7,7 @@ const ForgotPassword = () => {
     e.preventDefault();
     // Send a POST request to your API endpoint (e.g., /api/users/forgot-password) with the email data
     try {
-      const response = await fetch('https://dryicesupport.onrender.com/api/users/forgot-password', {
+      const response = await fetch('http://localhost:5000/api/users/forgot-password', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',

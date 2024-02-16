@@ -45,7 +45,7 @@ const [loading, setLoading] = useState(true);
         return;
       }
   
-      const response = await axios.get(`https://dryicesupport.onrender.com/media?ticketID=${ticketID}`);
+      const response = await axios.get(`http://localhost:5000/media?ticketID=${ticketID}`);
       setMediaItems(response.data);
     } catch (error) {
       console.error('Error fetching media:', error);
@@ -74,7 +74,7 @@ const [loading, setLoading] = useState(true);
 
       formData.append('ticketID', ticketID);
 
-      const response = await axios.post('https://dryicesupport.onrender.com/upload', formData, {
+      const response = await axios.post('http://localhost:5000/upload', formData, {
         headers: {
           'Content-Type': 'multipart/form-data',
         },
@@ -106,7 +106,7 @@ const [loading, setLoading] = useState(true);
       setDeleting(true);
       setMediaToDelete(mediaId);
   
-      const response = await axios.delete(`https://dryicesupport.onrender.com/media/${mediaId}`, {
+      const response = await axios.delete(`http://localhost:5000/media/${mediaId}`, {
         onDownloadProgress: (progressEvent) => {
           const progress = Math.round((progressEvent.loaded / progressEvent.total) * 100);
           setDeleteProgress(progress);

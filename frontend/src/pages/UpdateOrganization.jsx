@@ -112,7 +112,7 @@ const UpdateOrganization = () => {
   return (
     <>
 
-<BackButton url="/" />
+
       <section className="flex items-center justify-center ">
         <div>
           <Typography variant="h4" component="h1" gutterBottom>

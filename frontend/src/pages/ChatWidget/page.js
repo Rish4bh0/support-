@@ -20,8 +20,9 @@ const ChatPage = () => {
         <div id="close-button">&#10006;</div>
       </div>
       <div id="chat-form">
+      <h3>System: Welcome to dryice customer support. Please click the button below to notify admin.
+      </h3>
         <form id="start-chat-form">
-          
           <button type="submit">Start Chat</button>
         </form>
       </div>
@@ -103,7 +104,7 @@ const ChatPage = () => {
       const phone = user._id;
 
       if (name && email && phone) {
-        appendMessage('System', `Welcome, ${name}! The chat will start shortly.`, 'system');
+        appendMessage('System', `Welcome, ${name}! An admin will contact you shortly.`, 'system');
         socket.emit('start chat', { name, email, phone });
         chatWidget.removeChild(document.getElementById('chat-form'));
         messageSection.style.display = 'block';

@@ -43,7 +43,7 @@ function Tickets() {
     dispatch(getAllProject());
   }, [dispatch]);
 
-  if (isLoading) return <Spinner />;
+  
 
   const newTickets = tickets.filter((ticket) => ticket.status === "new");
   const openTickets = tickets.filter((ticket) => ticket.status === "open");
@@ -112,85 +112,83 @@ function Tickets() {
   };
 
   const statusOptions = ["all", "new", "open", "review", "close"];
-
+  
   return (
-    <>
-      <div className="flex items-center justify-between mb-4">
-      <BackButton url="/" />
-        <div className="flex items-center">
-          <label htmlFor="status-dropdown" className="mr-2">Status:</label>
-          <select
-            id="status-dropdown"
-            className="px-2 py-1 border border-gray-300 rounded"
-            value={activeTab}
-            onChange={(e) => handleTabChange(e.target.value)}
-          >
-            {statusOptions.map((status) => (
-              <option key={status} value={status}>
-                {status === "all" ? "All Tickets" : `${status.charAt(0).toUpperCase()}${status.slice(1)} Tickets`}
-              </option>
-            ))}
-          </select>
-        </div>
-      </div>
-      {/*
-      <div className="tab-buttons">
-        {statusOptions.map((status) => (
-          <button
-            key={status}
-            className={`btn btn-reverse btn-back ${activeTab === status ? "active" : ""}`}
-            onClick={() => handleTabChange(status)}
-          >
-            {status === "all" ? "All Tickets" : `${status.charAt(0).toUpperCase()}${status.slice(1)} Tickets`}
-          </button>
-        ))}
-      </div>
-      */}
-      <div className="tickets">
-        <div className="ticket-headings">
-        <div>Ticket ID</div>
-          <div>Date</div>
-          <div>Assigned To</div>
-          <div>Priority</div>
-          <div>Issue Type</div>
-          <div>Status</div>
-          <div>Office</div>
-          <div>Actions</div>
-        </div>
-        {filteredTickets.length === 0 ? (
-          <div className="mt-28 mb-28">No tickets available</div>
-        
-        ): null }
-        {paginatedTickets.map((ticket) => (
-          <TicketItem key={ticket._id} ticket={ticket} />
-        ))}
-      </div>
-      <div className="pagination-row">
-        <div className="pagination-buttons">
-          <button
-            className="btn btn-reverse btn-back"
-            onClick={handlePrevPage}
-            disabled={currentPage[activeTab] === 1}
-          >
-            <FaArrowLeft />
-          </button>
-          <div className="page-buttons-row">
-            {pageButtons.slice(
-              Math.max(0, currentPage[activeTab] - Math.floor(maxPageButtons / 2)),
-              currentPage[activeTab] + Math.floor(maxPageButtons / 2)
-            )}
+    
+    
+   
+     
+        <>
+          <div className="flex items-center justify-between mb-4">
+            <div className="flex items-center">
+              <label htmlFor="status-dropdown" className="mr-2">Status:</label>
+              <select
+                id="status-dropdown"
+                className="px-2 py-1 border border-gray-300 rounded"
+                value={activeTab}
+                onChange={(e) => handleTabChange(e.target.value)}
+              >
+                {statusOptions.map((status) => (
+                  <option key={status} value={status}>
+                    {status === "all" ? "All Tickets" : `${status.charAt(0).toUpperCase()}${status.slice(1)} Tickets`}
+                  </option>
+                ))}
+              </select>
+            </div>
           </div>
-          <button
-            className="btn btn-reverse btn-back"
-            onClick={handleNextPage}
-            disabled={currentPage[activeTab] === totalPages}
-          >
-            <FaArrowRight />
-          </button>
+          
+      
+          <div className="tickets">
+            <div className="ticket-headings">
+              <div>Ticket ID</div>
+              <div>Date</div>
+              <div>Assigned To</div>
+              <div>Priority</div>
+              <div>Issue Type</div>
+              <div>Status</div>
+              <div>Office</div>
+              <div>Actions</div>
+            </div>
+            {isLoading && (
+        <div className="text-center my-4">
+          <Spinner />
         </div>
-      </div>
+      )}
+            {filteredTickets.length === 0 ? (
+              <div className="mt-28 mb-28">No tickets available</div>
+            ) : null}
+           
+            {paginatedTickets.map((ticket) => (
+              <TicketItem key={ticket._id} ticket={ticket} />
+            ))}
+          </div>
+          <div className="pagination-row">
+            <div className="pagination-buttons">
+              <button
+                className="btn btn-reverse btn-back"
+                onClick={handlePrevPage}
+                disabled={currentPage[activeTab] === 1}
+              >
+                <FaArrowLeft />
+              </button>
+              <div className="page-buttons-row">
+                {pageButtons.slice(
+                  Math.max(0, currentPage[activeTab] - Math.floor(maxPageButtons / 2)),
+                  currentPage[activeTab] + Math.floor(maxPageButtons / 2)
+                )}
+              </div>
+              <button
+                className="btn btn-reverse btn-back"
+                onClick={handleNextPage}
+                disabled={currentPage[activeTab] === totalPages}
+              >
+                <FaArrowRight />
+              </button>
+            </div>
+          </div>
+        
+     
     </>
   );
 }
-
 export default Tickets;

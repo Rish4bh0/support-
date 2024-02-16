@@ -65,7 +65,8 @@ function ORGTICKET() {
   const ticketsForUserOrganization = filteredTickets.filter((ticket) => {
     return ticket.organization === userOrganization;
   });
-
+  const allowedRolesor = ["ADMIN", "SUPERVISOR", "EMPLOYEE"];
+  const org = ["ORGAGENT", "USER"];
   const startIndex = (currentPage[activeTab] - 1) * itemsPerPage;
   const endIndex = startIndex + itemsPerPage;
   const sortedTickets = [...ticketsForUserOrganization].sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
@@ -145,7 +146,6 @@ function ORGTICKET() {
   return (
     <>
     <div className="flex items-center justify-between mb-4">
-    <BackButton url="/" />
       <div className="flex items-center">
           <label htmlFor="status-dropdown" className="mr-2">Status:</label>
           <select
@@ -163,14 +163,17 @@ function ORGTICKET() {
         </div>
         </div>
       <div className="tickets">
-        <div className="ticket-headings">
-        <div>Ticket ID</div>
-          <div>Date</div> 
-          <div>Assigned To</div>
-          <div>Priority</div>
+      <div className="ticket-headings">
+          <div >Ticket ID</div>
+          {userRole && org.includes(userRole) && <div>Title</div>}
+          <div>Date</div>
+          {userRole && allowedRolesor.includes(userRole) && (
+            <div>Assigned To</div>
+          )}
+          {userRole && allowedRolesor.includes(userRole) && <div>Priority</div>}
           <div>Issue Type</div>
           <div>Status</div>
-          <div>Office</div>
+          {userRole && allowedRolesor.includes(userRole) && <div>Office</div>}
           <div>Actions</div>
         </div>
         {filteredTickets.length === 0 ? (

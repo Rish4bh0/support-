@@ -15,7 +15,7 @@ import {
 } from "../features/notes/noteSlice";
 import Spinner from "../components/Spinner";
 import MediaUpload from "./ImageUpload";
-import DoneIcon from '@mui/icons-material/Done';
+import DoneIcon from "@mui/icons-material/Done";
 import { useParams, useNavigate } from "react-router-dom";
 import { useEffect, useState } from "react";
 import { toast } from "react-toastify";
@@ -30,13 +30,11 @@ import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 import { DemoContainer } from "@mui/x-date-pickers/internals/demo";
 import { TimePicker } from "@mui/x-date-pickers/TimePicker";
 import { DataGrid } from "@mui/x-data-grid";
-import {
-  Button,
-} from "@mui/material";
+import { Button } from "@mui/material";
 import SendIcon from "@mui/icons-material/Send";
 import "react-responsive-carousel/lib/styles/carousel.min.css";
 import CloudUploadIcon from "@mui/icons-material/CloudUpload";
-import CloseIcon from '@mui/icons-material/Close';
+import CloseIcon from "@mui/icons-material/Close";
 import { getAllProject } from "../features/project/projectSlice";
 
 const customStyles = {
@@ -81,16 +79,13 @@ function Ticket() {
     organizationMap[organization._id] = organization.name;
   });
 
-  const projects = useSelector(
-    (state) => state.project.project
-  );
+  const projects = useSelector((state) => state.project.project);
   const projectMap = {};
 
   // Create a mapping of organization IDs to their names
   projects.forEach((project) => {
     projectMap[project._id] = project.projectName;
   });
-
 
   // Define a function to start the timer
   const startTimer = () => {
@@ -117,7 +112,6 @@ function Ticket() {
     dispatch(saveElapsedTime({ ticketId, timeSpent: updatedTimeSpent }));
   };
 
-
   const { ticket, isLoading, isError, message } = useSelector(
     (state) => state.tickets
   );
@@ -137,11 +131,13 @@ function Ticket() {
   const assignedUser = users.find((user) => user._id === ticket.assignedTo);
 
   // Access CC users from the Redux state
-  const ccUsers = ticket && ticket.cc ? 
-    ticket.cc.map((ccUserId) => {
-      const ccUser = users.find((user) => user._id === ccUserId);
-      return ccUser ? ccUser.name : "Unknown User";
-    }) : [];
+  const ccUsers =
+    ticket && ticket.cc
+      ? ticket.cc.map((ccUserId) => {
+          const ccUser = users.find((user) => user._id === ccUserId);
+          return ccUser ? ccUser.name : "Unknown User";
+        })
+      : [];
 
   // Extract the name of the assigned user (if found)
   const assignedToName = assignedUser ? assignedUser.name : "Unassigned";
@@ -169,10 +165,15 @@ function Ticket() {
   // Access user data from the Redux store
   const userss = useSelector((state) => state.auth.users);
 
+  const getNameByID = (userId) => {
+    const user = userss.find((user) => user._id === userId);
+    return user ? user.name : "Unknown User";
+  };
+
   // Function to get the user's name based on their ID
   const getUserNameById = (userId) => {
     const user = userss.find((user) => user._id === userId);
-    return user ? user.name : "Unknown User";
+    return user ? user.name : "Unassigned";
   };
 
   // Access user data from the Redux store
@@ -320,7 +321,7 @@ function Ticket() {
   return (
     <div className="ticket-page">
       <header className="ticket-header">
-      <BackButton url="/" />
+       
         <h2>
           Ticket ID: {ticket.ticketID}
           <span className={`status status-${ticket.status}`}>
@@ -332,17 +333,22 @@ function Ticket() {
           Date Submitted:{" "}
           {new Date(ticket.createdAt).toLocaleString("en-US", options)}
         </h3>
-        <h3>Project: {ticket.project
-            ? projectMap[ticket.project]
-            : "Unassigned"}</h3>
+
+        <h3>
+          Project: {ticket.project ? projectMap[ticket.project] : "HRMS"}
+        </h3>
+        <h3>Created By: {getNameByID(ticket.user)}</h3>
         <h3>Assigned To: {getUserNameById(ticket.assignedTo)}</h3>
-        <div className="cc-tags">
-          {ccUsers.map((ccUser, index) => (
-            <span key={index} className="tag">
-             CC: {ccUser}
-            </span>
-          ))}
-        </div>
+        {ccUsers.length > 0 && (
+          <div className="cc-tags">
+            {ccUsers.map((ccUser, index) => (
+              <span key={index} className="tag">
+                CC: {ccUser}
+              </span>
+            ))}
+          </div>
+        )}
+
         <h3>Priority: {ticket.priority}</h3>
         <h3>Issue Type: {issueById(ticket.issueType)}</h3>
         <h3>
@@ -379,13 +385,12 @@ function Ticket() {
       <Modal
         isOpen={modalIsOpen}
         onRequestClose={closeModal}
-         style={{
-    ...customStyles,
-    zIndex: 1,
-    position: 'absolute', 
-  }}
+        style={{
+          ...customStyles,
+          zIndex: 1,
+          position: "absolute",
+        }}
         contentLabel="Add Task"
-        
       >
         <h2>Add task</h2>
         <button className="btn-close" onClick={closeModal}>
@@ -403,24 +408,22 @@ function Ticket() {
               onChange={(e) => settext(e.target.value)}
             ></textarea>
           </div>
-          <div >
+          <div>
             <label htmlFor="toTimee">Start Time:</label>
             <LocalizationProvider dateAdapter={AdapterDayjs}>
               <DemoContainer components={["TimePicker"]}>
                 <TimePicker
-                  
                   value={toTimee}
                   onChange={(newToTime) => settoTimee(newToTime)}
                 />
               </DemoContainer>
             </LocalizationProvider>
           </div>
-          <div >
+          <div>
             <label htmlFor="fromTimee">End Time:</label>
             <LocalizationProvider dateAdapter={AdapterDayjs}>
               <DemoContainer components={["TimePicker"]}>
                 <TimePicker
-                  
                   value={fromTimee}
                   onChange={(newFromTime) => setfromTimee(newFromTime)}
                 />
@@ -435,50 +438,55 @@ function Ticket() {
         </form>
       </Modal>
 
-      <div style={{ height: 400, width: "100%", marginBottom: 30, position: 'relative', zIndex: 0 }}>
+      <div
+        style={{
+          height: 400,
+          width: "100%",
+          marginBottom: 30,
+          position: "relative",
+          zIndex: 0,
+        }}
+      >
         <DataGrid
           rows={rows}
           columns={columns}
           pageSize={5} // You can adjust the number of rows per page
         />
       </div>
-{ticket.status !== "close" && (
-<MediaUpload ticketID={ticket._id} />
-)}
- <div className="form-group mt-6 space-x-6 flex justify-center">
-    
-    {userRole &&
-        allowedRolesReview.includes(userRole) &&
-        ticket.status !== "review" &&
-        ticket.status !== "close" && (
-          <Button
-            variant="contained"
-            color="success"
-            endIcon={<SendIcon />}
-            onClick={onTicketSendForReview}
-          >
+      {ticket.status !== "close" && <MediaUpload ticketID={ticket._id} />}
+      <div className="form-group mt-6 space-x-6 flex justify-center">
+        {userRole &&
+          allowedRolesReview.includes(userRole) &&
+          ticket.status !== "review" &&
+          ticket.status !== "close" && (
+            <Button
+              variant="contained"
+              color="success"
+              endIcon={<SendIcon />}
+              onClick={onTicketSendForReview}
+            >
               Send ticket for review
-          </Button>
-
-)}
-
-{ticket.status !== "close" &&
-        userRole &&
-        allowedRoles.includes(userRole) && (
-          <Button
-  variant="contained"
-  color="primary"
-  startIcon={<CloseIcon />}
-  onClick={onTicketClose}
-  style={{ backgroundColor: 'red', color: 'white' }}
->
-  Close Ticket
-</Button>
-
+            </Button>
           )}
 
-{(ticket.status === "draft" || (ticket.status === "close" && userRole &&
-        allowedRoles.includes(userRole))) && (
+        {ticket.status !== "close" &&
+          userRole &&
+          allowedRoles.includes(userRole) && (
+            <Button
+              variant="contained"
+              color="primary"
+              startIcon={<CloseIcon />}
+              onClick={onTicketClose}
+              style={{ backgroundColor: "red", color: "white" }}
+            >
+              Close Ticket
+            </Button>
+          )}
+
+        {(ticket.status === "draft" ||
+          (ticket.status === "close" &&
+            userRole &&
+            allowedRoles.includes(userRole))) && (
           <Button
             variant="contained"
             color="primary"
@@ -487,8 +495,8 @@ function Ticket() {
           >
             Open Ticket
           </Button>
-          )}
-        </div>
+        )}
+      </div>
     </div>
   );
 }

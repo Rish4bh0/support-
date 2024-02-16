@@ -48,7 +48,7 @@ const Sidebar = () => {
         <>
           <div className="h-16 mb-4 sticky top-0 bg-white z-10">
             <Link
-              to="/"
+              to="/new-ticket"
               onClick={handleCloseSideBar}
               className="flex items-center justify-center p-3"
             >

@@ -100,7 +100,6 @@ function OrganizationList() {
 
   return (
     <>
-      <BackButton url="/" />
       <div>
       <h1 className="text-xl font-extrabold text-14 mb-10">
           {" "}
