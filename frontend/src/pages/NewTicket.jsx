@@ -277,7 +277,7 @@ function NewTicket() {
   // Define an array of roles that should see the "Dashboard" link
   const allowedRoles = ["ADMIN", "SUPERVISOR"];
 
-  const allowedRolesReview = ["ADMIN", "SUPERVISOR", "ORGAGENT"];
+  const org = ["ADMIN", "SUPERVISOR", "EMPLOYEE"];
 
   if (isLoading) return <Spinner />;
   if (uploading) return <Spinner uploadProgress={uploadProgress} />;
@@ -301,6 +301,7 @@ function NewTicket() {
                   fullWidth
                 />
               </Grid>
+              {userRole && org.includes(userRole) && (
               <Grid item xs={6}>
                 <FormControl fullWidth>
                   <InputLabel htmlFor="organization">Organization</InputLabel>
@@ -346,6 +347,7 @@ function NewTicket() {
                   </Select>
                 </FormControl>
               </Grid>
+              )}
 
               {userRole && allowedRoles.includes(userRole) && (
                 <Grid item xs={6}>

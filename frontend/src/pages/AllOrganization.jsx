@@ -47,6 +47,7 @@ function OrganizationList() {
   const [newFocalPersonContact, setFocalPersonContact] = useState("");
   const [newFocalPersonEmail, setFocalPersonEmail] = useState("");
   const [payment, setPayment] = useState("");
+  const [newCode, setCode ] = useState("");
   
   const [updateName, setUpdateOrganizationName] = useState("");
   const [updateEmail, setUpdateEmail] = useState("");
@@ -55,6 +56,7 @@ function OrganizationList() {
   const [updatefocalPersonContact, setUpdateFocalPersonContact] = useState("");
   const [updateFocalPersonEmail, setUpdateFocalPersonEmail] = useState("");
   const [updatePayment, setUpdatePayment] = useState("");
+  const [updateCode, setUpdateCode ] = useState("");
   
   const dispatch = useDispatch();
 
@@ -90,6 +92,7 @@ function OrganizationList() {
         setUpdateFocalPersonEmail(selectedOrganization.focalPersonEmail);
         setUpdateFocalPersonName(selectedOrganization.focalPersonName);
         setUpdatePayment(selectedOrganization.payment);
+        setUpdateCode(selectedOrganization.code);
       }
   
       // Open the modal for updating
@@ -186,6 +189,7 @@ function OrganizationList() {
       focalPersonEmail: selectedOrganizationId ? updateFocalPersonEmail : newFocalPersonEmail,
       focalPersonName: selectedOrganizationId ? updateFocalPersonName : newFocalPersonName,
       payment: selectedOrganizationId? updatePayment : payment,
+      code: selectedOrganizationId? updateCode : newCode,
     };
   
      
@@ -416,6 +420,19 @@ function OrganizationList() {
                 onChange={(e) => setFocalPersonContact(e.target.value)}
               />
             </div>
+            <div>
+              <div className="form-group">
+                <label htmlFor="code">Office code (2-digit)</label>
+                <input
+                type="text"
+                id="code"
+                name="code"
+                placeholder="Enter 2 digit office code"
+                value={newCode}
+                onChange={(e) => setCode(e.target.value)}
+                />
+              </div>
+            </div>
             <div className="form-group">
             <label htmlFor="payment">Payment Type</label>
             <select
@@ -538,6 +555,19 @@ function OrganizationList() {
                 value={updatefocalPersonContact}
                 onChange={(e) => setUpdateFocalPersonContact(e.target.value)}
               />
+            </div>
+            <div>
+              <div className="form-group">
+                <label htmlFor="code">Office code (2-digit)</label>
+                <input
+                type="text"
+                id="code"
+                name="code"
+                placeholder="Enter 2 digit office code"
+                value={updateCode}
+                onChange={(e) => setUpdateCode(e.target.value)}
+                />
+              </div>
             </div>
             <div className="form-group">
             <label htmlFor="payment">Payment Type</label>

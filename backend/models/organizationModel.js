@@ -20,6 +20,11 @@ const organizationSchema = mongoose.Schema({
   focalPersonEmail:{
     type: String
   },
+  code:{
+    type: String,
+    required: true,
+    unique: true,
+  },
   payment: {
     type: String,
     enum: [

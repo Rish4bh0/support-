@@ -48,7 +48,7 @@ async function generateTicketID(organizationId) {
   try {
     // Fetch organization prefix
     const organization = await Organization.findById(organizationId);
-    const organizationPrefix = organization.name.substring(0, 2).toUpperCase();
+    const organizationPrefix = organization.code;
     console.log('Organization Prefix:', organizationPrefix);
 
     // Fetch the latest ticket for the organization
@@ -71,7 +71,7 @@ async function generateTicketID(organizationId) {
     }
 
     // Format the ticket ID with prefix and padded ticket number
-    const ticketID = `${organizationPrefix}00${ticketNumber.toString().padStart(2, '0')}`;
+    const ticketID = `${organizationPrefix}${ticketNumber.toString().padStart(4, '0')}`;
     console.log('Generated Ticket ID:', ticketID);
 
     return ticketID;
@@ -403,81 +403,6 @@ const updateTicket = asyncHandler(async (req, res) => {
   }
 });
 
-
-{/*
-const updateTicket = asyncHandler(async (req, res) => {
-  const ticketId = req.params.id;
-  const updatedTicketData = req.body;
-  const assignedTo = req.body.assignedTo;
-
-let assignedToUser = null;
-
-
- if (assignedTo) {
-   assignedToUser = await User.findById(assignedTo);
-
-   if (!assignedToUser) {
-     res.status(400);
-     throw new Error('Assigned user not found');
-   }
- }
-
-
- 
-    const ticketLink = `http://localhost:5000/ticket/${ticketId}`;
- if (assignedToUser) {
-  const assignedToEmail = assignedToUser.email; // Assuming you have an 'email' field in your User model
-  await transporter.sendMail({
-    from: 'helpdeskx1122@gmail.com', // Replace with your Gmail email address
-    to: assignedToEmail,
-    subject: 'Ticket Updated',
-    html: `<p style="text-align: left;">Dear ${assignedToUser.name},</p>
-      <p style="text-align: left;">You have been assigned a new ticket (ID: ${ticketId}). Please click this <a href="${ticketLink}">link</a> to view the ticket.</p>
-      <p style="text-align: left;">Best Regards,</p>`,
-  });
-
-  // add notification for login
-await notification.create({
-user: assignedToUser._id,
-title: 'Ticket Assignment',
-type: 1,
-text: `Ticket assigned at ${new Date()} (ID: ${ticketId})`,
-read: false,
-})
-}
-  // Check if the request includes a status update
-  if (req.body.status === 'close') {
-    // Set the 'closedAt' field to the current date and time
-    req.body.closedAt = new Date();
-  }
-  // Use findByIdAndUpdate to update the ticket with the new data
-  const updatedTicket = await Ticket.findByIdAndUpdate(
-    ticketId,
-    updatedTicketData,
-    {
-      new: true,
-    }
-  );
-
-    // If cc is provided, update the cc field
-    if (cc) {
-      // Ensure cc is an array of user ObjectId values
-      const ccArray = Array.isArray(cc) ? cc : [cc];
-  
-      // Update cc field in the ticket
-      updatedTicketData.cc = ccArray;
-    }
-  
-
-  if (!updatedTicket) {
-    res.status(404);
-    throw new Error('Ticket not found');
-  }
-
-  res.status(200).json(updatedTicket);
-});
-
-*/}
 
 const report = async (req, res) => {
   try {

@@ -221,23 +221,6 @@ const Report = ({ organzationName }) => {
                 ))}
               </Select>
             </div>
-            {/*
-          <div>
-            <label className="block text-gray-700">Project Filter</label>
-            <Select
-              value={selectedProject}
-              onChange={(e) => setSelectedProject(e.target.value)}
-              className="border border-gray-300 rounded w-40 h-10"
-            >
-              <MenuItem value="">All</MenuItem>
-              {projects.map((project) => (
-                <MenuItem key={project._id} value={project.projectName}>
-                  {project.projectName}
-                </MenuItem>
-              ))}
-            </Select>
-          </div>
-          */}
             <div className="w-full">
               <label className="block text-gray-700 text-sm font-semibold mb-2">
                 Payment Filter
