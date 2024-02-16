@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { useParams } from 'react-router-dom';
+import { environment } from '../lib/environment';
 
 const ResetPassword = () => {
   const { token } = useParams();
@@ -9,7 +10,7 @@ const ResetPassword = () => {
     e.preventDefault();
     // Send a POST request to your API endpoint (e.g., /api/users/reset-password/:token) with the new password and token data
     try {
-      const response = await fetch(`http://localhost:5000/api/users/reset-password/${token}`, {
+      const response = await fetch(environment.SERVER_URL+`/api/users/reset-password/${token}`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',

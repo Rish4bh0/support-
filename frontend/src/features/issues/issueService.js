@@ -1,6 +1,7 @@
 import axios from 'axios';
+import { environment } from '../../lib/environment'
 
-const API_URL = 'http://localhost:5000/api/issues/';
+const API_URL = environment.SERVER_URL+'/api/issues/';
 
 const createIssueType = async (issueData, token) => {
   const config = {

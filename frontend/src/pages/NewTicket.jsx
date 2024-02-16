@@ -30,6 +30,7 @@ import { getAllOrganization } from "../features/organization/organizationSlice";
 import { getAllIssueTypes } from "../features/issues/issueSlice";
 import axios from "axios";
 import { getAllProject } from "../features/project/projectSlice";
+import { environment } from "../lib/environment";
 
 function NewTicket() {
   const { user } = useSelector((state) => state.auth);
@@ -238,7 +239,7 @@ function NewTicket() {
 
         // Send a request to the media upload endpoint (http://localhost:5000/upload)
         const mediaResponse = await axios.post(
-          "http://localhost:5000/upload",
+          environment.SERVER_URL+"/upload",
           formData,
           {
             headers: {

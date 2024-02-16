@@ -140,62 +140,60 @@ function Ticketss() {
 
   return (
     <>
-      <div className="flex items-center justify-between mb-4">
-        <div className="flex items-center">
-          <label htmlFor="status-dropdown" className="mr-2">
-            Status:
-          </label>
-          <select
-            id="status-dropdown"
-            className="px-2 py-1 border border-gray-300 rounded"
-            value={selectedStatus}
-            onChange={(e) => handleStatusChange(e.target.value)}
-          >
-            {statusOptions.map((status) => (
-              <option key={status} value={status}>
-                {status === "all" ? "All Tickets" : `${status.charAt(0).toUpperCase()}${status.slice(1)} Tickets`}
-              </option>
-            ))}
-          </select>
-        </div>
-        <div className="flex items-center">
-          <label htmlFor="start-date" className="mr-2">
+      <div className="bg-white flex justify-between gap-3 mb-7">
+            <div className="w-full">
+              <label htmlFor="status-dropdown" className="block text-gray-700 text-sm font-semibold mb-2">Status:</label>
+              <select
+                id="status-dropdown"
+                className="border border-gray-300 rounded py-2 px-3 w-full"
+                value={activeTab}
+                onChange={(e) => handleTabChange(e.target.value)}
+              >
+                {statusOptions.map((status) => (
+                  <option key={status} value={status}>
+                    {status === "all" ? "All Tickets" : `${status.charAt(0).toUpperCase()}${status.slice(1)} Tickets`}
+                  </option>
+                ))}
+              </select>
+            </div>
+            <div className="w-full">
+              <label className="block text-gray-700 text-sm font-semibold mb-2">
             Start Date:
           </label>
           <input
-            id="start-date"
+             className="border border-gray-300 rounded py-2 px-3 w-full"
             type="date"
-            className="px-2 py-1 border border-gray-300 rounded"
             
             onChange={(e) => setStartDate(new Date(e.target.value))}
           />
-        </div>
-        <div className="flex items-center">
-          <label htmlFor="end-date" className="mr-2">
+
+</div>
+            <div className="w-full">
+          <label className="block text-gray-700 text-sm font-semibold mb-2 mr-2">
             End Date:
           </label>
           <input
-            id="end-date"
+             className="border border-gray-300 rounded py-2 px-3 w-full"
             type="date"
-            className="px-2 py-1 border border-gray-300 rounded"
-            
+           
             onChange={(e) => setEndDate(new Date(e.target.value))}
           />
-        </div>
-        <div className="flex items-center">
-          <label htmlFor="rows-per-page" className="mr-2">
+          </div>
+            <div className="w-full">
+            <label className="block text-gray-700 text-sm font-semibold mb-2 mr-2">
             Rows Per Page:
           </label>
           <input
-            id="rows-per-page"
+            className="border border-gray-300 rounded py-2 px-3 w-full"
             type="number"
             min="1"
-            className="px-2 py-1 border border-gray-300 rounded"
             value={rowsPerPage}
             onChange={(e) => setRowsPerPage(parseInt(e.target.value))}
           />
-        </div>
-      </div>
+            </div>
+            
+            </div>
+            
       <div className="tickets" >
         <div className="ticket-headings">
           <div >Ticket ID</div>

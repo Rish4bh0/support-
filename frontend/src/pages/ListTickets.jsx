@@ -186,6 +186,7 @@ const filteredTickets = allTickets.filter(ticket => {
             
             </div>
             
+            
       <div className="tickets">
         <div className="ticket-headings">
           <div>Ticket ID</div>

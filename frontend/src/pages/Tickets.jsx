@@ -2,7 +2,11 @@ import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import Spinner from "../components/Spinner";
 import BackButton from "../components/BackButton";
-import { getTickets, reset, getAllTickets } from "../features/tickets/ticketSlice";
+import {
+  getTickets,
+  reset,
+  getAllTickets,
+} from "../features/tickets/ticketSlice";
 import TicketItem from "../components/TicketItem";
 import { fetchAllUsers } from "../features/auth/authSlice";
 import { getAllIssueTypes } from "../features/issues/issueSlice";
@@ -15,8 +19,8 @@ import { getAllProject } from "../features/project/projectSlice";
 function Tickets() {
   const { tickets, isLoading } = useSelector((state) => state.tickets);
   const dispatch = useDispatch();
-  const userRole = useSelector(state => state.auth.user.role);
-  const [activeTab, setActiveTab] = useState("all");  // Set initial tab to "all"
+  const userRole = useSelector((state) => state.auth.user.role);
+  const [activeTab, setActiveTab] = useState("all"); // Set initial tab to "all"
   const [currentPage, setCurrentPage] = useState({
     all: 1,
     new: 1,
@@ -24,7 +28,7 @@ function Tickets() {
     review: 1,
     close: 1,
   });
-  const [startDate, setStartDate] = useState(null); 
+  const [startDate, setStartDate] = useState(null);
   const [endDate, setEndDate] = useState(null);
 
   const [rowsPerPage, setRowsPerPage] = useState(3);
@@ -46,28 +50,27 @@ function Tickets() {
     dispatch(getAllProject());
   }, [dispatch]);
 
-  
-
   const newTickets = tickets.filter((ticket) => ticket.status === "new");
   const openTickets = tickets.filter((ticket) => ticket.status === "open");
   const closedTickets = tickets.filter((ticket) => ticket.status === "close");
   const reviewTickets = tickets.filter((ticket) => ticket.status === "review");
 
   // Filter tickets based on active tab and date range
-const filteredTickets = tickets.filter(ticket => {
-  if (activeTab !== "all" && ticket.status !== activeTab) return false;
-  if (startDate && new Date(ticket.createdAt) < startDate) return false;
-  if (endDate && new Date(ticket.createdAt) > endDate) return false;
-  return true;
-});
+  const filteredTickets = tickets.filter((ticket) => {
+    if (activeTab !== "all" && ticket.status !== activeTab) return false;
+    if (startDate && new Date(ticket.createdAt) < startDate) return false;
+    if (endDate && new Date(ticket.createdAt) > endDate) return false;
+    return true;
+  });
 
   // Paginate the filtered tickets
   const startIndex = (currentPage[activeTab] - 1) * rowsPerPage;
   const endIndex = startIndex + rowsPerPage;
-  const sortedTickets = [...filteredTickets].sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
+  const sortedTickets = [...filteredTickets].sort(
+    (a, b) => new Date(b.createdAt) - new Date(a.createdAt)
+  );
   const paginatedTickets = sortedTickets.slice(startIndex, endIndex);
   const totalPages = Math.ceil(filteredTickets.length / rowsPerPage);
-
 
   const handlePageChange = (page, status) => {
     setCurrentPage({
@@ -100,7 +103,9 @@ const filteredTickets = tickets.filter(ticket => {
     pageButtons.push(
       <button
         key={i}
-        className={`btn btn-reverse btn-back ${currentPage[activeTab] === i ? "active" : ""}`}
+        className={`btn btn-reverse btn-back ${
+          currentPage[activeTab] === i ? "active" : ""
+        }`}
         onClick={() => handlePageChange(i, activeTab)}
       >
         {i}
@@ -117,54 +122,56 @@ const filteredTickets = tickets.filter(ticket => {
   };
 
   const statusOptions = ["all", "new", "open", "review", "close"];
-  
+
   return (
-    
-    
-   
-     
-        <>
-          <div className="bg-white flex justify-between gap-3 mb-7">
-            <div className="w-full">
-              <label htmlFor="status-dropdown" className="block text-gray-700 text-sm font-semibold mb-2">Status:</label>
-              <select
-                id="status-dropdown"
-                className="border border-gray-300 rounded py-2 px-3 w-full"
-                value={activeTab}
-                onChange={(e) => handleTabChange(e.target.value)}
-              >
-                {statusOptions.map((status) => (
-                  <option key={status} value={status}>
-                    {status === "all" ? "All Tickets" : `${status.charAt(0).toUpperCase()}${status.slice(1)} Tickets`}
-                  </option>
-                ))}
-              </select>
-            </div>
-            <div className="w-full">
-              <label className="block text-gray-700 text-sm font-semibold mb-2">
+    <>
+      <div className="bg-white flex justify-between gap-3 mb-7">
+        <div className="w-full">
+          <label
+            htmlFor="status-dropdown"
+            className="block text-gray-700 text-sm font-semibold mb-2"
+          >
+            Status:
+          </label>
+          <select
+            id="status-dropdown"
+            className="border border-gray-300 rounded py-2 px-3 w-full"
+            value={activeTab}
+            onChange={(e) => handleTabChange(e.target.value)}
+          >
+            {statusOptions.map((status) => (
+              <option key={status} value={status}>
+                {status === "all"
+                  ? "All Tickets"
+                  : `${status.charAt(0).toUpperCase()}${status.slice(
+                      1
+                    )} Tickets`}
+              </option>
+            ))}
+          </select>
+        </div>
+        <div className="w-full">
+          <label className="block text-gray-700 text-sm font-semibold mb-2">
             Start Date:
           </label>
           <input
-             className="border border-gray-300 rounded py-2 px-3 w-full"
+            className="border border-gray-300 rounded py-2 px-3 w-full"
             type="date"
-            
             onChange={(e) => setStartDate(new Date(e.target.value))}
           />
-
-</div>
-            <div className="w-full">
+        </div>
+        <div className="w-full">
           <label className="block text-gray-700 text-sm font-semibold mb-2 mr-2">
             End Date:
           </label>
           <input
-             className="border border-gray-300 rounded py-2 px-3 w-full"
+            className="border border-gray-300 rounded py-2 px-3 w-full"
             type="date"
-           
             onChange={(e) => setEndDate(new Date(e.target.value))}
           />
-          </div>
-            <div className="w-full">
-            <label className="block text-gray-700 text-sm font-semibold mb-2 mr-2">
+        </div>
+        <div className="w-full">
+          <label className="block text-gray-700 text-sm font-semibold mb-2 mr-2">
             Rows Per Page:
           </label>
           <input
@@ -174,63 +181,62 @@ const filteredTickets = tickets.filter(ticket => {
             value={rowsPerPage}
             onChange={(e) => setRowsPerPage(parseInt(e.target.value))}
           />
-            </div>
-            
-            </div>
-            
-      
-          
-      
-          <div className="tickets">
-            <div className="ticket-headings">
-              <div>Ticket ID</div>
-              <div>Date</div>
-              <div>Assigned To</div>
-              <div>Priority</div>
-              <div>Issue Type</div>
-              <div>Status</div>
-              <div>Office</div>
-              <div>Actions</div>
-            </div>
-            {isLoading && (
-        <div className="text-center my-4">
-          <Spinner />
         </div>
-      )}
-            {filteredTickets.length === 0 ? (
-              <div className="mt-28 mb-28 justify-center text-center">No tickets available</div>
-            ) : null}
-           
-            {paginatedTickets.map((ticket) => (
-              <TicketItem key={ticket._id} ticket={ticket} />
-            ))}
+      </div>
+
+      <div className="tickets">
+        <div className="ticket-headings">
+          <div>Ticket ID</div>
+          <div>Date</div>
+          <div>Assigned To</div>
+          <div>Priority</div>
+          <div>Issue Type</div>
+          <div>Status</div>
+          <div>Office</div>
+          <div>Actions</div>
+        </div>
+        {isLoading && (
+          <div className="text-center my-4">
+            <Spinner />
           </div>
-          <div className="pagination-row">
-            <div className="pagination-buttons">
-              <button
-                className="btn btn-reverse btn-back"
-                onClick={handlePrevPage}
-                disabled={currentPage[activeTab] === 1}
-              >
-                <FaArrowLeft />
-              </button>
-              <div className="page-buttons-row">
-                {pageButtons.slice(
-                  Math.max(0, currentPage[activeTab] - Math.floor(maxPageButtons / 2)),
-                  currentPage[activeTab] + Math.floor(maxPageButtons / 2)
-                )}
-              </div>
-              <button
-                className="btn btn-reverse btn-back"
-                onClick={handleNextPage}
-                disabled={currentPage[activeTab] === totalPages}
-              >
-                <FaArrowRight />
-              </button>
-            </div>
+        )}
+        {filteredTickets.length === 0 ? (
+          <div className="mt-28 mb-28 justify-center text-center">
+            No tickets available
           </div>
-        
-     
+        ) : null}
+
+        {paginatedTickets.map((ticket) => (
+          <TicketItem key={ticket._id} ticket={ticket} />
+        ))}
+      </div>
+      <div className="pagination-row">
+        <div className="pagination-buttons">
+          <button
+            className="btn btn-reverse btn-back"
+            onClick={handlePrevPage}
+            disabled={currentPage[activeTab] === 1}
+          >
+            <FaArrowLeft />
+          </button>
+          <div className="page-buttons-row">
+            {pageButtons.slice(
+              Math.max(
+                0,
+                currentPage[activeTab] - Math.floor(maxPageButtons / 2)
+              ),
+              currentPage[activeTab] + Math.floor(maxPageButtons / 2)
+            )}
+          </div>
+          <button
+            className="btn btn-reverse btn-back"
+            onClick={handleNextPage}
+            disabled={currentPage[activeTab] === totalPages}
+          >
+            <FaArrowRight />
+          </button>
+        </div>
+      </div>
     </>
   );
 }

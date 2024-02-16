@@ -3,6 +3,7 @@ import FsLightbox from 'fslightbox-react';
 import { Button, CircularProgress, Card, CardContent, CardActions, Grid, TextField } from "@mui/material";
 import ImageIcon from '@mui/icons-material/Image';
 import { useState, useEffect } from 'react';
+import { environment } from '../lib/environment';
 
 const MediaItem = ({ item, onDelete }) => (
   <Card style={{ margin: '10px', maxWidth: '200px' }}>
@@ -45,7 +46,7 @@ const [loading, setLoading] = useState(true);
         return;
       }
   
-      const response = await axios.get(`http://localhost:5000/media?ticketID=${ticketID}`);
+      const response = await axios.get(environment.SERVER_URL+`/media?ticketID=${ticketID}`);
       setMediaItems(response.data);
     } catch (error) {
       console.error('Error fetching media:', error);
@@ -74,7 +75,7 @@ const [loading, setLoading] = useState(true);
 
       formData.append('ticketID', ticketID);
 
-      const response = await axios.post('http://localhost:5000/upload', formData, {
+      const response = await axios.post(environment.SERVER_URL+'/upload', formData, {
         headers: {
           'Content-Type': 'multipart/form-data',
         },
@@ -106,7 +107,7 @@ const [loading, setLoading] = useState(true);
       setDeleting(true);
       setMediaToDelete(mediaId);
   
-      const response = await axios.delete(`http://localhost:5000/media/${mediaId}`, {
+      const response = await axios.delete(environment.SERVER_URL+`/media/${mediaId}`, {
         onDownloadProgress: (progressEvent) => {
           const progress = Math.round((progressEvent.loaded / progressEvent.total) * 100);
           setDeleteProgress(progress);
