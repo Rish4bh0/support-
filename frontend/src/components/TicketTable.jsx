@@ -1,14 +1,15 @@
-import { useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import Spinner from "../components/Spinner";
-import BackButton from "../components/BackButton";
-import { reset, getAllTickets } from "../features/tickets/ticketSlice";
-import TicketItem from "../components/TicketItem";
+import {
+  getTickets,
+  reset,
+  getAllTickets,
+} from "../features/tickets/ticketSlice";
 import { fetchAllUsers } from "../features/auth/authSlice";
 import { getAllIssueTypes } from "../features/issues/issueSlice";
-import { FaArrowLeft, FaArrowRight } from "react-icons/fa";
+import { getAllOrganization } from "../features/organization/organizationSlice";
 import { getAllProject } from "../features/project/projectSlice";
-
 import { DataGrid } from "@mui/x-data-grid";
 import ModeEditIcon from "@mui/icons-material/ModeEdit";
 import { darken, lighten, styled } from "@mui/material/styles";
@@ -16,26 +17,22 @@ import VisibilityIcon from "@mui/icons-material/Visibility";
 import { Link } from "react-router-dom";
 import Alert from '@mui/material/Alert';
 
-function CCTICKET() {
-  const { allTickets, isLoading } = useSelector((state) => state.tickets);
+
+function Tickets({tickets, isLoading, filteredTic, greetingMessage, title}) {
   const dispatch = useDispatch();
-  const userId = useSelector((state) => state.auth.user._id);
-  const userOrganization = useSelector((state) => state.auth.user.organization);
-  const [activeTab, setActiveTab] = useState("new");
+  const [activeTab, setActiveTab] = useState("all"); // Set initial tab to "all"
   const [currentPage, setCurrentPage] = useState({
+    all: 1,
     new: 1,
     open: 1,
     review: 1,
     close: 1,
   });
-  const [selectedStatus, setSelectedStatus] = useState("all");
   const [startDate, setStartDate] = useState(null);
   const [endDate, setEndDate] = useState(null);
   const [rowsPerPage, setRowsPerPage] = useState(3);
-  const itemsPerPage = rowsPerPage;
-  const maxPageButtons = 5;
 
-  
+
   const userRole = useSelector((state) => state.auth.user.role);
   const organizations = useSelector(
     (state) => state.organizations.organizations
@@ -63,41 +60,33 @@ function CCTICKET() {
   const  allowedRoles = ["ADMIN", "SUPERVISOR",  ];
   const  allowedRolesor = ["ADMIN", "SUPERVISOR","EMPLOYEE"  ];
   const org =["ORGAGENT","USER"]
-
-  useEffect(() => {
-    dispatch(fetchAllUsers());
-    dispatch(getAllIssueTypes());
-    dispatch(getAllProject());
-  }, [dispatch]);
-
   useEffect(() => {
     dispatch(getAllTickets());
+    dispatch(getTickets());
 
     return () => {
       dispatch(reset());
     };
+  }, [dispatch, reset]);
+
+  useEffect(() => {
+    dispatch(fetchAllUsers());
+    dispatch(getAllIssueTypes());
+    dispatch(getAllOrganization());
+    dispatch(getAllProject());
   }, [dispatch]);
 
-  if (isLoading) return <Spinner />;
-
-  const allTicketss = [...allTickets];
-
-
-  // Filter tickets based on the user's organization ID
-  const ticketsForUserCC = allTicketss.filter((ticket) => {
-    // Check if the user's ID is in the cc array
-    return ticket.cc.includes(userId); // Replace userId with the actual user's ID
-  });
-
-  // Apply date range filtering
-  const filteredByDateTickets = ticketsForUserCC.filter((ticket) => {
+  // Filter tickets based on active tab and date range
+  const filteredTickets = tickets.filter((ticket) => {
     if (activeTab !== "all" && ticket.status !== activeTab) return false;
     if (startDate && new Date(ticket.createdAt) < startDate) return false;
     if (endDate && new Date(ticket.createdAt) > endDate) return false;
     return true;
   });
+  
+  
 
-  const rows = filteredByDateTickets.map((ticket) => ({
+  const rows = filteredTickets.map((ticket) => ({
     ticketid: ticket._id,
     id: ticket.ticketID,
     createdAt: ticket.createdAt,
@@ -185,18 +174,10 @@ function CCTICKET() {
       ),
     },
   ];
-  const assignedUser = Object.keys(userMap).length > 0 ? Object.values(userMap)[0] : null;
-const remainingTickets = filteredByDateTickets.length;
-const greetingMessage = assignedUser ? `Hey there ${assignedUser}! Below are the tickets assigned to you. ${remainingTickets} more 🎫 to go.` : null;
+  
+  // Paginate the filtered tickets
+  const totalPages = Math.ceil(filteredTickets.length / rowsPerPage);
 
-
-  // Use filteredByDateTickets for pagination
-  const startIndex = (currentPage[activeTab] - 1) * itemsPerPage;
-  const endIndex = startIndex + itemsPerPage;
-  const sortedTickets = [...filteredByDateTickets].sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
-  const totalPages = Math.ceil(filteredByDateTickets.length / itemsPerPage);
-
-  // Event handler for changing the page
   const handlePageChange = (page, status) => {
     setCurrentPage({
       ...currentPage,
@@ -204,31 +185,16 @@ const greetingMessage = assignedUser ? `Hey there ${assignedUser}! Below are the
     });
   };
 
-  const handleNextPage = () => {
-    if (currentPage[activeTab] < totalPages) {
-      setCurrentPage({
-        ...currentPage,
-        [activeTab]: currentPage[activeTab] + 1,
-      });
-    }
-  };
-
-  const handlePrevPage = () => {
-    if (currentPage[activeTab] > 1) {
-      setCurrentPage({
-        ...currentPage,
-        [activeTab]: currentPage[activeTab] - 1,
-      });
-    }
-  };
-
+ 
   // Generate an array of page numbers to display
   const pageButtons = [];
   for (let i = 1; i <= totalPages; i++) {
     pageButtons.push(
       <button
         key={i}
-        className={`btn btn-reverse btn-back ${currentPage[activeTab] === i ? "active" : ""}`}
+        className={`btn btn-reverse btn-back ${
+          currentPage[activeTab] === i ? "active" : ""
+        }`}
         onClick={() => handlePageChange(i, activeTab)}
       >
         {i}
@@ -243,8 +209,6 @@ const greetingMessage = assignedUser ? `Hey there ${assignedUser}! Below are the
       [tab]: 1, // Reset the page to 1 for the selected status
     });
   };
-
-  const statusOptions = ["all", "draft", "new", "open", "review", "close"];
 
   const getBackgroundColor = (color, mode) =>
     mode === "dark" ? darken(color, 0.7) : lighten(color, 0.7);
@@ -365,29 +329,20 @@ const greetingMessage = assignedUser ? `Hey there ${assignedUser}! Below are the
     // minute: "2-digit",
   };
 
-  // Check if the user has one of the allowed roles
-  if (!["ADMIN", "SUPERVISOR", "EMPLOYEE", "ORGAGENT"].includes(userRole)) {
-    // Handle unauthorized access, e.g., redirect or show an error message
-    return (
-      <div>
-        <h1>Unauthorized Access</h1>
-        <p>You do not have permission to access this page.</p>
-      </div>
-    );
-  }
+  const statusOptions = ["all", "new", "open", "review", "close"];
 
-      return (
+  return (
     <div className="mt-4">
        <div className="border border-gray-300 rounded-2xl bg-white w-full">
        <div className="border-b-1 p-4 font-extrabold text-sm flex gap-2">
-          <div className="font-extrabold">Assigned Tickets</div>
+          <div className="font-extrabold">{title}</div>
         </div>
         <div className="p-4">
       <div className="bg-white flex justify-end gap-3 mb-7 ">
       <div className="w-full mt-6">
-     
-      <Alert  className="block text-gray-700 text-sm font-semibold mb-2" severity="info"><p>{greetingMessage}</p></Alert>
-     
+      
+      <Alert  className="block text-gray-700 text-sm font-semibold mb-2" severity="info"><p> {greetingMessage}</p></Alert>
+   
       </div>
         <div className="w-48">
           <label
@@ -460,5 +415,4 @@ const greetingMessage = assignedUser ? `Hey there ${assignedUser}! Below are the
     </div>
   );
 }
-
-export default CCTICKET;
+export default Tickets;

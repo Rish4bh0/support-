@@ -25,7 +25,7 @@ import {
 import SendIcon from "@mui/icons-material/Send";
 import UpdateIcon from '@mui/icons-material/Update';
 import BackButton from '../components/BackButton';
-import MediaUpload from './ImageUpload';
+import MediaUpload from './Media/ImageUpload';
 
 const UpdateProductPage = () => {
   const { ticketId } = useParams();

@@ -147,7 +147,7 @@ function Ticketss() {
                 id="status-dropdown"
                 className="border border-gray-300 rounded py-2 px-3 w-full"
                 value={activeTab}
-                onChange={(e) => handleTabChange(e.target.value)}
+                onChange={(e) => handleStatusChange(e.target.value)}
               >
                 {statusOptions.map((status) => (
                   <option key={status} value={status}>

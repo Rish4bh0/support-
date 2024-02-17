@@ -11,7 +11,7 @@ import LoginIcon from "@mui/icons-material/Login";
 
 import { getAllOrganization } from "../features/organization/organizationSlice";
 import useSocketIo from "../hooks/useSocketio";
-import NotificationModal from "../pages/NotificationModal";
+import NotificationModal from "../pages/Notification/NotificationModal";
 import { Button, Menu, MenuItem } from "@mui/material";
 import PersonIcon from "@mui/icons-material/Person";
 import SettingsIcon from "@mui/icons-material/Settings";

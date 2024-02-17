@@ -1,50 +1,52 @@
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
-import Header from "./components/Header";
 import { PrivateRoute } from "./components/PrivateRoute";
-import Home from "./pages/Home";
-import Login from "./pages/Login";
+import Home from "./pages/Home/Home.jsx";
+import Login from "./pages/Auth/Login.jsx";
 import NewTicket from "./pages/NewTicket";
-import Register from "./pages/Register";
+import Register from "./pages/Auth/Register.jsx";
 import Tickets from "./pages/Tickets";
 import Ticketss from "./pages/Ticketss";
-import Ticket from "./pages/Ticket";
+import Ticket from "./pages/Tickets/Ticket.jsx";
 import ListTickets from "./pages/ListTickets";
-import Dashboard from "./pages/Dashboard";
-import IssueTypeList from "./pages/issues";
-import ProjectList from "./pages/project";
-import IssueTypeid from "./pages/issueaction";
+import Dashboard from "./pages/Dashboard/AdminDashboard.jsx";
+import IssueTypeList from "./pages/Issue/issues.jsx";
+import ProjectList from "./pages/Project/project.jsx";
+import IssueTypeid from "./pages/Issue/issueaction.jsx";
 import UpdateTicket from "./pages/updateTicket.jsx";
-import ResetPassword from "./pages/Resetpassword";
-import Organization from "./pages/NewOrganization";
-import UpdateOrganization from "./pages/UpdateOrganization";
-import Createuser from "./pages/NewUser";
-import Updateuser from "./pages/UpdateUser";
-import OrganizationDetail from "./pages/OrganizationDetail";
-import AllOrganization from "./pages/AllOrganization";
-import Forget from "./pages/Forgotpassword";
+import ResetPassword from "./pages/Auth/Resetpassword.jsx";
+import Organization from "./pages/Office/NewOrganization.jsx";
+import UpdateOrganization from "./pages/Office/UpdateOrganization.jsx";
+import Createuser from "./pages/User/NewUser.jsx";
+import Updateuser from "./pages/User/UpdateUser.jsx";
+import OrganizationDetail from "./pages/Office/OrganizationDetail.jsx";
+import AllOrganization from "./pages/Office/AllOrganization.jsx";
+import Forget from "./pages/Auth/Forgotpassword.jsx";
 import ORGTICKET from "./pages/OrganizationTicket";
 import CCTICKET from "./pages/CCticket.jsx";
 import "./App.css";
-import { FiSettings } from "react-icons/fi";
 import { TooltipComponent } from "@syncfusion/ej2-react-popups";
 import { NavBar, Footer, Sidebar } from "./components";
-import Table from "./pages/Table.jsx";
 import { useStateContext } from "./contexts/ContextProvider";
 import { useSelector } from "react-redux";
-import Unassigned from "./pages/unassigned";
-import Report from "./pages/report";
-import One from "./pages/one";
-import Dash from "./pages/Dash";
-import Notification from "./pages/NotificationsList.js";
-import AdminPage from "./pages/AdminPage.js";
+import Report from "./pages/Dashboard/report.jsx";
+import Dash from "./pages/Dashboard/OfficeDashboard.jsx";
+import Notification from "./pages/Notification/NotificationsList.js";
 import ChatBox from "./pages/ChatWidget/page.js";
-import Admindash from "./pages/Dashboard.jsx";
-import ImageUpload from "./pages/ImageUpload.jsx";
-import OfficeUnssigned from "./pages/officeUnssigned.jsx";
+import Admindash from "./pages/Dashboard/AdminDashboard.jsx";
+import ImageUpload from "./pages/Media/ImageUpload.jsx";
+import OfficeUnssigned from "./pages/Office/officeUnssigned.jsx";
 import BasicBreadcrumbs from "./components/Breadcrumb.jsx";
 import AdminChat from "./pages/AdminPanelChat/page.jsx"
+
+import Assigned from "./pages/Tickets/Assigned.jsx"
+import CC from "./pages/Tickets/Ticketscc.jsx"
+import MyTickets from "./pages/Tickets/MyTickets.jsx"
+import AllTickets from "./pages/Tickets/AllTicket.jsx"
+import Unassigned from "./pages/Tickets/unassigned.jsx";
+import OfficeTicket from "./pages/Office/OfficeTickets.jsx"
+
 
 function App() {
   const { activeMenu, setactiveMenu } = useStateContext();
@@ -86,9 +88,10 @@ function App() {
             </div>
             <div
               className={
-                user ? "p-4" : "min-h-screen flex items-center justify-center"
+                user ? "p-4 " : " min-h-screen flex items-center justify-center"
               }
             >
+              
               <BasicBreadcrumbs />
               <div
                 className={
@@ -98,8 +101,6 @@ function App() {
               ></div>
               <Routes>
                 <Route path="/" element={<Home />} />
-                <Route path="/one" element={<One />} />
-                <Route path="/table" element={<Table />} />
                 <Route path="/report" element={<Report />} />
                 <Route path="/login" element={<Login />} />
                 <Route path="/register" element={<Register />} />
@@ -114,14 +115,26 @@ function App() {
                 <Route path="/new-ticket" element={<PrivateRoute />}>
                   <Route path="/new-ticket" element={<NewTicket />} />
                 </Route>
+                <Route path="/assigned" element={<PrivateRoute />}>
+                  <Route path="/assigned" element={<Assigned />} />
+                </Route>
+                <Route path="/CC" element={<PrivateRoute />}>
+                  <Route path="/CC" element={<CC />} />
+                </Route>
+                <Route path="/my-tickets" element={<PrivateRoute />}>
+                  <Route path="/my-tickets" element={<MyTickets />} />
+                </Route>
+                <Route path="/all-tickets" element={<PrivateRoute />}>
+                  <Route path="/all-tickets" element={<AllTickets />} />
+                </Route>
+                <Route path="/office-tickets" element={<PrivateRoute />}>
+                  <Route path="/office-tickets" element={<OfficeTicket />} />
+                </Route>
                 <Route path="/admin-chat" element={<PrivateRoute />}>
                   <Route path="/admin-chat" element={<AdminChat />} />
                 </Route>
                 <Route path="/admindash" element={<PrivateRoute />}>
                   <Route path="/admindash" element={<Admindash />} />
-                </Route>
-                <Route path="/admin" element={<PrivateRoute />}>
-                  <Route path="/admin" element={<AdminPage />} />
                 </Route>
                 <Route path="/unassigned" element={<PrivateRoute />}>
                   <Route path="/unassigned" element={<Unassigned />} />
