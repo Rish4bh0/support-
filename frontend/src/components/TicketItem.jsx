@@ -15,10 +15,16 @@ function TicketItem({ ticket }) {
   const userRole = useSelector((state) => state.auth.user?.role);
 
   // Define an array of roles that should see the "Dashboard" link
+<<<<<<< HEAD
   const allowedRolesOrg = ["ADMIN", "SUPERVISOR", "ORGAGENT", "USER"];
+
   const allowedRoles = ["ADMIN", "SUPERVISOR"];
-  const allowedRolesor = ["ADMIN", "SUPERVISOR", "EMPLOYEE"];
-  const org = ["ORGAGENT", "USER"];
+=======
+  const allowedRolesOrg = ["ADMIN", "SUPERVISOR", "ORGAGENT","USER" ];
+  const  allowedRoles = ["ADMIN", "SUPERVISOR",  ];
+  const  allowedRolesor = ["ADMIN", "SUPERVISOR","EMPLOYEE"  ];
+  const org =["ORGAGENT","USER"]
+>>>>>>> 7317557b44518a9f2ea340cf4ca6e5a6a3d47631
   // Access the users array from the Redux state
   const users = useSelector((state) => state.auth.users);
 
@@ -73,41 +79,28 @@ function TicketItem({ ticket }) {
     <div className="ticket">
       <div>{ticket.ticketID}</div>
       {userRole && org.includes(userRole) && (
-        <div className="w-48">{ticket.title}</div>
+      <div className="w-48">{ticket.title}</div>
       )}
       <div>{new Date(ticket.createdAt).toLocaleString("en-US", options)}</div>
       {userRole && allowedRolesor.includes(userRole) && (
-        <div>{assignedToName}</div>
+      <div>{assignedToName}</div>
       )}
-      {userRole && allowedRolesor.includes(userRole) && (
-        <div className={`priority priority-${ticket.priority}`}>
-          {ticket.priority}
-        </div>
+       {userRole && allowedRolesor.includes(userRole) && (
+      <div className={`priority priority-${ticket.priority}`}>{ticket.priority}</div>
       )}
       <div>{issueTypeName}</div> {/* Display the issue type's name */}
       <div className={`status status-${ticket.status}`}>{ticket.status}</div>
       {userRole && allowedRolesor.includes(userRole) && (
-        <div>{organizationName}</div>
+      <div>{organizationName}</div>
       )}
       <div className="icon-buttons">
-        {userRole &&
-          allowedRolesOrg.includes(userRole) &&
-          ticket.status !== "draft" && (
-            <IconButton
-              component={Link}
-              to={`/ticket/${ticket._id}`}
-              className="btn btn-reverse btn-sm"
-            >
-              <VisibilityIcon />
-            </IconButton>
-          )}
-        {(ticket.status === "draft" ||
-          (userRole && allowedRoles.includes(userRole))) && (
-          <IconButton
-            component={Link}
-            to={`/ticket/${ticket._id}/update`}
-            className="btn btn-reverse btn-sm"
-          >
+      {(userRole && allowedRolesOrg.includes(userRole) && ticket.status !== 'draft') && (
+  <IconButton component={Link} to={`/ticket/${ticket._id}`} className="btn btn-reverse btn-sm">
+    < VisibilityIcon />
+  </IconButton>
+)}
+{(ticket.status === 'draft' || (userRole && allowedRoles.includes(userRole))) && (
+          <IconButton component={Link} to={`/ticket/${ticket._id}/update`} className="btn btn-reverse btn-sm">
             <EditIcon />
           </IconButton>
         )}

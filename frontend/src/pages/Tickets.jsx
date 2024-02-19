@@ -13,7 +13,7 @@ import { getAllIssueTypes } from "../features/issues/issueSlice";
 import { getAllOrganization } from "../features/organization/organizationSlice";
 
 // Import icons for "Next" and "Previous" buttons
-// import { FaArrowLeft, FaArrowRight } from "react-icons/fa";
+
 import { IoChevronForwardOutline, IoChevronBackOutline } from "react-icons/io5";
 
 import { getAllProject } from "../features/project/projectSlice";

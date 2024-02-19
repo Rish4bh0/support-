@@ -154,9 +154,9 @@ function Ticketss() {
           </select>
         </div>
       </div>
-      <div className="tickets" >
+      <div className="tickets">
         <div className="ticket-headings">
-          <div >Ticket ID</div>
+          <div>Ticket ID</div>
           {userRole && org.includes(userRole) && <div>Title</div>}
           <div>Date</div>
           {userRole && allowedRolesor.includes(userRole) && (
