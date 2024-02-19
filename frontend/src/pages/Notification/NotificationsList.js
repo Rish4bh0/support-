@@ -61,7 +61,7 @@ const NotificationsList = () => {
   const handleMarkOneAsRead = async (notificationId) => {
     try {
       const result = await axios.patch(
-       environment.SERVER_URL+ "/api/notifications",
+        "/api/notifications",
         { id: notificationId }
       );
 
@@ -92,7 +92,7 @@ const NotificationsList = () => {
   const handleMarkAllAsRead = async () => {
     try {
       const result = await axios.patch(
-       environment.SERVER_URL+ "/api/notifications/all",
+        "/api/notifications/all",
         { id: user._id }
       );
 
@@ -119,7 +119,7 @@ const NotificationsList = () => {
   const handleDeleteNotification = async (notificationId) => {
     try {
       const result = await axios.delete(
-       environment.SERVER_URL+ "/api/notifications",
+        "/api/notifications",
         { data: { id: notificationId } }
       );
       const newNotifications = data?.notifications?.filter(
@@ -141,7 +141,7 @@ const NotificationsList = () => {
   const handleDeleteAll = async () => {
     try {
       const result = await axios.delete(
-        environment.SERVER_URL+"/api/notifications/all",
+        "/api/notifications/all",
         { data: { id: user._id } }
       );
       setData(null);
