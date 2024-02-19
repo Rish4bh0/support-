@@ -11,7 +11,7 @@ import {
 function MyTickets  ()  {
     const { ticketss, isLoading } = useSelector((state) => state.tickets)
     const dispatch = useDispatch();
-
+    const user = useSelector((state) => state.auth.user)
     useEffect(() => {
         dispatch(getAllTickets());
         dispatch(getTicketss());
@@ -22,7 +22,7 @@ function MyTickets  ()  {
 
      
       const title = 'My Tickets'
-  const greetingMessages = `Hello ${title}`
+  const greetingMessages = `Hello ${user.name}! Below are all the tickets that you have created.`
   
   // Sorting tickets by date in descending order
   const sortedTickets = [...ticketss].sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));

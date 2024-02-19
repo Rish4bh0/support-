@@ -37,7 +37,9 @@ services:
       NODEMAILER_USER: helpdeskx1122@gmail.com
       NODEMAILER_PASSWORD: bxbq fqyb ptxt kckk
       SERVICE: Gmail
- 
+      NODE_ENV: development
+      APP_SERVER_URL_DEV:  http://backend
+      APP_SERVER_URL_PROD: https://dryicesupport.onrender.com
     
     depends_on:
       - mongo
@@ -47,6 +49,12 @@ services:
     build:
       dockerfile: Dockerfile.dev
       context: "./frontend"
+
+    environment:
+      NODE_ENV: development
+      REACT_APP_SERVER_URL_DEV: http://backend
+      REACT_APP_SERVER_URL_PROD: https://dryicesupport.onrender.com
+
    
 
 volumes:

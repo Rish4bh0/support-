@@ -10,6 +10,7 @@ import {
 function Assigned  ()  {
     const { tickets, isLoading } = useSelector((state) => state.tickets)
     const dispatch = useDispatch();
+    const user = useSelector((state) => state.auth.user)
 
     useEffect(() => {
         dispatch(getAllTickets());
@@ -22,7 +23,7 @@ function Assigned  ()  {
 
      
 
-  const greetingMessages = "Hello"
+  const greetingMessages = `Hello ${user.name}! Below are all the tickets assigned to you.`
   const title = 'Assigned Tickets'
   // Sorting tickets by date in descending order
   const sortedTickets = [...tickets].sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));

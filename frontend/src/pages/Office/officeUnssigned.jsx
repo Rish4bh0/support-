@@ -14,6 +14,7 @@ import Box from "@mui/material/Box";
 import { darken, lighten, styled } from "@mui/material/styles";
 import CheckCircleOutlineIcon from "@mui/icons-material/CheckCircleOutline";
 import CancelOutlinedIcon from "@mui/icons-material/CancelOutlined";
+import Alert from "@mui/material/Alert";
 
 const useStyles = makeStyles({
   highPriorityy: {
@@ -39,12 +40,16 @@ function OfficeUnassignedTickets() {
   const organizations = useSelector(
     (state) => state.organizations.organizations
   );
+  const user = useSelector((state) => state.auth.user)
   const issues = useSelector((state) => state.issueTypes.issueTypes);
   const dispatch = useDispatch();
   const userRole = useSelector((state) => state.auth.user.role);
   const [activeTab, setActiveTab] = useState("unassigned");
   const [currentPage, setCurrentPage] = useState(1);
   const itemsPerPage = 4;
+  const [startDate, setStartDate] = useState(null);
+  const [endDate, setEndDate] = useState(null);
+  
 
   const classes = useStyles();
   const options = {
@@ -206,7 +211,15 @@ function OfficeUnassignedTickets() {
     return false;
   });
 
-  const rows = filteredTickets.map((ticket) => ({
+  const filteredTicketss = filteredTickets.filter((ticket) => {
+    if (startDate && new Date(ticket.createdAt) < startDate) return false;
+    if (endDate && new Date(ticket.createdAt) > endDate) return false;
+    return true;
+  });
+
+  const sortedTickets = [...filteredTicketss].sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
+
+  const rows = sortedTickets.map((ticket) => ({
     ticketid: ticket._id,
     id: ticket.ticketID,
     createdAt: ticket.createdAt,
@@ -285,11 +298,45 @@ function OfficeUnassignedTickets() {
       ),
     },
   ];
+  const greetingMessage = `Hello ${user.name}! Below are all the unassigned tickets for ${organizationMap[user.organization]}.`
 
   return (
-    <div>
-      <div className="tab-buttons"></div>
-      <div style={{ height: 400, width: "100%" }}>
+    <div className="mt-4">
+      <div className="border border-gray-300 rounded-2xl bg-white w-full">
+        <div className="border-b-1 p-4 font-extrabold text-sm flex gap-2">
+          <div className="font-extrabold">Office-Unassigned</div>
+        </div>
+        <div className="p-4">
+        <div className="bg-white flex justify-end gap-3 mb-7 ">
+            <div className="w-full mt-6">
+              <Alert
+                className="block text-gray-700 text-sm font-semibold mb-2"
+                severity="info"
+              >
+                <p> {greetingMessage}</p>
+              </Alert>
+            </div>
+            <div className="w-48">
+              <label className="block text-gray-700 text-sm font-semibold mb-2">
+                Start Date:
+              </label>
+              <input
+                className="border border-gray-300 rounded py-2 px-3 w-full"
+                type="date"
+                onChange={(e) => setStartDate(new Date(e.target.value))}
+              />
+            </div>
+            <div className="w-48">
+              <label className="block text-gray-700 text-sm font-semibold mb-2 mr-2">
+                End Date:
+              </label>
+              <input
+                className="border border-gray-300 rounded py-2 px-3 w-full"
+                type="date"
+                onChange={(e) => setEndDate(new Date(e.target.value))}
+              />
+            </div>
+          </div>
         <StyledDataGrid
           getRowClassName={(params) => `super-app-theme--${params.row.status}`}
           rows={rows}
@@ -304,6 +351,7 @@ function OfficeUnassignedTickets() {
           disableSelectionOnClick
         />
       </div>
+    </div>
     </div>
   );
 }

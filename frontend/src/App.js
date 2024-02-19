@@ -118,8 +118,8 @@ function App() {
                 <Route path="/assigned" element={<PrivateRoute />}>
                   <Route path="/assigned" element={<Assigned />} />
                 </Route>
-                <Route path="/CC" element={<PrivateRoute />}>
-                  <Route path="/CC" element={<CC />} />
+                <Route path="/cc" element={<PrivateRoute />}>
+                  <Route path="/cc" element={<CC />} />
                 </Route>
                 <Route path="/my-tickets" element={<PrivateRoute />}>
                   <Route path="/my-tickets" element={<MyTickets />} />
