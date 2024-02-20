@@ -18,13 +18,8 @@ import {
   FormControl,
   InputLabel,
   Typography,
-  Alert,
   IconButton,
-  Card,
-  CardContent,
-  CircularProgress,
 } from "@mui/material";
-import CreateIcon from "@mui/icons-material/Create";
 import CloseIcon from "@mui/icons-material/Close";
 import { getAllOrganization } from "../features/organization/organizationSlice";
 import { getAllIssueTypes } from "../features/issues/issueSlice";

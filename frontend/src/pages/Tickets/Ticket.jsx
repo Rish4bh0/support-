@@ -439,7 +439,7 @@ function Ticket() {
         </Grid>
       </div>
 
-      <div className="border border-gray-300 rounded-2xl bg-white w-full mb-8">
+      <div className="border border-gray-300 rounded-2xl bg-white w-full mb-28">
         <div className="border-b-1 p-4 text-sm flex justify-between">
           <div className="font-extrabold">Added Task</div>
           <div>
@@ -522,50 +522,51 @@ function Ticket() {
             pageSize={5} // You can adjust the number of rows per page
           />
         </div>
-      </div>
-      {ticket.status !== "close" && <MediaUpload ticketID={ticket._id} />}
-      <div className="form-group mt-6 space-x-6 flex justify-center">
-        {userRole &&
-          allowedRolesReview.includes(userRole) &&
-          ticket.status !== "review" &&
-          ticket.status !== "close" && (
-            <Button
-              variant="contained"
-              color="success"
-              endIcon={<SendIcon />}
-              onClick={onTicketSendForReview}
-            >
-              Send ticket for review
-            </Button>
-          )}
 
-        {ticket.status !== "close" &&
-          userRole &&
-          allowedRoles.includes(userRole) && (
+        {ticket.status !== "close" && <MediaUpload ticketID={ticket._id} />}
+        <div className="card-footer p-4 border-t-1 space-x-6 text-end">
+          {userRole &&
+            allowedRolesReview.includes(userRole) &&
+            ticket.status !== "review" &&
+            ticket.status !== "close" && (
+              <Button
+                variant="contained"
+                color="success"
+                endIcon={<SendIcon />}
+                onClick={onTicketSendForReview}
+              >
+                Send ticket for review
+              </Button>
+            )}
+
+          {ticket.status !== "close" &&
+            userRole &&
+            allowedRoles.includes(userRole) && (
+              <Button
+                variant="contained"
+                color="primary"
+                startIcon={<CloseIcon />}
+                onClick={onTicketClose}
+                style={{ backgroundColor: "red", color: "white" }}
+              >
+                Close Ticket
+              </Button>
+            )}
+
+          {(ticket.status === "draft" ||
+            (ticket.status === "close" &&
+              userRole &&
+              allowedRoles.includes(userRole))) && (
             <Button
               variant="contained"
               color="primary"
-              startIcon={<CloseIcon />}
-              onClick={onTicketClose}
-              style={{ backgroundColor: "red", color: "white" }}
+              startIcon={<DoneIcon />}
+              onClick={onTicketOpen}
             >
-              Close Ticket
+              Open Ticket
             </Button>
           )}
-
-        {(ticket.status === "draft" ||
-          (ticket.status === "close" &&
-            userRole &&
-            allowedRoles.includes(userRole))) && (
-          <Button
-            variant="contained"
-            color="primary"
-            startIcon={<DoneIcon />}
-            onClick={onTicketOpen}
-          >
-            Open Ticket
-          </Button>
-        )}
+        </div>
       </div>
     </div>
   );
