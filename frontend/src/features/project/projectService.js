@@ -1,7 +1,7 @@
 import axios from 'axios';
 import { environment } from '../../lib/environment'
 
-const API_URL = '/api/project/'
+const API_URL = environment.SERVER_URL+'/api/project/'
 const createProject = async (projectData, token) => {
   const config = {
     headers: {

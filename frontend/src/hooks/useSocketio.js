@@ -7,7 +7,7 @@ import { environment } from '../lib/environment';
 const useSocketIo = () => {
   const [socket, setSocket] = useState(null);
   useEffect(() => {
-    const connect = io.connect();
+    const connect = io.connect(environment.SERVER_URL);
     setSocket(connect);
   }, []);
   return { socket };

@@ -1,12 +1,7 @@
 import { useEffect } from "react";
 import { useStateContext } from "../../contexts/ContextProvider";
+
 function Home() {
-  const { activeMenu, setactiveMenu } = useStateContext(false);
-  /*
-  useEffect(()=>{
-    setactiveMenu(false);
-  })
-  */
   return (
     <>
       <div className="absolute inset-x-44 top-64 " id="home">

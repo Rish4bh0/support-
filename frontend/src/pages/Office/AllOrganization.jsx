@@ -205,7 +205,9 @@ function OrganizationList() {
           toast.error(`Error updating organization: ${error.message}`);
         });
     } else {
+      
       dispatch(createOrganization(organizationData))
+     
         .then(() => {
           closeModal();
           toast.success("Organization added");

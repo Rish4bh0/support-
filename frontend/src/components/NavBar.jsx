@@ -2,7 +2,11 @@ import React, { useEffect, useState } from "react";
 import { AiOutlineMenu } from "react-icons/ai";
 import { BsChatLeft } from "react-icons/bs";
 import { RiNotification3Line } from "react-icons/ri";
-import { MdNotificationsActive, MdNotificationsNone, MdKeyboardArrowDown } from "react-icons/md";
+import {
+  MdNotificationsActive,
+  MdNotificationsNone,
+  MdKeyboardArrowDown,
+} from "react-icons/md";
 import { useStateContext } from "../contexts/ContextProvider";
 import { useSelector, useDispatch } from "react-redux";
 import { logout, reset } from "../features/auth/authSlice";
@@ -206,7 +210,7 @@ const NavBar = () => {
                         style={{
                           position: "absolute",
                           top: -1,
-                         
+
                           background: "#03C9D7",
                           borderRadius: "50%",
                           padding: "2px 6px",
@@ -233,8 +237,8 @@ const NavBar = () => {
                 >
                   <PersonIcon />
                   <span className="text-gray-400 font-bold ml-3 capitalize">
-                    <p>{user.name}</p> 
-                    <p> {organizationMap[user.organization] || ""} </p> 
+                    <p>{user.name}</p>
+                    <p> {organizationMap[user.organization] || ""} </p>
                   </span>
                   <MdKeyboardArrowDown className="text-gray-400 text-14" />
                 </Button>
@@ -269,17 +273,16 @@ const NavBar = () => {
                 className="p-2 rounded text-sm flex-2"
                 customFunc={handleLoginClick}
                 icon={<LoginIcon />}
-                
               />
-           
-            <NavButton
-              title="Register"
-              color="white"
+
+              <NavButton
+                title="Register"
+                color="white"
                 backgroundColor="blue"
                 className="p-2 rounded text-sm flex-2"
-              customFunc={handleRegisterClick}
-              icon={<PersonAddIcon />}
-            />
+                customFunc={handleRegisterClick}
+                icon={<PersonAddIcon />}
+              />
             </div>
           )}
         </div>

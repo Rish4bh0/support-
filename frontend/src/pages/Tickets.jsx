@@ -341,86 +341,79 @@ function Tickets() {
           <div className="font-extrabold">Assigned Tickets</div>
         </div>
         <div className="p-4">
-          <div className="bg-white flex justify-end gap-3 mb-7 ">
-            <div className="w-full mt-6">
-              {greetingMessages.map((greeting, index) => (
-                <Alert
-                  className="block text-gray-700 text-sm font-semibold mb-2"
-                  severity="info"
-                >
-                  <p key={index}>{greeting}</p>
-                </Alert>
-              ))}
-            </div>
-            <div className="w-48">
-              <label
-                htmlFor="status-dropdown"
-                className="block text-gray-700 text-sm font-semibold mb-2"
-              >
-                Status:
-              </label>
-              <select
-                id="status-dropdown"
-                className="border border-gray-300 rounded py-2 px-3 w-48"
-                value={activeTab}
-                onChange={(e) => handleTabChange(e.target.value)}
-              >
-                {statusOptions.map((status) => (
-                  <option key={status} value={status}>
-                    {status === "all"
-                      ? "All Tickets"
-                      : `${status.charAt(0).toUpperCase()}${status.slice(
-                          1
-                        )} Tickets`}
-                  </option>
-                ))}
-              </select>
-            </div>
-            <div className="w-48">
-              <label className="block text-gray-700 text-sm font-semibold mb-2">
-                Start Date:
-              </label>
-              <input
-                className="border border-gray-300 rounded py-2 px-3 w-full"
-                type="date"
-                onChange={(e) => setStartDate(new Date(e.target.value))}
-              />
-            </div>
-            <div className="w-48">
-              <label className="block text-gray-700 text-sm font-semibold mb-2 mr-2">
-                End Date:
-              </label>
-              <input
-                className="border border-gray-300 rounded py-2 px-3 w-full"
-                type="date"
-                onChange={(e) => setEndDate(new Date(e.target.value))}
-              />
-            </div>
-          </div>
-          <div>
-            <StyledDataGrid
-              getRowClassName={(params) =>
-                `super-app-theme--${params.row.status}`
-              }
-              rows={rows}
-              columns={columns}
-              initialState={{
-                ...rows.initialState,
-                pagination: { paginationModel: { pageSize: 5 } },
-              }}
-              pageSizeOptions={[5, 10, 25]}
-              page={currentPage}
-              onPageChange={(newPage) => setCurrentPage(newPage)}
-              //disableSelectionOnClick
-              checkboxSelection
-              loading={isLoading}
-              components={{
-                loadingOverlay: () => <Spinner />, // Custom spinner component
-              }}
-              className="min-w-full overflow-x-auto md:w-full"
-            />
-          </div>
+      <div className="bg-white flex justify-end gap-3 mb-7 ">
+      <div className="w-full mt-6">
+      {greetingMessages.map((greeting, index) => (
+      <Alert  className="block text-gray-700 text-sm font-semibold mb-2" severity="info"><p key={index}>{greeting}</p></Alert>
+      ))}
+      </div>
+        <div className="w-48">
+          <label
+            htmlFor="status-dropdown"
+            className="block text-gray-700 text-sm font-semibold mb-2"
+          >
+            Status:
+          </label>
+          <select
+            id="status-dropdown"
+            className="border border-gray-300 rounded py-2 px-3 w-48"
+            value={activeTab}
+            onChange={(e) => handleTabChange(e.target.value)}
+          >
+            {statusOptions.map((status) => (
+              <option key={status} value={status}>
+                {status === "all"
+                  ? "All Tickets"
+                  : `${status.charAt(0).toUpperCase()}${status.slice(
+                      1
+                    )} Tickets`}
+              </option>
+            ))}
+          </select>
         </div>
+        <div className="w-48">
+          <label className="block text-gray-700 text-sm font-semibold mb-2">
+            Start Date:
+          </label>
+          <input
+            className="border border-gray-300 rounded py-2 px-3 w-full"
+            type="date"
+            onChange={(e) => setStartDate(new Date(e.target.value))}
+          />
+        </div>
+        <div className="w-48">
+          <label className="block text-gray-700 text-sm font-semibold mb-2 mr-2">
+            End Date:
+          </label>
+          <input
+            className="border border-gray-300 rounded py-2 px-3 w-full"
+            type="date"
+            onChange={(e) => setEndDate(new Date(e.target.value))}
+          />
+        </div>
+      </div>
+      <div >
+        <StyledDataGrid
+          getRowClassName={(params) => `super-app-theme--${params.row.status}`}
+          rows={rows}
+          columns={columns}
+          initialState={{
+            ...rows.initialState,
+            pagination: { paginationModel: { pageSize: 5 } },
+          }}
+          pageSizeOptions={[5, 10, 25]}
+          page={currentPage}
+          onPageChange={(newPage) => setCurrentPage(newPage)}
+          //disableSelectionOnClick
+          checkboxSelection
+          loading={isLoading}
+          components={{
+            loadingOverlay: () => <Spinner />, // Custom spinner component
+          }}
+          className="min-w-full overflow-x-auto md:w-full"
+        />
+      </div>
+      </div>
       </div>
     </div>
   );

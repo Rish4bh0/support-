@@ -238,18 +238,22 @@ function NewTicket() {
         console.log(formData);
 
         // Send a request to the media upload endpoint (http://localhost:5000/upload)
-        const mediaResponse = await axios.post("/v1/upload", formData, {
-          headers: {
-            "Content-Type": "multipart/form-data",
-          },
-          onUploadProgress: (progressEvent) => {
-            const progress = Math.round(
-              (progressEvent.loaded / progressEvent.total) * 100
-            );
-            console.log(progress);
-            setUploadProgress(progress);
-          },
-        });
+        const mediaResponse = await axios.post(
+          environment.SERVER_URL + "/upload",
+          formData,
+          {
+            headers: {
+              "Content-Type": "multipart/form-data",
+            },
+            onUploadProgress: (progressEvent) => {
+              const progress = Math.round(
+                (progressEvent.loaded / progressEvent.total) * 100
+              );
+              console.log(progress);
+              setUploadProgress(progress);
+            },
+          }
+        );
 
         // Handle the media upload response as needed
         //const mediaUploadData = await mediaResponse.json();
@@ -258,7 +262,7 @@ function NewTicket() {
 
       // Reset form, navigate to tickets page, and show success toast
       dispatch(reset());
-      navigate("/ticketss");
+      navigate("/assigned");
       toast.success("New ticket created!");
       localStorage.removeItem("ticketDraft");
     } catch (error) {
