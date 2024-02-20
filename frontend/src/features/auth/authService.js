@@ -1,7 +1,7 @@
 import axios from 'axios'
 import { environment } from '../../lib/environment'
 
-const API_URL = '/api/users/'
+const API_URL = environment.SERVER_URL+'/api/users/'
  
 // Register user
 const register = async userData => {

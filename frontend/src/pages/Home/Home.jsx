@@ -1,16 +1,10 @@
-<<<<<<< HEAD:frontend/src/pages/Home/Home.jsx
+
 import { useEffect } from "react";
 import { useStateContext } from "../../contexts/ContextProvider";
+
+
 function Home() {
-  const { activeMenu, setactiveMenu } = useStateContext(false);
-/*
-  useEffect(()=>{
-    setactiveMenu(false);
-  })
-  */
-=======
-function Home() {
->>>>>>> eca53c304081264fab6ff6e016e69b15d0459a9f:frontend/src/pages/Home.jsx
+
   return (
     <>
       <div className="absolute inset-x-44 top-64 " id="home">

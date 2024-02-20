@@ -205,7 +205,7 @@ function OrganizationList() {
           toast.error(`Error updating organization: ${error.message}`);
         });
     } else {
-      console.log(organizationData)
+      
       dispatch(createOrganization(organizationData))
      
         .then(() => {

@@ -1,7 +1,7 @@
 import axios from 'axios'
 import { environment } from '../../lib/environment'
 
-const API_URL = '/api/tickets/'
+const API_URL = environment.SERVER_URL+'/api/tickets/'
 // Get ticket notes
 const getNotes = async (ticketId, token) => {
   const config = {

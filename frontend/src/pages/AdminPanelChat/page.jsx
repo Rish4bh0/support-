@@ -80,7 +80,7 @@ export default function Home() {
 
   const getAllChats = async () => {
     try {
-      const response = await axios.get("/api/chat/");
+      const response = await axios.get(environment.SERVER_URL+"/api/chat/");
      
       if (response && response.data) {
         setData(response.data.data);
@@ -94,7 +94,7 @@ export default function Home() {
 
   const getChat = async (id) => {
     try {
-      const response = await axios.get(`/api/chat/${id}`);
+      const response = await axios.get(environment.SERVER_URL+`/api/chat/${id}`);
       console.log("chat:" + response.data);
       if (response && response.data) {
         setChats(response.data.data.messages);
