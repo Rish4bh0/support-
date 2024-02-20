@@ -197,7 +197,7 @@ const createTicket = asyncHandler(async (req, res) => {
     // Send email to logged-in user
     const userEmail = user.email; // Assuming you have an 'email' field in your User model
     const ticketId = ticket._id; // Retrieve the ticket ID
-    const ticketLink = `http://localhost:5000/ticket/${ticketId}`;
+    const ticketLink = `http://backend/ticket/${ticketId}`;
 
     await transporter.sendMail({
       from: 'helpdeskx1122@gmail.com', // Replace with your Gmail email address
@@ -318,7 +318,7 @@ const updateTicket = asyncHandler(async (req, res) => {
       }
     }
 
-    const ticketLink = `http://localhost:5000/ticket/${ticketId}`;
+    const ticketLink = `/api/ticket/${ticketId}`;
     if (assignedToUser) {
       const assignedToEmail = assignedToUser.email;
       await transporter.sendMail({

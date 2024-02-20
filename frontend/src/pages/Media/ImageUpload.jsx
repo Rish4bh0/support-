@@ -46,7 +46,7 @@ const [loading, setLoading] = useState(true);
         return;
       }
   
-      const response = await axios.get(environment.SERVER_URL+`/media?ticketID=${ticketID}`);
+      const response = await axios.get(`/v1/media?ticketID=${ticketID}`);
       setMediaItems(response.data);
     } catch (error) {
       console.error('Error fetching media:', error);
@@ -75,7 +75,7 @@ const [loading, setLoading] = useState(true);
 
       formData.append('ticketID', ticketID);
 
-      const response = await axios.post(environment.SERVER_URL+'/upload', formData, {
+      const response = await axios.post('/v1/upload', formData, {
         headers: {
           'Content-Type': 'multipart/form-data',
         },
@@ -107,7 +107,7 @@ const [loading, setLoading] = useState(true);
       setDeleting(true);
       setMediaToDelete(mediaId);
   
-      const response = await axios.delete(environment.SERVER_URL+`/media/${mediaId}`, {
+      const response = await axios.delete(`/v1/media/${mediaId}`, {
         onDownloadProgress: (progressEvent) => {
           const progress = Math.round((progressEvent.loaded / progressEvent.total) * 100);
           setDeleteProgress(progress);

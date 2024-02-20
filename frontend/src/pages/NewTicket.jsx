@@ -239,7 +239,7 @@ function NewTicket() {
 
         // Send a request to the media upload endpoint (http://localhost:5000/upload)
         const mediaResponse = await axios.post(
-          environment.SERVER_URL+"/upload",
+          "/v1/upload",
           formData,
           {
             headers: {
