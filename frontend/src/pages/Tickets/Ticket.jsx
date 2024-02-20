@@ -36,6 +36,7 @@ import "react-responsive-carousel/lib/styles/carousel.min.css";
 import CloudUploadIcon from "@mui/icons-material/CloudUpload";
 import CloseIcon from "@mui/icons-material/Close";
 import { getAllProject } from "../../features/project/projectSlice";
+import { Grid } from "@mui/material";
 
 const customStyles = {
   content: {
@@ -320,138 +321,207 @@ function Ticket() {
 
   return (
     <div className="ticket-page">
-      <header className="ticket-header">
-       
-        <h2>
-          Ticket ID: {ticket.ticketID}
-          <span className={`status status-${ticket.status}`}>
-            {ticket.status}
-          </span>
-        </h2>
-        <h3>Ticket Title: {ticket.title}</h3>
-        <h3>
-          Date Submitted:{" "}
-          {new Date(ticket.createdAt).toLocaleString("en-US", options)}
-        </h3>
-
-        <h3>
-          Project: {ticket.project ? projectMap[ticket.project] : "HRMS"}
-        </h3>
-        <h3>Created By: {getNameByID(ticket.user)}</h3>
-        <h3>Assigned To: {getUserNameById(ticket.assignedTo)}</h3>
-        {ccUsers.length > 0 && (
-          <div className="cc-tags">
-            {ccUsers.map((ccUser, index) => (
-              <span key={index} className="tag">
-                CC: {ccUser}
+      <div className="ticket-header bg-white p-4 border rounded-lg text-sm mb-4">
+        <div className="border-b-1 font-extrabold text-sm pb-3 mb-3">
+          <div className="font-extrabold">Detail View</div>
+        </div>
+        <Grid container spacing={3}>
+          <Grid item xs={4}>
+            <div className="flex gap-2 items-center">
+              <div>
+                <label className="font-semibold">Ticket ID :</label>
+                <span>{ticket.ticketID}</span>
+              </div>
+              <span className={`status status-${ticket.status}`}>
+                {ticket.status}
               </span>
-            ))}
-          </div>
-        )}
+            </div>
+          </Grid>
+          <Grid item xs={4}>
+            <div>
+              <label className="font-semibold">Ticket Title :</label>
+              <span>{ticket.title}</span>
+            </div>
+          </Grid>
+          <Grid item xs={4}>
+            <div>
+              <label className="font-semibold">Date Submitted :</label>
+              <span>
+                {new Date(ticket.createdAt).toLocaleString("en-US", options)}
+              </span>
+            </div>
+          </Grid>
+          <Grid item xs={4}>
+            <div>
+              <label className="font-semibold">Project:</label>
+              <span>
+                {ticket.project ? projectMap[ticket.project] : "HRMS"}
+              </span>
+            </div>
+          </Grid>
+          <Grid item xs={4}>
+            <div>
+              <label className="font-semibold">Created By : </label>
+              <span>{getNameByID(ticket.user)}</span>
+            </div>
+          </Grid>
+          <Grid item xs={4}>
+            <div>
+              <label className="font-semibold">Assigned To : </label>
+              <span>{getUserNameById(ticket.assignedTo)}</span>
+            </div>
+          </Grid>
+          <Grid item xs={12}>
+            {ccUsers.length > 0 && (
+              <div className="cc-tags w-full">
+                <div className="w-full flex gap-2">
+                  <label className="font-semibold">CC : </label>
+                  {ccUsers.map((ccUser, index) => (
+                    <div key={index} className="tag">
+                      {ccUser}
+                    </div>
+                  ))}
+                </div>
+              </div>
+            )}
+          </Grid>
+          <Grid item xs={4}>
+            <div>
+              <label className="font-semibold">Priority : </label>
+              <span>{ticket.priority}</span>
+            </div>
+          </Grid>
+          <Grid item xs={4}>
+            <div>
+              <label className="font-semibold">Issue Type : </label>
+              <span>{issueById(ticket.issueType)}</span>
+            </div>
+          </Grid>
+          <Grid item xs={4}>
+            <div>
+              <label className="font-semibold">Office : </label>
+              <span>
+                {" "}
+                {ticket.organization
+                  ? organizationMap[ticket.organization]
+                  : "Unassigned"}
+              </span>
+            </div>
+          </Grid>
+          {ticket.status === "close" && (
+            <Grid item xs={4}>
+              <div>
+                <label className="font-semibold">Closed At : </label>
+                <span>
+                  {" "}
+                  {new Date(ticket.closedAt).toLocaleString(
+                    "en-US",
+                    options
+                  )}{" "}
+                </span>
+              </div>
+            </Grid>
+          )}
 
-        <h3>Priority: {ticket.priority}</h3>
-        <h3>Issue Type: {issueById(ticket.issueType)}</h3>
-        <h3>
-          Office:{" "}
-          {ticket.organization
-            ? organizationMap[ticket.organization]
-            : "Unassigned"}
-        </h3>
-        {ticket.status === "close" && (
-          <h3>
-            Closed At:{" "}
-            {new Date(ticket.closedAt).toLocaleString("en-US", options)}
-          </h3>
-        )}
-        <hr />
-        <div className="ticket-desc">
-          <h3>Description of Issue</h3>
-          <p>{ticket.description}</p>
+          <Grid item xs={12}>
+            <div className="ticket-desc flex gap-2">
+              <label className="font-semibold">Issue Description : </label>
+              <p>{ticket.description}</p>
+            </div>
+          </Grid>
+          <Grid item xs={12}>
+            {ticket.status !== "close" &&
+              userRole &&
+              allowedRoles.includes(userRole) && (
+                <label className="font-semibold">Notes : </label>
+              )}
+          </Grid>
+        </Grid>
+      </div>
+
+      <div className="border border-gray-300 rounded-2xl bg-white w-full mb-8">
+        <div className="border-b-1 p-4 text-sm flex justify-between">
+          <div className="font-extrabold">Added Task</div>
+          <div>
+            {ticket.status !== "close" &&
+              userRole &&
+              allowedRolesReview.includes(userRole) && (
+                <Button
+                  onClick={openModal}
+                  className="btn cursor-pointer flex gap-2"
+                  aria-controls="simple-menu"
+                  aria-haspopup="true"
+                  variant="contained"
+                >
+                  <FaPlus /> Add Task
+                </Button>
+              )}
+          </div>
         </div>
 
-        {ticket.status !== "close" &&
-          userRole &&
-          allowedRoles.includes(userRole) && <h2>Notes</h2>}
-      </header>
-
-      {ticket.status !== "close" &&
-        userRole &&
-        allowedRolesReview.includes(userRole) && (
-          <button onClick={openModal} className="btn">
-            <FaPlus /> Add Task
+        <Modal
+          isOpen={modalIsOpen}
+          onRequestClose={closeModal}
+          style={{
+            ...customStyles,
+            zIndex: 1,
+            position: "absolute",
+          }}
+          contentLabel="Add Task"
+        >
+          <h2>Add task</h2>
+          <button className="btn-close" onClick={closeModal}>
+            X
           </button>
-        )}
+          <form onSubmit={onNoteSubmit}>
+            <div className="form-group">
+              <label htmlFor="text">Text:</label>
+              <textarea
+                name="Task Detail"
+                id="text"
+                className="form-control"
+                placeholder="Text"
+                value={text}
+                onChange={(e) => settext(e.target.value)}
+              ></textarea>
+            </div>
+            <div>
+              <label htmlFor="toTimee">Start Time:</label>
+              <LocalizationProvider dateAdapter={AdapterDayjs}>
+                <DemoContainer components={["TimePicker"]}>
+                  <TimePicker
+                    value={toTimee}
+                    onChange={(newToTime) => settoTimee(newToTime)}
+                  />
+                </DemoContainer>
+              </LocalizationProvider>
+            </div>
+            <div>
+              <label htmlFor="fromTimee">End Time:</label>
+              <LocalizationProvider dateAdapter={AdapterDayjs}>
+                <DemoContainer components={["TimePicker"]}>
+                  <TimePicker
+                    value={fromTimee}
+                    onChange={(newFromTime) => setfromTimee(newFromTime)}
+                  />
+                </DemoContainer>
+              </LocalizationProvider>
+            </div>
+            <div className="form-group mt-10">
+              <button className="btn" type="submit">
+                Submit
+              </button>
+            </div>
+          </form>
+        </Modal>
 
-      <Modal
-        isOpen={modalIsOpen}
-        onRequestClose={closeModal}
-        style={{
-          ...customStyles,
-          zIndex: 1,
-          position: "absolute",
-        }}
-        contentLabel="Add Task"
-      >
-        <h2>Add task</h2>
-        <button className="btn-close" onClick={closeModal}>
-          X
-        </button>
-        <form onSubmit={onNoteSubmit}>
-          <div className="form-group">
-            <label htmlFor="text">Text:</label>
-            <textarea
-              name="Task Detail"
-              id="text"
-              className="form-control"
-              placeholder="Text"
-              value={text}
-              onChange={(e) => settext(e.target.value)}
-            ></textarea>
-          </div>
-          <div>
-            <label htmlFor="toTimee">Start Time:</label>
-            <LocalizationProvider dateAdapter={AdapterDayjs}>
-              <DemoContainer components={["TimePicker"]}>
-                <TimePicker
-                  value={toTimee}
-                  onChange={(newToTime) => settoTimee(newToTime)}
-                />
-              </DemoContainer>
-            </LocalizationProvider>
-          </div>
-          <div>
-            <label htmlFor="fromTimee">End Time:</label>
-            <LocalizationProvider dateAdapter={AdapterDayjs}>
-              <DemoContainer components={["TimePicker"]}>
-                <TimePicker
-                  value={fromTimee}
-                  onChange={(newFromTime) => setfromTimee(newFromTime)}
-                />
-              </DemoContainer>
-            </LocalizationProvider>
-          </div>
-          <div className="form-group mt-10">
-            <button className="btn" type="submit">
-              Submit
-            </button>
-          </div>
-        </form>
-      </Modal>
-
-      <div
-        style={{
-          height: 400,
-          width: "100%",
-          marginBottom: 30,
-          position: "relative",
-          zIndex: 0,
-        }}
-      >
-        <DataGrid
-          rows={rows}
-          columns={columns}
-          pageSize={5} // You can adjust the number of rows per page
-        />
+        <div className="p-4">
+          <DataGrid
+            rows={rows}
+            columns={columns}
+            pageSize={5} // You can adjust the number of rows per page
+          />
+        </div>
       </div>
       {ticket.status !== "close" && <MediaUpload ticketID={ticket._id} />}
       <div className="form-group mt-6 space-x-6 flex justify-center">
