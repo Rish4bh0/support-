@@ -7,6 +7,17 @@ services:
     volumes:
       - mongo_db:/data/db  
 
+  mongo-express:
+    image: mongo-express
+    container_name: mongo-express
+    environment:
+      - ME_CONFIG_MONGODB_SERVER=mongo
+      - ME_CONFIG_MONGODB_PORT=27017
+    ports:
+      - "8081:8081"
+    depends_on:
+      - mongo
+
   nginx:
     container_name: nginx
     depends_on:
