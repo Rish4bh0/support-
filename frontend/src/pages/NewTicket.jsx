@@ -239,7 +239,7 @@ function NewTicket() {
 
         // Send a request to the media upload endpoint (http://localhost:5000/upload)
         const mediaResponse = await axios.post(
-          "/v1/upload",
+         "/upload",
           formData,
           {
             headers: {
@@ -262,7 +262,7 @@ function NewTicket() {
 
       // Reset form, navigate to tickets page, and show success toast
       dispatch(reset());
-      navigate("/ticketss");
+      navigate("/assigned");
       toast.success("New ticket created!");
       localStorage.removeItem("ticketDraft");
     } catch (error) {

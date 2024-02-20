@@ -5,7 +5,7 @@ const User = require("../models/userModel");
 // Create a new organization
 const createOrganization = asyncHandler (async (req, res) => {
   try {
-    const { name, contact, email, focalPersonName, focalPersonContact, focalPersonEmail, payment } = req.body;
+    const { name, contact, email, focalPersonName, focalPersonContact, focalPersonEmail, payment, code } = req.body;
     const organization = await Organization.create({ name, contact, email, focalPersonName, focalPersonContact, focalPersonEmail, payment, code });
    
     res.status(201).json(organization);
