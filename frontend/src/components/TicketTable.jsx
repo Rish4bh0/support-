@@ -15,10 +15,9 @@ import ModeEditIcon from "@mui/icons-material/ModeEdit";
 import { darken, lighten, styled } from "@mui/material/styles";
 import VisibilityIcon from "@mui/icons-material/Visibility";
 import { Link } from "react-router-dom";
-import Alert from '@mui/material/Alert';
+import Alert from "@mui/material/Alert";
 
-
-function Tickets({tickets, isLoading, filteredTic, greetingMessage, title}) {
+function Tickets({ tickets, isLoading, filteredTic, greetingMessage, title }) {
   const dispatch = useDispatch();
   const [activeTab, setActiveTab] = useState("all"); // Set initial tab to "all"
   const [currentPage, setCurrentPage] = useState({
@@ -31,7 +30,6 @@ function Tickets({tickets, isLoading, filteredTic, greetingMessage, title}) {
   const [startDate, setStartDate] = useState(null);
   const [endDate, setEndDate] = useState(null);
   const [rowsPerPage, setRowsPerPage] = useState(3);
-
 
   const userRole = useSelector((state) => state.auth.user.role);
   const organizations = useSelector(
@@ -56,10 +54,10 @@ function Tickets({tickets, isLoading, filteredTic, greetingMessage, title}) {
   users.forEach((user) => {
     userMap[user._id] = user.name;
   });
-  const allowedRolesOrg = ["ADMIN", "SUPERVISOR", "ORGAGENT","USER" ];
-  const  allowedRoles = ["ADMIN", "SUPERVISOR",  ];
-  const  allowedRolesor = ["ADMIN", "SUPERVISOR","EMPLOYEE"  ];
-  const org =["ORGAGENT","USER"]
+  const allowedRolesOrg = ["ADMIN", "SUPERVISOR", "ORGAGENT", "USER"];
+  const allowedRoles = ["ADMIN", "SUPERVISOR"];
+  const allowedRolesor = ["ADMIN", "SUPERVISOR", "EMPLOYEE"];
+  const org = ["ORGAGENT", "USER"];
   useEffect(() => {
     dispatch(getAllTickets());
     dispatch(getTickets());
@@ -83,13 +81,12 @@ function Tickets({tickets, isLoading, filteredTic, greetingMessage, title}) {
     if (endDate && new Date(ticket.createdAt) > endDate) return false;
     return true;
   });
-  
-  
 
   const rows = filteredTickets.map((ticket) => ({
     ticketid: ticket._id,
     id: ticket.ticketID,
     createdAt: ticket.createdAt,
+    title: ticket.title,
     project: projectMap[ticket.project]
       ? projectMap[ticket.project]
       : "Unknown",
@@ -106,6 +103,9 @@ function Tickets({tickets, isLoading, filteredTic, greetingMessage, title}) {
       : "Unassigned",
   }));
 
+  const renderTitleColumn = userRole && org.includes(userRole);
+  const renderAssignedToColumn = userRole && allowedRolesor.includes(userRole);
+
   const columns = [
     { field: "id", headerName: "Ticket ID", flex: 1 },
     {
@@ -120,19 +120,31 @@ function Tickets({tickets, isLoading, filteredTic, greetingMessage, title}) {
         return formattedTime;
       },
     },
-    { field: "assignedTo", headerName: "Assigned To", flex: 1 },
-    {
-      field: "priority",
-      headerName: "Priority",
-      flex: 1,
-      renderCell: (params) => (
-        <div>
-          <span className={`priority priority-${params.value}`}>
-            {params.value}
-          </span>
-        </div>
-      ),
-    },
+    userRole &&
+      org.includes(userRole) && {
+        field: "title",
+        headerName: "Title",
+        flex: 1,
+      },
+    userRole &&
+      allowedRolesor.includes(userRole) && {
+        field: "assignedTo",
+        headerName: "Assigned To",
+        flex: 1,
+      },
+    userRole &&
+      allowedRolesor.includes(userRole) && {
+        field: "priority",
+        headerName: "Priority",
+        flex: 1,
+        renderCell: (params) => (
+          <div>
+            <span className={`priority priority-${params.value}`}>
+              {params.value}
+            </span>
+          </div>
+        ),
+      },
 
     {
       field: "issueType",
@@ -151,8 +163,12 @@ function Tickets({tickets, isLoading, filteredTic, greetingMessage, title}) {
         </div>
       ),
     },
-
-    { field: "organization", headerName: "Office", flex: 1 },
+    userRole &&
+      allowedRolesor.includes(userRole) && {
+        field: "organization",
+        headerName: "Office",
+        flex: 1,
+      },
 
     {
       field: "actions",
@@ -160,21 +176,28 @@ function Tickets({tickets, isLoading, filteredTic, greetingMessage, title}) {
       flex: 1,
       renderCell: (params) => (
         <div>
-          <Link to={`/ticket/${params.row.ticketid}/update`}>
-            <button className="group">
-              <ModeEditIcon className="text-green-500 group-hover:text-green-700 mr-8" />
-            </button>
-          </Link>
-          <Link to={`/ticket/${params.row.ticketid}`}>
-            <button className="group">
-              < VisibilityIcon  className="text-blue-500 group-hover:text-blue-700 mr-8" />
-            </button>
-          </Link>
+          {(tickets.status === "draft" ||
+            (userRole && allowedRoles.includes(userRole))) && (
+            <Link to={`/ticket/${params.row.ticketid}/update`}>
+              <button className="group">
+                <ModeEditIcon className="text-green-500 group-hover:text-green-700 mr-8" />
+              </button>
+            </Link>
+          )}
+          {userRole &&
+            allowedRolesOrg.includes(userRole) &&
+            tickets.status !== "draft" && (
+              <Link to={`/ticket/${params.row.ticketid}`}>
+                <button className="group">
+                  <VisibilityIcon className="text-blue-500 group-hover:text-blue-700 mr-8" />
+                </button>
+              </Link>
+            )}
         </div>
       ),
     },
-  ];
-  
+  ].filter(Boolean);
+
   // Paginate the filtered tickets
   const totalPages = Math.ceil(filteredTickets.length / rowsPerPage);
 
@@ -185,7 +208,6 @@ function Tickets({tickets, isLoading, filteredTic, greetingMessage, title}) {
     });
   };
 
- 
   // Generate an array of page numbers to display
   const pageButtons = [];
   for (let i = 1; i <= totalPages; i++) {
@@ -333,84 +355,89 @@ function Tickets({tickets, isLoading, filteredTic, greetingMessage, title}) {
 
   return (
     <div className="mt-4">
-       <div className="border border-gray-300 rounded-2xl bg-white w-full">
-       <div className="border-b-1 p-4 font-extrabold text-sm flex gap-2">
+      <div className="border border-gray-300 rounded-2xl bg-white w-full">
+        <div className="border-b-1 p-4 font-extrabold text-sm flex gap-2">
           <div className="font-extrabold">{title}</div>
         </div>
         <div className="p-4">
-      <div className="bg-white flex justify-end gap-3 mb-7 ">
-      <div className="w-full mt-6">
-      
-      <Alert  className="block text-gray-700 text-sm font-semibold mb-2" severity="info"><p> {greetingMessage}</p></Alert>
-   
-      </div>
-        <div className="w-48">
-          <label
-            htmlFor="status-dropdown"
-            className="block text-gray-700 text-sm font-semibold mb-2"
-          >
-            Status:
-          </label>
-          <select
-            id="status-dropdown"
-            className="border border-gray-300 rounded py-2 px-3 w-48"
-            value={activeTab}
-            onChange={(e) => handleTabChange(e.target.value)}
-          >
-            {statusOptions.map((status) => (
-              <option key={status} value={status}>
-                {status === "all"
-                  ? "All Tickets"
-                  : `${status.charAt(0).toUpperCase()}${status.slice(
-                      1
-                    )} Tickets`}
-              </option>
-            ))}
-          </select>
+          <div className="bg-white flex justify-end gap-3 mb-7 ">
+            <div className="w-full mt-6">
+              <Alert
+                className="block text-gray-700 text-sm font-semibold mb-2"
+                severity="info"
+              >
+                <p> {greetingMessage}</p>
+              </Alert>
+            </div>
+            <div className="w-48">
+              <label
+                htmlFor="status-dropdown"
+                className="block text-gray-700 text-sm font-semibold mb-2"
+              >
+                Status:
+              </label>
+              <select
+                id="status-dropdown"
+                className="border border-gray-300 rounded py-2 px-3 w-48"
+                value={activeTab}
+                onChange={(e) => handleTabChange(e.target.value)}
+              >
+                {statusOptions.map((status) => (
+                  <option key={status} value={status}>
+                    {status === "all"
+                      ? "All Tickets"
+                      : `${status.charAt(0).toUpperCase()}${status.slice(
+                          1
+                        )} Tickets`}
+                  </option>
+                ))}
+              </select>
+            </div>
+            <div className="w-48">
+              <label className="block text-gray-700 text-sm font-semibold mb-2">
+                Start Date:
+              </label>
+              <input
+                className="border border-gray-300 rounded py-2 px-3 w-full"
+                type="date"
+                onChange={(e) => setStartDate(new Date(e.target.value))}
+              />
+            </div>
+            <div className="w-48">
+              <label className="block text-gray-700 text-sm font-semibold mb-2 mr-2">
+                End Date:
+              </label>
+              <input
+                className="border border-gray-300 rounded py-2 px-3 w-full"
+                type="date"
+                onChange={(e) => setEndDate(new Date(e.target.value))}
+              />
+            </div>
+          </div>
+          <div>
+            <StyledDataGrid
+              getRowClassName={(params) =>
+                `super-app-theme--${params.row.status}`
+              }
+              rows={rows}
+              columns={columns}
+              initialState={{
+                ...rows.initialState,
+                pagination: { paginationModel: { pageSize: 5 } },
+              }}
+              pageSizeOptions={[5, 10, 25, 50, 100]}
+              page={currentPage}
+              onPageChange={(newPage) => setCurrentPage(newPage)}
+              //disableSelectionOnClick
+              checkboxSelection
+              loading={isLoading}
+              components={{
+                loadingOverlay: () => <Spinner />, // Custom spinner component
+              }}
+              className="min-w-full overflow-x-auto md:w-full"
+            />
+          </div>
         </div>
-        <div className="w-48">
-          <label className="block text-gray-700 text-sm font-semibold mb-2">
-            Start Date:
-          </label>
-          <input
-            className="border border-gray-300 rounded py-2 px-3 w-full"
-            type="date"
-            onChange={(e) => setStartDate(new Date(e.target.value))}
-          />
-        </div>
-        <div className="w-48">
-          <label className="block text-gray-700 text-sm font-semibold mb-2 mr-2">
-            End Date:
-          </label>
-          <input
-            className="border border-gray-300 rounded py-2 px-3 w-full"
-            type="date"
-            onChange={(e) => setEndDate(new Date(e.target.value))}
-          />
-        </div>
-      </div>
-      <div >
-        <StyledDataGrid
-          getRowClassName={(params) => `super-app-theme--${params.row.status}`}
-          rows={rows}
-          columns={columns}
-          initialState={{
-            ...rows.initialState,
-            pagination: { paginationModel: { pageSize: 5 } },
-          }}
-          pageSizeOptions={[5, 10, 25]}
-          page={currentPage}
-          onPageChange={(newPage) => setCurrentPage(newPage)}
-          //disableSelectionOnClick
-          checkboxSelection
-          loading={isLoading}
-          components={{
-            loadingOverlay: () => <Spinner />, // Custom spinner component
-          }}
-          className="min-w-full overflow-x-auto md:w-full"
-        />
-      </div>
-      </div>
       </div>
     </div>
   );

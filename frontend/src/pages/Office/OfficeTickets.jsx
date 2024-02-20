@@ -11,7 +11,7 @@ function OFFICETICKET  ()  {
     const { allTickets, isLoading } = useSelector((state) => state.tickets)
     const dispatch = useDispatch();
     const userOrganization = useSelector((state) => state.auth.user.organization); 
-
+    const user = useSelector((state) => state.auth.user)
     useEffect(() => {
         dispatch(getAllTickets());
         dispatch(getTickets());
@@ -23,8 +23,8 @@ function OFFICETICKET  ()  {
 
      
 
-  const greetingMessages = "Hello"
-  const title = 'Office Tickets'
+  const greetingMessages = `Hello ${user.name}! Below are all the tickets for your organization.`
+  const title = `Office Tickets`
 
   const allTicketss = [...allTickets];
   // Filter tickets based on the user's organization ID

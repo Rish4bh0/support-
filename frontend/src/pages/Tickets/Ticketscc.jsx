@@ -20,9 +20,9 @@ function CC  ()  {
         };
       }, [dispatch, reset]);
 
-     
+      const user = useSelector((state) => state.auth.user)
       const userId = useSelector((state) => state.auth.user._id);
-  const greetingMessages = "Hello"
+  const greetingMessages = `Hello ${user.name}! Below are all the tickets you have been cc'd on`
   const title = "CC'd Tickets"
   // Sorting tickets by date in descending order
 

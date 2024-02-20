@@ -130,7 +130,7 @@ const Sidebar = () => {
               {userRole && allowedRoles.includes(userRole) && (
                 <>
                   <NavLink
-                    to={`/tickets`}
+                    to={`/assigned`}
                     onClick={handleCloseSideBar}
                     style={({ isActive }) => ({
                       backgroundColor: isActive ? currentColor : "",
@@ -143,7 +143,7 @@ const Sidebar = () => {
                     <span className="capitalize">Assigned</span>
                   </NavLink>
                   <NavLink
-                    to={`/ccticket`}
+                    to={`/cc`}
                     onClick={handleCloseSideBar}
                     style={({ isActive }) => ({
                       backgroundColor: isActive ? currentColor : "",
@@ -156,7 +156,7 @@ const Sidebar = () => {
                     <span className="capitalize">CC</span>
                   </NavLink>
                   <NavLink
-                    to={`allticket`}
+                    to={`all-tickets`}
                     onClick={handleCloseSideBar}
                     style={({ isActive }) => ({
                       backgroundColor: isActive ? currentColor : "",
@@ -185,7 +185,7 @@ const Sidebar = () => {
                 </>
               )}
               <NavLink
-                to={`/ticketss`}
+                to={`/my-tickets`}
                 onClick={handleCloseSideBar}
                 style={({ isActive }) => ({
                   backgroundColor: isActive ? currentColor : "",
@@ -278,7 +278,7 @@ const Sidebar = () => {
                   <span className="capitalize">My Office</span>
                 </NavLink>
                 <NavLink
-                  to={`/org-ticket`}
+                  to={`/office-tickets`}
                   onClick={handleCloseSideBar}
                   style={({ isActive }) => ({
                     backgroundColor: isActive ? currentColor : "",

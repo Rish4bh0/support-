@@ -22,7 +22,7 @@ export default function Home() {
   useEffect(() => {
     
     getAllChats();
-    setSocket(io(environment.SERVER_URL));
+    setSocket(io());
     
   }, []);
 
