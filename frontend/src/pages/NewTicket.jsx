@@ -287,12 +287,13 @@ function NewTicket() {
     <>
       <div className="card bg-white rounded-lg border">
         <div className="card-header p-4 border-b-1 pb-3">
-          <Typography variant="h5">Create New Ticket</Typography>
+          <Typography variant="h6">Create New Ticket</Typography>
         </div>
-        <div className="card-body p-4">
-          <form onSubmit={onSubmit}>
+
+        <form onSubmit={onSubmit}>
+          <div className="card-body p-4">
             <Grid container spacing={3}>
-              <Grid item xs={12}>
+              <Grid item xs={6}>
                 <TextField
                   label=" Ticket title"
                   placeholder="Ticket title"
@@ -351,7 +352,7 @@ function NewTicket() {
               )}
 
               {userRole && allowedRoles.includes(userRole) && (
-                <Grid item xs={6}>
+                <Grid item xs={3}>
                   <FormControl fullWidth>
                     <InputLabel htmlFor="assignedTo">Assign To</InputLabel>
 
@@ -378,7 +379,7 @@ function NewTicket() {
                 </Grid>
               )}
               {userRole && allowedRoles.includes(userRole) && (
-                <Grid item xs={12}>
+                <Grid item xs={3}>
                   <FormControl fullWidth>
                     <InputLabel htmlFor="cc">CC</InputLabel>
                     <Select
@@ -405,7 +406,7 @@ function NewTicket() {
               )}
 
               {userRole && allowedRoles.includes(userRole) && (
-                <Grid item xs={6}>
+                <Grid item xs={3}>
                   <FormControl fullWidth>
                     <InputLabel htmlFor="priority">Priority</InputLabel>
                     <Select
@@ -421,7 +422,7 @@ function NewTicket() {
                   </FormControl>
                 </Grid>
               )}
-              <Grid item xs={6}>
+              <Grid item xs={3}>
                 <FormControl fullWidth>
                   <InputLabel htmlFor="issueType">Issue Type</InputLabel>
                   <Select
@@ -457,7 +458,7 @@ function NewTicket() {
                   rows={4}
                 />
               </Grid>
-              <Grid item xs={12}>
+              <Grid item xs={6}>
                 <input
                   type="file"
                   id="media"
@@ -472,54 +473,83 @@ function NewTicket() {
                     color="primary"
                     component="span"
                     startIcon={<CloudUploadIcon />}
+                    sx={{
+                      border: "1px dotted black",
+                      width: "100%",
+                      padding: "2rem",
+                    }}
                   >
-                    Choose File
+                    Click to Upload File.
                   </Button>
                 </label>
+              </Grid>
+              <Grid item xs={6}>
                 {media.length > 0 && (
-                  <div>
-                    <Typography variant="body2" color="textSecondary">
-                      Selected Files:
-                    </Typography>
-                    <ul>
-                      {media.map((file, index) => (
-                        <li key={index}>
-                          {file.name}
-                          <IconButton onClick={() => handleRemoveFile(index)}>
-                            <CloseIcon />
-                          </IconButton>
-                        </li>
-                      ))}
-                    </ul>
-                    <Typography variant="body2" color="textSecondary">
-                      Number of Files: {media.length}
+                  <div className="flex justify-between gap-3">
+                    <div className="w-full">
+                      <Typography
+                        variant="body2"
+                        color="textSecondary"
+                        fontWeight="bold"
+                      >
+                        Uploaded Files:
+                      </Typography>
+                      <ul className="mt-2">
+                        {media.map((file, index) => (
+                          <li
+                            key={index}
+                            className="border rounded-sm relative mb-2 bg-white"
+                          >
+                            <div className="p-2 text-xs font-semibold bg-white">
+                              {file.name}
+                            </div>
+                            <IconButton
+                              onClick={() => handleRemoveFile(index)}
+                              style={{
+                                position: "absolute",
+                                top: 0,
+                                right: 0,
+                              }}
+                            >
+                              <CloseIcon />
+                            </IconButton>
+                          </li>
+                        ))}
+                      </ul>
+                    </div>
+                    <Typography
+                      variant="body2"
+                      color="textSecondary"
+                      className="flex w-full"
+                    >
+                      <div className="font-semibold">Number of Files : </div>
+                      <div>{media.length}</div>
                     </Typography>
                   </div>
                 )}
               </Grid>
             </Grid>
-            <div className="form-group mt-6 space-x-6">
-              <Button
-                variant="contained"
-                color="success"
-                endIcon={<SendIcon />}
-                onClick={(e) => onSubmit(e, "new")}
-                disabled={uploading}
-              >
-                {uploading ? "Uploading..." : "Submit as New"}
-              </Button>
-
-              <Button
-                variant="contained"
-                color="primary"
-                startIcon={<DraftsIcon />}
-                onClick={(e) => onSubmit(e, "draft")}
-              >
-                Save as Draft
-              </Button>
-            </div>
-          </form>
-        </div>
+          </div>
+          <div className="card-footer p-4 border-t-1 space-x-6 text-end">
+            <Button
+              variant="contained"
+              color="primary"
+              startIcon={<DraftsIcon />}
+              onClick={(e) => onSubmit(e, "draft")}
+            >
+              Save as Draft
+            </Button>
+            <Button
+              variant="contained"
+              color="success"
+              endIcon={<SendIcon />}
+              onClick={(e) => onSubmit(e, "new")}
+              disabled={uploading}
+            >
+              {uploading ? "Uploading..." : "Submit as New"}
+            </Button>
+          </div>
+        </form>
       </div>
     </>
   );

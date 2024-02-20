@@ -149,7 +149,7 @@ h3 {
   margin: 0 0 5px 3px;
 }
 
-.btn {
+/* .btn {
   padding: 10px 20px;
   border: 1px solid #000;
   border-radius: 5px;
@@ -163,15 +163,14 @@ h3 {
   display: flex;
   align-items: center;
   justify-content: center;
-}
+} */
 
 .btn svg {
   margin-right: 8px;
 }
 
 .btn-reverse {
-  background: #fff;
-  color: #000;
+  display: flex;
 }
 
 .btn-block {
@@ -189,10 +188,10 @@ h3 {
   border: none;
 }
 
-.btn-back {
+/* .btn-back {
   width: 150px;
   margin-bottom: 20px;
-}
+} */
 
 .btn:hover {
   transform: scale(0.98);
@@ -228,17 +227,12 @@ h3 {
   gap: 20px;
   justify-content: space-between;
   align-items: center;
-  margin-bottom: 20px;
   background: #ffffff;
   padding: 10px 15px;
-  border-radius: 5px;
   text-align: center;
-  border: 1px solid #000;
+  border: 1px solid #d8d8d8;
 }
 
-.ticket-headings {
-  font-weight: 700;
-}
 /* ListTickets.css */
 
 .tab-buttons {
@@ -280,39 +274,32 @@ h3 {
 }
 
 .status {
-  background-color: #333;
-  color: #fff;
-  width: 100px;
-  padding: 0 20px;
+  padding: 3px 12px;
   justify-self: center;
-  border-radius: 10px;
-  font-size: 16px;
+  text-transform: capitalize;
+  font-size: 12px;
   text-align: center;
-  align-items: center;
+  border-radius: 5px;
 }
 
 .status-new {
   background-color: #008000;
   color: #fff;
-  border-radius: 10px;
 }
 
 .status-open {
   background-color: #4682b4;
   color: #fff;
-  border-radius: 10px;
 }
 
 .status-draft {
   background-color: #fbe032;
   color: #fff;
-  border-radius: 10px;
 }
 
 .status-review {
   background-color: #f8a54c;
   color: #fff;
-  border-radius: 10px;
 }
 /* CSS styles */
 .date-picker-toggle-button {
@@ -344,16 +331,11 @@ h3 {
 .status-close {
   background-color: #8b0000;
   color: #fff;
-  border-radius: 10px;
 }
 .priority {
-  background-color: #333;
-  color: #fff;
-  width: 100px;
-  padding: 0 20px;
+  padding: 3px 12px;
   justify-self: center;
-  border-radius: 10px;
-  font-size: 16px;
+  font-size: 12px;
   text-align: center;
 }
 
@@ -449,11 +431,10 @@ h3 {
 }
 
 .page-buttons-row button {
-  /* Add any additional button styling here */
   padding: 5px 10px;
-  border: 1px solid #ccc;
+  border: 1px solid #e3e3e3;
+  border-radius: 5px;
   background-color: #fff;
-  color: #333;
   cursor: pointer;
 }
 
@@ -635,4 +616,13 @@ p.status-complete {
   width: 20px;
 }
 
+[type="text"]:focus {
+  box-shadow: none !important;
+}
 
+.MuiInputLabel-shrink {
+  background-color: white;
+  padding: 0 8px !important;
+  font-size: 18px !important;
+  font-weight: 500 !important;
+}

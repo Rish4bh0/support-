@@ -1,3 +1,4 @@
+<<<<<<< HEAD:frontend/src/pages/Home/Home.jsx
 import { useEffect } from "react";
 import { useStateContext } from "../../contexts/ContextProvider";
 function Home() {
@@ -7,14 +8,15 @@ function Home() {
     setactiveMenu(false);
   })
   */
+=======
+function Home() {
+>>>>>>> eca53c304081264fab6ff6e016e69b15d0459a9f:frontend/src/pages/Home.jsx
   return (
     <>
       <div className="absolute inset-x-44 top-64 " id="home">
-     
         <div className="flex flex-col items-center justify-center text-white">
           <h1 className="font-bold text-2xl mb-6">
             Welcome to Dryice support center!{" "}
-           
           </h1>
           <a
             href="/new-ticket"

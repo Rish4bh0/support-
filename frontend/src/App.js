@@ -38,7 +38,19 @@ import Admindash from "./pages/Dashboard/AdminDashboard.jsx";
 import ImageUpload from "./pages/Media/ImageUpload.jsx";
 import OfficeUnssigned from "./pages/Office/officeUnssigned.jsx";
 import BasicBreadcrumbs from "./components/Breadcrumb.jsx";
-import AdminChat from "./pages/AdminPanelChat/page.jsx"
+import { createTheme, ThemeProvider } from "@mui/material/styles";
+import AdminChat from "./pages/AdminPanelChat/page.jsx";
+
+const theme = createTheme({
+  typography: {
+    fontFamily: "Inter, sans-serif",
+    fontSize: 12,
+    h6: {
+      fontSize: 14,
+      fontWeight: 600,
+    },
+  },
+});
 
 import Assigned from "./pages/Tickets/Assigned.jsx"
 import CC from "./pages/Tickets/Ticketscc.jsx"
@@ -232,4 +244,10 @@ function App() {
   );
 }
 
-export default App;
+const ThemedApp = () => (
+  <ThemeProvider theme={theme}>
+    <App />
+  </ThemeProvider>
+);
+
+export default ThemedApp;
