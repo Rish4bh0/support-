@@ -6,7 +6,7 @@ const User = require("../models/userModel");
 const createOrganization = asyncHandler (async (req, res) => {
   try {
     const { name, contact, email, focalPersonName, focalPersonContact, focalPersonEmail, payment } = req.body;
-    const organization = await Organization.create({ name, contact, email, focalPersonName, focalPersonContact, focalPersonEmail, payment });
+    const organization = await Organization.create({ name, contact, email, focalPersonName, focalPersonContact, focalPersonEmail, payment, code });
    
     res.status(201).json(organization);
   } catch (error) {
@@ -42,10 +42,10 @@ const getOrganizationById = asyncHandler (async (req, res) => {
 const updateOrganization = asyncHandler (async (req, res) => {
   try {
     const { id } = req.params;
-    const { name, contact, email, focalPersonName, focalPersonContact, focalPersonEmail, payment } = req.body;
+    const { name, contact, email, focalPersonName, focalPersonContact, focalPersonEmail, payment,code } = req.body;
     const updatedOrganization = await Organization.findByIdAndUpdate(
       id,
-      { name, contact, email, focalPersonName, focalPersonContact, focalPersonEmail, payment },
+      { name, contact, email, focalPersonName, focalPersonContact, focalPersonEmail, payment, code },
       { new: true }
     );
     if (!updatedOrganization) {

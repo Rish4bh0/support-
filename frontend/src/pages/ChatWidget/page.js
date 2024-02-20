@@ -1,11 +1,12 @@
 import React, { useEffect } from 'react';
 import { useSelector } from 'react-redux';
 import io from 'socket.io-client';
+import { environment } from '../../lib/environment';
 
 const ChatPage = () => {
     const user = useSelector((state) => state.auth.user);
   useEffect(() => {
-    const socket = io('http://localhost:5000');
+    const socket = io(environment.SERVER_URL);
    
     const chatButton = document.createElement('div');
     chatButton.id = 'chat-button';

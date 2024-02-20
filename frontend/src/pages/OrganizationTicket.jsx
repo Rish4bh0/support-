@@ -22,7 +22,10 @@ function ORGTICKET() {
     close: 1,
   });
   const [selectedStatus, setSelectedStatus] = useState("all");
-  const itemsPerPage = 4;
+  const [startDate, setStartDate] = useState(null);
+  const [endDate, setEndDate] = useState(null);
+  const [rowsPerPage, setRowsPerPage] = useState(3);
+  const itemsPerPage = rowsPerPage;
   const maxPageButtons = 5;
 
   useEffect(() => {
@@ -65,13 +68,21 @@ function ORGTICKET() {
   const ticketsForUserOrganization = filteredTickets.filter((ticket) => {
     return ticket.organization === userOrganization;
   });
+
+  // Apply date range filtering
+  const filteredByDateTickets = ticketsForUserOrganization.filter((ticket) => {
+    if (startDate && new Date(ticket.createdAt) < startDate) return false;
+    if (endDate && new Date(ticket.createdAt) > endDate) return false;
+    return true;
+  });
+
   const allowedRolesor = ["ADMIN", "SUPERVISOR", "EMPLOYEE"];
   const org = ["ORGAGENT", "USER"];
   const startIndex = (currentPage[activeTab] - 1) * itemsPerPage;
   const endIndex = startIndex + itemsPerPage;
-  const sortedTickets = [...ticketsForUserOrganization].sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
+  const sortedTickets = [...filteredByDateTickets].sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
   const paginatedTickets = sortedTickets.slice(startIndex, endIndex);
-  const totalPages = Math.ceil(ticketsForUserOrganization.length / itemsPerPage);
+  const totalPages = Math.ceil(filteredByDateTickets.length / itemsPerPage);
   const handlePageChange = (page, status) => {
     setCurrentPage({
       ...currentPage,
@@ -145,23 +156,60 @@ function ORGTICKET() {
 
   return (
     <>
-    <div className="flex items-center justify-between mb-4">
-      <div className="flex items-center">
-          <label htmlFor="status-dropdown" className="mr-2">Status:</label>
-          <select
-            id="status-dropdown"
-            className="px-2 py-1 border border-gray-300 rounded"
-            value={selectedStatus}
-            onChange={(e) => handleStatusChange(e.target.value)}
-          >
-            {statusOptions.map((status) => (
-              <option key={status} value={status}>
-                {status === "all" ? "All Tickets" : `${status.charAt(0).toUpperCase()}${status.slice(1)} Tickets`}
-              </option>
-            ))}
-          </select>
-        </div>
-        </div>
+   <div className="bg-white flex justify-between gap-3 mb-7">
+            <div className="w-full">
+              <label htmlFor="status-dropdown" className="block text-gray-700 text-sm font-semibold mb-2">Status:</label>
+              <select
+                id="status-dropdown"
+                className="border border-gray-300 rounded py-2 px-3 w-full"
+                value={activeTab}
+                onChange={(e) => handleTabChange(e.target.value)}
+              >
+                {statusOptions.map((status) => (
+                  <option key={status} value={status}>
+                    {status === "all" ? "All Tickets" : `${status.charAt(0).toUpperCase()}${status.slice(1)} Tickets`}
+                  </option>
+                ))}
+              </select>
+            </div>
+            <div className="w-full">
+              <label className="block text-gray-700 text-sm font-semibold mb-2">
+            Start Date:
+          </label>
+          <input
+             className="border border-gray-300 rounded py-2 px-3 w-full"
+            type="date"
+            
+            onChange={(e) => setStartDate(new Date(e.target.value))}
+          />
+
+</div>
+            <div className="w-full">
+          <label className="block text-gray-700 text-sm font-semibold mb-2 mr-2">
+            End Date:
+          </label>
+          <input
+             className="border border-gray-300 rounded py-2 px-3 w-full"
+            type="date"
+           
+            onChange={(e) => setEndDate(new Date(e.target.value))}
+          />
+          </div>
+            <div className="w-full">
+            <label className="block text-gray-700 text-sm font-semibold mb-2 mr-2">
+            Rows Per Page:
+          </label>
+          <input
+            className="border border-gray-300 rounded py-2 px-3 w-full"
+            type="number"
+            min="1"
+            value={rowsPerPage}
+            onChange={(e) => setRowsPerPage(parseInt(e.target.value))}
+          />
+            </div>
+            
+            </div>
+            
       <div className="tickets">
       <div className="ticket-headings">
           <div >Ticket ID</div>

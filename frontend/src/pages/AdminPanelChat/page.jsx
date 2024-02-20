@@ -6,6 +6,7 @@ import { useSelector } from "react-redux";
 import { toast } from "react-toastify";
 import axios from "axios";
 import Sidebar from "../../components/UserList/sidebar";
+import { environment } from "../../lib/environment";
 
 
 export default function Home() {
@@ -21,7 +22,7 @@ export default function Home() {
   useEffect(() => {
     
     getAllChats();
-    setSocket(io("http://localhost:5000"));
+    setSocket(io(environment.SERVER_URL));
     
   }, []);
 
@@ -79,7 +80,7 @@ export default function Home() {
 
   const getAllChats = async () => {
     try {
-      const response = await axios.get("http://localhost:5000/api/chat/");
+      const response = await axios.get(environment.SERVER_URL+"/api/chat/");
      
       if (response && response.data) {
         setData(response.data.data);
@@ -93,7 +94,7 @@ export default function Home() {
 
   const getChat = async (id) => {
     try {
-      const response = await axios.get(`http://localhost:5000/api/chat/${id}`);
+      const response = await axios.get(environment.SERVER_URL+`/api/chat/${id}`);
       console.log("chat:" + response.data);
       if (response && response.data) {
         setChats(response.data.data.messages);

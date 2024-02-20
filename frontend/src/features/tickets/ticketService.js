@@ -1,7 +1,7 @@
 import axios from 'axios'
+import { environment } from '../../lib/environment'
 
-const API_URL = 'http://localhost:5000/api/tickets/'
-
+const API_URL = environment.SERVER_URL+'/api/tickets/'
 // Create new ticket
 const createTicket = async (ticketData, token) => {
   const config = {

@@ -28,7 +28,10 @@ function Ticketss() {
     close: 1,
   });
   const [selectedStatus, setSelectedStatus] = useState("all");
-  const itemsPerPage = 4;
+  const [startDate, setStartDate] = useState(null);
+  const [endDate, setEndDate] = useState(null);
+  const [rowsPerPage, setRowsPerPage] = useState(3);
+  const itemsPerPage = rowsPerPage;
   const maxPageButtons = 5;
   const userRole = useSelector((state) => state.auth.user?.role);
   const allowedRolesor = ["ADMIN", "SUPERVISOR", "EMPLOYEE"];
@@ -70,14 +73,23 @@ function Ticketss() {
       ? reviewTickets
       : closedTickets;
 
-  const startIndex = (currentPage[selectedStatus] - 1) * itemsPerPage;
+  // Apply date range filtering
+  const filteredByDateTickets = filteredTickets.filter((ticket) => {
+    if (startDate && new Date(ticket.createdAt) < startDate) return false;
+    if (endDate && new Date(ticket.createdAt) > endDate) return false;
+    return true;
+  });
+
+  // Use filteredByDateTickets for pagination
+  const startIndex = (currentPage[activeTab] - 1) * itemsPerPage;
   const endIndex = startIndex + itemsPerPage;
-  const sortedTickets = [...filteredTickets].sort(
+  const sortedTickets = [...filteredByDateTickets].sort(
     (a, b) => new Date(b.createdAt) - new Date(a.createdAt)
   );
   const paginatedTickets = sortedTickets.slice(startIndex, endIndex);
-  const totalPages = Math.ceil(filteredTickets.length / itemsPerPage);
+  const totalPages = Math.ceil(filteredByDateTickets.length / itemsPerPage);
 
+  // Event handler for changing the page
   const handlePageChange = (page, status) => {
     setCurrentPage({
       ...currentPage,
@@ -86,38 +98,38 @@ function Ticketss() {
   };
 
   const handleNextPage = () => {
-    if (currentPage[selectedStatus] < totalPages) {
+    if (currentPage[activeTab] < totalPages) {
       setCurrentPage({
         ...currentPage,
-        [selectedStatus]: currentPage[selectedStatus] + 1,
+        [activeTab]: currentPage[activeTab] + 1,
       });
     }
   };
 
   const handlePrevPage = () => {
-    if (currentPage[selectedStatus] > 1) {
+    if (currentPage[activeTab] > 1) {
       setCurrentPage({
         ...currentPage,
-        [selectedStatus]: currentPage[selectedStatus] - 1,
+        [activeTab]: currentPage[activeTab] - 1,
       });
     }
   };
 
+  // Generate an array of page numbers to display
   const pageButtons = [];
   for (let i = 1; i <= totalPages; i++) {
     pageButtons.push(
       <button
         key={i}
         className={`btn btn-reverse btn-back ${
-          currentPage[selectedStatus] === i ? "active" : ""
+          currentPage[activeTab] === i ? "active" : ""
         }`}
-        onClick={() => handlePageChange(i, selectedStatus)}
+        onClick={() => handlePageChange(i, activeTab)}
       >
         {i}
       </button>
     );
   }
-
   const handleStatusChange = (status) => {
     setActiveTab(status);
     setSelectedStatus(status);
@@ -131,15 +143,18 @@ function Ticketss() {
 
   return (
     <>
-      <div className="flex items-center justify-between mb-4">
-        <div className="flex items-center">
-          <label htmlFor="status-dropdown" className="mr-2">
+      <div className="bg-white flex justify-between gap-3 mb-7">
+        <div className="w-full">
+          <label
+            htmlFor="status-dropdown"
+            className="block text-gray-700 text-sm font-semibold mb-2"
+          >
             Status:
           </label>
           <select
             id="status-dropdown"
-            className="px-2 py-1 border border-gray-300 rounded"
-            value={selectedStatus}
+            className="border border-gray-300 rounded py-2 px-3 w-full"
+            value={activeTab}
             onChange={(e) => handleStatusChange(e.target.value)}
           >
             {statusOptions.map((status) => (
@@ -153,7 +168,40 @@ function Ticketss() {
             ))}
           </select>
         </div>
+        <div className="w-full">
+          <label className="block text-gray-700 text-sm font-semibold mb-2">
+            Start Date:
+          </label>
+          <input
+            className="border border-gray-300 rounded py-2 px-3 w-full"
+            type="date"
+            onChange={(e) => setStartDate(new Date(e.target.value))}
+          />
+        </div>
+        <div className="w-full">
+          <label className="block text-gray-700 text-sm font-semibold mb-2 mr-2">
+            End Date:
+          </label>
+          <input
+            className="border border-gray-300 rounded py-2 px-3 w-full"
+            type="date"
+            onChange={(e) => setEndDate(new Date(e.target.value))}
+          />
+        </div>
+        <div className="w-full">
+          <label className="block text-gray-700 text-sm font-semibold mb-2 mr-2">
+            Rows Per Page:
+          </label>
+          <input
+            className="border border-gray-300 rounded py-2 px-3 w-full"
+            type="number"
+            min="1"
+            value={rowsPerPage}
+            onChange={(e) => setRowsPerPage(parseInt(e.target.value))}
+          />
+        </div>
       </div>
+
       <div className="tickets">
         <div className="ticket-headings">
           <div>Ticket ID</div>
@@ -188,15 +236,15 @@ function Ticketss() {
             {pageButtons.slice(
               Math.max(
                 0,
-                currentPage[selectedStatus] - Math.floor(maxPageButtons / 2)
+                currentPage[activeTab] - Math.floor(maxPageButtons / 2)
               ),
-              currentPage[selectedStatus] + Math.floor(maxPageButtons / 2)
+              currentPage[activeTab] + Math.floor(maxPageButtons / 2)
             )}
           </div>
           <button
             className="btn btn-reverse btn-back"
             onClick={handleNextPage}
-            disabled={currentPage[selectedStatus] === totalPages}
+            disabled={currentPage[activeTab] === totalPages}
           >
             <FaArrowRight />
           </button>

@@ -1,7 +1,7 @@
 import axios from 'axios';
+import { environment } from '../../lib/environment'
 
-const API_URL = 'http://localhost:5000/api/organizations/';
-
+const API_URL = environment.SERVER_URL+'/api/organizations/'
 const createOrganization = async (organizationData, token) => {
   const config = {
     headers: {

@@ -30,6 +30,7 @@ import { getAllOrganization } from "../features/organization/organizationSlice";
 import { getAllIssueTypes } from "../features/issues/issueSlice";
 import axios from "axios";
 import { getAllProject } from "../features/project/projectSlice";
+import { environment } from "../lib/environment";
 
 function NewTicket() {
   const { user } = useSelector((state) => state.auth);
@@ -238,7 +239,7 @@ function NewTicket() {
 
         // Send a request to the media upload endpoint (http://localhost:5000/upload)
         const mediaResponse = await axios.post(
-          "http://localhost:5000/upload",
+          environment.SERVER_URL + "/upload",
           formData,
           {
             headers: {
@@ -277,7 +278,7 @@ function NewTicket() {
   // Define an array of roles that should see the "Dashboard" link
   const allowedRoles = ["ADMIN", "SUPERVISOR"];
 
-  const allowedRolesReview = ["ADMIN", "SUPERVISOR", "ORGAGENT"];
+  const org = ["ADMIN", "SUPERVISOR", "EMPLOYEE"];
 
   if (isLoading) return <Spinner />;
   if (uploading) return <Spinner uploadProgress={uploadProgress} />;
@@ -302,51 +303,53 @@ function NewTicket() {
                   fullWidth
                 />
               </Grid>
-              <Grid item xs={6}>
-                <FormControl fullWidth>
-                  <InputLabel htmlFor="organization">Organization</InputLabel>
-                  <Select
-                    name="organization"
-                    id="organization"
-                    value={
-                      user && user.role === "ADMIN"
-                        ? organization
-                        : user && user.role !== "ADMIN"
-                        ? user.organization
-                        : ""
-                    }
-                    onChange={handleInputChange}
-                    disabled={user && user.role !== "ADMIN"}
-                  >
-                    <MenuItem value="">Select One</MenuItem>
-                    {user && user.role === "ADMIN" ? (
-                      // Render all organizations if user's role is admin
-                      organizations.map((org) => (
-                        <MenuItem key={org._id} value={org._id}>
-                          {org.name}
-                        </MenuItem>
-                      ))
-                    ) : user &&
-                      user.organization &&
-                      organizations &&
-                      organizations.length > 0 ? (
-                      // Render organizations based on user's organization
-                      organizations
-                        .filter((org) => org._id === user.organization)
-                        .map((org) => (
+              {userRole && org.includes(userRole) && (
+                <Grid item xs={6}>
+                  <FormControl fullWidth>
+                    <InputLabel htmlFor="organization">Organization</InputLabel>
+                    <Select
+                      name="organization"
+                      id="organization"
+                      value={
+                        user && user.role === "ADMIN"
+                          ? organization
+                          : user && user.role !== "ADMIN"
+                          ? user.organization
+                          : ""
+                      }
+                      onChange={handleInputChange}
+                      disabled={user && user.role !== "ADMIN"}
+                    >
+                      <MenuItem value="">Select One</MenuItem>
+                      {user && user.role === "ADMIN" ? (
+                        // Render all organizations if user's role is admin
+                        organizations.map((org) => (
                           <MenuItem key={org._id} value={org._id}>
                             {org.name}
                           </MenuItem>
                         ))
-                    ) : (
-                      // Render a disabled option if no organizations are available
-                      <MenuItem value="" disabled>
-                        No organization available
-                      </MenuItem>
-                    )}
-                  </Select>
-                </FormControl>
-              </Grid>
+                      ) : user &&
+                        user.organization &&
+                        organizations &&
+                        organizations.length > 0 ? (
+                        // Render organizations based on user's organization
+                        organizations
+                          .filter((org) => org._id === user.organization)
+                          .map((org) => (
+                            <MenuItem key={org._id} value={org._id}>
+                              {org.name}
+                            </MenuItem>
+                          ))
+                      ) : (
+                        // Render a disabled option if no organizations are available
+                        <MenuItem value="" disabled>
+                          No organization available
+                        </MenuItem>
+                      )}
+                    </Select>
+                  </FormControl>
+                </Grid>
+              )}
 
               {userRole && allowedRoles.includes(userRole) && (
                 <Grid item xs={3}>
