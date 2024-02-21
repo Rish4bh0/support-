@@ -37,6 +37,8 @@ import CloudUploadIcon from "@mui/icons-material/CloudUpload";
 import CloseIcon from "@mui/icons-material/Close";
 import { getAllProject } from "../../features/project/projectSlice";
 import { Grid } from "@mui/material";
+import ClearIcon from "@mui/icons-material/Clear";
+import { TextField } from "@mui/material";
 
 const customStyles = {
   content: {
@@ -439,7 +441,7 @@ function Ticket() {
         </Grid>
       </div>
 
-      <div className="border border-gray-300 rounded-2xl bg-white w-full mb-28">
+      <div className="border border-gray-300 rounded-2xl bg-white w-full mb-48">
         <div className="border-b-1 p-4 text-sm flex justify-between">
           <div className="font-extrabold">Added Task</div>
           <div>
@@ -462,6 +464,7 @@ function Ticket() {
         <Modal
           isOpen={modalIsOpen}
           onRequestClose={closeModal}
+          className={"border text-xs rounded-lg bg-white overflow-hidden"}
           style={{
             ...customStyles,
             zIndex: 1,
@@ -469,48 +472,59 @@ function Ticket() {
           }}
           contentLabel="Add Task"
         >
-          <h2>Add task</h2>
-          <button className="btn-close" onClick={closeModal}>
-            X
-          </button>
-          <form onSubmit={onNoteSubmit}>
-            <div className="form-group">
-              <label htmlFor="text">Text:</label>
-              <textarea
+          <div className="p-4 flex justify-between items-center bg-blue-600 text-white">
+            <label className="font-semibold uppercase ">Add new task</label>
+            <button onClick={closeModal}>
+              <ClearIcon />
+            </button>
+          </div>
+          <form onSubmit={onNoteSubmit} className="text-sm p-4">
+            <div className="mb-4">
+              <label htmlFor="text" className="font-semibold block mb-2">
+                Text
+              </label>
+              <TextField
                 name="Task Detail"
                 id="text"
-                className="form-control"
-                placeholder="Text"
+                className="form-control text-sm w-full px-2 py-1"
+                placeholder="Enter new task"
                 value={text}
                 onChange={(e) => settext(e.target.value)}
-              ></textarea>
+              />
             </div>
-            <div>
-              <label htmlFor="toTimee">Start Time:</label>
-              <LocalizationProvider dateAdapter={AdapterDayjs}>
-                <DemoContainer components={["TimePicker"]}>
-                  <TimePicker
-                    value={toTimee}
-                    onChange={(newToTime) => settoTimee(newToTime)}
-                  />
-                </DemoContainer>
-              </LocalizationProvider>
+            <div class="mb-4 flex gap-2">
+              <div className="grow">
+                <label htmlFor="toTimee" className="font-semibold block">
+                  Start Time
+                </label>
+                <LocalizationProvider dateAdapter={AdapterDayjs}>
+                  <DemoContainer components={["TimePicker"]}>
+                    <TimePicker
+                      value={toTimee}
+                      onChange={(newToTime) => settoTimee(newToTime)}
+                    />
+                  </DemoContainer>
+                </LocalizationProvider>
+              </div>
+              <div className="grow">
+                <label htmlFor="fromTimee" className="font-semibold block">
+                  End Time{" "}
+                </label>
+                <LocalizationProvider dateAdapter={AdapterDayjs}>
+                  <DemoContainer components={["TimePicker"]}>
+                    <TimePicker
+                      value={fromTimee}
+                      onChange={(newFromTime) => setfromTimee(newFromTime)}
+                    />
+                  </DemoContainer>
+                </LocalizationProvider>
+              </div>
             </div>
-            <div>
-              <label htmlFor="fromTimee">End Time:</label>
-              <LocalizationProvider dateAdapter={AdapterDayjs}>
-                <DemoContainer components={["TimePicker"]}>
-                  <TimePicker
-                    value={fromTimee}
-                    onChange={(newFromTime) => setfromTimee(newFromTime)}
-                  />
-                </DemoContainer>
-              </LocalizationProvider>
-            </div>
-            <div className="form-group mt-10">
-              <button className="btn" type="submit">
+
+            <div className="border-t-1 pt-3 mt-3 text-end">
+              <Button type="submit" variant="contained">
                 Submit
-              </button>
+              </Button>
             </div>
           </form>
         </Modal>
