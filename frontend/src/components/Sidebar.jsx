@@ -6,6 +6,7 @@ import { TooltipComponent } from "@syncfusion/ej2-react-popups";
 import { useStateContext } from "../contexts/ContextProvider";
 import Logo from "../assets/dryice-logo.png";
 import DashboardIcon from "@mui/icons-material/Dashboard";
+import AdminPanelSettingsIcon from "@mui/icons-material/AdminPanelSettings";
 import ConfirmationNumberIcon from "@mui/icons-material/ConfirmationNumber";
 import AssignmentTurnedInIcon from "@mui/icons-material/AssignmentTurnedIn";
 import AssignmentLateIcon from "@mui/icons-material/AssignmentLate";
@@ -31,9 +32,9 @@ const Sidebar = () => {
     }
   };
   const activeLink =
-    "flex items-center gap-3 p-2 mt-2 rounded-lg text-white text-sm";
+    "flex items-center gap-3 p-2 mt-2 text-blue-700 font-medium text-xs";
   const normalLink =
-    "flex items-center gap-3 p-2 mt-2 rounded-lg text-sm text-gray-700 dark:text-gray-200 dark:hover:text-black hover:bg-light-gray";
+    "flex items-center gap-3 p-2 mt-2 rounded-lg text-sm text-gray-700 hover:text-blue-700 font-medium text-xs";
   // Access the user's role from Redux state
   const userRole = useSelector((state) => state.auth.user?.role);
 
@@ -52,49 +53,37 @@ const Sidebar = () => {
               onClick={handleCloseSideBar}
               className="flex items-center justify-center p-3"
             >
-              <img src={Logo} alt="DryIce Logo" className="w-24 h-25" />
+              <img src={Logo} alt="DryIce Logo" className="w-20 h-25" />
             </Link>
           </div>
-          <div className="mt-2 px-4 overflow-auto max-h-[88vh]">
+          <div className="mt-4 px-4 overflow-auto max-h-[88vh]">
             {userRole && allowedRoles.includes(userRole) && (
               <div className="mb-4">
-                <p
-                  className="text-gray-500
-                mb-2 uppercase text-xs font-semibold"
-                >
+                <p className="text-gray-500 mb-2 text-xs font-normal">
                   Admin Dashboard
                 </p>
 
                 <NavLink
                   to={`/admindash`}
                   onClick={handleCloseSideBar}
-                  style={({ isActive }) => ({
-                    backgroundColor: isActive ? currentColor : "",
-                  })}
                   className={({ isActive }) =>
                     isActive ? activeLink : normalLink
                   }
                 >
-                  <DashboardIcon />
+                  <AdminPanelSettingsIcon />
                   <span className="capitalize">Admin Analytics</span>
                 </NavLink>
               </div>
             )}
             {userRole && allowedRolesOrg.includes(userRole) && (
               <div className="mb-4">
-                <p
-                  className="text-gray-500
-                 mb-2 uppercase text-xs font-semibold"
-                >
+                <p className="text-gray-500 mb-2 text-xs font-normal">
                   Dashboard
                 </p>
 
                 <NavLink
                   to={`/dash`}
                   onClick={handleCloseSideBar}
-                  style={({ isActive }) => ({
-                    backgroundColor: isActive ? currentColor : "",
-                  })}
                   className={({ isActive }) =>
                     isActive ? activeLink : normalLink
                   }
@@ -105,16 +94,11 @@ const Sidebar = () => {
               </div>
             )}
             <div className="mb-4">
-              <p className="text-gray-500 mb-2 uppercase text-xs font-semibold">
-                New
-              </p>
+              <p className="text-gray-500 mb-2 text-xs font-normal">New</p>
 
               <NavLink
                 to={`/new-ticket`}
                 onClick={handleCloseSideBar}
-                style={({ isActive }) => ({
-                  backgroundColor: isActive ? currentColor : "",
-                })}
                 className={({ isActive }) =>
                   isActive ? activeLink : normalLink
                 }
@@ -124,17 +108,12 @@ const Sidebar = () => {
               </NavLink>
             </div>
             <div className="mb-4">
-              <p className="text-gray-500 mb-2 uppercase text-xs font-semibold">
-                Tickets
-              </p>
+              <p className="text-gray-500 mb-2 text-xs font-normal">Tickets</p>
               {userRole && allowedRoles.includes(userRole) && (
                 <>
                   <NavLink
                     to={`/assigned`}
                     onClick={handleCloseSideBar}
-                    style={({ isActive }) => ({
-                      backgroundColor: isActive ? currentColor : "",
-                    })}
                     className={({ isActive }) =>
                       isActive ? activeLink : normalLink
                     }
@@ -145,9 +124,6 @@ const Sidebar = () => {
                   <NavLink
                     to={`/cc`}
                     onClick={handleCloseSideBar}
-                    style={({ isActive }) => ({
-                      backgroundColor: isActive ? currentColor : "",
-                    })}
                     className={({ isActive }) =>
                       isActive ? activeLink : normalLink
                     }
@@ -158,9 +134,6 @@ const Sidebar = () => {
                   <NavLink
                     to={`all-tickets`}
                     onClick={handleCloseSideBar}
-                    style={({ isActive }) => ({
-                      backgroundColor: isActive ? currentColor : "",
-                    })}
                     className={({ isActive }) =>
                       isActive ? activeLink : normalLink
                     }
@@ -187,9 +160,6 @@ const Sidebar = () => {
               <NavLink
                 to={`/my-tickets`}
                 onClick={handleCloseSideBar}
-                style={({ isActive }) => ({
-                  backgroundColor: isActive ? currentColor : "",
-                })}
                 className={({ isActive }) =>
                   isActive ? activeLink : normalLink
                 }
@@ -200,16 +170,11 @@ const Sidebar = () => {
             </div>
             {userRole && allowedRoles.includes(userRole) && (
               <div className="mb-4">
-                <p className="text-gray-500 mb-4 uppercase text-xs font-semibold">
-                  Manage
-                </p>
+                <p className="text-gray-500 mb-4 text-xs font-normal">Manage</p>
 
                 <NavLink
                   to={`/createuser`}
                   onClick={handleCloseSideBar}
-                  style={({ isActive }) => ({
-                    backgroundColor: isActive ? currentColor : "",
-                  })}
                   className={({ isActive }) =>
                     isActive ? activeLink : normalLink
                   }
@@ -220,9 +185,6 @@ const Sidebar = () => {
                 <NavLink
                   to={`/organizations`}
                   onClick={handleCloseSideBar}
-                  style={({ isActive }) => ({
-                    backgroundColor: isActive ? currentColor : "",
-                  })}
                   className={({ isActive }) =>
                     isActive ? activeLink : normalLink
                   }
@@ -233,9 +195,6 @@ const Sidebar = () => {
                 <NavLink
                   to={`/issues`}
                   onClick={handleCloseSideBar}
-                  style={({ isActive }) => ({
-                    backgroundColor: isActive ? currentColor : "",
-                  })}
                   className={({ isActive }) =>
                     isActive ? activeLink : normalLink
                   }
@@ -246,9 +205,6 @@ const Sidebar = () => {
                 <NavLink
                   to={`/projects`}
                   onClick={handleCloseSideBar}
-                  style={({ isActive }) => ({
-                    backgroundColor: isActive ? currentColor : "",
-                  })}
                   className={({ isActive }) =>
                     isActive ? activeLink : normalLink
                   }
@@ -260,16 +216,11 @@ const Sidebar = () => {
             )}
             {userRole && allowedRolesOrg.includes(userRole) && (
               <div className="mb-4">
-                <p className="text-gray-500 mb-4 uppercase text-xs font-semibold">
-                  Office
-                </p>
+                <p className="text-gray-500 mb-4 text-xs font-normal">Office</p>
 
                 <NavLink
                   to={`/organization`}
                   onClick={handleCloseSideBar}
-                  style={({ isActive }) => ({
-                    backgroundColor: isActive ? currentColor : "",
-                  })}
                   className={({ isActive }) =>
                     isActive ? activeLink : normalLink
                   }
@@ -280,9 +231,6 @@ const Sidebar = () => {
                 <NavLink
                   to={`/office-tickets`}
                   onClick={handleCloseSideBar}
-                  style={({ isActive }) => ({
-                    backgroundColor: isActive ? currentColor : "",
-                  })}
                   className={({ isActive }) =>
                     isActive ? activeLink : normalLink
                   }
@@ -290,27 +238,9 @@ const Sidebar = () => {
                   <CorporateFareIcon />
                   <span className="capitalize">Office Tickets</span>
                 </NavLink>
-                {/*
-              <NavLink
-                to={`/office-assigned`}
-                onClick={handleCloseSideBar}
-                style={({ isActive }) => ({
-                  backgroundColor: isActive ? currentColor : "",
-                })}
-                className={({ isActive }) =>
-                  isActive ? activeLink : normalLink
-                }
-              >
-                <SpellcheckIcon />
-                <span className="capitalize">Office Assigned Tickets</span>
-              </NavLink>
-              */}
                 <NavLink
                   to={`/office-unassigned`}
                   onClick={handleCloseSideBar}
-                  style={({ isActive }) => ({
-                    backgroundColor: isActive ? currentColor : "",
-                  })}
                   className={({ isActive }) =>
                     isActive ? activeLink : normalLink
                   }
