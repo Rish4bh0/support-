@@ -8,17 +8,43 @@ import CloseIcon from "@mui/icons-material/Close";
 import DeleteIcon from "@mui/icons-material/Delete";
 import ModeEditIcon from "@mui/icons-material/ModeEdit";
 import ViewListIcon from "@mui/icons-material/ViewList";
-import { fetchAllUsers, createUser, reset, deleteUser, updateUser, selectUserById } from "../../features/auth/authSlice";
-import BackButton from "../../components/BackButton";
+import {
+  fetchAllUsers,
+  createUser,
+  deleteUser,
+  updateUser,
+  selectUserById,
+} from "../../features/auth/authSlice";
 import { DataGrid } from "@mui/x-data-grid";
 import { getAllOrganization } from "../../features/organization/organizationSlice";
 import AddCircleOutlineIcon from "@mui/icons-material/AddCircleOutline";
 import Spinner from "../../components/Spinner";
+import { TextField } from "@mui/material";
+import Select from "@mui/material/Select";
+import MenuItem from "@mui/material/MenuItem";
+
+const customStyles = {
+  content: {
+    width: "600px",
+    top: "50%",
+    left: "50%",
+    right: "auto",
+    bottom: "auto",
+    marginRight: "-50%",
+    transform: "translate(-50%, -50%)",
+    position: "relative",
+    padding: 0,
+  },
+};
 
 function UserList() {
   const users = useSelector((state) => state.auth.users);
-  const { isLoading, isError, isSuccess, message } = useSelector((state) => state.auth);
-  const organizations = useSelector((state) => state.organizations.organizations);
+  const { isLoading, isError, isSuccess, message } = useSelector(
+    (state) => state.auth
+  );
+  const organizations = useSelector(
+    (state) => state.organizations.organizations
+  );
   const organizationMap = {};
 
   organizations.forEach((organization) => {
@@ -55,7 +81,7 @@ function UserList() {
 
   const handleUpdateUser = (userId) => {
     setSelectedUserId(userId);
-  
+
     // Check if it's a new user or an existing user being updated
     if (!userId) {
       // It's a new user, open the modal for creating
@@ -69,12 +95,11 @@ function UserList() {
         setUpdateUserRole(selectedUser.role);
         setUpdateUserOrganization(selectedUser.organization);
       }
-  
+
       // Open the modal for updating
       setIsUpdateModalOpen(true);
     }
   };
-  
 
   const handleDeleteUser = (userId, userName) => {
     setUserIdToDelete(userId);
@@ -151,7 +176,9 @@ function UserList() {
       email: selectedUserId ? updateUserEmail : newUserEmail,
       role: selectedUserId ? updateUserRole : newUserRole,
       password: selectedUserId ? updateUserPassword : newUserPassword,
-      organization: selectedUserId ? updateUserOrganization : newUserOrganization,
+      organization: selectedUserId
+        ? updateUserOrganization
+        : newUserOrganization,
     };
 
     if (selectedUserId) {
@@ -193,7 +220,6 @@ function UserList() {
     dispatch(selectUserById(selectedUserId));
   }, [selectedUserId, dispatch]);
 
-  
   /*
 
   if (!["ADMIN", "SUPERVISOR", "EMPLOYEE"].includes(userRole)) {
@@ -207,335 +233,364 @@ function UserList() {
 */
   return (
     <>
-      <div>
-        <h1 className="text-xl font-extrabold text-14">
-          {" "}
-          <ViewListIcon /> User List
-        </h1>
-        <div className="flex justify-end p-2 md:mx-6 relative">
-          <Button
-            variant="contained"
-            color="primary"
-            onClick={openModal}
-            style={{ marginBottom: "10px" }}
-          >
-            <AddCircleOutlineIcon /> Add User
+      <div className="border border-gray-300 rounded-2xl bg-white w-full mb-48">
+        <div className="border-b-1 p-4 text-sm flex justify-between">
+          <div className="font-extrabold">User List</div>
+          <Button variant="contained" color="primary" onClick={openModal}>
+            <AddCircleOutlineIcon className="me-2" /> Add User
           </Button>
         </div>
-        <DataGrid
-  rows={users.map((user, index) => ({ ...user, id: index }))}
-  columns={[
-    { field: "name", headerName: "User Name", flex: 1 },
-    { field: "email", headerName: "User email", flex: 1 },
-    { field: "role", headerName: "User role", flex: 1 },
-    {
-      field: "organization",
-      headerName: "Office",
-      width: 200,
-      renderCell: (params) =>
-        organizationMap[params.value] || "Unassigned",
-    },
-    { field: "_id", headerName: "User Id", flex: 1 },
-    {
-      field: "actions",
-      headerName: "Action",
-      flex: 1,
-      renderCell: (params) => (
-        <div>
-          <button onClick={() => handleUpdateUser(params.row._id)}>
-            <ModeEditIcon className="text-blue-500 group-hover:text-blue-700 mr-8" />
-          </button>
+        <div className="p-4">
+          <DataGrid
+            rows={users.map((user, index) => ({ ...user, id: index }))}
+            columns={[
+              { field: "name", headerName: "User Name", flex: 1 },
+              { field: "email", headerName: "User email", flex: 1 },
+              { field: "role", headerName: "User role", flex: 1 },
+              {
+                field: "organization",
+                headerName: "Office",
+                width: 200,
+                renderCell: (params) =>
+                  organizationMap[params.value] || "Unassigned",
+              },
+              { field: "_id", headerName: "User Id", flex: 1 },
+              {
+                field: "actions",
+                headerName: "Action",
+                flex: 1,
+                renderCell: (params) => (
+                  <div>
+                    <button onClick={() => handleUpdateUser(params.row._id)}>
+                      <ModeEditIcon className="text-blue-500 group-hover:text-blue-700 mr-8" />
+                    </button>
 
-          <button
-            onClick={() => handleDeleteUser(params.row._id, params.row.name)}
-            className="group"
+                    <button
+                      onClick={() =>
+                        handleDeleteUser(params.row._id, params.row.name)
+                      }
+                      className="group"
+                    >
+                      <DeleteIcon className="text-red-500 group-hover:text-red-700 mr-8" />
+                    </button>
+                  </div>
+                ),
+              },
+            ]}
+            pageSize={5}
+            checkboxSelection
+            onSelectionModelChange={(newSelection) => {}}
+            getRowId={(row) => row.id}
+            loading={isLoading}
+            components={{
+              loadingOverlay: () => <Spinner />, // Custom spinner component
+            }}
+          />
+
+          {/* Add User Modal */}
+          <Modal
+            isOpen={!!isModalOpen}
+            onRequestClose={closeModal}
+            contentLabel="Add User Modal"
+            className={"border text-xs rounded-lg bg-white overflow-hidden"}
+            style={{
+              ...customStyles,
+              zIndex: 1,
+              position: "absolute",
+            }}
           >
-            <DeleteIcon className="text-red-500 group-hover:text-red-700 mr-8" />
-          </button>
+            <div className="p-4 flex justify-between items-center bg-blue-600 text-white">
+              <label className="font-semibold uppercase ">Add User</label>
+              <button onClick={closeModal}>
+                <CloseIcon />
+              </button>
+            </div>
+            <form onSubmit={handleFormSubmit}>
+              <div className="card-body p-4">
+                <div className="form-group mb-4">
+                  <label htmlFor="name" className="mb-2 block font-semibold">
+                    Name
+                  </label>
+                  <TextField
+                    id="name"
+                    name="name"
+                    className="text-sm w-full"
+                    size="small"
+                    placeholder="Enter name"
+                    value={newUserName}
+                    onChange={(e) => setNewUserName(e.target.value)}
+                  />
+                </div>
+                <div className="form-group mb-4">
+                  <label htmlFor="email" className="mb-2 block font-semibold">
+                    Email Address
+                  </label>
+                  <TextField
+                    type="text"
+                    id="email"
+                    name="email"
+                    className="text-sm w-full px-2 py-1"
+                    size="small"
+                    placeholder="Enter email address"
+                    value={newUserEmail}
+                    onChange={(e) => setNewUserEmail(e.target.value)}
+                  />
+                </div>
+                <div className="form-group mb-4">
+                  <label
+                    htmlFor="password"
+                    className="mb-2 block font-semibold"
+                  >
+                    Enter password
+                  </label>
+                  <TextField
+                    type="password"
+                    id="password"
+                    name="password"
+                    value={newUserPassword}
+                    placeholder="Enter your password"
+                    className="text-sm w-full"
+                    size="small"
+                    onChange={(e) => setNewUserPassword(e.target.value)}
+                  />
+                </div>
+                <div className="flex gap-4">
+                  <div className="form-group w-full">
+                    <label htmlFor="role" className="mb-2 block font-semibold">
+                      Role
+                    </label>
+                    <Select
+                      name="role"
+                      id="role"
+                      className="text-sm w-full"
+                      size="small"
+                      value={newUserRole}
+                      onChange={(e) => setNewUserRole(e.target.value)}
+                    >
+                      <MenuItem value="">Select One</MenuItem>
+                      {[
+                        "USER",
+                        "ADMIN",
+                        "SUPERVISOR",
+                        "EMPLOYEE",
+                        "ORGAGENT",
+                      ].map((option) => (
+                        <MenuItem key={option} value={option}>
+                          {option}
+                        </MenuItem>
+                      ))}
+                    </Select>
+                  </div>
+                  <div className="form-group w-full">
+                    <label
+                      htmlFor="organization"
+                      className="mb-2 block font-semibold"
+                    >
+                      Office
+                    </label>
+                    <Select
+                      name="organization"
+                      id="organization"
+                      className="text-sm w-full"
+                      size="small"
+                      value={newUserOrganization}
+                      onChange={(e) => setNewUserOrganization(e.target.value)}
+                    >
+                      <MenuItem value="">Select One</MenuItem>
+                      {organizations && organizations.length > 0 ? (
+                        organizations.map((organization) => (
+                          <MenuItem
+                            key={organization._id}
+                            value={organization._id}
+                          >
+                            {organization.name}
+                          </MenuItem>
+                        ))
+                      ) : (
+                        <MenuItem value="" disabled>
+                          No organization available
+                        </MenuItem>
+                      )}
+                    </Select>
+                  </div>
+                </div>
+              </div>
+              <div className="card-footer p-4 border-t-1 space-x-6 text-end">
+                <Button type="submit" variant="contained" color="primary">
+                  Submit
+                </Button>
+              </div>
+            </form>
+          </Modal>
+
+          {/* Update User Modal */}
+          <Modal
+            isOpen={!!(isUpdateModalOpen && selectedUserId)}
+            onRequestClose={closeUpdateModal}
+            contentLabel="Update User Modal"
+            className={"border text-xs rounded-lg bg-white overflow-hidden"}
+            style={{
+              ...customStyles,
+              zIndex: 1,
+              position: "absolute",
+            }}
+          >
+            <div className="p-4 flex justify-between items-center bg-blue-600 text-white">
+              <label className="font-semibold uppercase ">Update User</label>
+              <button onClick={closeUpdateModal}>
+                <CloseIcon />
+              </button>
+            </div>
+            <form onSubmit={handleFormSubmit}>
+              <div className="card-body p-4">
+                <div className="form-group mb-4">
+                  <label htmlFor="name" className="mb-2 block font-semibold">
+                    Name
+                  </label>
+                  <TextField
+                    id="name"
+                    name="name"
+                    className="text-sm w-full"
+                    size="small"
+                    placeholder="Name"
+                    value={updateUserName}
+                    onChange={(e) => setUpdateUserName(e.target.value)}
+                  />
+                </div>
+                <div className="form-group mb-4">
+                  <label htmlFor="email" className="mb-2 block font-semibold">
+                    Email Address
+                  </label>
+                  <TextField
+                    id="email"
+                    name="email"
+                    className="text-sm w-full"
+                    size="small"
+                    placeholder="Email"
+                    value={updateUserEmail}
+                    onChange={(e) => setUpdateUserEmail(e.target.value)}
+                  />
+                </div>
+                <div className="form-group mb-4">
+                  <label
+                    htmlFor="password"
+                    className="mb-2 block font-semibold"
+                  >
+                    Enter password
+                  </label>
+                  <TextField
+                    type="password"
+                    id="password"
+                    name="password"
+                    className="text-sm w-full"
+                    size="small"
+                    value={updateUserPassword}
+                    placeholder="Enter your password"
+                    onChange={(e) => setUpdateUserPassword(e.target.value)}
+                  />
+                </div>
+                <div className="flex gap-4">
+                  <div className="form-group w-full">
+                    <label htmlFor="role" className="mb-2 block font-semibold">
+                      Role
+                    </label>
+                    <Select
+                      name="role"
+                      id="role"
+                      className="text-sm w-full"
+                      size="small"
+                      value={updateUserRole}
+                      onChange={(e) => setUpdateUserRole(e.target.value)}
+                    >
+                      <MenuItem value="">Select One</MenuItem>
+                      {[
+                        "USER",
+                        "ADMIN",
+                        "SUPERVISOR",
+                        "EMPLOYEE",
+                        "ORGAGENT",
+                      ].map((option) => (
+                        <MenuItem key={option} value={option}>
+                          {option}
+                        </MenuItem>
+                      ))}
+                    </Select>
+                  </div>
+                  <div className="form-group w-full">
+                    <label
+                      htmlFor="organization"
+                      className="mb-2 block font-semibold"
+                    >
+                      Office
+                    </label>
+                    <Select
+                      name="organization"
+                      id="organization"
+                      className="text-sm w-full"
+                      size="small"
+                      value={updateUserOrganization}
+                      onChange={(e) =>
+                        setUpdateUserOrganization(e.target.value)
+                      }
+                    >
+                      <MenuItem value="">Select One</MenuItem>
+                      {organizations && organizations.length > 0 ? (
+                        organizations.map((organization) => (
+                          <MenuItem
+                            key={organization._id}
+                            value={organization._id}
+                          >
+                            {organization.name}
+                          </MenuItem>
+                        ))
+                      ) : (
+                        <MenuItem value="" disabled>
+                          No organization available
+                        </MenuItem>
+                      )}
+                    </Select>
+                  </div>
+                </div>
+              </div>
+              <div className="card-footer p-4 border-t-1 space-x-6 text-end">
+                <Button type="submit" variant="contained" color="primary">
+                  Update User
+                </Button>
+              </div>
+            </form>
+          </Modal>
+
+          {/* Delete Confirmation Modal */}
+          <Modal
+            isOpen={!!isDeleteModalOpen}
+            onRequestClose={cancelDelete}
+            contentLabel="Delete User Confirmation Modal"
+            className={"border text-xs rounded-lg bg-white overflow-hidden"}
+            style={{
+              ...customStyles,
+              zIndex: 1,
+              position: "absolute",
+            }}
+          >
+            <div className="p-4 flex justify-between items-center bg-blue-600 text-white">
+              <label className="font-semibold uppercase ">Confirm Delete</label>
+              <button onClick={cancelDelete}>
+                <CloseIcon />
+              </button>
+            </div>
+            <div className="card-body p-4">
+              <p>Are you sure you want to delete {userNameToDelete}?</p>
+            </div>
+            <div className="card-footer p-4 border-t-1 space-x-6 text-end">
+              <Button onClick={confirmDelete} variant="contained" color="error">
+                Yes, Delete
+              </Button>
+            </div>
+          </Modal>
         </div>
-      ),
-    },
-  ]}
-  pageSize={5}
-  checkboxSelection
-  onSelectionModelChange={(newSelection) => {}}
-  getRowId={(row) => row.id}
-  loading={isLoading}
-  components={{
-    loadingOverlay: () => <Spinner />, // Custom spinner component
-  }}
-/>
-
-
-      {/* Add User Modal */}
-      <Modal
-        isOpen={!!isModalOpen}
-        onRequestClose={closeModal}
-        contentLabel="Add User Modal"
-        style={{
-          overlay: {
-            display: "flex",
-            alignItems: "center",
-            justifyContent: "center",
-            backgroundColor: "rgba(0, 0, 0, 0.3)",
-          },
-          content: {
-            width: "500px",
-            height: "600px",
-            margin: "0 auto",
-            backgroundColor: "white",
-            borderRadius: "4px",
-            padding: "20px",
-          },
-        }}
-      >
-        <Button
-          variant="text"
-          color="inherit"
-          onClick={closeModal}
-          style={{ position: "absolute", top: "10px", right: "10px" }}
-        >
-          <CloseIcon />
-        </Button>
-        <h2>Add User</h2>
-        <form onSubmit={handleFormSubmit}>
-          <div className="form-group">
-            <label htmlFor="name">Name:</label>
-            <input
-              type="text"
-              id="name"
-              name="name"
-              placeholder="Name"
-              value={newUserName}
-              onChange={(e) => setNewUserName(e.target.value)}
-            />
-          </div>
-          <div className="form-group">
-            <label htmlFor="email">New user email:</label>
-            <input
-              type="text"
-              id="email"
-              name="email"
-              placeholder="Email"
-              value={newUserEmail}
-              onChange={(e) => setNewUserEmail(e.target.value)}
-            />
-          </div>
-          <div className="form-group">
-            <label htmlFor="password">New user password:</label>
-            <input
-              type="password"
-              id="password"
-              name="password"
-              value={newUserPassword}
-              placeholder="Enter your password"
-              onChange={(e) => setNewUserPassword(e.target.value)}
-            />
-          </div>
-          <div className="form-group">
-            <label htmlFor="role">Role</label>
-            <select
-              name="role"
-              id="role"
-              value={newUserRole}
-              onChange={(e) => setNewUserRole(e.target.value)}
-            >
-              <option value="">Select One</option>
-              <option value="USER">USER</option>
-              <option value="ADMIN">ADMIN</option>
-              <option value="SUPERVISOR">SUPERVISOR</option>
-              <option value="EMPLOYEE">EMPLOYEE</option>
-              <option value="ORGAGENT">ORGAGENT</option>
-            </select>
-          </div>
-          <div className="form-group">
-            <label htmlFor="organization">Office</label>
-            <select
-              name="organization"
-              id="organization"
-              value={newUserOrganization}
-              onChange={(e) => setNewUserOrganization(e.target.value)}
-            >
-              <option value="">Select One</option>
-              {organizations && organizations.length > 0 ? (
-                organizations.map((organization) => (
-                  <option key={organization._id} value={organization._id}>
-                    {organization.name}
-                  </option>
-                ))
-              ) : (
-                <option value="" disabled>
-                  No organization available
-                </option>
-              )}
-            </select>
-          </div>
-          <div className="form-group">
-            <Button type="submit" variant="contained" color="primary">
-              Create User
-            </Button>
-          </div>
-        </form>
-      </Modal>
-
-      {/* Update User Modal */}
-      <Modal
-        isOpen={!!(isUpdateModalOpen && selectedUserId)}
-        onRequestClose={closeUpdateModal}
-        contentLabel="Update User Modal"
-        style={{
-          overlay: {
-            display: "flex",
-            alignItems: "center",
-            justifyContent: "center",
-            backgroundColor: "rgba(0, 0, 0, 0.3)",
-          },
-          content: {
-            width: "500px",
-            height: "600px",
-            margin: "0 auto",
-            backgroundColor: "white",
-            borderRadius: "4px",
-            padding: "20px",
-          },
-        }}
-      >
-        <Button
-          variant="text"
-          color="inherit"
-          onClick={closeUpdateModal}
-          style={{ position: "absolute", top: "10px", right: "10px" }}
-        >
-          <CloseIcon />
-        </Button>
-        <h2>Update User</h2>
-        <form onSubmit={handleFormSubmit}>
-          <div className="form-group">
-            <label htmlFor="name">Name:</label>
-            <input
-              type="text"
-              id="name"
-              name="name"
-              placeholder="Name"
-              value={updateUserName}
-              onChange={(e) => setUpdateUserName(e.target.value)}
-            />
-          </div>
-          <div className="form-group">
-            <label htmlFor="email">Email:</label>
-            <input
-              type="text"
-              id="email"
-              name="email"
-              placeholder="Email"
-              value={updateUserEmail}
-              onChange={(e) => setUpdateUserEmail(e.target.value)}
-            />
-          </div>
-          <div className="form-group">
-            <label htmlFor="password">New user password:</label>
-            <input
-              type="password"
-              id="password"
-              name="password"
-              value={updateUserPassword}
-              placeholder="Enter your password"
-              onChange={(e) => setUpdateUserPassword(e.target.value)}
-            />
-          </div>
-          <div className="form-group">
-            <label htmlFor="role">Role:</label>
-            <select
-              name="role"
-              id="role"
-              value={updateUserRole}
-              onChange={(e) => setUpdateUserRole(e.target.value)}
-            >
-              <option value="USER">USER</option>
-              <option value="ADMIN">ADMIN</option>
-              <option value="SUPERVISOR">SUPERVISOR</option>
-              <option value="EMPLOYEE">EMPLOYEE</option>
-              <option value="ORGAGENT">ORGAGENT</option>
-            </select>
-          </div>
-          <div className="form-group">
-            <label htmlFor="organization">Office:</label>
-            <select
-              name="organization"
-              id="organization"
-              value={updateUserOrganization}
-              onChange={(e) => setUpdateUserOrganization(e.target.value)}
-            >
-              <option value="">Select One</option>
-              {organizations && organizations.length > 0 ? (
-                organizations.map((organization) => (
-                  <option key={organization._id} value={organization._id}>
-                    {organization.name}
-                  </option>
-                ))
-              ) : (
-                <option value="" disabled>
-                  No organization available
-                </option>
-              )}
-            </select>
-          </div>
-          <div className="form-group">
-            <Button type="submit" variant="contained" color="primary">
-              Update User
-            </Button>
-          </div>
-        </form>
-      </Modal>
-
-      {/* Delete Confirmation Modal */}
-      <Modal
-        isOpen={!!isDeleteModalOpen}
-        onRequestClose={cancelDelete}
-        contentLabel="Delete User Confirmation Modal"
-        style={{
-          overlay: {
-            display: "flex",
-            alignItems: "center",
-            justifyContent: "center",
-            backgroundColor: "rgba(0, 0, 0, 0.3)",
-          },
-          content: {
-            width: "370px",
-            height: "160px",
-            backgroundColor: "white",
-            borderRadius: "4px",
-            padding: "20px",
-            position: "relative",
-          },
-        }}
-      >
-        <Button
-          onClick={cancelDelete}
-          style={{
-            position: "absolute",
-            top: "10px",
-            right: "2px",
-          }}
-        >
-          <CloseIcon />
-        </Button>
-        <h2>Confirm Delete</h2>
-        <p>Are you sure you want to delete {userNameToDelete}?</p>
-        <Button
-          style={{
-            top: "20px",
-          }}
-          onClick={confirmDelete}
-          variant="contained"
-          color="primary"
-        >
-          Yes, Delete
-        </Button>
-      </Modal>
-    </div>
-  </>
-);
+      </div>
+    </>
+  );
 }
 
 export default UserList;

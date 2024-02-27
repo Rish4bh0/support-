@@ -145,9 +145,6 @@ const Sidebar = () => {
                   <NavLink
                     to={`/unassigned`}
                     onClick={handleCloseSideBar}
-                    style={({ isActive }) => ({
-                      backgroundColor: isActive ? currentColor : "",
-                    })}
                     className={({ isActive }) =>
                       isActive ? activeLink : normalLink
                     }

@@ -360,7 +360,7 @@ function Tickets({ tickets, isLoading, filteredTic, greetingMessage, title }) {
           <div className="font-extrabold">Filter {title}</div>
         </div>
         <div className="p-4">
-          <div className="bg-white flex gap-3 mb-7 ">
+          <div className="bg-white flex gap-3">
             <div className="w-full">
               <label
                 htmlFor="status-dropdown"
@@ -411,14 +411,6 @@ function Tickets({ tickets, isLoading, filteredTic, greetingMessage, title }) {
       <div className="border border-gray-300 rounded-2xl bg-white w-full">
         <div className="border-b-1 p-4 font-extrabold text-sm flex justify-between items-center">
           <div className="font-extrabold">{title}</div>
-          {/* <div>
-            <Alert
-              className="block text-gray-700 text-sm font-semibold mb-2"
-              severity="info"
-            >
-              <p> {greetingMessage}</p>
-            </Alert>
-          </div> */}
         </div>
         <div className="p-4">
           <StyledDataGrid

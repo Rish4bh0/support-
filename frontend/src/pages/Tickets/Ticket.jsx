@@ -537,7 +537,9 @@ function Ticket() {
           />
         </div>
 
-        {ticket.status !== "close" && <MediaUpload ticketID={ticket._id} />}
+        <div className="p-4">
+          {ticket.status !== "close" && <MediaUpload ticketID={ticket._id} />}
+        </div>
         <div className="card-footer p-4 border-t-1 space-x-6 text-end">
           {userRole &&
             allowedRolesReview.includes(userRole) &&

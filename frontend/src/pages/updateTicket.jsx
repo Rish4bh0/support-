@@ -1,12 +1,16 @@
-import { React,  useEffect, useState } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
-import { updateTicketAsync, getTicket, reset } from '../features/tickets/ticketSlice';
-import { useNavigate, useParams } from 'react-router-dom';
-import { fetchAllUsers } from '../features/auth/authSlice';
-import { getAllIssueTypes } from '../features/issues/issueSlice';
-import { getAllProject } from '../features/project/projectSlice';
-import { getAllOrganization } from '../features/organization/organizationSlice';
-import { toast } from 'react-toastify';
+import { React, useEffect, useState } from "react";
+import { useDispatch, useSelector } from "react-redux";
+import {
+  updateTicketAsync,
+  getTicket,
+  reset,
+} from "../features/tickets/ticketSlice";
+import { useNavigate, useParams } from "react-router-dom";
+import { fetchAllUsers } from "../features/auth/authSlice";
+import { getAllIssueTypes } from "../features/issues/issueSlice";
+import { getAllProject } from "../features/project/projectSlice";
+import { getAllOrganization } from "../features/organization/organizationSlice";
+import { toast } from "react-toastify";
 import Spinner from "../components/Spinner";
 import {
   Button,
@@ -23,9 +27,9 @@ import {
   CardContent,
 } from "@mui/material";
 import SendIcon from "@mui/icons-material/Send";
-import UpdateIcon from '@mui/icons-material/Update';
-import BackButton from '../components/BackButton';
-import MediaUpload from './Media/ImageUpload';
+import UpdateIcon from "@mui/icons-material/Update";
+import BackButton from "../components/BackButton";
+import MediaUpload from "./Media/ImageUpload";
 
 const UpdateProductPage = () => {
   const { ticketId } = useParams();
@@ -34,34 +38,35 @@ const UpdateProductPage = () => {
   const users = useSelector((state) => state.auth.users);
   const issues = useSelector((state) => state.issueTypes.issueTypes);
   const projects = useSelector((state) => state.project.project);
-  const userRole = useSelector(state => state.auth.user.role); 
-  const organizations = useSelector(state => state.organizations.organizations);
+  const userRole = useSelector((state) => state.auth.user.role);
+  const organizations = useSelector(
+    (state) => state.organizations.organizations
+  );
   const dispatch = useDispatch();
 
   // State for form data including media
   const [formData, setFormData] = useState({
-    ticketID: '',
-    customerName: '',
-    description: '',
-    project: '',
-    priority: '',
-    assignedTo: '',
-    organization: '',
-    issueType: '',
-    customerEmail: '',
-    customerContact: '',
+    ticketID: "",
+    customerName: "",
+    description: "",
+    project: "",
+    priority: "",
+    assignedTo: "",
+    organization: "",
+    issueType: "",
+    customerEmail: "",
+    customerContact: "",
     cc: [],
   });
 
   // State to store selected media files
- // const [media, setMedia] = useState([]);
+  // const [media, setMedia] = useState([]);
   const [isEmailValid, setIsEmailValid] = useState(false);
   const [filteredUsers, setFilteredUsers] = useState([]);
 
   const { isLoading, isError, message, isSuccess } = useSelector(
     (state) => state.tickets
   );
- 
 
   // Define an array of roles that should see the "Dashboard" link
   const allowedRoles = ["ADMIN", "SUPERVISOR"];
@@ -79,13 +84,11 @@ const UpdateProductPage = () => {
       toast.error(message);
     }
     if (isSuccess) {
-      
       navigate(`/ticket/${ticket._id}`);
       toast.success("Ticket updated!");
       dispatch(reset());
     }
   }, [dispatch, isError, isSuccess, navigate, message, reset]);
-
 
   useEffect(() => {
     // Fetch the ticket data from the store and update the form data
@@ -101,7 +104,7 @@ const UpdateProductPage = () => {
         customerEmail: ticket.customerEmail,
         organization: ticket.organization,
         customerContact: ticket.customerContact,
-        title : ticket.title,
+        title: ticket.title,
         cc: ticket.cc || [],
       });
     } else {
@@ -110,22 +113,25 @@ const UpdateProductPage = () => {
     }
   }, [ticketId, ticket, dispatch]);
 
-   const handleChange = (e) => {
+  const handleChange = (e) => {
     const { name, value } = e.target;
 
-     // Update formData state
-  setFormData((prevData) => ({
-    ...prevData,
-    [name]: Array.isArray(value) ? value : value === "null" ? null : value, 
-  }));
-   
+    // Update formData state
+    setFormData((prevData) => ({
+      ...prevData,
+      [name]: Array.isArray(value) ? value : value === "null" ? null : value,
+    }));
   };
 
   useEffect(() => {
     // Filter users based on role
-    setFilteredUsers(users.filter((user) => ["ADMIN", "EMPLOYEE", "SUPERVISOR"].includes(user.role)));
+    setFilteredUsers(
+      users.filter((user) =>
+        ["ADMIN", "EMPLOYEE", "SUPERVISOR"].includes(user.role)
+      )
+    );
   }, [users]);
-/*
+  /*
   // Function to handle media file selection
   const handleMedia = (e) => {
     const selectedMedia = e.target.files;
@@ -155,314 +161,262 @@ const UpdateProductPage = () => {
 */
   const handleSubmit = (e, status) => {
     e.preventDefault();
-    
+
     // Dispatch the updateTicketAsync action with media data
     dispatch(
       updateTicketAsync({
-        
         ticketId,
         updatedTicketData: {
           customerName: formData.customerName,
           description: formData.description,
           ticketID: formData.ticketID,
-        project: formData.project,
-        priority: formData.priority,
-        assignedTo: formData.assignedTo,
-        organization: formData.organization,
-        issueType: formData.issueType,
-        customerEmail: formData.customerEmail,
-        customerContact: formData.customerContact,
-        title: formData.title,
-        status: status === "new" ? "new" : status,
-        cc: formData.cc,
+          project: formData.project,
+          priority: formData.priority,
+          assignedTo: formData.assignedTo,
+          organization: formData.organization,
+          issueType: formData.issueType,
+          customerEmail: formData.customerEmail,
+          customerContact: formData.customerContact,
+          title: formData.title,
+          status: status === "new" ? "new" : status,
+          cc: formData.cc,
         },
       })
     );
   };
 
- 
+  // Check if the user has one of the allowed roles
+  if (!["ADMIN", "SUPERVISOR", "EMPLOYEE", "ORGAGENT"].includes(userRole)) {
+    // Handle unauthorized access, e.g., redirect or show an error message
+    return (
+      <div>
+        <h1>Unauthorized Access</h1>
+        <p>You do not have permission to access this page.</p>
+      </div>
+    );
+  }
 
- // Check if the user has one of the allowed roles
- if (!["ADMIN", "SUPERVISOR", "EMPLOYEE", "ORGAGENT"].includes(userRole)) {
-  // Handle unauthorized access, e.g., redirect or show an error message
-  return (
-    <div>
-      <h1>Unauthorized Access</h1>
-      <p>You do not have permission to access this page.</p>
-    </div>
-  );
-}
-
-if (isLoading) return <Spinner />;
+  if (isLoading) return <Spinner />;
 
   return (
     <>
-  
-    <section className="flex items-center justify-center ">
-      <div>
-        <Typography variant="h4" component="h1" gutterBottom>
-        Update Ticket
-        </Typography>
-        <Typography variant="body2">
-          Please fill out the form below
-        </Typography>
-        <Typography variant="body2">
-        Ticket ID: {ticket.ticketID}
-        </Typography>
-       
-      </div>
-    </section>
-   
-      <form onSubmit={handleSubmit} className="p-6">
-        <Grid container spacing={3}>
-        <Grid item xs={12}>
-            <TextField
-              label=" Ticket title"
-              name="title"
-              value={formData.title}
-              fullWidth
-            />
-          </Grid>
-          <Grid item xs={6}>
-  <FormControl fullWidth>
-    <InputLabel htmlFor="organization">Organization</InputLabel>
-    <Select
-      name="organization"
-      id="organization"
-      value={formData.organization}
-      onChange={handleChange}
-    >
-      <MenuItem value="">Select One</MenuItem>
-      {user && user.role === "ADMIN" ? (
-        // Render all organizations if user's role is admin
-        organizations && organizations.length > 0 ? (
-          organizations.map((organization) => (
-            <MenuItem key={organization._id} value={organization._id}>
-              {organization.name}
-            </MenuItem>
-          ))
-        ) : (
-          // Render a disabled option if no organizations are available
-          <MenuItem value="" disabled>
-            No organization available
-          </MenuItem>
-        )
-      ) : user && user.organization ? (
-        // Render organizations based on user's organization
-        organizations && organizations.length > 0 ? (
-          organizations
-            .filter((org) => org._id === user.organization)
-            .map((org) => (
-              <MenuItem key={org._id} value={org._id}>
-                {org.name}
-              </MenuItem>
-            ))
-        ) : (
-          // Render a disabled option if no organizations are available
-          <MenuItem value="" disabled>
-            No organization available
-          </MenuItem>
-        )
-      ) : (
-        // Render a disabled option if no organizations are available
-        <MenuItem value="" disabled>
-          No organization available
-        </MenuItem>
-      )}
-    </Select>
-  </FormControl>
-</Grid>
-
-
-          {userRole && allowedRoles.includes(userRole) && (
-            <Grid item xs={6}>
-              <FormControl fullWidth>
-                <InputLabel htmlFor="assignedTo">Assign To</InputLabel>
-                <Select
-                  name="assignedTo"
-                  id="assignedTo"
-                  value={formData.assignedTo}
-            onChange={handleChange}
-                >
-                  <MenuItem value="null">Select One</MenuItem>
-                  {filteredUsers.length > 0 ? (
-                    filteredUsers.map((user) => (
-                      <MenuItem key={user._id} value={user._id}>
-                        {user.name}
-                      </MenuItem>
-                    ))
-                  ) : (
-                    <MenuItem value="" disabled>
-                      No users available for the selected organization
-                    </MenuItem>
-                  )}
-                </Select>
-                
-              </FormControl>
-            </Grid>
-          )}
-
-<Grid item xs={6}>
-            <FormControl fullWidth>
-              <InputLabel htmlFor="cc">CC Users</InputLabel>
-              <Select
-                name="cc"
-                id="cc"
-                multiple
-                value={formData.cc}
-                onChange={handleChange}
-              >
-                {filteredUsers.length > 0 ? (
-                  filteredUsers.map((user) => (
-                    <MenuItem key={user._id} value={user._id}>
-                      {user.name}
-                    </MenuItem>
-                  ))
-                ) : (
-                  <MenuItem value="" disabled>
-                    No users available for CC
-                  </MenuItem>
-                )}
-              </Select>
-            </FormControl>
-          </Grid>
-          {userRole && allowedRoles.includes(userRole) && (
-            <Grid item xs={6}>
-              <FormControl fullWidth>
-                <InputLabel htmlFor="priority">Priority</InputLabel>
-                <Select
-                  name="priority"
-                  id="priority"
-                  value={formData.priority}
-              onChange={handleChange}
-                >
-                  <MenuItem value="">Select One</MenuItem>
-                  <MenuItem value="High">High</MenuItem>
-                  <MenuItem value="Low">Low</MenuItem>
-                </Select>
-              </FormControl>
-            </Grid>
-          )}
- 
- <Grid item xs={6}>
-            <FormControl fullWidth>
-              <InputLabel htmlFor="issueType">Issue Type</InputLabel>
-              <Select
-                name="issueType"
-                id="issueType"
-                value={formData.issueType}
-                onChange={handleChange}
-              >
-                <MenuItem value="">Select One</MenuItem>
-                {issues && issues.length > 0 ? (
-                  issues.map((issue) => (
-                    <MenuItem key={issue._id} value={issue._id}>
-                      {issue.name}
-                    </MenuItem>
-                  ))
-                ) : (
-                  <MenuItem value="" disabled>
-                    No issue available
-                  </MenuItem>
-                )}
-              </Select>
-            </FormControl>
-          </Grid>
-
-          <Grid item xs={12}>
-            <TextField
-              label="Description of the issue"
-              name="description"
-              value={formData.description}
-              onChange={handleChange}
-              fullWidth
-              multiline
-              rows={4}
-            />
-          </Grid>
-{/*
-          <Grid item xs={12}>
-            <div className="form-outline mb-4">
-              <label
-                htmlFor="formupload"
-                className="bg-yellow-500 text-white py-2 px-4 rounded cursor-pointer hover:bg-yellow-700"
-              >
-                Update Media (Images and Videos)
-                <input
-                    onChange={handleMedia}
-                  type="file"
-                  id="formupload"
-                  name="media"
-                  className="hidden"
-                  accept="image/*, video/*"
-                  multiple
-                />
-              </label>
-            </div>
-            {media.length > 0 && (
-          <div className="selected-media">
-            <Typography variant="body2" gutterBottom>
-                  Selected Media:
-                </Typography>
-                <div className="media-items-container">
-            {media.map((mediaItem, index) => (
-              <div key={index} className="media-item">
-                {mediaItem.startsWith('data:image') ? (
-                  <img
-                    src={mediaItem}
-                    alt={`Selected Image ${index + 1}`}
-                    className="img-preview max-w-full max-h-32"
-                  />
-                ) : (
-                  <video
-                    controls
-                    src={mediaItem}
-                    alt={`Selected Video ${index + 1}`}
-                    className="video-preview max-w-full max-h-32"
-                  />
-                )}
+      <section className="card bg-white rounded-lg border">
+        <div className="card-header p-4 border-b-1 pb-3">
+          <Typography variant="h6">
+            <div className="flex justify-between">
+              <div>Update Ticket</div>
+              <div className="text-xs font-normal">
+                <label className="font-medium">Ticket ID: </label>
+                {ticket.ticketID}
               </div>
-            ))}
+            </div>
+          </Typography>
+        </div>
+        <form onSubmit={handleSubmit}>
+          <div className="card-body px-4 py-6">
+            <Grid container spacing={3} className="mb-4">
+              <Grid item xs={6}>
+                <TextField
+                  label=" Ticket title"
+                  name="title"
+                  value={formData.title}
+                  fullWidth
+                />
+              </Grid>
+              <Grid item xs={6}>
+                <FormControl fullWidth>
+                  <InputLabel htmlFor="organization">Organization</InputLabel>
+                  <Select
+                    name="organization"
+                    id="organization"
+                    value={formData.organization}
+                    onChange={handleChange}
+                  >
+                    <MenuItem value="">Select One</MenuItem>
+                    {user && user.role === "ADMIN" ? (
+                      // Render all organizations if user's role is admin
+                      organizations && organizations.length > 0 ? (
+                        organizations.map((organization) => (
+                          <MenuItem
+                            key={organization._id}
+                            value={organization._id}
+                          >
+                            {organization.name}
+                          </MenuItem>
+                        ))
+                      ) : (
+                        // Render a disabled option if no organizations are available
+                        <MenuItem value="" disabled>
+                          No organization available
+                        </MenuItem>
+                      )
+                    ) : user && user.organization ? (
+                      // Render organizations based on user's organization
+                      organizations && organizations.length > 0 ? (
+                        organizations
+                          .filter((org) => org._id === user.organization)
+                          .map((org) => (
+                            <MenuItem key={org._id} value={org._id}>
+                              {org.name}
+                            </MenuItem>
+                          ))
+                      ) : (
+                        // Render a disabled option if no organizations are available
+                        <MenuItem value="" disabled>
+                          No organization available
+                        </MenuItem>
+                      )
+                    ) : (
+                      // Render a disabled option if no organizations are available
+                      <MenuItem value="" disabled>
+                        No organization available
+                      </MenuItem>
+                    )}
+                  </Select>
+                </FormControl>
+              </Grid>
+
+              {userRole && allowedRoles.includes(userRole) && (
+                <Grid item xs={2}>
+                  <FormControl fullWidth>
+                    <InputLabel htmlFor="assignedTo">Assign To</InputLabel>
+                    <Select
+                      name="assignedTo"
+                      id="assignedTo"
+                      value={formData.assignedTo}
+                      onChange={handleChange}
+                    >
+                      <MenuItem value="null">Select One</MenuItem>
+                      {filteredUsers.length > 0 ? (
+                        filteredUsers.map((user) => (
+                          <MenuItem key={user._id} value={user._id}>
+                            {user.name}
+                          </MenuItem>
+                        ))
+                      ) : (
+                        <MenuItem value="" disabled>
+                          No users available for the selected organization
+                        </MenuItem>
+                      )}
+                    </Select>
+                  </FormControl>
+                </Grid>
+              )}
+
+              <Grid item xs={4}>
+                <FormControl fullWidth>
+                  <InputLabel htmlFor="cc">CC Users</InputLabel>
+                  <Select
+                    name="cc"
+                    id="cc"
+                    multiple
+                    value={formData.cc}
+                    onChange={handleChange}
+                  >
+                    {filteredUsers.length > 0 ? (
+                      filteredUsers.map((user) => (
+                        <MenuItem key={user._id} value={user._id}>
+                          {user.name}
+                        </MenuItem>
+                      ))
+                    ) : (
+                      <MenuItem value="" disabled>
+                        No users available for CC
+                      </MenuItem>
+                    )}
+                  </Select>
+                </FormControl>
+              </Grid>
+              {userRole && allowedRoles.includes(userRole) && (
+                <Grid item xs={2}>
+                  <FormControl fullWidth>
+                    <InputLabel htmlFor="priority">Priority</InputLabel>
+                    <Select
+                      name="priority"
+                      id="priority"
+                      value={formData.priority}
+                      onChange={handleChange}
+                    >
+                      <MenuItem value="">Select One</MenuItem>
+                      <MenuItem value="High">High</MenuItem>
+                      <MenuItem value="Low">Low</MenuItem>
+                    </Select>
+                  </FormControl>
+                </Grid>
+              )}
+
+              <Grid item xs={4}>
+                <FormControl fullWidth>
+                  <InputLabel htmlFor="issueType">Issue Type</InputLabel>
+                  <Select
+                    name="issueType"
+                    id="issueType"
+                    value={formData.issueType}
+                    onChange={handleChange}
+                  >
+                    <MenuItem value="">Select One</MenuItem>
+                    {issues && issues.length > 0 ? (
+                      issues.map((issue) => (
+                        <MenuItem key={issue._id} value={issue._id}>
+                          {issue.name}
+                        </MenuItem>
+                      ))
+                    ) : (
+                      <MenuItem value="" disabled>
+                        No issue available
+                      </MenuItem>
+                    )}
+                  </Select>
+                </FormControl>
+              </Grid>
+
+              <Grid item xs={12}>
+                <TextField
+                  label="Description of the issue"
+                  name="description"
+                  value={formData.description}
+                  onChange={handleChange}
+                  fullWidth
+                  multiline
+                  rows={4}
+                />
+              </Grid>
+            </Grid>
+            <MediaUpload ticketID={ticket._id} />
+          </div>
+          <div className="card-footer p-4 border-t-1  space-x-6 text-end">
+            <div className="form-group space-x-6">
+              <Button
+                variant="contained"
+                color="primary"
+                endIcon={<UpdateIcon />}
+                type="submit"
+              >
+                Update Ticket
+              </Button>
+              {ticket.status === "draft" && (
+                <Button
+                  variant="contained"
+                  color="success"
+                  endIcon={<SendIcon />}
+                  onClick={(e) => handleSubmit(e, "new")}
+                >
+                  Submit as New
+                </Button>
+              )}
             </div>
           </div>
-        )}
-          </Grid>
-          */}
-          </Grid>
-          <MediaUpload ticketID={ticket._id} />
-        <div className="form-group mt-6 space-x-6">
-          <Button
-            variant="contained"
-            color="primary"
-            endIcon={<UpdateIcon />}
-            type="submit"
-          >
-            Update Ticket
-          </Button>
-          {ticket.status === "draft" && (
-      <Button
-        variant="contained"
-        color="success"
-        endIcon={<SendIcon />}
-        onClick={(e) => handleSubmit(e, "new")}
-      >
-        Submit as New
-      </Button>
-    )}
-        </div>
-       
-      </form>
-     
+        </form>
+      </section>
     </>
   );
 };
 
 export default UpdateProductPage;
 
-
-
 // UpdateProductPage.js
-{/*
+{
+  /*
 import React, { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { updateTicketAsync, getTicket } from '../features/tickets/ticketSlice';
@@ -539,6 +493,5 @@ const UpdateProductPage = () => {
   );
 };
 
-export default UpdateProductPage;*/}
-
-
+export default UpdateProductPage;*/
+}
