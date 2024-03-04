@@ -705,7 +705,7 @@ function OrganizationList() {
             </div>
             <div className="card-footer p-4 border-t-1 space-x-6 text-end">
               <Button onClick={confirmDelete} variant="contained" color="error">
-                Yes, Delete
+                Delete
               </Button>
             </div>
           </Modal>
