@@ -272,7 +272,6 @@ const NavBar = () => {
                 backgroundColor="blue"
                 className="p-2 rounded text-sm flex-2"
                 customFunc={handleLoginClick}
-                icon={<LoginIcon />}
               />
 
               <NavButton
@@ -281,7 +280,6 @@ const NavBar = () => {
                 backgroundColor="blue"
                 className="p-2 rounded text-sm flex-2"
                 customFunc={handleRegisterClick}
-                icon={<PersonAddIcon />}
               />
             </div>
           )}
