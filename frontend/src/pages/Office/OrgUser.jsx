@@ -28,14 +28,16 @@ import { getAllOrganization } from "../../features/organization/organizationSlic
 function UserList() {
   const authUser = useSelector((state) => state.auth.user); // Get the user from the Redux store
   const users = useSelector((state) => state.auth.users);
-  const organizations = useSelector((state) => state.organizations.organizations);
+  const organizations = useSelector(
+    (state) => state.organizations.organizations
+  );
   const organizationMap = {};
 
   // Create a mapping of organization IDs to their names
   organizations.forEach((organization) => {
     organizationMap[organization._id] = organization.name;
   });
-  const userRole = useSelector(state => state.auth.user.role);
+  const userRole = useSelector((state) => state.auth.user.role);
   const [name, setNewUserName] = useState("");
   const [email, setEmail] = useState("");
   const [role, setRole] = useState("");
@@ -52,11 +54,9 @@ function UserList() {
     dispatch(getAllOrganization());
   }, [dispatch]);
 
-  
-
   const handleCreateUser = (e) => {
     e.preventDefault();
-    console.log(role, organization)
+    console.log(role, organization);
     dispatch(createUser({ name, email, password, role, organization }));
     setNewUserName("");
     setEmail("");
@@ -68,8 +68,8 @@ function UserList() {
 
   const handleDeleteUser = (userId) => {
     // Retrieve the user token from your authentication system
-    const token = 'your-token-here';
-    
+    const token = "your-token-here";
+
     dispatch(deleteUser(userId, token))
       .then(() => {
         toast.success("User deleted successfully");
@@ -97,7 +97,9 @@ function UserList() {
   }
 
   // Filter users based on the organization of the authenticated user
-  const filteredUsers = users.filter(user => user.organization === authUser.organization);
+  const filteredUsers = users.filter(
+    (user) => user.organization === authUser.organization
+  );
 
   return (
     <>
@@ -130,7 +132,11 @@ function UserList() {
                   <TableCell>{user.name}</TableCell>
                   <TableCell>{user.email}</TableCell>
                   <TableCell>{user.role}</TableCell>
-                  <TableCell>{user.organization ? organizationMap[user.organization] : "Unassigned"}</TableCell>
+                  <TableCell>
+                    {user.organization
+                      ? organizationMap[user.organization]
+                      : "Unassigned"}
+                  </TableCell>
                   <TableCell>
                     <Link to={`/createuser/${user._id}`}>
                       <Button
@@ -185,7 +191,7 @@ function UserList() {
           <h2>Add User</h2>
           <form onSubmit={handleCreateUser}>
             <div className="form-group">
-              <label htmlFor="name">New Issue Name:</label>
+              <label htmlFor="name">New Issue Namee:</label>
               <input
                 type="text"
                 id="name"
@@ -267,5 +273,3 @@ function UserList() {
 }
 
 export default UserList;
-
-
