@@ -40,7 +40,7 @@ function OfficeUnassignedTickets() {
   const organizations = useSelector(
     (state) => state.organizations.organizations
   );
-  const user = useSelector((state) => state.auth.user)
+  const user = useSelector((state) => state.auth.user);
   const issues = useSelector((state) => state.issueTypes.issueTypes);
   const dispatch = useDispatch();
   const userRole = useSelector((state) => state.auth.user.role);
@@ -49,7 +49,6 @@ function OfficeUnassignedTickets() {
   const itemsPerPage = 4;
   const [startDate, setStartDate] = useState(null);
   const [endDate, setEndDate] = useState(null);
-  
 
   const classes = useStyles();
   const options = {
@@ -217,7 +216,9 @@ function OfficeUnassignedTickets() {
     return true;
   });
 
-  const sortedTickets = [...filteredTicketss].sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
+  const sortedTickets = [...filteredTicketss].sort(
+    (a, b) => new Date(b.createdAt) - new Date(a.createdAt)
+  );
 
   const rows = sortedTickets.map((ticket) => ({
     ticketid: ticket._id,
@@ -257,11 +258,11 @@ function OfficeUnassignedTickets() {
       flex: 1,
       renderCell: (params) => (
         <div>
-        <span className={`priority priority-${params.value}`}>
-          {params.value}
-        </span>
-      </div>
-    ),
+          <span className={`priority priority-${params.value}`}>
+            {params.value}
+          </span>
+        </div>
+      ),
     },
 
     {
@@ -298,28 +299,18 @@ function OfficeUnassignedTickets() {
       ),
     },
   ];
-  const greetingMessage = `Hello ${user.name}! Below are all the unassigned tickets for ${organizationMap[user.organization]}.`
+  const greetingMessage = ` Unassigned tickets for ${
+    organizationMap[user.organization]
+  }.`;
 
   return (
-    <div className="mt-4">
-      <div className="border border-gray-300 rounded-2xl bg-white w-full">
-        <div className="border-b-1 p-4 font-extrabold text-sm flex gap-2">
-          <div className="font-extrabold">Office-Unassigned</div>
-        </div>
-        <div className="p-4">
-        <div className="bg-white flex justify-end gap-3 mb-7 ">
-            <div className="w-full mt-6">
-              <Alert
-                className="block text-gray-700 text-sm font-semibold mb-2"
-                severity="info"
-              >
-                <p> {greetingMessage}</p>
-              </Alert>
-            </div>
+    <>
+      <div className="border border-gray-300 rounded-2xl bg-white w-full mb-4 font-semibold">
+        <div className="border-b-1 p-4 text-sm">Select Date</div>
+        <div className="p-4 text-xs">
+          <div className="bg-white flex gap-3">
             <div className="w-48">
-              <label className="block text-gray-700 text-sm font-semibold mb-2">
-                Start Date:
-              </label>
+              <label className="block text-gray-700 mb-2">Start Date:</label>
               <input
                 className="border border-gray-300 rounded py-2 px-3 w-full"
                 type="date"
@@ -327,9 +318,7 @@ function OfficeUnassignedTickets() {
               />
             </div>
             <div className="w-48">
-              <label className="block text-gray-700 text-sm font-semibold mb-2 mr-2">
-                End Date:
-              </label>
+              <label className="block text-gray-700 mb-2">End Date:</label>
               <input
                 className="border border-gray-300 rounded py-2 px-3 w-full"
                 type="date"
@@ -337,22 +326,31 @@ function OfficeUnassignedTickets() {
               />
             </div>
           </div>
-        <StyledDataGrid
-          getRowClassName={(params) => `super-app-theme--${params.row.status}`}
-          rows={rows}
-          columns={columns}
-          initialState={{
-            ...rows.initialState,
-            pagination: { paginationModel: { pageSize: 5 } },
-          }}
-          pageSizeOptions={[5, 10, 25]}
-          page={currentPage}
-          onPageChange={(newPage) => setCurrentPage(newPage)}
-          disableSelectionOnClick
-        />
+        </div>
       </div>
-    </div>
-    </div>
+      <div className="border border-gray-300 rounded-2xl bg-white w-full">
+        <div className="border-b-1 p-4 font-semibold text-sm">
+          {greetingMessage}
+        </div>
+        <div className="p-4 text-xs">
+          <StyledDataGrid
+            getRowClassName={(params) =>
+              `super-app-theme--${params.row.status}`
+            }
+            rows={rows}
+            columns={columns}
+            initialState={{
+              ...rows.initialState,
+              pagination: { paginationModel: { pageSize: 5 } },
+            }}
+            pageSizeOptions={[5, 10, 25]}
+            page={currentPage}
+            onPageChange={(newPage) => setCurrentPage(newPage)}
+            disableSelectionOnClick
+          />
+        </div>
+      </div>
+    </>
   );
 }
 
