@@ -232,8 +232,10 @@ const NotificationsList = () => {
   } else {
     content = (
       <>
-        <h1 className="text-2xl font-bold mb-4">Notifications list</h1>
-        <div>No data to show</div>
+        <div className="card-header border-b-2 p-4 flex justify-between items-center">
+          <div className="font-semibold">Notifications list</div>
+        </div>
+        <div className="card-body p-4">No data to show</div>
       </>
     );
   }
