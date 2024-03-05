@@ -88,23 +88,18 @@ function App() {
             setactiveMenu(false)
           )}
           <div
-            className={"relative bg-slate-50" + (activeMenu ? " md:ml-64" : "")}
+            className={
+              "relative bg-slate-100" + (activeMenu ? " md:ml-64" : "")
+            }
           >
             <div className="navbar sticky top-0 left-0 right-0 bg-white w-full z-10 shadow">
               <NavBar />
             </div>
             <div
-              className={
-                user ? "p-4 " : " min-h-screen flex items-center justify-center"
-              }
+              className={user ? "p-4" : "flex items-center justify-center"}
+              style={!user ? { height: "90vh" } : {}}
             >
               <BasicBreadcrumbs />
-              <div
-                className={
-                  !user &&
-                  "banner-image min-h-screen after:bg-black after:absolute after:inset-0 after:opacity-50"
-                }
-              ></div>
               <Routes>
                 <Route path="/" element={<Home />} />
                 <Route path="/report" element={<Report />} />

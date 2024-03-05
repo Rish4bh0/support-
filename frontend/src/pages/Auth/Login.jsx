@@ -5,8 +5,7 @@ import { useSelector, useDispatch } from "react-redux";
 import { login, reset } from "../../features/auth/authSlice";
 import Spinner from "../../components/Spinner";
 import { useStateContext } from "../../contexts/ContextProvider";
-import { TextField } from "@mui/material";
-import { Button } from "@mui/material";
+import { Button, TextField } from "@mui/material";
 
 function Login() {
   const { activeMenu, setactiveMenu } = useStateContext();

@@ -1,18 +1,16 @@
 import React from "react";
 import NotificationsList from "./NotificationsList";
-import { MdClose } from "react-icons/md";
 
 const NotificationModal = ({ isOpen, onClose }) => {
   if (!isOpen) return null;
-  
 
   return (
     <div
       className="card bg-white border text-sm rounded-lg"
       style={{
-        width: "400px",
-        top: "70%",
-        right: "14%",
+        width: "370px",
+        top: "97%",
+        right: "17.7%",
         position: "absolute",
         zIndex: 1,
       }}
