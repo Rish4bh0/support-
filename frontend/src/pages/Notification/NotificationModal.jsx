@@ -4,6 +4,7 @@ import { MdClose } from "react-icons/md";
 
 const NotificationModal = ({ isOpen, onClose }) => {
   if (!isOpen) return null;
+  
 
   return (
     <div
@@ -17,12 +18,14 @@ const NotificationModal = ({ isOpen, onClose }) => {
       }}
     >
       <div className="relative">
+        {/*
         <button
           onClick={onClose}
           className="absolute -right-4 -top-4 text-white bg-red-500 p-2 rounded-lg"
         >
           <MdClose size={20} />
         </button>
+        */}
         <NotificationsList />
       </div>
     </div>
