@@ -75,96 +75,146 @@ const Ecommerce = () => {
   }, [user.organization, allTickets, dispatch]);
 
   {
-  
   }
   return (
     <>
-            <div className="font-semibold text-lg mb-5">
+      <div className="font-semibold text-lg mb-5">
         Welcome to Dashboard , {user.name}{" "}
         {organizationMap[user.organization] || ""} !
       </div>
       <div>
         <div className="flex flex-wrap justify-between items-center mb-5">
-          <div className="bg-white dark:text-gray-200 dark:bg-secondary-dark-bg md:w-48 p-4 rounded border flex flex-col items-center">
-            <Link to="/ticketss">
+          <div className="bg-white md:w-48 py-4 px-3 rounded-2xl border">
+            <Link
+              to="/ticketss"
+              className="flex gap-1 w-full justify-between items-end"
+            >
+              <div>
+                <div className="text-sm font-semibold">All Ticket</div>
+                <div className="text-lg font-semibold my-4">
+                  {allTicketsCount}
+                </div>
+                <div className="text-xs hover:underline">View All Ticket</div>
+              </div>
               <button
                 type="button"
                 style={{ backgroundColor: getRandomColor() }}
-                className="text-2xl opacity-0.9 text-white hover:drop-shadow-xl rounded-lg p-4 h-12 w-12 flex flex-col items-center justify-center mb-3"
+                className="text-2xl opacity-0.9 text-white rounded-lg p-4 h-8 w-8 flex flex-col items-center justify-center"
               >
                 <ConfirmationNumberIcon />
               </button>
             </Link>
-            <div className="text-lg font-semibold">{allTicketsCount}</div>
-            <div className="text-sm font-semibold">All Ticket</div>
           </div>
 
-          <div className="bg-white dark:text-gray-200 dark:bg-secondary-dark-bg md:w-48 p-4 rounded border flex flex-col items-center">
-            <Link to="/ticketss">
+          <div className="bg-white md:w-48 py-4 px-3 rounded-2xl border">
+            <Link
+              to="/ticketss"
+              className="flex gap-1 w-full justify-between items-end"
+            >
+              <div>
+                <div className="text-sm font-semibold">Draft</div>
+                <div className="text-lg font-semibold my-4">
+                  {draftTicketCount}
+                </div>
+                <div className="text-xs hover:underline">View All Draft</div>
+              </div>
               <button
                 type="button"
                 style={{ backgroundColor: "#fbe032" }}
-                className="text-2xl opacity-0.9 text-white hover:drop-shadow-xl rounded-lg p-4 h-12 w-12 flex flex-col items-center justify-center mb-3"
+                className="text-2xl opacity-0.9 text-white rounded-lg p-4 h-8 w-8 flex flex-col items-center justify-center"
               >
                 <DraftsIcon />
               </button>
             </Link>
-            <div className="text-lg font-semibold">{draftTicketCount}</div>
-            <div className="text-sm font-semibold">Draft</div>
           </div>
 
-          <div className="bg-white dark:text-gray-200 dark:bg-secondary-dark-bg md:w-48 p-4 rounded border flex flex-col items-center">
-            <button
-              type="button"
-              style={{ backgroundColor: "#008000" }}
-              className="text-2xl opacity-0.9 text-white hover:drop-shadow-xl rounded-lg p-4 h-12 w-12 flex flex-col items-center justify-center mb-3"
+          <div className="bg-white md:w-48 py-4 px-3 rounded-2xl border">
+            <Link
+              to="/ticketss"
+              className="flex gap-1 w-full justify-between items-end"
             >
-              <FiberNewIcon />
-            </button>
-            <div className="text-lg font-semibold">{newTicketsCount}</div>
-            <div className="text-sm font-semibold">New Ticket</div>
+              <div>
+                <div className="text-sm font-semibold">New Ticket</div>
+                <div className="text-lg font-semibold my-4">
+                  {newTicketsCount}
+                </div>
+                <div className="text-xs hover:underline">View New Ticket</div>
+              </div>
+              <button
+                type="button"
+                style={{ backgroundColor: "#008000" }}
+                className="text-2xl opacity-0.9 text-white rounded-lg p-4 h-8 w-8 flex flex-col items-center justify-center"
+              >
+                <FiberNewIcon />
+              </button>
+            </Link>
           </div>
 
-          <div className="bg-white dark:text-gray-200 dark:bg-secondary-dark-bg md:w-48 p-4 rounded border flex flex-col items-center">
-            <Link to="/ticketss">
+          <div className="bg-white md:w-48 py-4 px-3 rounded-2xl border">
+            <Link
+              to="/ticketss"
+              className="flex gap-1 w-full justify-between items-end"
+            >
+              <div>
+                <div className="text-sm font-semibold">Open Ticket</div>
+                <div className="text-lg font-semibold my-4">
+                  {openTicketsCount}
+                </div>
+                <div className="text-xs hover:underline">View Open Ticket</div>
+              </div>
               <button
                 type="button"
                 style={{ backgroundColor: "#4682b4" }}
-                className="text-2xl opacity-0.9 text-white hover:drop-shadow-xl rounded-lg p-4 h-12 w-12 flex flex-col items-center justify-center mb-3"
+                className="text-2xl opacity-0.9 text-white rounded-lg p-4 h-8 w-8 flex flex-col items-center justify-center"
               >
                 <ConfirmationNumberIcon />
               </button>
             </Link>
-            <div className="text-lg font-semibold">{openTicketsCount}</div>
-            <div className="text-sm font-semibold">Open Ticket</div>
           </div>
 
-          <div className="bg-white dark:text-gray-200 dark:bg-secondary-dark-bg md:w-48 p-4 rounded border flex flex-col items-center">
-            <Link to="/ticketss">
+          <div className="bg-white md:w-48 py-4 px-3 rounded-2xl border">
+            <Link
+              to="/ticketss"
+              className="flex gap-1 w-full justify-between items-end"
+            >
+              <div>
+                <div className="text-sm font-semibold">Review</div>
+                <div className="text-lg font-semibold my-4">
+                  {reviewTicketsCount}{" "}
+                </div>
+                <div className="text-xs hover:underline">View Review</div>
+              </div>
               <button
                 type="button"
                 style={{ backgroundColor: "#f8a54c" }}
-                className="text-2xl opacity-0.9 text-white hover:drop-shadow-xl rounded-lg p-4 h-12 w-12 flex flex-col items-center justify-center mb-3"
+                className="text-2xl opacity-0.9 text-white rounded-lg p-4 h-8 w-8 flex flex-col items-center justify-center"
               >
                 <RateReviewIcon />
               </button>
             </Link>
-            <div className="text-lg font-semibold">{reviewTicketsCount} </div>
-            <div className="text-sm font-semibold">Review</div>
           </div>
 
-          <div className="bg-white dark:text-gray-200 dark:bg-secondary-dark-bg md:w-48 p-4 rounded border flex flex-col items-center">
-            <Link to="/ticketss">
+          <div className="bg-white md:w-48 py-4 px-3 rounded-2xl border">
+            <Link
+              to="/ticketss"
+              className="flex gap-1 w-full justify-between items-end"
+            >
+              <div>
+                <div className="text-sm font-semibold">Closed Ticket</div>
+                <div className="text-lg font-semibold my-4">
+                  {" "}
+                  {closedTicketsCount}{" "}
+                </div>
+                <div className="text-xs hover:underline">Closed Ticke</div>
+              </div>
               <button
                 type="button"
                 style={{ backgroundColor: "#8b0000" }}
-                className="text-2xl opacity-0.9 text-white hover:drop-shadow-xl rounded-lg p-4 h-12 w-12 flex flex-col items-center justify-center mb-3"
+                className="text-2xl opacity-0.9 text-white rounded-lg p-4 h-8 w-8 flex flex-col items-center justify-center"
               >
                 <CloseIcon />
               </button>
             </Link>
-            <div className="text-lg font-semibold"> {closedTicketsCount} </div>
-            <div className="text-sm font-semibold">Closed Ticket</div>
           </div>
         </div>
         <TicketStatusPie allTicket={organizationTickets} className="mt-2" />
