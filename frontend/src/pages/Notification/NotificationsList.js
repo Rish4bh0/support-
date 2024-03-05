@@ -243,38 +243,41 @@ const NotificationsList = () => {
   return (
     <div>
       {content}
-
-      <div className="flex items-center justify-center space-x-2 my-4 font-semibold">
-        <button
-          type="button"
-          disabled={page === 0}
-          onClick={() => {
-            setPage((prev) => prev - 1);
-          }}
-          className={` px-4  ${page === 0 && "cursor-not-allowed"}`}
-        >
-          {"<"}
-        </button>
-        <div className="flex items-center">
-          <div className="mx-2 text-gray-500">
-            {page + 1} / {data?.totalpage ?? "-"}
+  
+      {data && data.notifications && data.notifications.length > 0 && (
+        <div className="flex items-center justify-center space-x-2 my-4 font-semibold">
+          <button
+            type="button"
+            disabled={page === 0}
+            onClick={() => {
+              setPage((prev) => prev - 1);
+            }}
+            className={`px-4 ${page === 0 && "cursor-not-allowed"}`}
+          >
+            {"<"}
+          </button>
+          <div className="flex items-center">
+            <div className="mx-2 text-gray-500">
+              {page + 1} / {data?.totalpage ?? "-"}
+            </div>
           </div>
+          <button
+            type="button"
+            disabled={data?.totalpage === page + 1}
+            onClick={() => {
+              setPage((prev) => prev + 1);
+            }}
+            className={`px-4 ${
+              data?.totalpage === page + 1 && "cursor-not-allowed"
+            }`}
+          >
+            {">"}
+          </button>
         </div>
-        <button
-          type="button"
-          disabled={data?.totalpage === page + 1}
-          onClick={() => {
-            setPage((prev) => prev + 1);
-          }}
-          className={` px-4  ${
-            data?.totalpage === page + 1 && "cursor-not-allowed"
-          }`}
-        >
-          {">"}
-        </button>
-      </div>
+      )}
     </div>
   );
+  
 };
 
 export default NotificationsList;

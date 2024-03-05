@@ -155,7 +155,11 @@ const NavBar = () => {
     setAnchorEl(null);
   };
 
-  // ......
+  const handleToggleNotificationModal = () => {
+    setIsNotificationModalOpen((prevIsOpen) => !prevIsOpen);
+  };
+
+  
 
   return (
     <nav className={"py-4" + (user ? " px-4" : " px-40")}>
@@ -182,49 +186,40 @@ const NavBar = () => {
         </div>
 
         <div className="flex items-center space-x-4">
-          {user
-            ? ((
-                <NotificationModal
-                  isOpen={isNotificationModalOpen}
-                  onClose={() => setIsNotificationModalOpen(false)}
-                />
-              ),
-              (
-                <button
-                  type="button"
-                  onClick={() => setIsNotificationModalOpen(true)}
-                  className="flex align-middle"
-                >
-                  <div>
-                    {notificationsLength ? (
-                      <MdNotificationsActive
-                        size={25}
-                        style={{ marginTop: 8 }}
-                      />
-                    ) : (
-                      <MdNotificationsNone size={25} />
-                    )}
+          {user ? (
+            <>
+              <NotificationModal isOpen={isNotificationModalOpen} />
+              <button
+                type="button"
+                onClick={handleToggleNotificationModal}
+                className="flex align-middle"
+              >
+                <div>
+                  {notificationsLength ? (
+                    <MdNotificationsActive size={25} style={{ marginTop: 8 }} />
+                  ) : (
+                    <MdNotificationsNone size={25} />
+                  )}
 
-                    {notificationsLength > 0 && (
-                      <span
-                        style={{
-                          position: "absolute",
-                          top: -1,
-
-                          background: "#03C9D7",
-                          borderRadius: "50%",
-                          padding: "2px 6px",
-                          fontSize: "12px",
-                          color: "white",
-                        }}
-                      >
-                        {notificationsLength}
-                      </span>
-                    )}
-                  </div>
-                </button>
-              ))
-            : null}
+                  {notificationsLength > 0 && (
+                    <span
+                      style={{
+                        position: "absolute",
+                        top: -1,
+                        background: "#03C9D7",
+                        borderRadius: "50%",
+                        padding: "2px 6px",
+                        fontSize: "12px",
+                        color: "white",
+                      }}
+                    >
+                      {notificationsLength}
+                    </span>
+                  )}
+                </div>
+              </button>
+            </>
+          ) : null}
 
           {user ? (
             <div>
@@ -286,10 +281,6 @@ const NavBar = () => {
           )}
         </div>
       </div>
-      <NotificationModal
-        isOpen={isNotificationModalOpen}
-        onClose={() => setIsNotificationModalOpen(false)}
-      />
     </nav>
   );
 };

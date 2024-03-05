@@ -1,7 +1,24 @@
 import { useEffect } from "react";
 import { useStateContext } from "../../contexts/ContextProvider";
+import { useNavigate } from "react-router-dom";
+import { useSelector } from "react-redux";
+
+
 
 function Home() {
+
+  const user = useSelector(state => state.auth.user); 
+  const navigate = useNavigate();
+ 
+  useEffect(() => {
+    // Check if user is populated
+    if (user) {
+      // Redirect to the new ticket page
+      navigate("/new-ticket");
+    }
+  }, [user, navigate]);
+
+
   return (
     <>
       <div className="absolute inset-x-44 top-64 " id="home">

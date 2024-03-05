@@ -206,7 +206,7 @@ function Ticket() {
   const onTicketSendForReview = () => {
     dispatch(reviewTicket(ticketId));
     toast.success("Ticket Sent For Review");
-    navigate("/allticket");
+    navigate("/all-tickets");
   };
 
   // Open/Close Modal

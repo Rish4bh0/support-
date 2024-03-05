@@ -193,7 +193,7 @@ const MediaUpload = ({ ticketID }) => {
               animation: filesSelected ? "blink 1s infinite" : "none",
             }}
           >
-            Preview File {files.length > 0 && `(${files.length})`}
+            Submit File {files.length > 0 && `(${files.length})`}
           </div>
         </div>
         {uploading && (
