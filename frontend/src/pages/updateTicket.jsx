@@ -12,6 +12,7 @@ import { getAllProject } from "../features/project/projectSlice";
 import { getAllOrganization } from "../features/organization/organizationSlice";
 import { toast } from "react-toastify";
 import Spinner from "../components/Spinner";
+import MediaUpload from "./Media/ImageUpload";
 import {
   Button,
   TextField,
@@ -21,15 +22,9 @@ import {
   FormControl,
   InputLabel,
   Typography,
-  Alert,
-  IconButton,
   Card,
   CardContent,
 } from "@mui/material";
-import SendIcon from "@mui/icons-material/Send";
-import UpdateIcon from "@mui/icons-material/Update";
-import BackButton from "../components/BackButton";
-import MediaUpload from "./Media/ImageUpload";
 
 const UpdateProductPage = () => {
   const { ticketId } = useParams();
@@ -200,7 +195,7 @@ const UpdateProductPage = () => {
 
   return (
     <>
-      <section className="card bg-white rounded-lg border">
+      <Card className=" bg-white rounded-lg border mb-48">
         <div className="card-header p-4 border-b-1 pb-3">
           <Typography variant="h6">
             <div className="flex justify-between">
@@ -213,7 +208,7 @@ const UpdateProductPage = () => {
           </Typography>
         </div>
         <form onSubmit={handleSubmit}>
-          <div className="card-body px-4 py-6">
+          <CardContent>
             <Grid container spacing={3} className="mb-4">
               <Grid item xs={6}>
                 <TextField
@@ -383,31 +378,25 @@ const UpdateProductPage = () => {
               </Grid>
             </Grid>
             <MediaUpload ticketID={ticket._id} />
-          </div>
+          </CardContent>
           <div className="card-footer p-4 border-t-1  space-x-6 text-end">
             <div className="form-group space-x-6">
-              <Button
-                variant="contained"
-                color="primary"
-                endIcon={<UpdateIcon />}
-                type="submit"
-              >
-                Update Ticket
+              <Button variant="contained" color="primary" type="submit">
+                Update
               </Button>
               {ticket.status === "draft" && (
                 <Button
                   variant="contained"
                   color="success"
-                  endIcon={<SendIcon />}
                   onClick={(e) => handleSubmit(e, "new")}
                 >
-                  Submit as New
+                  Submit
                 </Button>
               )}
             </div>
           </div>
         </form>
-      </section>
+      </Card>
     </>
   );
 };

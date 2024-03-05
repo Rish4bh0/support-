@@ -525,23 +525,21 @@ function NewTicket() {
               </Grid>
             </Grid>
           </div>
-          <div className="card-footer p-4 border-t-1 space-x-6 text-end">
+          <div className="card-footer p-4 border-t-1 space-x-3 text-end">
             <Button
               variant="contained"
               color="primary"
-              startIcon={<DraftsIcon />}
               onClick={(e) => onSubmit(e, "draft")}
             >
-              Save as Draft
+              Draft
             </Button>
             <Button
               variant="contained"
               color="success"
-              endIcon={<SendIcon />}
               onClick={(e) => onSubmit(e, "new")}
               disabled={uploading}
             >
-              {uploading ? "Uploading..." : "Submit as New"}
+              {uploading ? "Uploading..." : "Submit"}
             </Button>
           </div>
         </form>

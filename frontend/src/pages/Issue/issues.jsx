@@ -316,7 +316,7 @@ function IssueList() {
               </div>
               <div className="card-footer p-4 border-t-1 space-x-6 text-end">
                 <Button type="submit" variant="contained" color="primary">
-                  Update Issue
+                  Update
                 </Button>
               </div>
             </form>

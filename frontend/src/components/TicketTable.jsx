@@ -15,7 +15,7 @@ import ModeEditIcon from "@mui/icons-material/ModeEdit";
 import { darken, lighten, styled } from "@mui/material/styles";
 import VisibilityIcon from "@mui/icons-material/Visibility";
 import { Link } from "react-router-dom";
-import Alert from "@mui/material/Alert";
+import { Typography } from "@mui/material";
 
 function Tickets({ tickets, isLoading, filteredTic, greetingMessage, title }) {
   const dispatch = useDispatch();
@@ -355,12 +355,12 @@ function Tickets({ tickets, isLoading, filteredTic, greetingMessage, title }) {
 
   return (
     <div>
-      <div className="border border-gray-300 rounded-2xl bg-white w-full mb-8">
-        <div className="border-b-1 p-4 font-extrabold text-sm flex gap-2">
-          <div className="font-extrabold">Filter {title}</div>
+      <div className="card bg-white rounded-lg border mb-8">
+        <div className="card-header p-4 border-b-1 pb-3">
+          <Typography variant="h6">Filter {title}</Typography>
         </div>
-        <div className="p-4">
-          <div className="bg-white flex gap-3">
+        <div className="card-body p-4">
+          <div className="flex gap-3">
             <div className="w-full">
               <label
                 htmlFor="status-dropdown"
@@ -408,11 +408,11 @@ function Tickets({ tickets, isLoading, filteredTic, greetingMessage, title }) {
           </div>
         </div>
       </div>
-      <div className="border border-gray-300 rounded-2xl bg-white w-full">
-        <div className="border-b-1 p-4 font-extrabold text-sm flex justify-between items-center">
-          <div className="font-extrabold">{title}</div>
+      <div className="card bg-white rounded-lg border w-full">
+        <div className="card-header p-4 border-b-1 pb-3">
+          <Typography variant="h6">{title}</Typography>
         </div>
-        <div className="p-4">
+        <div className="card-body p-4">
           <StyledDataGrid
             getRowClassName={(params) =>
               `super-app-theme--${params.row.status}`

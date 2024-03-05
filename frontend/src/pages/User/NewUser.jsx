@@ -1,13 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { Link, useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
 import Modal from "react-modal";
-import { Button } from "@mui/material";
-import CloseIcon from "@mui/icons-material/Close";
-import DeleteIcon from "@mui/icons-material/Delete";
-import ModeEditIcon from "@mui/icons-material/ModeEdit";
-import ViewListIcon from "@mui/icons-material/ViewList";
 import {
   fetchAllUsers,
   createUser,
@@ -17,11 +11,14 @@ import {
 } from "../../features/auth/authSlice";
 import { DataGrid } from "@mui/x-data-grid";
 import { getAllOrganization } from "../../features/organization/organizationSlice";
-import AddCircleOutlineIcon from "@mui/icons-material/AddCircleOutline";
 import Spinner from "../../components/Spinner";
-import { TextField } from "@mui/material";
-import Select from "@mui/material/Select";
-import MenuItem from "@mui/material/MenuItem";
+import { TextField, Typography, Select, MenuItem, Button } from "@mui/material";
+import {
+  Delete as DeleteIcon,
+  ModeEdit as ModeEditIcon,
+  Close as CloseIcon,
+  AddCircleOutline as AddCircleOutlineIcon,
+} from "@mui/icons-material";
 
 const customStyles = {
   content: {
@@ -233,9 +230,9 @@ function UserList() {
 */
   return (
     <>
-      <div className="border border-gray-300 rounded-2xl bg-white w-full mb-48">
-        <div className="border-b-1 p-4 text-sm flex justify-between">
-          <div className="font-extrabold">User List</div>
+      <div className="card bg-white rounded-lg border  mb-48">
+        <div className="card-header p-4 border-b-1 pb-3 flex justify-between">
+          <Typography variant="h6">User List</Typography>
           <Button variant="contained" color="primary" onClick={openModal}>
             <AddCircleOutlineIcon className="me-2" /> Add User
           </Button>
@@ -554,7 +551,7 @@ function UserList() {
               </div>
               <div className="card-footer p-4 border-t-1 space-x-6 text-end">
                 <Button type="submit" variant="contained" color="primary">
-                  Update User
+                  Update
                 </Button>
               </div>
             </form>

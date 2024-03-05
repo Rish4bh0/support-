@@ -12,11 +12,11 @@ import { makeStyles } from "@mui/styles";
 import { Link } from "react-router-dom";
 import ModeEditIcon from "@mui/icons-material/ModeEdit";
 import { darken, lighten, styled } from "@mui/material/styles";
-import Alert from "@mui/material/Alert";
+import { Typography } from "@mui/material";
 
 const useStyles = makeStyles({
   highPriorityy: {
-    backgroundColor: "#ff0000",
+    backgroundColor: "#ff0000", 
     color: "#fff",
   },
   lowPriorityy: {
@@ -307,12 +307,12 @@ function UnassignedTickets() {
   ];
 
   return (
-    <div className="mt-4">
-      <div className="border border-gray-300 rounded-2xl bg-white w-full mb-4">
-        <div className="border-b-1 p-4 font-extrabold text-sm flex gap-2">
-          <div className="font-extrabold">Unassigned</div>
+    <>
+      <div className="card bg-white rounded-lg border mb-4">
+        <div className="card-header p-4 border-b-1 pb-3">
+          <Typography variant="h6">Unassigned</Typography>
         </div>
-        <div className="p-4">
+        <div className="card-body p-4">
           <div className="bg-white flex gap-3">
             <div className="w-48">
               <label className="block text-sm font-semibold mb-2">
@@ -337,11 +337,11 @@ function UnassignedTickets() {
           </div>
         </div>
       </div>
-      <div className="border border-gray-300 rounded-2xl bg-white w-full">
-        <div className="border-b-1 p-4 font-extrabold text-sm flex justify-between items-center">
-          <div className="font-extrabold">Tickets</div>
+      <div className="card bg-white rounded-lg border w-full">
+        <div className="card-header p-4 border-b-1 pb-3">
+          <Typography variant="h6">Tickets</Typography>
         </div>
-        <div className="p-4">
+        <div className="card-body p-4">
           <StyledDataGrid
             getRowClassName={(params) =>
               `super-app-theme--${params.row.status}`
@@ -359,7 +359,7 @@ function UnassignedTickets() {
           />
         </div>
       </div>
-    </div>
+    </>
   );
 }
 
