@@ -13,14 +13,27 @@ import {
   deleteIssueType,
   updateIssueType,
   selectIssueTypeById,
-} from "../../features/issues/issueSlice"; // Replace with your actual import statements
-import BackButton from "../../components/BackButton";
+} from "../../features/issues/issueSlice";
 import { getAllOrganization } from "../../features/organization/organizationSlice"; // Replace with your actual import statements
 import AddCircleOutlineIcon from "@mui/icons-material/AddCircleOutline";
 import DeleteIcon from "@mui/icons-material/Delete";
 import ModeEditIcon from "@mui/icons-material/ModeEdit";
-import ViewListIcon from "@mui/icons-material/ViewList";
 import Spinner from "../../components/Spinner";
+import { TextField } from "@mui/material";
+
+const customStyles = {
+  content: {
+    width: "600px",
+    top: "50%",
+    left: "50%",
+    right: "auto",
+    bottom: "auto",
+    marginRight: "-50%",
+    transform: "translate(-50%, -50%)",
+    position: "relative",
+    padding: 0,
+  },
+};
 
 function IssueList() {
   const issues = useSelector((state) => state.issueTypes.issueTypes);
@@ -80,10 +93,9 @@ function IssueList() {
     const issueData = {
       name: selectedIssueId ? updateName : newIssueName,
     };
-  
 
     if (selectedIssueId) {
-      console.log(selectedIssueId)
+      console.log(selectedIssueId);
       dispatch(updateIssueType({ id: selectedIssueId, issueData }))
         .then(() => {
           closeUpdateModal();
@@ -170,210 +182,174 @@ function IssueList() {
 
   return (
     <>
-      <div>
-        <h1 className="text-xl font-extrabold text-14">
-          {" "}
-          <ViewListIcon /> Issue List
-        </h1>
-        <div className="flex justify-end p-2 md:mx-6 relative">
-          <Button
-            variant="contained"
-            color="primary"
-            onClick={openModal}
-            style={{ marginBottom: "10px" }}
-          >
-            <AddCircleOutlineIcon /> Add Issue
+      <div className="border border-gray-300 rounded-2xl bg-white w-full mb-48">
+        <div className="border-b-1 p-4 text-sm flex justify-between">
+          <div className="font-extrabold">Issue List</div>
+          <Button variant="contained" color="primary" onClick={openModal}>
+            <AddCircleOutlineIcon className="me-2" /> Add Issue
           </Button>
         </div>
 
-        <DataGrid
-          rows={issues.map((issue, index) => ({ ...issue, id: index }))}
-          columns={[
-            { field: "name", headerName: "Issue Name", flex: 1, minWidth: 150, // Set a minimum width for the column
-            headerClassName: "text-sm md:text-base", // Adjust font size for responsiveness
-            cellClassName: "text-sm md:text-base", },
-            { field: "_id", headerName: "Issue ID", flex: 1,  minWidth: 150, // Set a minimum width for the column
-            headerClassName: "text-sm md:text-base", // Adjust font size for responsiveness
-            cellClassName: "text-sm md:text-base",},
-            {
-              field: "actions",
-              headerName: "Action",
-              flex: 1,  minWidth: 150, // Set a minimum width for the column
-              headerClassName: "text-sm md:text-base", // Adjust font size for responsiveness
-              cellClassName: "text-sm md:text-base",
-              renderCell: (params) => (
-                <div>
-                  <button onClick={() => handleUpdateIssue(params.row._id)}>
-                    <ModeEditIcon className="text-blue-500 group-hover:text-blue-700 mr-8" />
-                  </button>
-                  <button
-                    onClick={() => handleDeleteIssue(params.row._id)}
-                    className="group"
-                  >
-                    <DeleteIcon className="text-red-500 group-hover:text-red-700 mr-8" />
-                  </button>
-                </div>
-              ),
-            },
-          ]}
-          pageSize={5}
-          checkboxSelection
-          onSelectionModelChange={(newSelection) => {}}
-          getRowId={(row) => row.id}
-          loading={isLoading}
-          components={{
-            loadingOverlay: () => <Spinner />, // Custom spinner component
-          }}
-          className="min-w-full overflow-x-auto md:w-full"
-        />
+        <div className="p-4">
+          <DataGrid
+            rows={issues.map((issue, index) => ({ ...issue, id: index }))}
+            columns={[
+              {
+                field: "name",
+                headerName: "Issue Name",
+                flex: 1,
+                minWidth: 150,
+              },
+              {
+                field: "_id",
+                headerName: "Issue ID",
+                flex: 1,
+                minWidth: 150,
+              },
+              {
+                field: "actions",
+                headerName: "Action",
+                flex: 1,
+                minWidth: 150,
+                renderCell: (params) => (
+                  <div>
+                    <button onClick={() => handleUpdateIssue(params.row._id)}>
+                      <ModeEditIcon className="text-blue-500 group-hover:text-blue-700 mr-8" />
+                    </button>
+                    <button
+                      onClick={() => handleDeleteIssue(params.row._id)}
+                      className="group"
+                    >
+                      <DeleteIcon className="text-red-500 group-hover:text-red-700 mr-8" />
+                    </button>
+                  </div>
+                ),
+              },
+            ]}
+            pageSize={5}
+            checkboxSelection
+            onSelectionModelChange={(newSelection) => {}}
+            getRowId={(row) => row.id}
+            loading={isLoading}
+            components={{
+              loadingOverlay: () => <Spinner />, // Custom spinner component
+            }}
+            className="min-w-full overflow-x-auto md:w-full"
+          />
 
-        <Modal
-          isOpen={isModalOpen}
-          onRequestClose={closeModal}
-          contentLabel="Add Issue Modal"
-          style={{
-            overlay: {
-              display: "flex",
-              alignItems: "flex-start",
-              justifyContent: "flex-end",
-              backgroundColor: "rgba(0, 0, 0, 0.3)",
-            },
-            content: {
-              width: "500px",
-              height: "250px",
-              margin: "0 auto",
-              backgroundColor: "white",
-              borderRadius: "4px",
-              padding: "20px",
-            },
-          }}
-        >
-          <Button
-            variant="text"
-            color="inherit"
-            onClick={closeModal}
-            style={{ position: "absolute", top: "10px", right: "10px" }}
+          <Modal
+            isOpen={isModalOpen}
+            onRequestClose={closeModal}
+            contentLabel="Add Issue Modal"
+            className={"border text-xs rounded-lg bg-white overflow-hidden"}
+            style={{
+              ...customStyles,
+              zIndex: 1,
+              position: "absolute",
+            }}
           >
-            <CloseIcon />
-          </Button>
-
-          <h2>Add Issue</h2>
-          <form onSubmit={handleFormSubmit}>
-            <div className="form-group">
-              <label htmlFor="name">New Issue Name:</label>
-              <input
-                type="text"
-                id="name"
-                name="name"
-                placeholder="Name"
-                value={newIssueName}
-                onChange={(e) => setNewIssueName(e.target.value)}
-              />
+            <div className="p-4 flex justify-between items-center bg-blue-600 text-white">
+              <label className="font-semibold uppercase ">Add Issue</label>
+              <button onClick={closeModal}>
+                <CloseIcon />
+              </button>
             </div>
-            <div className="form-group">
-              <Button type="submit" variant="contained" color="primary">
-                Create Issue
+            <form onSubmit={handleFormSubmit}>
+              <div className="p-4">
+                <div className="form-group">
+                  <label htmlFor="name" className="mb-2 block font-semibold">
+                    New Issue Name
+                  </label>
+                  <TextField
+                    id="name"
+                    name="name"
+                    placeholder="Name"
+                    className="text-sm w-full"
+                    size="small"
+                    value={newIssueName}
+                    onChange={(e) => setNewIssueName(e.target.value)}
+                  />
+                </div>
+              </div>
+              <div className="card-footer p-4 border-t-1 space-x-6 text-end">
+                <Button type="submit" variant="contained" color="primary">
+                  Create Issue
+                </Button>
+              </div>
+            </form>
+          </Modal>
+
+          {/* Update issue Modal */}
+          <Modal
+            isOpen={!!(isUpdateModalOpen && selectedIssueId)}
+            onRequestClose={closeUpdateModal}
+            contentLabel="Update Issue Modal"
+            className={"border text-xs rounded-lg bg-white overflow-hidden"}
+            style={{
+              ...customStyles,
+              zIndex: 1,
+              position: "absolute",
+            }}
+          >
+            <div className="p-4 flex justify-between items-center bg-blue-600 text-white">
+              <label className="font-semibold uppercase ">Update Issue</label>
+              <button onClick={closeModal}>
+                <CloseIcon />
+              </button>
+            </div>
+            <form onSubmit={handleFormSubmit}>
+              <div className="p-4">
+                <div className="form-group">
+                  <label htmlFor="name" className="mb-2 block font-semibold">
+                    Issue Name
+                  </label>
+                  <TextField
+                    id="name"
+                    name="name"
+                    className="text-sm w-full"
+                    size="small"
+                    placeholder="Enter new issue name"
+                    value={updateName}
+                    onChange={(e) => setUpdateName(e.target.value)}
+                  />
+                </div>
+              </div>
+              <div className="card-footer p-4 border-t-1 space-x-6 text-end">
+                <Button type="submit" variant="contained" color="primary">
+                  Update Issue
+                </Button>
+              </div>
+            </form>
+          </Modal>
+
+          {/* Delete Confirmation Modal */}
+          <Modal
+            isOpen={!!isDeleteModalOpen}
+            onRequestClose={cancelDelete}
+            contentLabel="Delete User Confirmation Modal"
+            className={"border text-xs rounded-lg bg-white overflow-hidden"}
+            style={{
+              ...customStyles,
+              zIndex: 1,
+              position: "absolute",
+            }}
+          >
+            <div className="p-4 flex justify-between items-center bg-blue-600 text-white">
+              <label className="font-semibold uppercase ">Confirm Delete</label>
+              <button onClick={cancelDelete}>
+                <CloseIcon />
+              </button>
+            </div>
+            <div className="card-body p-4">
+              <p>Are you sure you want to delete issue?</p>
+            </div>
+            <div className="card-footer p-4 border-t-1 space-x-6 text-end">
+              <Button onClick={confirmDelete} variant="contained" color="error">
+                Delete
               </Button>
             </div>
-          </form>
-        </Modal>
-
-           {/* Update issue Modal */}
-      <Modal
-        isOpen={!!(isUpdateModalOpen && selectedIssueId)}
-        onRequestClose={closeUpdateModal}
-        contentLabel="Update Issue Modal"
-        style={{
-          overlay: {
-            display: "flex",
-            alignItems: "center",
-            justifyContent: "center",
-            backgroundColor: "rgba(0, 0, 0, 0.3)",
-          },
-          content: {
-            width: "500px",
-            height: "250px",
-            margin: "0 auto",
-            backgroundColor: "white",
-            borderRadius: "4px",
-            padding: "20px",
-          },
-        }}
-      >
-        <Button
-          variant="text"
-          color="inherit"
-          onClick={closeUpdateModal}
-          style={{ position: "absolute", top: "10px", right: "10px" }}
-        >
-          <CloseIcon />
-        </Button>
-        <h2>Update Issue</h2>
-        <form onSubmit={handleFormSubmit}>
-          <div className="form-group">
-            <label htmlFor="name">Name:</label>
-            <input
-              type="text"
-              id="name"
-              name="name"
-              placeholder="Name"
-              value={updateName}
-              onChange={(e) => setUpdateName(e.target.value)}
-            />
-          </div>
-          <div className="form-group">
-            <Button type="submit" variant="contained" color="primary">
-              Update Issue
-            </Button>
-          </div>
-        </form>
-      </Modal>
-
-         {/* Delete Confirmation Modal */}
-      <Modal
-        isOpen={!!isDeleteModalOpen}
-        onRequestClose={cancelDelete}
-        contentLabel="Delete User Confirmation Modal"
-        style={{
-          overlay: {
-            display: "flex",
-            alignItems: "center",
-            justifyContent: "center",
-            backgroundColor: "rgba(0, 0, 0, 0.3)",
-          },
-          content: {
-            width: "370px",
-            height: "160px",
-            backgroundColor: "white",
-            borderRadius: "4px",
-            padding: "20px",
-            position: "relative",
-          },
-        }}
-      >
-        <Button
-          onClick={cancelDelete}
-          style={{
-            position: "absolute",
-            top: "10px",
-            right: "2px",
-          }}
-        >
-          <CloseIcon />
-        </Button>
-        <h2>Confirm Delete</h2>
-        <p>Are you sure you want to delete issue?</p>
-        <Button
-          style={{
-            top: "20px",
-          }}
-          onClick={confirmDelete}
-          variant="contained"
-          color="primary"
-        >
-          Yes, Delete
-        </Button>
-      </Modal>
+          </Modal>
+        </div>
       </div>
     </>
   );

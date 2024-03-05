@@ -3,26 +3,44 @@ import { useDispatch, useSelector } from "react-redux";
 import { Link } from "react-router-dom";
 import { toast } from "react-toastify";
 import { DataGrid } from "@mui/x-data-grid";
-import { getAllOrganization, reset } from "../../features/organization/organizationSlice";
-import BackButton from "../../components/BackButton";
+import {
+  getAllOrganization,
+  reset,
+} from "../../features/organization/organizationSlice";
 import ModeEditIcon from "@mui/icons-material/ModeEdit";
 import ViewListIcon from "@mui/icons-material/ViewList";
-import VisibilityIcon from '@mui/icons-material/Visibility';
+import VisibilityIcon from "@mui/icons-material/Visibility";
 import Spinner from "../../components/Spinner";
+import { TextField } from "@mui/material";
 
-
+const customStyles = {
+  content: {
+    width: "600px",
+    top: "50%",
+    left: "50%",
+    right: "auto",
+    bottom: "auto",
+    marginRight: "-50%",
+    transform: "translate(-50%, -50%)",
+    position: "relative",
+    padding: 0,
+  },
+};
 
 function OrganizationList() {
-  const organizations = useSelector((state) => state.organizations.organizations);
+  const organizations = useSelector(
+    (state) => state.organizations.organizations
+  );
   const { isLoading, isError, isSuccess, message } = useSelector(
     (state) => state.organizations
   );
-  const userRole = useSelector(state => state.auth.user.role);
-  const organizationId = useSelector(state => state.auth.user.organization); // Retrieve the user's organization ID from Redux state
+  const userRole = useSelector((state) => state.auth.user.role);
+  const organizationId = useSelector((state) => state.auth.user.organization); // Retrieve the user's organization ID from Redux state
 
   // Filter organizations to include only the organization with the user's organizationId
-  const userOrganization = organizations.find(org => org._id === organizationId);
-
+  const userOrganization = organizations.find(
+    (org) => org._id === organizationId
+  );
 
   const dispatch = useDispatch();
 
@@ -37,11 +55,10 @@ function OrganizationList() {
     }
     if (isSuccess) {
       dispatch(reset());
-      toast.success("Organization added")
+      toast.success("Organization added");
       dispatch(getAllOrganization());
     }
   }, [dispatch, isError, isSuccess, message]);
-
 
   // Check if the user has one of the allowed roles
   if (!["ADMIN", "SUPERVISOR", "EMPLOYEE", "ORGAGENT"].includes(userRole)) {
@@ -55,13 +72,17 @@ function OrganizationList() {
   }
 
   const columns = [
-    { field: "id", headerName: "Office ID", flex: 1},
+    { field: "id", headerName: "Office ID", flex: 1 },
     { field: "name", headerName: "Office name", flex: 1 },
     { field: "email", headerName: "Office email", flex: 1 },
     { field: "contact", headerName: "Office contact", flex: 1 },
     { field: "focalPersonName", headerName: "Focal Person Name", flex: 1 },
     { field: "focalPersonEmail", headerName: "Focal Person Email", flex: 1 },
-    { field: "focalPersonContact", headerName: "Focal Person Contact", flex: 1 },
+    {
+      field: "focalPersonContact",
+      headerName: "Focal Person Contact",
+      flex: 1,
+    },
     {
       field: "actions",
       headerName: "Action",
@@ -69,52 +90,51 @@ function OrganizationList() {
       renderCell: (params) => (
         <div>
           <Link to={`/organization/${params.row.id}`}>
-          <button className="group">
-                      <ModeEditIcon className="text-blue-500 group-hover:text-blue-700 mr-8" />
-                    </button>
+            <button className="group">
+              <ModeEditIcon className="text-blue-500 group-hover:text-blue-700 mr-8" />
+            </button>
           </Link>
           <Link to={`/organizations/${params.row.id}`}>
-          <button className="group">
-                      <VisibilityIcon className="text-gray-500 group-hover:text-gray-700 mr-8" />
-                    </button>
+            <button className="group">
+              <VisibilityIcon className="text-gray-500 group-hover:text-gray-700 mr-8" />
+            </button>
           </Link>
         </div>
       ),
     },
   ];
 
-  const rows = userOrganization ? [
-    {
-      id: userOrganization._id,
-      name: userOrganization.name,
-      email: userOrganization.email,
-      contact: userOrganization.contact,
-      focalPersonName: userOrganization.focalPersonName,
-      focalPersonEmail: userOrganization.focalPersonEmail,
-      focalPersonContact: userOrganization.focalPersonContact,
-
-    }
-  ] : [];
+  const rows = userOrganization
+    ? [
+        {
+          id: userOrganization._id,
+          name: userOrganization.name,
+          email: userOrganization.email,
+          contact: userOrganization.contact,
+          focalPersonName: userOrganization.focalPersonName,
+          focalPersonEmail: userOrganization.focalPersonEmail,
+          focalPersonContact: userOrganization.focalPersonContact,
+        },
+      ]
+    : [];
 
   if (isLoading) return <Spinner />;
 
   return (
     <>
-      <div>
-      <h1 className="text-xl font-extrabold text-14 mb-10">
-          {" "}
-          <ViewListIcon /> Manage my office
-        </h1>
-       <div>
-        <DataGrid
-          rows={rows}
-          columns={columns}
-          pageSize={5}
-          checkboxSelection
-        />
+      <div className="border border-gray-300 rounded-2xl bg-white w-full mb-48">
+        <div className="border-b-1 p-4 text-sm">
+          <div className="font-extrabold">Manage my office</div>
         </div>
+        <div className="p-4">
+          <DataGrid
+            rows={rows}
+            columns={columns}
+            pageSize={5}
+            checkboxSelection
+          />
         </div>
-      
+      </div>
     </>
   );
 }

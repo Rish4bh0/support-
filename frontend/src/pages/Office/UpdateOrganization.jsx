@@ -7,7 +7,6 @@ import {
 import { useNavigate, useParams } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import Spinner from "../../components/Spinner";
-import SendIcon from "@mui/icons-material/Send";
 import { Button, TextField, Grid, Typography } from "@mui/material";
 import { toast } from "react-toastify";
 
@@ -106,7 +105,7 @@ const UpdateOrganization = () => {
         <form onSubmit={handleSubmit}>
           <div className="card-body px-4 py-6">
             <Grid container spacing={3}>
-              <Grid item xs={6}>
+              <Grid item xs={5}>
                 <TextField
                   label=" Office Name"
                   placeholder="Office Name"
@@ -116,7 +115,7 @@ const UpdateOrganization = () => {
                   fullWidth
                 />
               </Grid>
-              <Grid item xs={6}>
+              <Grid item xs={4}>
                 <TextField
                   label=" Email"
                   placeholder="Email"
@@ -126,7 +125,7 @@ const UpdateOrganization = () => {
                   fullWidth
                 />
               </Grid>
-              <Grid item xs={6}>
+              <Grid item xs={3}>
                 <TextField
                   label=" Contact"
                   placeholder="Contact"
@@ -136,7 +135,7 @@ const UpdateOrganization = () => {
                   fullWidth
                 />
               </Grid>
-              <Grid item xs={6}>
+              <Grid item xs={5}>
                 <TextField
                   label=" Focal Person Name"
                   placeholder="Focal Person Name"
@@ -146,7 +145,7 @@ const UpdateOrganization = () => {
                   fullWidth
                 />
               </Grid>
-              <Grid item xs={6}>
+              <Grid item xs={4}>
                 <TextField
                   label=" Focal Person Email"
                   placeholder="Focal Person Email"
@@ -156,7 +155,7 @@ const UpdateOrganization = () => {
                   fullWidth
                 />
               </Grid>
-              <Grid item xs={6}>
+              <Grid item xs={3}>
                 <TextField
                   label=" Focal Person Contact"
                   placeholder="Focal Person Contact"
@@ -169,13 +168,8 @@ const UpdateOrganization = () => {
             </Grid>
           </div>
           <div className="card-footer p-4 border-t-1  space-x-6 text-end">
-            <Button
-              variant="contained"
-              color="success"
-              endIcon={<SendIcon />}
-              type="submit"
-            >
-              Update Office
+            <Button variant="contained" color="primary" type="submit">
+              Update
             </Button>
           </div>
         </form>

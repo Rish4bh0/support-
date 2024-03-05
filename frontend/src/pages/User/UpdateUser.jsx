@@ -27,13 +27,15 @@ import SendIcon from "@mui/icons-material/Send";
 import BackButton from "../../components/BackButton";
 
 const UpdateUser = () => {
-  const user = useSelector(
-    (state) => state.auth.selectedUser
+  const user = useSelector((state) => state.auth.selectedUser);
+  const { isLoading, isError, isSuccess, message } = useSelector(
+    (state) => state.auth
   );
-  const { isLoading, isError, isSuccess, message } = useSelector((state) => state.auth);
   const userRole = useSelector((state) => state.auth.user?.role);
   const allowedRoles = ["ADMIN", "SUPERVISOR", "EMPLOYEE"];
-  const organizations = useSelector((state) => state.organizations.organizations);
+  const organizations = useSelector(
+    (state) => state.organizations.organizations
+  );
   const { id } = useParams();
   const dispatch = useDispatch();
   const [password, setPassword] = useState("");
@@ -52,14 +54,13 @@ const UpdateUser = () => {
     }
     if (isSuccess) {
       const updatedUserId = user._id;
-      const updatedUserOrganizationId = user.organization; 
-      
+      const updatedUserOrganizationId = user.organization;
+
       navigate(`/organizations/${updatedUserOrganizationId}`);
       toast.success("User updated!");
       dispatch(reset());
     }
   }, [dispatch, isError, isSuccess, navigate, message, reset]);
-
 
   // Function to handle form input changes except for password
   const handleChange = (e) => {
@@ -83,8 +84,8 @@ const UpdateUser = () => {
       updateUser({
         id,
         userData: {
-          ...formData,  // Include other form data
-          password,      // Include the password
+          ...formData, // Include other form data
+          password, // Include the password
         },
       })
     );
@@ -115,114 +116,110 @@ const UpdateUser = () => {
 
   return (
     <>
-
-
-      <section className="flex items-center justify-center ">
-        <div>
-          <Typography variant="h4" component="h1" gutterBottom>
-          Update User
-          </Typography>
-          <Typography variant="body2">
-            Please fill out the form below
-          </Typography>
-          <Typography variant="body2">
-            User ID: {user._id}
+      <section className="card bg-white rounded-lg border">
+        <div className="card-header p-4 border-b-1 pb-3">
+          <Typography variant="h6">
+            <div className="flex justify-between">
+              <div>Update User</div>
+              <div className="text-xs font-normal">
+                <label className="font-medium">User ID: </label> {user._id}
+              </div>
+            </div>
           </Typography>
         </div>
-      </section>
+        <form onSubmit={handleSubmit}>
+          <div className="card-body px-4 py-6">
+            <Grid container spacing={3}>
+              <Grid item xs={6}>
+                <TextField
+                  label="Name"
+                  placeholder="Name"
+                  name="name"
+                  value={formData.name}
+                  onChange={handleChange}
+                  fullWidth
+                />
+              </Grid>
+              <Grid item xs={6}>
+                <TextField
+                  label=" Email"
+                  placeholder="Email"
+                  name="email"
+                  value={formData.email}
+                  onChange={handleChange}
+                  fullWidth
+                />
+              </Grid>
+              <Grid item xs={6}>
+                <TextField
+                  label=" Password"
+                  name="Password"
+                  value={password}
+                  placeholder="Enter your password"
+                  onChange={handlePasswordChange}
+                  fullWidth
+                />
+              </Grid>
 
-      <form onSubmit={handleSubmit} className="p-6">
-      <Grid container spacing={3}>
-      <Grid item xs={6}>
-            <TextField
-              label="Name"
-              placeholder="Name"
-              name="name"
-            value={formData.name}
-            onChange={handleChange}
-              fullWidth
-            />
-          </Grid>
-          <Grid item xs={6}>
-            <TextField
-              label=" Email"
-              placeholder="Email"
-              name="email"
-              value={formData.email}
-              onChange={handleChange}
-              fullWidth
-            />
-          </Grid>
-          <Grid item xs={6}>
-            <TextField
-              label=" Password"
-              name="Password"
-              value={password}
-              placeholder ='Enter your password'
-              onChange={handlePasswordChange} 
-              fullWidth
-            />
-          </Grid>
+              {userRole && allowedRoles.includes(userRole) && (
+                <Grid item xs={2}>
+                  <FormControl fullWidth>
+                    <InputLabel htmlFor="priority">Priority</InputLabel>
+                    <Select
+                      name="priority"
+                      id="priority"
+                      value={formData.role}
+                      onChange={handleChange}
+                    >
+                      <MenuItem value="">Select One</MenuItem>
+                      <MenuItem value="USER">USER</MenuItem>
+                      <MenuItem value="ADMIN">ADMIN</MenuItem>
+                      <MenuItem value="SUPERVISOR">SUPERVISOR</MenuItem>
+                      <MenuItem value="EMPLOYEE">EMPLOYEE</MenuItem>
+                      <MenuItem value="ORGAGENT">ORGAGENT</MenuItem>
+                    </Select>
+                  </FormControl>
+                </Grid>
+              )}
 
-          {userRole && allowedRoles.includes(userRole) && (
-            <Grid item xs={6}>
-              <FormControl fullWidth>
-                <InputLabel htmlFor="priority">Priority</InputLabel>
-                <Select
-                  name="priority"
-                  id="priority"
-                  value={formData.role}
-              onChange={handleChange}
-                >
-                  <MenuItem value="">Select One</MenuItem>
-                  <MenuItem value="USER">USER</MenuItem>
-                  <MenuItem value="ADMIN">ADMIN</MenuItem>
-                  <MenuItem value="SUPERVISOR">SUPERVISOR</MenuItem>
-                  <MenuItem value="EMPLOYEE">EMPLOYEE</MenuItem>
-                  <MenuItem value="ORGAGENT">ORGAGENT</MenuItem>
-                </Select>
-              </FormControl>
+              {userRole && allowedRoles.includes(userRole) && (
+                <Grid item xs={4}>
+                  <FormControl fullWidth>
+                    <InputLabel htmlFor="organization">Organization</InputLabel>
+                    <Select
+                      name="organization"
+                      id="organization"
+                      value={formData.organization}
+                      onChange={handleChange}
+                    >
+                      <MenuItem value="">Select One</MenuItem>
+                      {organizations && organizations.length > 0 ? (
+                        organizations.map((organization) => (
+                          <MenuItem
+                            key={organization._id}
+                            value={organization._id}
+                          >
+                            {organization.name}
+                          </MenuItem>
+                        ))
+                      ) : (
+                        <MenuItem value="" disabled>
+                          No organization available
+                        </MenuItem>
+                      )}
+                    </Select>
+                  </FormControl>
+                </Grid>
+              )}
             </Grid>
-          )}
-
-         {(userRole && allowedRoles.includes(userRole)) && (
-          <Grid item xs={12}>
-            <FormControl fullWidth>
-            <InputLabel htmlFor="organization">Organization</InputLabel>
-              <Select
-                name="organization"
-                id="organization"
-                value={formData.organization}
-              onChange={handleChange}
-              >
-                <MenuItem value="">Select One</MenuItem>
-                {organizations && organizations.length > 0 ? (
-                  organizations.map((organization) => (
-                    <MenuItem key={organization._id} value={organization._id}>
-                      {organization.name}
-                    </MenuItem>
-                  ))
-                ) : (
-                  <MenuItem value="" disabled>
-                    No organization available
-                  </MenuItem>
-                )}
-              </Select>
-              </FormControl>
-          </Grid>
-         )}
-         </Grid>
-         <div className="form-group mt-6">
-          <Button
-            variant="contained"
-            color="success"
-            endIcon={<SendIcon />}
-            type="submit"
-          >
-            Update User
-          </Button>
-        </div>
-      </form>
+          </div>
+          <div className="card-footer p-4 border-t-1  space-x-6 text-end">
+            <Button variant="contained" color="primary" type="submit">
+              Update
+            </Button>
+          </div>
+        </form>
+      </section>
     </>
   );
 };

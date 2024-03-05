@@ -20,11 +20,27 @@ import { toast } from "react-toastify";
 import { DataGrid } from "@mui/x-data-grid";
 import ModeEditIcon from "@mui/icons-material/ModeEdit";
 import AddCircleOutlineIcon from "@mui/icons-material/AddCircleOutline";
-import ViewListIcon from "@mui/icons-material/ViewList";
 import { styled } from "@mui/material/styles";
 import Box from "@mui/material/Box";
 import Paper from "@mui/material/Paper";
 import Grid from "@mui/material/Grid";
+import Select from "@mui/material/Select";
+import MenuItem from "@mui/material/MenuItem";
+import { TextField } from "@mui/material";
+
+const customStyles = {
+  content: {
+    width: "600px",
+    top: "50%",
+    left: "50%",
+    right: "auto",
+    bottom: "auto",
+    marginRight: "-50%",
+    transform: "translate(-50%, -50%)",
+    position: "relative",
+    padding: 0,
+  },
+};
 
 const OrganizationDetail = () => {
   const { id } = useParams();
@@ -226,86 +242,101 @@ const OrganizationDetail = () => {
                 isOpen={isModalOpen}
                 onRequestClose={closeModal}
                 contentLabel="Add Issue Modal"
+                className={"border text-xs rounded-lg bg-white overflow-hidden"}
                 style={{
-                  overlay: {
-                    display: "flex",
-                    alignItems: "flex-start",
-                    justifyContent: "flex-end",
-                    backgroundColor: "rgba(0, 0, 0, 0.3)",
-                  },
-                  content: {
-                    width: "500px",
-                    height: "500px",
-                    margin: "0 auto",
-                    backgroundColor: "white",
-                    borderRadius: "4px",
-                    padding: 0,
-                    border: 0,
-                    top: "100px",
-                  },
+                  ...customStyles,
+                  zIndex: 1,
+                  position: "absolute",
                 }}
               >
-                <div className="flex justify-between bg-blue-800 text-white p-4">
-                  <div>Add User</div>
-                  <div onClick={closeModal} className="cursor-pointer">
+                <div className="p-4 flex justify-between items-center bg-blue-600 text-white">
+                  <label className="font-semibold uppercase ">Add User</label>
+                  <button onClick={closeModal}>
                     <CloseIcon />
-                  </div>
+                  </button>
                 </div>
-                <form onSubmit={handleCreateUser} className="p-4">
-                  <div className="form-group">
-                    <label htmlFor="name">New Issue Name:</label>
+                <form onSubmit={handleCreateUser}>
+                  <div className="p-4">
+                    <div className="form-group mb-4">
+                      <label
+                        htmlFor="name"
+                        className="mb-2 block font-semibold"
+                      >
+                        User Name
+                      </label>
 
-                    <input
-                      type="text"
-                      id="name"
-                      name="name"
-                      placeholder="Name"
-                      className="form-control"
-                      value={name}
-                      onChange={(e) => setNewUserName(e.target.value)}
-                    />
+                      <TextField
+                        id="name"
+                        name="name"
+                        placeholder="Name"
+                        className="text-sm w-full"
+                        size="small"
+                        value={name}
+                        onChange={(e) => setNewUserName(e.target.value)}
+                      />
+                    </div>
+                    <div className="form-group mb-4">
+                      <label
+                        htmlFor="email"
+                        className="mb-2 block font-semibold"
+                      >
+                        Email Address
+                      </label>
+                      <TextField
+                        id="email"
+                        name="email"
+                        className="text-sm w-full"
+                        size="small"
+                        placeholder="Email"
+                        value={email}
+                        onChange={(e) => setEmail(e.target.value)}
+                      />
+                    </div>
+                    <div className="form-group mb-4">
+                      <label
+                        htmlFor="password"
+                        className="mb-2 block font-semibold"
+                      >
+                        Password
+                      </label>
+                      <TextField
+                        type="password"
+                        id="password"
+                        name="password"
+                        className="text-sm w-full"
+                        size="small"
+                        value={password}
+                        placeholder="Enter your password"
+                        onChange={(e) => setPassword(e.target.value)}
+                      />
+                    </div>
+                    <div className="form-group">
+                      <label
+                        htmlFor="role"
+                        className="mb-2 block font-semibold"
+                      >
+                        Role
+                      </label>
+                      <Select
+                        name="role"
+                        id="role"
+                        className="text-sm w-full"
+                        size="small"
+                        value={role}
+                        onChange={(e) => setRole(e.target.value)}
+                      >
+                        <MenuItem value="">Select One</MenuItem>
+                        <MenuItem value="ADMIN">ADMIN</MenuItem>
+                        <MenuItem value="USER">USER</MenuItem>
+                        <MenuItem value="SUPERVISOR">SUPERVISOR</MenuItem>
+                        <MenuItem value="EMPLOYEE">EMPLOYEE</MenuItem>
+                        <MenuItem value="ORGAGENT">ORGAGENT</MenuItem>
+                      </Select>
+                    </div>
                   </div>
-                  <div className="form-group">
-                    <label htmlFor="email">New user email:</label>
-                    <input
-                      type="text"
-                      id="email"
-                      name="email"
-                      placeholder="Email"
-                      value={email}
-                      onChange={(e) => setEmail(e.target.value)}
-                    />
-                  </div>
-                  <div className="form-group">
-                    <label htmlFor="password">New user password:</label>
-                    <input
-                      type="password"
-                      id="password"
-                      name="password"
-                      value={password}
-                      placeholder="Enter your password"
-                      onChange={(e) => setPassword(e.target.value)}
-                    />
-                  </div>
-                  <div className="form-group">
-                    <label htmlFor="role">Role</label>
-                    <select
-                      name="role"
-                      id="role"
-                      value={role}
-                      onChange={(e) => setRole(e.target.value)}
-                    >
-                      <option value="">Select One</option>
-                      <option value="ADMIN">ADMIN</option>
-                      <option value="USER">USER</option>
-                      <option value="SUPERVISOR">SUPERVISOR</option>
-                      <option value="EMPLOYEE">EMPLOYEE</option>
-                      <option value="ORGAGENT">ORGAGENT</option>
-                    </select>
-                  </div>
-                  <div className="form-group">
+                  <div className="card-footer p-4 border-t-1 space-x-6 text-end">
                     <Button type="submit" variant="contained" color="primary">
-                      Create User
+                      Submit
                     </Button>
                   </div>
                 </form>
@@ -366,45 +397,27 @@ const OrganizationDetail = () => {
             isOpen={!!isDeleteModalOpen}
             onRequestClose={cancelDelete}
             contentLabel="Delete User Confirmation Modal"
+            className={"border text-xs rounded-lg bg-white overflow-hidden"}
             style={{
-              overlay: {
-                display: "flex",
-                alignItems: "center",
-                justifyContent: "center",
-                backgroundColor: "rgba(0, 0, 0, 0.3)",
-              },
-              content: {
-                width: "370px",
-                height: "160px",
-                backgroundColor: "white",
-                borderRadius: "4px",
-                padding: "20px",
-                position: "relative",
-              },
+              ...customStyles,
+              zIndex: 1,
+              position: "absolute",
             }}
           >
-            <Button
-              onClick={cancelDelete}
-              style={{
-                position: "absolute",
-                top: "10px",
-                right: "2px",
-              }}
-            >
-              <CloseIcon />
-            </Button>
-            <h2>Confirm Delete</h2>
-            <p>Are you sure you want to delete {userNameToDelete}?</p>
-            <Button
-              style={{
-                top: "20px",
-              }}
-              onClick={confirmDelete}
-              variant="contained"
-              color="primary"
-            >
-              Yes, Delete
-            </Button>
+            <div className="p-4 flex justify-between items-center bg-blue-600 text-white">
+              <label className="font-semibold uppercase ">Confirm Delete</label>
+              <button onClick={cancelDelete}>
+                <CloseIcon />
+              </button>
+            </div>
+            <div className="card-body p-4">
+              <p>Are you sure you want to delete {userNameToDelete}?</p>
+            </div>
+            <div className="card-footer p-4 border-t-1 space-x-6 text-end">
+              <Button onClick={confirmDelete} variant="contained" color="error">
+                Delete
+              </Button>
+            </div>
           </Modal>
         </div>
       </div>

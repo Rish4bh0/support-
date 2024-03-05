@@ -31,7 +31,7 @@ const NotificationsList = () => {
     const getNotifications = async () => {
       try {
         const result = await axios.post(
-          environment.SERVER_URL+"/api/notifications",
+          environment.SERVER_URL + "/api/notifications",
           {
             id: user._id,
             limit: 2,
@@ -61,7 +61,7 @@ const NotificationsList = () => {
   const handleMarkOneAsRead = async (notificationId) => {
     try {
       const result = await axios.patch(
-        environment.SERVER_URL+  "/api/notifications",
+        environment.SERVER_URL + "/api/notifications",
         { id: notificationId }
       );
 
@@ -92,7 +92,7 @@ const NotificationsList = () => {
   const handleMarkAllAsRead = async () => {
     try {
       const result = await axios.patch(
-        environment.SERVER_URL+ "/api/notifications/all",
+        environment.SERVER_URL + "/api/notifications/all",
         { id: user._id }
       );
 
@@ -119,7 +119,7 @@ const NotificationsList = () => {
   const handleDeleteNotification = async (notificationId) => {
     try {
       const result = await axios.delete(
-        environment.SERVER_URL+ "/api/notifications",
+        environment.SERVER_URL + "/api/notifications",
         { data: { id: notificationId } }
       );
       const newNotifications = data?.notifications?.filter(
@@ -141,7 +141,7 @@ const NotificationsList = () => {
   const handleDeleteAll = async () => {
     try {
       const result = await axios.delete(
-        environment.SERVER_URL+ "/api/notifications/all",
+        environment.SERVER_URL + "/api/notifications/all",
         { data: { id: user._id } }
       );
       setData(null);
@@ -232,8 +232,10 @@ const NotificationsList = () => {
   } else {
     content = (
       <>
-        <h1 className="text-2xl font-bold mb-4">Notifications list</h1>
-        <div>No data to show</div>
+        <div className="card-header border-b-2 p-4 flex justify-between items-center">
+          <div className="font-semibold">Notifications list</div>
+        </div>
+        <div className="card-body p-4">No data to show</div>
       </>
     );
   }
@@ -276,4 +278,3 @@ const NotificationsList = () => {
 };
 
 export default NotificationsList;
-

@@ -1,11 +1,12 @@
 import { useState, useEffect } from "react";
 import { toast } from "react-toastify";
 import { Link, useNavigate } from "react-router-dom";
-import { FaSignInAlt } from "react-icons/fa";
 import { useSelector, useDispatch } from "react-redux";
 import { login, reset } from "../../features/auth/authSlice";
 import Spinner from "../../components/Spinner";
 import { useStateContext } from "../../contexts/ContextProvider";
+import { TextField } from "@mui/material";
+import { Button } from "@mui/material";
 
 function Login() {
   const { activeMenu, setactiveMenu } = useStateContext();
@@ -78,39 +79,52 @@ function Login() {
           </div>
           <section className="form pb-6">
             <form onSubmit={onSubmit}>
-              <div className="form-group">
-                <label className="font-bold text-sm">Email Address</label>
-                <input
+              <div className="form-group mb-4">
+                <label className="mb-1 block font-semibold text-sm">
+                  Email Address
+                </label>
+                <TextField
                   type="email"
                   id="email"
                   name="email"
                   value={email}
                   onChange={onChange}
-                  placeholder="Enter your email"
-                  className="form-control"
+                  placeholder="Enter your email address"
+                  className="text-sm w-full"
+                  size="small"
                   required
                 />
               </div>
 
-              <div className="form-group">
-                <label className="font-bold text-sm">Password</label>
-                <input
+              <div className="form-group mb-7">
+                <label className="mb-1 block font-semibold text-sm">
+                  Password
+                </label>
+                <TextField
                   type="password"
                   id="password"
                   name="password"
                   value={password}
                   onChange={onChange}
                   placeholder="Enter your password"
-                  className="form-control"
+                  className="text-sm w-full"
+                  size="small"
                   required
                 />
-                <div className="text-sm">
+                <div className="text-xs mt-1 text-end">
                   <Link to="/forget">Forgot Password?</Link>
                 </div>
               </div>
 
-              <div className="form-group mt-8">
-                <button className="btn btn-block">Submit</button>
+              <div className="form-group">
+                <Button
+                  type="submit"
+                  variant="contained"
+                  color="primary"
+                  className="w-full"
+                >
+                  Submit
+                </Button>
               </div>
             </form>
           </section>
