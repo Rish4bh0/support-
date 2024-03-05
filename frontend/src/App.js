@@ -88,12 +88,9 @@ function App() {
             setactiveMenu(false)
           )}
           <div
-            className={
-              "relative dark:bg-main-dark-bg bg-main-bg" +
-              (activeMenu ? " md:ml-64" : "")
-            }
+            className={"relative bg-slate-50" + (activeMenu ? " md:ml-64" : "")}
           >
-            <div className="navbar sticky top-0 left-0 right-0 bg-white w-full z-10">
+            <div className="navbar sticky top-0 left-0 right-0 bg-white w-full z-10 shadow">
               <NavBar />
             </div>
             <div
