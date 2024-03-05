@@ -302,22 +302,14 @@ function OfficeUnassignedTickets() {
 
   return (
     <div className="mt-4">
-      <div className="border border-gray-300 rounded-2xl bg-white w-full">
+      <div className="border border-gray-300 rounded-2xl bg-white w-full mb-4">
         <div className="border-b-1 p-4 font-extrabold text-sm flex gap-2">
           <div className="font-extrabold">Office-Unassigned</div>
         </div>
         <div className="p-4">
-        <div className="bg-white flex justify-end gap-3 mb-7 ">
-            <div className="w-full mt-6">
-              <Alert
-                className="block text-gray-700 text-sm font-semibold mb-2"
-                severity="info"
-              >
-                <p> {greetingMessage}</p>
-              </Alert>
-            </div>
+          <div className="bg-white flex gap-3">
             <div className="w-48">
-              <label className="block text-gray-700 text-sm font-semibold mb-2">
+              <label className="block text-sm font-semibold mb-2">
                 Start Date:
               </label>
               <input
@@ -327,7 +319,7 @@ function OfficeUnassignedTickets() {
               />
             </div>
             <div className="w-48">
-              <label className="block text-gray-700 text-sm font-semibold mb-2 mr-2">
+              <label className="block text-sm font-semibold mb-2 mr-2">
                 End Date:
               </label>
               <input
@@ -337,21 +329,30 @@ function OfficeUnassignedTickets() {
               />
             </div>
           </div>
-        <StyledDataGrid
-          getRowClassName={(params) => `super-app-theme--${params.row.status}`}
-          rows={rows}
-          columns={columns}
-          initialState={{
-            ...rows.initialState,
-            pagination: { paginationModel: { pageSize: 5 } },
-          }}
-          pageSizeOptions={[5, 10, 25]}
-          page={currentPage}
-          onPageChange={(newPage) => setCurrentPage(newPage)}
-          disableSelectionOnClick
-        />
+        </div>
       </div>
-    </div>
+      <div className="border border-gray-300 rounded-2xl bg-white w-full">
+        <div className="border-b-1 p-4 font-extrabold text-sm flex justify-between items-center">
+          <div className="font-extrabold">Tickets</div>
+        </div>
+        <div className="p-4">
+          <StyledDataGrid
+            getRowClassName={(params) =>
+              `super-app-theme--${params.row.status}`
+            }
+            rows={rows}
+            columns={columns}
+            initialState={{
+              ...rows.initialState,
+              pagination: { paginationModel: { pageSize: 5 } },
+            }}
+            pageSizeOptions={[5, 10, 25]}
+            page={currentPage}
+            onPageChange={(newPage) => setCurrentPage(newPage)}
+            disableSelectionOnClick
+          />
+        </div>
+      </div>
     </div>
   );
 }
