@@ -70,63 +70,68 @@ function Login() {
 
   return (
     <>
-      <div className="absolute">
-        <div className="bg-white rounded-lg w-96">
-          <div className="text-center mb-4 p-6">
-            <div className="font-bold text-lg mb-2">Log In</div>
-            <div>Welcome ! Please log in.</div>
-          </div>
-          <section className="form pb-6">
-            <form onSubmit={onSubmit}>
-              <div className="form-group mb-4">
-                <label className="mb-1 block font-semibold text-sm">
-                  Email Address
-                </label>
-                <TextField
-                  type="email"
-                  id="email"
-                  name="email"
-                  value={email}
-                  onChange={onChange}
-                  placeholder="Enter your email address"
-                  className="text-sm w-full"
-                  size="small"
-                  required
-                />
-              </div>
-
-              <div className="form-group mb-7">
-                <label className="mb-1 block font-semibold text-sm">
-                  Password
-                </label>
-                <TextField
-                  type="password"
-                  id="password"
-                  name="password"
-                  value={password}
-                  onChange={onChange}
-                  placeholder="Enter your password"
-                  className="text-sm w-full"
-                  size="small"
-                  required
-                />
-                <div className="text-xs mt-1 text-end">
-                  <Link to="/forget">Forgot Password?</Link>
+      <div
+        className="flex items-center justify-center"
+        style={{ height: "90vh" }}
+      >
+        <div className="absolute">
+          <div className="bg-white rounded-lg w-96">
+            <div className="text-center mb-4 p-6">
+              <div className="font-bold text-lg mb-2">Log In</div>
+              <div>Welcome ! Please log in.</div>
+            </div>
+            <section className="form pb-6">
+              <form onSubmit={onSubmit}>
+                <div className="form-group mb-4">
+                  <label className="mb-1 block font-semibold text-sm">
+                    Email Address
+                  </label>
+                  <TextField
+                    type="email"
+                    id="email"
+                    name="email"
+                    value={email}
+                    onChange={onChange}
+                    placeholder="Enter your email address"
+                    className="text-sm w-full"
+                    size="small"
+                    required
+                  />
                 </div>
-              </div>
 
-              <div className="form-group">
-                <Button
-                  type="submit"
-                  variant="contained"
-                  color="primary"
-                  className="w-full"
-                >
-                  Submit
-                </Button>
-              </div>
-            </form>
-          </section>
+                <div className="form-group mb-7">
+                  <label className="mb-1 block font-semibold text-sm">
+                    Password
+                  </label>
+                  <TextField
+                    type="password"
+                    id="password"
+                    name="password"
+                    value={password}
+                    onChange={onChange}
+                    placeholder="Enter your password"
+                    className="text-sm w-full"
+                    size="small"
+                    required
+                  />
+                  <div className="text-xs mt-1 text-end">
+                    <Link to="/forget">Forgot Password?</Link>
+                  </div>
+                </div>
+
+                <div className="form-group">
+                  <Button
+                    type="submit"
+                    variant="contained"
+                    color="primary"
+                    className="w-full"
+                  >
+                    Submit
+                  </Button>
+                </div>
+              </form>
+            </section>
+          </div>
         </div>
       </div>
     </>

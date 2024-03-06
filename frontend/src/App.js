@@ -47,12 +47,13 @@ import MyTickets from "./pages/Tickets/MyTickets.jsx";
 import AllTickets from "./pages/Tickets/AllTicket.jsx";
 import Unassigned from "./pages/Tickets/unassigned.jsx";
 import OfficeTicket from "./pages/Office/OfficeTickets.jsx";
+
 const theme = createTheme({
   typography: {
     fontFamily: "Inter, sans-serif",
     fontSize: 12,
     h6: {
-      fontSize: 14,
+      fontSize: 13.5,
       fontWeight: 600,
     },
   },
@@ -95,11 +96,8 @@ function App() {
             <div className="navbar sticky top-0 left-0 right-0 bg-white w-full z-10 shadow">
               <NavBar />
             </div>
-            <div
-              className={user ? "p-4" : "flex items-center justify-center"}
-              style={!user ? { height: "90vh" } : {}}
-            >
-              <BasicBreadcrumbs />
+            <div className={user ? "p-4" : ""}>
+              {user && <BasicBreadcrumbs />}
               <Routes>
                 <Route path="/" element={<Home />} />
                 <Route path="/report" element={<Report />} />
