@@ -74,11 +74,9 @@ const Ecommerce = () => {
     }
   }, [user.organization, allTickets, dispatch]);
 
-  {
-  }
   return (
     <>
-      <div className="font-semibold text-lg mb-5">
+      <div className="font-medium mb-5">
         Welcome to Dashboard , {user.name}{" "}
         {organizationMap[user.organization] || ""} !
       </div>

@@ -11,6 +11,7 @@ import ModeEditIcon from "@mui/icons-material/ModeEdit";
 import VisibilityIcon from "@mui/icons-material/Visibility";
 import Spinner from "../../components/Spinner";
 import CustomButton from "../../components/CustomButton";
+import { Typography } from "@mui/material";
 
 function OrganizationList() {
   const organizations = useSelector(
@@ -106,11 +107,11 @@ function OrganizationList() {
 
   return (
     <>
-      <div className="border border-gray-300 rounded-2xl bg-white w-full mb-48">
-        <div className="border-b-1 p-4 text-sm">
-          <div className="font-extrabold">Manage my office</div>
+      <div className="card bg-white rounded-lg border mb-48">
+        <div className="card-header p-4 border-b-1 pb-3">
+          <Typography variant="h6">Manage my office</Typography>
         </div>
-        <div className="p-4">
+        <div className="card-body p-4">
           <DataGrid
             rows={rows}
             columns={columns}

@@ -12,6 +12,7 @@ import { getAllProject } from "../../features/project/projectSlice";
 import { Link } from "react-router-dom";
 import VisibilityIcon from "@mui/icons-material/Visibility";
 import Button from "@mui/material/Button";
+import { TextField } from "@mui/material";
 
 const getRandomColor = () =>
   `#${Math.floor(Math.random() * 16777215).toString(16)}`;
@@ -175,43 +176,39 @@ const Report = ({ organzationName }) => {
   ];
 
   return (
-    <div className="mt-4">
-      <div className="border border-gray-300 rounded-2xl bg-white w-full">
-        <div className="border-b-1 p-4 font-extrabold text-sm flex gap-2">
-          <AccessTimeIcon fontSize="small" />
-          <div className="font-extrabold">Time spent on support</div>
+    <div className="mt-4 mb-48">
+      <div className="card bg-white rounded-lg border w-full">
+        <div className="card-header p-4 border-b-1 pb-3">
+          <Typography variant="h6">Time spent on support</Typography>
         </div>
         <div className="p-4">
-          <div className="bg-white flex justify-between gap-3 mb-7">
+          <div className="bg-white flex justify-between gap-3 text-xs mb-4">
             <div className="w-full">
-              <label className="block text-gray-700 text-sm font-semibold mb-2">
-                Start Date
-              </label>
-              <input
-                className="border border-gray-300 rounded py-2 px-3 w-full"
+              <label className="block font-semibold mb-2">Start Date</label>
+              <TextField
                 type="date"
+                size="small"
+                className="w-full"
                 onChange={(e) => setStartDate(new Date(e.target.value))}
               />
             </div>
             <div className="w-full">
-              <label className="block text-gray-700 text-sm font-semibold mb-2">
-                End Date
-              </label>
-              <input
-                className="border border-gray-300 rounded py-2 px-3 w-full"
+              <label className="block font-semibold mb-2">End Date</label>
+              <TextField
                 type="date"
+                size="small"
+                className="w-full"
                 onChange={(e) => setEndDate(new Date(e.target.value))}
               />
             </div>
 
             <div className="w-full">
-              <label className="block text-gray-700 text-sm font-semibold mb-2">
-                Office Filter
-              </label>
+              <label className="block font-semibold mb-2">Office Filter</label>
               <Select
                 value={selectedOffice}
                 onChange={(e) => setSelectedOffice(e.target.value)}
-                className="border border-gray-300 rounded h-10 w-full"
+                className="border border-gray-300 rounded w-full text-xs"
+                size="small"
               >
                 <MenuItem value="">Select One</MenuItem>
                 {organizations.map((organization) => (
@@ -222,13 +219,12 @@ const Report = ({ organzationName }) => {
               </Select>
             </div>
             <div className="w-full">
-              <label className="block text-gray-700 text-sm font-semibold mb-2">
-                Payment Filter
-              </label>
+              <label className="block font-semibold mb-2">Payment Filter</label>
               <Select
                 value={selectedPayment}
                 onChange={(e) => setPayment(e.target.value)}
-                className="border border-gray-300 rounded h-10 w-full"
+                className="border border-gray-300 rounded w-full text-xs"
+                size="small"
               >
                 <MenuItem value="">Select One</MenuItem>
                 <MenuItem value="Paid">Paid</MenuItem>
@@ -242,7 +238,13 @@ const Report = ({ organzationName }) => {
             </div>
           </div>
           <div>
-            <div className="timespent">
+            <div className=" bg-blue-800 text-white px-3 py-2 rounded-md text-xs mb-4 inline-block">
+              <div>
+                Total Hours Spent on {selectedOffice || "All"} department
+                support: {formatTimeInHHMMSS(totalSpentSum)}
+              </div>
+            </div>
+            <div className="timespent" style={{ height: "200px" }}>
               <DataGrid
                 rows={filteredReportArray}
                 columns={columns}
@@ -255,18 +257,6 @@ const Report = ({ organzationName }) => {
                 }}
                 //checkboxSelection
               />
-            </div>
-            <div className="flex justify-between items-center mb-4">
-              <div className="flex items-center space-x-2">
-                <AccessTimeIcon fontSize="small" />
-                <Typography variant="subtitle1" fontWeight="bold">
-                  Total Hours Spent on {selectedOffice || "All"} department
-                  support:
-                </Typography>
-                <Typography variant="subtitle1">
-                  {formatTimeInHHMMSS(totalSpentSum)}
-                </Typography>
-              </div>
             </div>
           </div>
         </div>

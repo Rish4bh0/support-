@@ -95,11 +95,11 @@ const TicketStatusChart = ({ allTicket }) => {
   return (
     <>
       <div className="flex justify-between items-center gap-4">
-        <div className="border border-gray-300 rounded-2xl bg-white w-full">
-          <div className="border-b-1 p-4 font-extrabold text-sm">
-            <Box display="flex">Bar Chart</Box>
+        <div className="card bg-white rounded-lg border w-full">
+          <div className="card-header p-4 border-b-1 pb-3">
+            <Typography variant="h6">Bar Chart</Typography>
           </div>
-          <div className="p-4">
+          <div className="card-body p-4">
             <BarChart
               width={500}
               height={250}
@@ -137,11 +137,11 @@ const TicketStatusChart = ({ allTicket }) => {
             </BarChart>
           </div>
         </div>
-        <div className="border border-gray-300 rounded-2xl bg-white w-full">
-          <div className="border-b-1 p-4 font-extrabold text-sm">
-            <Box display="flex">Pie Chart</Box>
+        <div className="card bg-white rounded-lg border w-full">
+          <div className="card-header p-4 border-b-1 pb-3">
+            <Typography variant="h6">Pie Chart</Typography>
           </div>
-          <div className="p-4">
+          <div className="card-body p-4">
             <PieChart width={500} height={250}>
               <Tooltip />
               <Legend />

@@ -19,7 +19,7 @@ import AddCircleOutlineIcon from "@mui/icons-material/AddCircleOutline";
 import DeleteIcon from "@mui/icons-material/Delete";
 import ModeEditIcon from "@mui/icons-material/ModeEdit";
 import Spinner from "../../components/Spinner";
-import { TextField } from "@mui/material";
+import { TextField, Typography } from "@mui/material";
 import CustomButton from "../../components/CustomButton";
 
 const customStyles = {
@@ -183,9 +183,9 @@ function IssueList() {
 
   return (
     <>
-      <div className="border border-gray-300 rounded-2xl bg-white w-full mb-48">
-        <div className="border-b-1 p-4 text-sm flex justify-between">
-          <div className="font-extrabold">Issue List</div>
+      <div className="card bg-white rounded-lg border mb-48">
+        <div className="card-header p-4 border-b-1 pb-3 flex justify-between">
+          <Typography variant="h6">Issue List</Typography>
           <Button variant="contained" color="primary" onClick={openModal}>
             <AddCircleOutlineIcon className="me-2" /> Add Issue
           </Button>
@@ -223,7 +223,7 @@ function IssueList() {
                       icon={<DeleteIcon />}
                       color="error"
                     ></CustomButton>
-                  </div>  
+                  </div>
                 ),
               },
             ]}

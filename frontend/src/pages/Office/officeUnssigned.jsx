@@ -10,6 +10,7 @@ import { makeStyles } from "@mui/styles";
 import { Link } from "react-router-dom";
 import ModeEditIcon from "@mui/icons-material/ModeEdit";
 import { darken, lighten, styled } from "@mui/material/styles";
+import { Typography, TextField } from "@mui/material";
 import CustomButton from "../../components/CustomButton";
 
 const useStyles = makeStyles({
@@ -300,33 +301,37 @@ function OfficeUnassignedTickets() {
   return (
     <>
       <div className="card bg-white rounded-lg border mb-4">
-        <div className="border-b-1 p-4 text-sm">Select Date</div>
-        <div className="p-4 text-xs">
+        <div className="card-header p-4 border-b-1 pb-3">
+          <Typography variant="h6">Select Date</Typography>
+        </div>
+        <div className="card-body p-4 text-xs">
           <div className="bg-white flex gap-3">
-            <div className="w-48">
+            <div className="w-52">
               <label className="block text-gray-700 mb-2">Start Date:</label>
-              <input
-                className="border border-gray-300 rounded py-2 px-3 w-full"
+              <TextField
+                size="small"
                 type="date"
+                className="w-full"
                 onChange={(e) => setStartDate(new Date(e.target.value))}
               />
             </div>
-            <div className="w-48">
+            <div className="w-52">
               <label className="block text-gray-700 mb-2">End Date:</label>
-              <input
-                className="border border-gray-300 rounded py-2 px-3 w-full"
+              <TextField
+                size="small"
                 type="date"
+                className="w-full"
                 onChange={(e) => setEndDate(new Date(e.target.value))}
               />
             </div>
           </div>
         </div>
       </div>
-      <div className="border border-gray-300 rounded-2xl bg-white w-full">
-        <div className="border-b-1 p-4 font-semibold text-sm">
-          {greetingMessage}
+      <div className="card bg-white rounded-lg border mb-4">
+        <div className="card-header p-4 border-b-1 pb-3">
+          <Typography variant="h6"> {greetingMessage}</Typography>
         </div>
-        <div className="p-4 text-xs">
+        <div className="card-body p-4 text-xs">
           <StyledDataGrid
             getRowClassName={(params) =>
               `super-app-theme--${params.row.status}`
