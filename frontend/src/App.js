@@ -50,7 +50,7 @@ import OfficeTicket from "./pages/Office/OfficeTickets.jsx";
 
 const theme = createTheme({
   typography: {
-    fontFamily: "Inter, sans-serif",
+    fontFamily: "Poppins , sans-serif",
     fontSize: 12,
     h6: {
       fontSize: 13.5,
@@ -96,7 +96,7 @@ function App() {
             <div className="navbar sticky top-0 left-0 right-0 bg-white w-full z-10 shadow">
               <NavBar />
             </div>
-            <div className={user ? "p-4" : ""}>
+            <div className={user ? "p-4 min-h-screen" : ""}>
               {user && <BasicBreadcrumbs />}
               <Routes>
                 <Route path="/" element={<Home />} />

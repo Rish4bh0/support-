@@ -278,7 +278,7 @@ h3 {
   padding: 3px 12px;
   justify-self: center;
   text-transform: capitalize;
-  font-size: 12px;
+  font-size: 10px;
   text-align: center;
   border-radius: 5px;
 }
@@ -336,7 +336,7 @@ h3 {
 .priority {
   padding: 3px 12px;
   justify-self: center;
-  font-size: 12px;
+  font-size: 10px;
   text-align: center;
 }
 

@@ -20,6 +20,7 @@ import DeleteIcon from "@mui/icons-material/Delete";
 import ModeEditIcon from "@mui/icons-material/ModeEdit";
 import Spinner from "../../components/Spinner";
 import { TextField } from "@mui/material";
+import CustomButton from "../../components/CustomButton";
 
 const customStyles = {
   content: {
@@ -213,16 +214,16 @@ function IssueList() {
                 minWidth: 150,
                 renderCell: (params) => (
                   <div>
-                    <button onClick={() => handleUpdateIssue(params.row._id)}>
-                      <ModeEditIcon className="text-blue-500 group-hover:text-blue-700 mr-8" />
-                    </button>
-                    <button
+                    <CustomButton
+                      onClick={() => handleUpdateIssue(params.row._id)}
+                      icon={<ModeEditIcon />}
+                    ></CustomButton>
+                    <CustomButton
                       onClick={() => handleDeleteIssue(params.row._id)}
-                      className="group"
-                    >
-                      <DeleteIcon className="text-red-500 group-hover:text-red-700 mr-8" />
-                    </button>
-                  </div>
+                      icon={<DeleteIcon />}
+                      color="error"
+                    ></CustomButton>
+                  </div>  
                 ),
               },
             ]}

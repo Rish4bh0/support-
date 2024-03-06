@@ -8,24 +8,9 @@ import {
   reset,
 } from "../../features/organization/organizationSlice";
 import ModeEditIcon from "@mui/icons-material/ModeEdit";
-import ViewListIcon from "@mui/icons-material/ViewList";
 import VisibilityIcon from "@mui/icons-material/Visibility";
 import Spinner from "../../components/Spinner";
-import { TextField } from "@mui/material";
-
-const customStyles = {
-  content: {
-    width: "600px",
-    top: "50%",
-    left: "50%",
-    right: "auto",
-    bottom: "auto",
-    marginRight: "-50%",
-    transform: "translate(-50%, -50%)",
-    position: "relative",
-    padding: 0,
-  },
-};
+import CustomButton from "../../components/CustomButton";
 
 function OrganizationList() {
   const organizations = useSelector(
@@ -90,14 +75,13 @@ function OrganizationList() {
       renderCell: (params) => (
         <div>
           <Link to={`/organization/${params.row.id}`}>
-            <button className="group">
-              <ModeEditIcon className="text-blue-500 group-hover:text-blue-700 mr-8" />
-            </button>
+            <CustomButton icon={<ModeEditIcon />}></CustomButton>
           </Link>
           <Link to={`/organizations/${params.row.id}`}>
-            <button className="group">
-              <VisibilityIcon className="text-gray-500 group-hover:text-gray-700 mr-8" />
-            </button>
+            <CustomButton
+              icon={<VisibilityIcon />}
+              color="success"
+            ></CustomButton>
           </Link>
         </div>
       ),

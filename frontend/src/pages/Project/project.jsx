@@ -20,6 +20,7 @@ import DeleteIcon from "@mui/icons-material/Delete";
 import ModeEditIcon from "@mui/icons-material/ModeEdit";
 import Spinner from "../../components/Spinner";
 import { TextField } from "@mui/material";
+import CustomButton from "../../components/CustomButton";
 
 const customStyles = {
   content: {
@@ -204,15 +205,15 @@ function ProjectList() {
                 flex: 1,
                 renderCell: (params) => (
                   <div>
-                    <button onClick={() => handleUpdateProject(params.row._id)}>
-                      <ModeEditIcon className="text-blue-500 group-hover:text-blue-700 mr-8" />
-                    </button>
-                    <button
+                    <CustomButton
+                      onClick={() => handleUpdateProject(params.row._id)}
+                      icon={<ModeEditIcon />}
+                    ></CustomButton>
+                    <CustomButton
                       onClick={() => handleDeleteProject(params.row._id)}
-                      className="group"
-                    >
-                      <DeleteIcon className="text-red-500 group-hover:text-red-700 mr-8" />
-                    </button>
+                      icon={<DeleteIcon />}
+                      color="error"
+                    ></CustomButton>
                   </div>
                 ),
               },

@@ -19,6 +19,7 @@ import {
   Close as CloseIcon,
   AddCircleOutline as AddCircleOutlineIcon,
 } from "@mui/icons-material";
+import CustomButton from "../../components/CustomButton";
 
 const customStyles = {
   content: {
@@ -258,18 +259,18 @@ function UserList() {
                 flex: 1,
                 renderCell: (params) => (
                   <div>
-                    <button onClick={() => handleUpdateUser(params.row._id)}>
-                      <ModeEditIcon className="text-blue-500 group-hover:text-blue-700 mr-8" />
-                    </button>
+                    <CustomButton
+                      onClick={() => handleUpdateUser(params.row._id)}
+                      icon={<ModeEditIcon />}
+                    />
 
-                    <button
+                    <CustomButton
                       onClick={() =>
                         handleDeleteUser(params.row._id, params.row.name)
                       }
-                      className="group"
-                    >
-                      <DeleteIcon className="text-red-500 group-hover:text-red-700 mr-8" />
-                    </button>
+                      icon={<DeleteIcon />}
+                      color="error"
+                    ></CustomButton>
                   </div>
                 ),
               },

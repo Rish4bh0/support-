@@ -13,10 +13,11 @@ import { Link } from "react-router-dom";
 import ModeEditIcon from "@mui/icons-material/ModeEdit";
 import { darken, lighten, styled } from "@mui/material/styles";
 import { Typography } from "@mui/material";
+import CustomButton from "../../components/CustomButton";
 
 const useStyles = makeStyles({
   highPriorityy: {
-    backgroundColor: "#ff0000", 
+    backgroundColor: "#ff0000",
     color: "#fff",
   },
   lowPriorityy: {
@@ -60,16 +61,16 @@ function UnassignedTickets() {
   };
 
   const getBackgroundColor = (color, mode) =>
-    mode === "dark" ? darken(color, 0.7) : lighten(color, 0.7);
+    mode === "dark" ? darken(color, 0.7) : lighten(color, 1);
 
   const getHoverBackgroundColor = (color, mode) =>
-    mode === "dark" ? darken(color, 0.6) : lighten(color, 0.6);
+    mode === "dark" ? darken(color, 0.7) : lighten(color, 0.9);
 
   const getSelectedBackgroundColor = (color, mode) =>
-    mode === "dark" ? darken(color, 0.5) : lighten(color, 0.5);
+    mode === "dark" ? darken(color, 0.7) : lighten(color, 0.9);
 
   const getSelectedHoverBackgroundColor = (color, mode) =>
-    mode === "dark" ? darken(color, 0.4) : lighten(color, 0.4);
+    mode === "dark" ? darken(color, 0.7) : lighten(color, 0.9);
 
   const StyledDataGrid = styled(DataGrid)(({ theme }) => ({
     "& .super-app-theme--open": {
@@ -297,9 +298,7 @@ function UnassignedTickets() {
       renderCell: (params) => (
         <div>
           <Link to={`/ticket/${params.row.ticketid}/update`}>
-            <button className="group">
-              <ModeEditIcon className="text-blue-500 group-hover:text-blue-700 mr-8" />
-            </button>
+            <CustomButton icon={<ModeEditIcon />} />
           </Link>
         </div>
       ),
@@ -313,23 +312,19 @@ function UnassignedTickets() {
           <Typography variant="h6">Unassigned</Typography>
         </div>
         <div className="card-body p-4">
-          <div className="bg-white flex gap-3">
+          <div className="bg-white flex gap-3 text-xs">
             <div className="w-48">
-              <label className="block text-sm font-semibold mb-2">
-                Start Date:
-              </label>
+              <label className="block font-semibold mb-2">Start Date:</label>
               <input
-                className="border border-gray-300 rounded py-2 px-3 w-full"
+                className="border border-gray-300 rounded py-2 px-3 w-full text-xs"
                 type="date"
                 onChange={(e) => setStartDate(new Date(e.target.value))}
               />
             </div>
             <div className="w-48">
-              <label className="block text-sm font-semibold mb-2 mr-2">
-                End Date:
-              </label>
+              <label className="block font-semibold mb-2 mr-2">End Date:</label>
               <input
-                className="border border-gray-300 rounded py-2 px-3 w-full"
+                className="border border-gray-300 rounded py-2 px-3 w-full text-xs"
                 type="date"
                 onChange={(e) => setEndDate(new Date(e.target.value))}
               />

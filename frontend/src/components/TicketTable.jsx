@@ -16,6 +16,7 @@ import { darken, lighten, styled } from "@mui/material/styles";
 import VisibilityIcon from "@mui/icons-material/Visibility";
 import { Link } from "react-router-dom";
 import { Typography } from "@mui/material";
+import CustomButton from "./CustomButton";
 
 function Tickets({ tickets, isLoading, filteredTic, greetingMessage, title }) {
   const dispatch = useDispatch();
@@ -179,18 +180,14 @@ function Tickets({ tickets, isLoading, filteredTic, greetingMessage, title }) {
           {(tickets.status === "draft" ||
             (userRole && allowedRoles.includes(userRole))) && (
             <Link to={`/ticket/${params.row.ticketid}/update`}>
-              <button className="group">
-                <ModeEditIcon className="text-green-500 group-hover:text-green-700 mr-8" />
-              </button>
+              <CustomButton icon={<ModeEditIcon />} />
             </Link>
           )}
           {userRole &&
             allowedRolesOrg.includes(userRole) &&
             tickets.status !== "draft" && (
               <Link to={`/ticket/${params.row.ticketid}`}>
-                <button className="group">
-                  <VisibilityIcon className="text-blue-500 group-hover:text-blue-700 mr-8" />
-                </button>
+                <CustomButton color="success" icon={<VisibilityIcon />} />
               </Link>
             )}
         </div>
@@ -233,16 +230,16 @@ function Tickets({ tickets, isLoading, filteredTic, greetingMessage, title }) {
   };
 
   const getBackgroundColor = (color, mode) =>
-    mode === "dark" ? darken(color, 0.7) : lighten(color, 0.7);
+    mode === "dark" ? darken(color, 0.7) : lighten(color, 1);
 
   const getHoverBackgroundColor = (color, mode) =>
-    mode === "dark" ? darken(color, 0.6) : lighten(color, 0.6);
+    mode === "dark" ? darken(color, 0.7) : lighten(color, 0.9);
 
   const getSelectedBackgroundColor = (color, mode) =>
-    mode === "dark" ? darken(color, 0.5) : lighten(color, 0.5);
+    mode === "dark" ? darken(color, 0.7) : lighten(color, 0.9);
 
   const getSelectedHoverBackgroundColor = (color, mode) =>
-    mode === "dark" ? darken(color, 0.4) : lighten(color, 0.4);
+    mode === "dark" ? darken(color, 0.7) : lighten(color, 0.9);
 
   const StyledDataGrid = styled(DataGrid)(({ theme }) => ({
     "& .super-app-theme--open": {
@@ -360,17 +357,17 @@ function Tickets({ tickets, isLoading, filteredTic, greetingMessage, title }) {
           <Typography variant="h6">Filter {title}</Typography>
         </div>
         <div className="card-body p-4">
-          <div className="flex gap-3">
+          <div className="flex gap-3 text-xs">
             <div className="w-full">
               <label
                 htmlFor="status-dropdown"
-                className="block text-gray-700 text-sm font-semibold mb-2"
+                className="block text-gray-700  font-semibold mb-2"
               >
                 Status:
               </label>
               <select
                 id="status-dropdown"
-                className="border border-gray-300 rounded py-2 px-3 w-full"
+                className="border border-gray-300 rounded py-2 px-3 w-full text-xs"
                 value={activeTab}
                 onChange={(e) => handleTabChange(e.target.value)}
               >
@@ -386,21 +383,21 @@ function Tickets({ tickets, isLoading, filteredTic, greetingMessage, title }) {
               </select>
             </div>
             <div className="w-full">
-              <label className="block text-gray-700 text-sm font-semibold mb-2">
+              <label className="block text-gray-700  font-semibold mb-2">
                 Start Date:
               </label>
               <input
-                className="border border-gray-300 rounded py-2 px-3 w-full"
+                className="border border-gray-300 rounded py-2 px-3 w-full text-xs"
                 type="date"
                 onChange={(e) => setStartDate(new Date(e.target.value))}
               />
             </div>
             <div className="w-full">
-              <label className="block text-gray-700 text-sm font-semibold mb-2 mr-2">
+              <label className="block text-gray-700  font-semibold mb-2 mr-2">
                 End Date:
               </label>
               <input
-                className="border border-gray-300 rounded py-2 px-3 w-full"
+                className="border border-gray-300 rounded py-2 px-3 w-full text-xs"
                 type="date"
                 onChange={(e) => setEndDate(new Date(e.target.value))}
               />

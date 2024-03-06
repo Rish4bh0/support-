@@ -1,7 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import Spinner from "../../components/Spinner";
-import BackButton from "../../components/BackButton";
 import { reset, getAllTickets } from "../../features/tickets/ticketSlice";
 import { fetchAllUsers } from "../../features/auth/authSlice";
 import { getAllIssueTypes } from "../../features/issues/issueSlice";
@@ -10,11 +9,8 @@ import { DataGrid } from "@mui/x-data-grid";
 import { makeStyles } from "@mui/styles";
 import { Link } from "react-router-dom";
 import ModeEditIcon from "@mui/icons-material/ModeEdit";
-import Box from "@mui/material/Box";
 import { darken, lighten, styled } from "@mui/material/styles";
-import CheckCircleOutlineIcon from "@mui/icons-material/CheckCircleOutline";
-import CancelOutlinedIcon from "@mui/icons-material/CancelOutlined";
-import Alert from "@mui/material/Alert";
+import CustomButton from "../../components/CustomButton";
 
 const useStyles = makeStyles({
   highPriorityy: {
@@ -65,16 +61,16 @@ function OfficeUnassignedTickets() {
   );
   console.log(userOrganizationId);
   const getBackgroundColor = (color, mode) =>
-    mode === "dark" ? darken(color, 0.7) : lighten(color, 0.7);
+    mode === "dark" ? darken(color, 0.7) : lighten(color, 1);
 
   const getHoverBackgroundColor = (color, mode) =>
-    mode === "dark" ? darken(color, 0.6) : lighten(color, 0.6);
+    mode === "dark" ? darken(color, 0.7) : lighten(color, 0.9);
 
   const getSelectedBackgroundColor = (color, mode) =>
-    mode === "dark" ? darken(color, 0.5) : lighten(color, 0.5);
+    mode === "dark" ? darken(color, 0.7) : lighten(color, 0.9);
 
   const getSelectedHoverBackgroundColor = (color, mode) =>
-    mode === "dark" ? darken(color, 0.4) : lighten(color, 0.4);
+    mode === "dark" ? darken(color, 0.7) : lighten(color, 0.9);
 
   const StyledDataGrid = styled(DataGrid)(({ theme }) => ({
     "& .super-app-theme--open": {
@@ -291,9 +287,7 @@ function OfficeUnassignedTickets() {
       renderCell: (params) => (
         <div>
           <Link to={`/ticket/${params.row.ticketid}/update`}>
-            <button className="group">
-              <ModeEditIcon className="text-blue-500 group-hover:text-blue-700 mr-8" />
-            </button>
+            <CustomButton icon={<ModeEditIcon />}></CustomButton>
           </Link>
         </div>
       ),
@@ -305,7 +299,7 @@ function OfficeUnassignedTickets() {
 
   return (
     <>
-      <div className="border border-gray-300 rounded-2xl bg-white w-full mb-4 font-semibold">
+      <div className="card bg-white rounded-lg border mb-4">
         <div className="border-b-1 p-4 text-sm">Select Date</div>
         <div className="p-4 text-xs">
           <div className="bg-white flex gap-3">

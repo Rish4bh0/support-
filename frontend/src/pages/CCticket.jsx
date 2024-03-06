@@ -14,7 +14,7 @@ import ModeEditIcon from "@mui/icons-material/ModeEdit";
 import { darken, lighten, styled } from "@mui/material/styles";
 import VisibilityIcon from "@mui/icons-material/Visibility";
 import { Link } from "react-router-dom";
-import Alert from '@mui/material/Alert';
+import Alert from "@mui/material/Alert";
 
 function CCTICKET() {
   const { allTickets, isLoading } = useSelector((state) => state.tickets);
@@ -35,7 +35,6 @@ function CCTICKET() {
   const itemsPerPage = rowsPerPage;
   const maxPageButtons = 5;
 
-  
   const userRole = useSelector((state) => state.auth.user.role);
   const organizations = useSelector(
     (state) => state.organizations.organizations
@@ -59,10 +58,10 @@ function CCTICKET() {
   users.forEach((user) => {
     userMap[user._id] = user.name;
   });
-  const allowedRolesOrg = ["ADMIN", "SUPERVISOR", "ORGAGENT","USER" ];
-  const  allowedRoles = ["ADMIN", "SUPERVISOR",  ];
-  const  allowedRolesor = ["ADMIN", "SUPERVISOR","EMPLOYEE"  ];
-  const org =["ORGAGENT","USER"]
+  const allowedRolesOrg = ["ADMIN", "SUPERVISOR", "ORGAGENT", "USER"];
+  const allowedRoles = ["ADMIN", "SUPERVISOR"];
+  const allowedRolesor = ["ADMIN", "SUPERVISOR", "EMPLOYEE"];
+  const org = ["ORGAGENT", "USER"];
 
   useEffect(() => {
     dispatch(fetchAllUsers());
@@ -81,7 +80,6 @@ function CCTICKET() {
   if (isLoading) return <Spinner />;
 
   const allTicketss = [...allTickets];
-
 
   // Filter tickets based on the user's organization ID
   const ticketsForUserCC = allTicketss.filter((ticket) => {
@@ -178,22 +176,26 @@ function CCTICKET() {
           </Link>
           <Link to={`/ticket/${params.row.ticketid}`}>
             <button className="group">
-              < VisibilityIcon  className="text-blue-500 group-hover:text-blue-700 mr-8" />
+              <VisibilityIcon className="text-blue-500 group-hover:text-blue-700 mr-8" />
             </button>
           </Link>
         </div>
       ),
     },
   ];
-  const assignedUser = Object.keys(userMap).length > 0 ? Object.values(userMap)[0] : null;
-const remainingTickets = filteredByDateTickets.length;
-const greetingMessage = assignedUser ? `Hey there ${assignedUser}! Below are the tickets assigned to you. ${remainingTickets} more 🎫 to go.` : null;
-
+  const assignedUser =
+    Object.keys(userMap).length > 0 ? Object.values(userMap)[0] : null;
+  const remainingTickets = filteredByDateTickets.length;
+  const greetingMessage = assignedUser
+    ? `Hey there ${assignedUser}! Below are the tickets assigned to you. ${remainingTickets} more 🎫 to go.`
+    : null;
 
   // Use filteredByDateTickets for pagination
   const startIndex = (currentPage[activeTab] - 1) * itemsPerPage;
   const endIndex = startIndex + itemsPerPage;
-  const sortedTickets = [...filteredByDateTickets].sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
+  const sortedTickets = [...filteredByDateTickets].sort(
+    (a, b) => new Date(b.createdAt) - new Date(a.createdAt)
+  );
   const totalPages = Math.ceil(filteredByDateTickets.length / itemsPerPage);
 
   // Event handler for changing the page
@@ -228,7 +230,9 @@ const greetingMessage = assignedUser ? `Hey there ${assignedUser}! Below are the
     pageButtons.push(
       <button
         key={i}
-        className={`btn btn-reverse btn-back ${currentPage[activeTab] === i ? "active" : ""}`}
+        className={`btn btn-reverse btn-back ${
+          currentPage[activeTab] === i ? "active" : ""
+        }`}
         onClick={() => handlePageChange(i, activeTab)}
       >
         {i}
@@ -376,86 +380,91 @@ const greetingMessage = assignedUser ? `Hey there ${assignedUser}! Below are the
     );
   }
 
-      return (
+  return (
     <div className="mt-4">
-       <div className="border border-gray-300 rounded-2xl bg-white w-full">
-       <div className="border-b-1 p-4 font-extrabold text-sm flex gap-2">
+      <div className="border border-gray-300 rounded-2xl bg-white w-full">
+        <div className="border-b-1 p-4 font-extrabold text-sm flex gap-2">
           <div className="font-extrabold">Assigned Tickets</div>
         </div>
         <div className="p-4">
-      <div className="bg-white flex justify-end gap-3 mb-7 ">
-      <div className="w-full mt-6">
-     
-      <Alert  className="block text-gray-700 text-sm font-semibold mb-2" severity="info"><p>{greetingMessage}</p></Alert>
-     
-      </div>
-        <div className="w-48">
-          <label
-            htmlFor="status-dropdown"
-            className="block text-gray-700 text-sm font-semibold mb-2"
-          >
-            Status:
-          </label>
-          <select
-            id="status-dropdown"
-            className="border border-gray-300 rounded py-2 px-3 w-48"
-            value={activeTab}
-            onChange={(e) => handleTabChange(e.target.value)}
-          >
-            {statusOptions.map((status) => (
-              <option key={status} value={status}>
-                {status === "all"
-                  ? "All Tickets"
-                  : `${status.charAt(0).toUpperCase()}${status.slice(
-                      1
-                    )} Tickets`}
-              </option>
-            ))}
-          </select>
+          <div className="bg-white flex justify-end gap-3 mb-7 ">
+            <div className="w-full mt-6">
+              <Alert
+                className="block text-gray-700 text-sm font-semibold mb-2"
+                severity="info"
+              >
+                <p>{greetingMessage}</p>
+              </Alert>
+            </div>
+            <div className="w-48">
+              <label
+                htmlFor="status-dropdown"
+                className="block text-gray-700 text-sm font-semibold mb-2"
+              >
+                Status:
+              </label>
+              <select
+                id="status-dropdown"
+                className="border border-gray-300 rounded py-2 px-3 w-48"
+                value={activeTab}
+                onChange={(e) => handleTabChange(e.target.value)}
+              >
+                {statusOptions.map((status) => (
+                  <option key={status} value={status}>
+                    {status === "all"
+                      ? "All Tickets"
+                      : `${status.charAt(0).toUpperCase()}${status.slice(
+                          1
+                        )} Tickets`}
+                  </option>
+                ))}
+              </select>
+            </div>
+            <div className="w-48">
+              <label className="block text-gray-700 text-sm font-semibold mb-2">
+                Start Date:
+              </label>
+              <input
+                className="border border-gray-300 rounded py-2 px-3 w-full"
+                type="date"
+                onChange={(e) => setStartDate(new Date(e.target.value))}
+              />
+            </div>
+            <div className="w-48">
+              <label className="block text-gray-700 text-sm font-semibold mb-2 mr-2">
+                End Date:
+              </label>
+              <input
+                className="border border-gray-300 rounded py-2 px-3 w-full"
+                type="date"
+                onChange={(e) => setEndDate(new Date(e.target.value))}
+              />
+            </div>
+          </div>
+          <div>
+            <StyledDataGrid
+              getRowClassName={(params) =>
+                `super-app-theme--${params.row.status}`
+              }
+              rows={rows}
+              columns={columns}
+              initialState={{
+                ...rows.initialState,
+                pagination: { paginationModel: { pageSize: 5 } },
+              }}
+              pageSizeOptions={[5, 10, 25]}
+              page={currentPage}
+              onPageChange={(newPage) => setCurrentPage(newPage)}
+              //disableSelectionOnClick
+              checkboxSelection
+              loading={isLoading}
+              components={{
+                loadingOverlay: () => <Spinner />, // Custom spinner component
+              }}
+              className="min-w-full overflow-x-auto md:w-full"
+            />
+          </div>
         </div>
-        <div className="w-48">
-          <label className="block text-gray-700 text-sm font-semibold mb-2">
-            Start Date:
-          </label>
-          <input
-            className="border border-gray-300 rounded py-2 px-3 w-full"
-            type="date"
-            onChange={(e) => setStartDate(new Date(e.target.value))}
-          />
-        </div>
-        <div className="w-48">
-          <label className="block text-gray-700 text-sm font-semibold mb-2 mr-2">
-            End Date:
-          </label>
-          <input
-            className="border border-gray-300 rounded py-2 px-3 w-full"
-            type="date"
-            onChange={(e) => setEndDate(new Date(e.target.value))}
-          />
-        </div>
-      </div>
-      <div >
-        <StyledDataGrid
-          getRowClassName={(params) => `super-app-theme--${params.row.status}`}
-          rows={rows}
-          columns={columns}
-          initialState={{
-            ...rows.initialState,
-            pagination: { paginationModel: { pageSize: 5 } },
-          }}
-          pageSizeOptions={[5, 10, 25]}
-          page={currentPage}
-          onPageChange={(newPage) => setCurrentPage(newPage)}
-          //disableSelectionOnClick
-          checkboxSelection
-          loading={isLoading}
-          components={{
-            loadingOverlay: () => <Spinner />, // Custom spinner component
-          }}
-          className="min-w-full overflow-x-auto md:w-full"
-        />
-      </div>
-      </div>
       </div>
     </div>
   );
