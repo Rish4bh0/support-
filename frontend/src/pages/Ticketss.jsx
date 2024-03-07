@@ -147,7 +147,7 @@ function Ticketss() {
         <div className="w-full">
           <label
             htmlFor="status-dropdown"
-            className="block text-gray-700 text-sm font-semibold mb-2"
+            className="block text-sm font-semibold mb-2"
           >
             Status:
           </label>
@@ -169,7 +169,7 @@ function Ticketss() {
           </select>
         </div>
         <div className="w-full">
-          <label className="block text-gray-700 text-sm font-semibold mb-2">
+          <label className="block text-sm font-semibold mb-2">
             Start Date:
           </label>
           <input
@@ -179,7 +179,7 @@ function Ticketss() {
           />
         </div>
         <div className="w-full">
-          <label className="block text-gray-700 text-sm font-semibold mb-2 mr-2">
+          <label className="block text-sm font-semibold mb-2 mr-2">
             End Date:
           </label>
           <input
@@ -189,7 +189,7 @@ function Ticketss() {
           />
         </div>
         <div className="w-full">
-          <label className="block text-gray-700 text-sm font-semibold mb-2 mr-2">
+          <label className="block text-sm font-semibold mb-2 mr-2">
             Rows Per Page:
           </label>
           <input

@@ -314,7 +314,7 @@ function UnassignedTickets() {
         <div className="card-body p-4">
           <div className="bg-white flex gap-3 text-xs">
             <div className="w-48">
-              <label className="block font-semibold mb-2">Start Date:</label>
+              <label className="block font-semibold mb-2">Start Date</label>
               <input
                 className="border border-gray-300 rounded py-2 px-3 w-full text-xs"
                 type="date"
@@ -322,7 +322,7 @@ function UnassignedTickets() {
               />
             </div>
             <div className="w-48">
-              <label className="block font-semibold mb-2 mr-2">End Date:</label>
+              <label className="block font-semibold mb-2 mr-2">End Date</label>
               <input
                 className="border border-gray-300 rounded py-2 px-3 w-full text-xs"
                 type="date"

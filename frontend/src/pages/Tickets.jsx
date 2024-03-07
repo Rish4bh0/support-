@@ -345,7 +345,7 @@ function Tickets() {
             <div className="w-full mt-6">
               {greetingMessages.map((greeting, index) => (
                 <Alert
-                  className="block text-gray-700 text-sm font-semibold mb-2"
+                  className="block text-sm font-semibold mb-2"
                   severity="info"
                 >
                   <p key={index}>{greeting}</p>
@@ -355,9 +355,9 @@ function Tickets() {
             <div className="w-48">
               <label
                 htmlFor="status-dropdown"
-                className="block text-gray-700 text-sm font-semibold mb-2"
+                className="block text-sm font-semibold mb-2"
               >
-                Status:
+                Status
               </label>
               <select
                 id="status-dropdown"
@@ -377,8 +377,8 @@ function Tickets() {
               </select>
             </div>
             <div className="w-48">
-              <label className="block text-gray-700 text-sm font-semibold mb-2">
-                Start Date:
+              <label className="block text-sm font-semibold mb-2">
+                Start Date
               </label>
               <input
                 className="border border-gray-300 rounded py-2 px-3 w-full"
@@ -387,8 +387,8 @@ function Tickets() {
               />
             </div>
             <div className="w-48">
-              <label className="block text-gray-700 text-sm font-semibold mb-2 mr-2">
-                End Date:
+              <label className="block text-sm font-semibold mb-2 mr-2">
+                End Date
               </label>
               <input
                 className="border border-gray-300 rounded py-2 px-3 w-full"

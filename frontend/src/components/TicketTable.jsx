@@ -361,7 +361,7 @@ function Tickets({ tickets, isLoading, filteredTic, greetingMessage, title }) {
             <div className="w-full">
               <label
                 htmlFor="status-dropdown"
-                className="block text-gray-700  font-semibold mb-2"
+                className="block font-semibold mb-2"
               >
                 Status:
               </label>
@@ -383,9 +383,7 @@ function Tickets({ tickets, isLoading, filteredTic, greetingMessage, title }) {
               </select>
             </div>
             <div className="w-full">
-              <label className="block text-gray-700  font-semibold mb-2">
-                Start Date:
-              </label>
+              <label className="block font-semibold mb-2">Start Date:</label>
               <input
                 className="border border-gray-300 rounded py-2 px-3 w-full text-xs"
                 type="date"
@@ -393,9 +391,7 @@ function Tickets({ tickets, isLoading, filteredTic, greetingMessage, title }) {
               />
             </div>
             <div className="w-full">
-              <label className="block text-gray-700  font-semibold mb-2 mr-2">
-                End Date:
-              </label>
+              <label className="block font-semibold mb-2 mr-2">End Date:</label>
               <input
                 className="border border-gray-300 rounded py-2 px-3 w-full text-xs"
                 type="date"

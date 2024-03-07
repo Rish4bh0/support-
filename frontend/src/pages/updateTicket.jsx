@@ -211,19 +211,29 @@ const UpdateProductPage = () => {
           <CardContent>
             <Grid container spacing={3} className="mb-4">
               <Grid item xs={6}>
+                <label className="block font-semibold mb-2">
+                  {" "}
+                  Ticket title
+                </label>
                 <TextField
-                  label=" Ticket title"
                   name="title"
+                  size="small"
                   value={formData.title}
                   fullWidth
                 />
               </Grid>
               <Grid item xs={6}>
                 <FormControl fullWidth>
-                  <InputLabel htmlFor="organization">Organization</InputLabel>
+                  <label
+                    htmlFor="organization"
+                    className="block font-semibold mb-2"
+                  >
+                    Organization
+                  </label>
                   <Select
                     name="organization"
                     id="organization"
+                    size="small"
                     value={formData.organization}
                     onChange={handleChange}
                   >
@@ -274,10 +284,16 @@ const UpdateProductPage = () => {
               {userRole && allowedRoles.includes(userRole) && (
                 <Grid item xs={2}>
                   <FormControl fullWidth>
-                    <InputLabel htmlFor="assignedTo">Assign To</InputLabel>
+                    <label
+                      htmlFor="assignedTo"
+                      className="block font-semibold mb-2"
+                    >
+                      Assign To
+                    </label>
                     <Select
                       name="assignedTo"
                       id="assignedTo"
+                      size="small"
                       value={formData.assignedTo}
                       onChange={handleChange}
                     >
@@ -300,10 +316,13 @@ const UpdateProductPage = () => {
 
               <Grid item xs={4}>
                 <FormControl fullWidth>
-                  <InputLabel htmlFor="cc">CC Users</InputLabel>
+                  <label htmlFor="cc" className="block font-semibold mb-2">
+                    CC Users
+                  </label>
                   <Select
                     name="cc"
                     id="cc"
+                    size="small"
                     multiple
                     value={formData.cc}
                     onChange={handleChange}
@@ -325,10 +344,16 @@ const UpdateProductPage = () => {
               {userRole && allowedRoles.includes(userRole) && (
                 <Grid item xs={2}>
                   <FormControl fullWidth>
-                    <InputLabel htmlFor="priority">Priority</InputLabel>
+                    <label
+                      htmlFor="priority"
+                      className="block font-semibold mb-2"
+                    >
+                      Priority
+                    </label>
                     <Select
                       name="priority"
                       id="priority"
+                      size="small"
                       value={formData.priority}
                       onChange={handleChange}
                     >
@@ -342,10 +367,16 @@ const UpdateProductPage = () => {
 
               <Grid item xs={4}>
                 <FormControl fullWidth>
-                  <InputLabel htmlFor="issueType">Issue Type</InputLabel>
+                  <label
+                    htmlFor="issueType"
+                    className="block font-semibold mb-2"
+                  >
+                    Issue Type
+                  </label>
                   <Select
                     name="issueType"
                     id="issueType"
+                    size="small"
                     value={formData.issueType}
                     onChange={handleChange}
                   >
@@ -366,9 +397,12 @@ const UpdateProductPage = () => {
               </Grid>
 
               <Grid item xs={12}>
+                <label className="block font-semibold mb-2">
+                  Issue description
+                </label>
                 <TextField
-                  label="Description of the issue"
                   name="description"
+                  size="small"
                   value={formData.description}
                   onChange={handleChange}
                   fullWidth

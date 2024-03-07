@@ -289,10 +289,14 @@ function NewTicket() {
           <div className="card-body p-4">
             <Grid container spacing={3}>
               <Grid item xs={6}>
+                <label className="block font-semibold mb-2">
+                  {" "}
+                  Ticket title
+                </label>
                 <TextField
-                  label=" Ticket title"
                   placeholder="Ticket title"
                   name="title"
+                  size="small"
                   value={title}
                   onChange={handleInputChange}
                   fullWidth
@@ -301,10 +305,16 @@ function NewTicket() {
               {userRole && org.includes(userRole) && (
                 <Grid item xs={6}>
                   <FormControl fullWidth>
-                    <InputLabel htmlFor="organization">Organization</InputLabel>
+                    <label
+                      htmlFor="organization"
+                      className="block font-semibold mb-2"
+                    >
+                      Organization
+                    </label>
                     <Select
                       name="organization"
                       id="organization"
+                      size="small"
                       value={
                         user && user.role === "ADMIN"
                           ? organization
@@ -349,11 +359,17 @@ function NewTicket() {
               {userRole && allowedRoles.includes(userRole) && (
                 <Grid item xs={3}>
                   <FormControl fullWidth>
-                    <InputLabel htmlFor="assignedTo">Assign To</InputLabel>
+                    <label
+                      htmlFor="assignedTo"
+                      className="block font-semibold mb-2"
+                    >
+                      Assign To
+                    </label>
 
                     <Select
                       name="assignedTo"
                       id="assignedTo"
+                      size="small"
                       value={assignedTo}
                       onChange={handleInputChange}
                     >
@@ -376,10 +392,13 @@ function NewTicket() {
               {userRole && allowedRoles.includes(userRole) && (
                 <Grid item xs={3}>
                   <FormControl fullWidth>
-                    <InputLabel htmlFor="cc">CC</InputLabel>
+                    <label htmlFor="cc" className="block font-semibold mb-2">
+                      CC
+                    </label>
                     <Select
                       name="cc"
                       id="cc"
+                      size="small"
                       value={cc}
                       onChange={handleInputChange}
                       multiple
@@ -403,10 +422,16 @@ function NewTicket() {
               {userRole && allowedRoles.includes(userRole) && (
                 <Grid item xs={3}>
                   <FormControl fullWidth>
-                    <InputLabel htmlFor="priority">Priority</InputLabel>
+                    <label
+                      htmlFor="priority"
+                      className="block font-semibold mb-2"
+                    >
+                      Priority
+                    </label>
                     <Select
                       name="priority"
                       id="priority"
+                      size="small"
                       value={priority}
                       onChange={handleInputChange}
                     >
@@ -419,10 +444,16 @@ function NewTicket() {
               )}
               <Grid item xs={3}>
                 <FormControl fullWidth>
-                  <InputLabel htmlFor="issueType">Issue Type</InputLabel>
+                  <label
+                    htmlFor="issueType"
+                    className="block font-semibold mb-2"
+                  >
+                    Issue Type
+                  </label>
                   <Select
                     name="issueType"
                     id="issueType"
+                    size="small"
                     value={issueType}
                     onChange={handleInputChange}
                   >
@@ -442,9 +473,12 @@ function NewTicket() {
                 </FormControl>
               </Grid>
               <Grid item xs={12}>
+                <label className="block font-semibold mb-2">
+                  Issue Description
+                </label>
                 <TextField
-                  label="Description of the issue"
                   name="description"
+                  size="small"
                   placeholder="Description"
                   value={description}
                   onChange={handleInputChange}
@@ -454,6 +488,7 @@ function NewTicket() {
                 />
               </Grid>
               <Grid item xs={6}>
+                <label className="block font-semibold mb-2">File Upload</label>
                 <input
                   type="file"
                   id="media"
@@ -469,9 +504,14 @@ function NewTicket() {
                     component="span"
                     startIcon={<CloudUploadIcon />}
                     sx={{
-                      border: "1px dotted black",
+                      border: "1px dotted blue",
                       width: "100%",
                       padding: "2rem",
+                      backgroundColor: "#0368ce0f",
+                      color: "#1b3dc5",
+                      "&:hover": {
+                        backgroundColor: "#0368ce0f",
+                      },
                     }}
                   >
                     Click to Upload File.
@@ -482,13 +522,9 @@ function NewTicket() {
                 {media.length > 0 && (
                   <div className="flex justify-between gap-3">
                     <div className="w-full">
-                      <Typography
-                        variant="body2"
-                        color="textSecondary"
-                        fontWeight="bold"
-                      >
-                        Uploaded Files:
-                      </Typography>
+                      <label className="block font-semibold mb-2">
+                        Total number of files ( {media.length} )
+                      </label>
                       <ul className="mt-2">
                         {media.map((file, index) => (
                           <li
@@ -512,14 +548,6 @@ function NewTicket() {
                         ))}
                       </ul>
                     </div>
-                    <Typography
-                      variant="body2"
-                      color="textSecondary"
-                      className="flex w-full"
-                    >
-                      <div className="font-semibold">Number of Files : </div>
-                      <div>{media.length}</div>
-                    </Typography>
                   </div>
                 )}
               </Grid>

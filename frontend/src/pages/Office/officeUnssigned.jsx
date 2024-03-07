@@ -307,7 +307,7 @@ function OfficeUnassignedTickets() {
         <div className="card-body p-4 text-xs">
           <div className="bg-white flex gap-3">
             <div className="w-52">
-              <label className="block text-gray-700 mb-2">Start Date:</label>
+              <label className="block text-gray-700 mb-2">Start Date</label>
               <TextField
                 size="small"
                 type="date"
@@ -316,7 +316,7 @@ function OfficeUnassignedTickets() {
               />
             </div>
             <div className="w-52">
-              <label className="block text-gray-700 mb-2">End Date:</label>
+              <label className="block text-gray-700 mb-2">End Date</label>
               <TextField
                 size="small"
                 type="date"

@@ -144,9 +144,9 @@ function ListTickets() {
           <div className="form-group">
             <label
               htmlFor="status-dropdown"
-              className="block text-gray-700 text-sm font-semibold mb-2"
+              className="block text-sm font-semibold mb-2"
             >
-              Status:
+              Status
             </label>
             <select
               id="status-dropdown"
@@ -166,8 +166,8 @@ function ListTickets() {
             </select>
           </div>
           <div className="form-group">
-            <label className="block text-gray-700 text-sm font-semibold mb-2">
-              Start Date:
+            <label className="block text-sm font-semibold mb-2">
+              Start Date
             </label>
             <input
               className="border border-gray-300 rounded py-2 px-3 w-full"
@@ -176,8 +176,8 @@ function ListTickets() {
             />
           </div>
           <div className="form-group">
-            <label className="block text-gray-700 text-sm font-semibold mb-2 mr-2">
-              End Date:
+            <label className="block text-sm font-semibold mb-2 mr-2">
+              End Date
             </label>
             <input
               className="border border-gray-300 rounded py-2 px-3 w-full"
@@ -186,7 +186,7 @@ function ListTickets() {
             />
           </div>
           <div className="form-group">
-            <label className="block text-gray-700 text-sm font-semibold mb-2 mr-2">
+            <label className="block text-sm font-semibold mb-2 mr-2">
               Rows Per Page:
             </label>
             <input

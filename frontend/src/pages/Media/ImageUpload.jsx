@@ -156,10 +156,22 @@ const MediaUpload = ({ ticketID }) => {
 
   return (
     <Grid container spacing={3}>
-      <Grid item xs={6}>
-        <label className="font-semibold mb-4 text-sm text-start">
-          File Upload
-        </label>
+      <Grid item xs={4}>
+        <div className="flex justify-between items-center mb-2">
+          <label className="block font-semibold">File Upload</label>
+          <div
+            onClick={handleUpload}
+            disabled={uploading || files.length === 0}
+            className="cursor-pointer mt-3 border rounded-sm bg-blue-200 text-dark font-semibold inline-block px-3 py-1"
+            style={{
+              marginLeft: "10px",
+              fontSize: "8px",
+              animation: filesSelected ? "blink 1s infinite" : "none",
+            }}
+          >
+            View File {files.length > 0 && `(${files.length})`}
+          </div>
+        </div>
         <input
           type="file"
           onChange={handleFileChange}
@@ -175,27 +187,20 @@ const MediaUpload = ({ ticketID }) => {
             component="span"
             startIcon={<CloudUploadIcon />}
             sx={{
-              border: "1px dotted black",
+              border: "1px dotted blue",
               width: "100%",
               padding: "4rem 2rem",
+              backgroundColor: "#0368ce0f",
+              color: "#1b3dc5",
+              "&:hover": {
+                backgroundColor: "#0368ce0f",
+              },
             }}
           >
             Choose File
           </Button>
         </label>
-        <div className="text-center">
-          <div
-            onClick={handleUpload}
-            disabled={uploading || files.length === 0}
-            className="cursor-pointer mt-3 border rounded-lg bg-green-700 text-white inline-block text-xs px-4 py-2"
-            style={{
-              marginLeft: "10px",
-              animation: filesSelected ? "blink 1s infinite" : "none",
-            }}
-          >
-            Submit File {files.length > 0 && `(${files.length})`}
-          </div>
-        </div>
+
         {uploading && (
           <div>
             <CircularProgress variant="determinate" value={uploadProgress} />
@@ -209,24 +214,21 @@ const MediaUpload = ({ ticketID }) => {
           </div>
         )}
       </Grid>
-      <Grid item xs={6}>
+      <Grid item xs={8}>
         {/* <h2>Uploaded Media</h2>*/}
-        <div className="border border-gray-300 rounded-2xl bg-white w-full">
-          <div className="border-b-1 pb-3 mb-3 flex justify-between items-center p-2">
-            <label className="font-semibold text-sm text-start">
-              Uploaded File
-            </label>
+        <div>
+          <div className="mb-2">
             {mediaItems.length > 0 && (
-              <Button
-                variant="outlined"
-                color="primary"
-                size="small"
-                endIcon={<ImageIcon />}
-                onClick={() => setToggler((prevToggler) => !prevToggler)}
-                className="mt-10"
-              >
-                Preview Media
-              </Button>
+              <div className="flex justify-between items-center">
+                <label className="block font-semibold">Uploaded Files</label>
+                <div
+                  className="cursor-pointer mt-3 border rounded-sm bg-blue-200 text-dark font-semibold inline-block px-3 py-1"
+                  onClick={() => setToggler((prevToggler) => !prevToggler)}
+                  style={{ fontSize: "9px", padding: "3px 6px" }}
+                >
+                  Preview Media
+                </div>
+              </div>
             )}
 
             <FsLightbox
@@ -254,15 +256,13 @@ const MediaUpload = ({ ticketID }) => {
         `}
             </style>
           </div>
-          <div className="p-4">
-            <Grid container spacing={2}>
-              {mediaItems.map((item) => (
-                <Grid key={item._id} item xs={12} sm={6} md={4} lg={3}>
-                  <MediaItem item={item} onDelete={handleDelete} />
-                </Grid>
-              ))}
-            </Grid>
-          </div>
+          <Grid container spacing={2}>
+            {mediaItems.map((item) => (
+              <Grid key={item._id} item xs={12} sm={6} md={4} lg={3}>
+                <MediaItem item={item} onDelete={handleDelete} />
+              </Grid>
+            ))}
+          </Grid>
         </div>
       </Grid>
     </Grid>

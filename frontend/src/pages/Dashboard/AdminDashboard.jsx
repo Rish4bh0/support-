@@ -87,7 +87,7 @@ const Dashboard = () => {
               className="flex gap-1 w-full justify-between items-end"
             >
               <div>
-                <div className="text-sm font-semibold">All Ticket</div>
+                <div className="text-sm font-medium">All Ticket</div>
                 <div className="text-lg font-semibold my-4">
                   {allTicketsCount}
                 </div>
@@ -109,7 +109,7 @@ const Dashboard = () => {
               className="flex gap-1 w-full justify-between items-end"
             >
               <div>
-                <div className="text-sm font-semibold">Draft</div>
+                <div className="text-sm font-medium">Draft</div>
                 <div className="text-lg font-semibold my-4">
                   {draftTicketCount}
                 </div>
@@ -131,7 +131,7 @@ const Dashboard = () => {
               className="flex gap-1 w-full justify-between items-end"
             >
               <div>
-                <div className="text-sm font-semibold">New Ticket</div>
+                <div className="text-sm font-medium">New Ticket</div>
                 <div className="text-lg font-semibold my-4">
                   {newTicketsCount}
                 </div>
@@ -153,7 +153,7 @@ const Dashboard = () => {
               className="flex gap-1 w-full justify-between items-end"
             >
               <div>
-                <div className="text-sm font-semibold">Open Ticket</div>
+                <div className="text-sm font-medium">Open Ticket</div>
                 <div className="text-lg font-semibold my-4">
                   {openTicketsCount}
                 </div>
@@ -175,7 +175,7 @@ const Dashboard = () => {
               className="flex gap-1 w-full justify-between items-end"
             >
               <div>
-                <div className="text-sm font-semibold">Review</div>
+                <div className="text-sm font-medium">Review</div>
                 <div className="text-lg font-semibold my-4">
                   {reviewTicketsCount}{" "}
                 </div>
@@ -197,7 +197,7 @@ const Dashboard = () => {
               className="flex gap-1 w-full justify-between items-end"
             >
               <div>
-                <div className="text-sm font-semibold">Closed Ticket</div>
+                <div className="text-sm font-medium">Closed Ticket</div>
                 <div className="text-lg font-semibold my-4">
                   {" "}
                   {closedTicketsCount}{" "}
