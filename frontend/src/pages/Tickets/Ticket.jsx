@@ -71,6 +71,12 @@ function Ticket() {
   const [isTimerRunning, setIsTimerRunning] = useState(false);
   const [elapsedTime, setElapsedTime] = useState(0);
   const [timerIntervalId, setTimerIntervalId] = useState(null);
+  const issueTypesData = useSelector((state) => state.issueTypes.issueTypes);
+  console.log("1", issueTypesData);
+  const issues = issueTypesData.issueTypes || [];
+  console.log("2", issues);
+  const count = issueTypesData.count || 0;
+  console.log("3", count);
 
   const organizations = useSelector(
     (state) => state.organizations.organizations
@@ -115,9 +121,10 @@ function Ticket() {
     dispatch(saveElapsedTime({ ticketId, timeSpent: updatedTimeSpent }));
   };
 
-  const { ticket, isLoading, isError, message } = useSelector(
+  const { ticket,  isError, message } = useSelector(
     (state) => state.tickets
   );
+  const [isLoading, setIsLoading] = useState(true);
 
   const { notes, isLoading: notesIsLoading } = useSelector(
     (state) => state.notes
@@ -156,14 +163,25 @@ function Ticket() {
     // eslint-disable-next-line
   }, [isError, message, ticketId]);
 
+
   useEffect(() => {
-    // Fetch the list of registered users when the component loads
+    // Simulate 2-second loading delay
+    const loadingTimer = setTimeout(() => {
+        setIsLoading(false); // Set loading to false after 2 seconds
+    }, 2000);
+
+    // Fetch tickets and reset on unmount
     dispatch(fetchAllUsers());
     // Load the initial issue list when the component mounts
-    dispatch(getAllIssueTypes());
+    dispatch(getAllIssueTypes({ page: 1, pageSize: count }));
     dispatch(getAllOrganization());
     dispatch(getAllProject());
-  }, [dispatch]);
+    return () => {
+        clearTimeout(loadingTimer); // Clear timeout on unmount
+        
+    };
+}, [dispatch]);
+  
 
   // Access user data from the Redux store
   const userss = useSelector((state) => state.auth.users);
@@ -179,9 +197,7 @@ function Ticket() {
     return user ? user.name : "Unassigned";
   };
 
-  // Access user data from the Redux store
-  const issues = useSelector((state) => state.issueTypes.issueTypes);
-
+ 
   // Function to get the user's name based on their ID
   const issueById = (issueId) => {
     const issue = issues.find((issue) => issue._id === issueId);

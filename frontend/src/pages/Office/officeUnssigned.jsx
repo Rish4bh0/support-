@@ -36,12 +36,13 @@ const useStyles = makeStyles({
 });
 
 function OfficeUnassignedTickets() {
-  const { allTickets, isLoading } = useSelector((state) => state.tickets);
+  const { allTickets } = useSelector((state) => state.tickets);
+  const [isLoading, setIsLoading] = useState(true);
   const organizations = useSelector(
     (state) => state.organizations.organizations
   );
   const user = useSelector((state) => state.auth.user);
-  const issues = useSelector((state) => state.issueTypes.issueTypes);
+  const issues = useSelector((state) => state.issueTypes.issueTypes.issueTypes);
   const dispatch = useDispatch();
   const userRole = useSelector((state) => state.auth.user.role);
   const [activeTab, setActiveTab] = useState("unassigned");
@@ -175,11 +176,23 @@ function OfficeUnassignedTickets() {
     },
   }));
 
+
+
   useEffect(() => {
+    // Simulate 2-second loading delay
+    const loadingTimer = setTimeout(() => {
+        setIsLoading(false); // Set loading to false after 2 seconds
+    }, 2000);
+
+    // Fetch tickets and reset on unmount
     dispatch(fetchAllUsers());
     dispatch(getAllIssueTypes());
     dispatch(getAllOrganization());
-  }, [dispatch]);
+    return () => {
+        clearTimeout(loadingTimer); // Clear timeout on unmount
+        dispatch(reset());
+    };
+}, [dispatch]); 
 
   useEffect(() => {
     dispatch(getAllTickets());
@@ -333,6 +346,9 @@ function OfficeUnassignedTickets() {
           {greetingMessage}
         </div>
         <div className="p-4 text-xs">
+        {isLoading ? (
+                <Spinner /> // Display spinner while loading
+            ) : (
           <StyledDataGrid
             getRowClassName={(params) =>
               `super-app-theme--${params.row.status}`
@@ -348,6 +364,7 @@ function OfficeUnassignedTickets() {
             onPageChange={(newPage) => setCurrentPage(newPage)}
             disableSelectionOnClick
           />
+            )}
         </div>
       </div>
     </>

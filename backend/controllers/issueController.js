@@ -31,7 +31,11 @@ const createIssueType = asyncHandler(async (req, res) => {
   res.status(201).json(issueType);
 });
 
+
+
 const getAllIssueTypes = asyncHandler(async (req, res) => {
+  const { page = 1, pageSize = 10 } = req.query;
+
   // Get user using the id and JWT
   const user = await User.findById(req.user.id);
 
@@ -40,9 +44,20 @@ const getAllIssueTypes = asyncHandler(async (req, res) => {
     throw new Error("User not found");
   }
 
-  const issueTypes = await IssueType.find();
-  res.status(200).json(issueTypes);
+  // Calculate skip value based on page and pageSize
+  let skip = (page - 1) * pageSize;
+  if (skip < 0) {
+    skip = 0; // Ensure skip is non-negative
+  }
+  const count = await IssueType.countDocuments({});
+  const issueTypes = await IssueType.find().skip(skip).limit(Number(pageSize));
+  
+  res.status(200).json({ issueTypes, count });
 });
+
+
+
+
 
 const updateIssueType = asyncHandler(async (req, res) => {
   const { name } = req.body;

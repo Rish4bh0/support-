@@ -35,7 +35,9 @@ function Tickets({ tickets, isLoading, filteredTic, greetingMessage, title }) {
   const organizations = useSelector(
     (state) => state.organizations.organizations
   );
-  const issues = useSelector((state) => state.issueTypes.issueTypes);
+  const issues = useSelector((state) => state.issueTypes.issueTypes.issueTypes);
+  
+  console.log(issues)
   const users = useSelector((state) => state.auth.users);
   const projects = useSelector((state) => state.project.project);
   const projectMap = {};

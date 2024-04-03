@@ -34,13 +34,14 @@ const useStyles = makeStyles({
 });
 
 function UnassignedTickets() {
-  const { allTickets, isLoading } = useSelector((state) => state.tickets);
+  const { allTickets } = useSelector((state) => state.tickets);
   const organizations = useSelector(
     (state) => state.organizations.organizations
   );
+  const [isLoading, setIsLoading] = useState(true);
   const user = useSelector((state) => state.auth.user);
   const projects = useSelector((state) => state.project.project);
-  const issues = useSelector((state) => state.issueTypes.issueTypes);
+  const issues = useSelector((state) => state.issueTypes.issueTypes.issueTypes);
   const dispatch = useDispatch();
   const userRole = useSelector((state) => state.auth.user.role);
   const [activeTab, setActiveTab] = useState("unassigned");
@@ -171,19 +172,25 @@ function UnassignedTickets() {
   }));
 
   useEffect(() => {
+    // Simulate 2-second loading delay
+    const loadingTimer = setTimeout(() => {
+        setIsLoading(false); // Set loading to false after 2 seconds
+    }, 2000);
+
+    // Fetch tickets and reset on unmount
+    dispatch(getAllTickets());
     dispatch(fetchAllUsers());
-    dispatch(getAllIssueTypes());
+   
     dispatch(getAllOrganization());
     dispatch(getAllProject());
-  }, [dispatch]);
-
-  useEffect(() => {
-    dispatch(getAllTickets());
-
+    dispatch(getAllIssueTypes())
     return () => {
-      dispatch(reset());
+        clearTimeout(loadingTimer); // Clear timeout on unmount
+        dispatch(reset());
     };
-  }, [dispatch]);
+}, [dispatch]); 
+
+  
   const handleTabChange = (tab) => {
     setActiveTab(tab);
     setCurrentPage({

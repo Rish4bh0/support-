@@ -12,6 +12,7 @@ import useSocketIo from "../../hooks/useSocketio";
 import Spinner from "../../components/Spinner";
 import ConfirmationNumberIcon from "@mui/icons-material/ConfirmationNumber";
 import { environment } from "../../lib/environment";
+import { Link } from "react-router-dom";
 
 const NotificationsList = () => {
   const user = useSelector((state) => state.auth.user);
@@ -186,6 +187,7 @@ const NotificationsList = () => {
             </button>
           </div>
         </div>
+        
         <div className="card-body">
           {data.notifications.map((notification) => (
             <div
@@ -195,6 +197,7 @@ const NotificationsList = () => {
                 (notification.read ? " bg-white" : " bg-blue-50")
               }
             >
+                <Link to={`/ticket/${notification.id}`} className="flex items-start gap-2">
               <div className={"flex items-start gap-2"}>
                 <div className="bg-blue-200 text-blue-950 flex items-center justify-center h-10 w-10 rounded-full">
                   <ConfirmationNumberIcon />
@@ -206,6 +209,7 @@ const NotificationsList = () => {
                   </p>
                 </div>
               </div>
+              </Link>
               <div className="flex gap-2">
                 <button
                   type="button"

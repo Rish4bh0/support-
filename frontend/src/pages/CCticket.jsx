@@ -17,11 +17,12 @@ import { Link } from "react-router-dom";
 import Alert from '@mui/material/Alert';
 
 function CCTICKET() {
-  const { allTickets, isLoading } = useSelector((state) => state.tickets);
+  const { allTickets } = useSelector((state) => state.tickets);
   const dispatch = useDispatch();
   const userId = useSelector((state) => state.auth.user._id);
   const userOrganization = useSelector((state) => state.auth.user.organization);
   const [activeTab, setActiveTab] = useState("new");
+  const [isLoading, setIsLoading] = useState(true);
   const [currentPage, setCurrentPage] = useState({
     new: 1,
     open: 1,
@@ -65,10 +66,20 @@ function CCTICKET() {
   const org =["ORGAGENT","USER"]
 
   useEffect(() => {
+    // Simulate 2-second loading delay
+    const loadingTimer = setTimeout(() => {
+        setIsLoading(false); // Set loading to false after 2 seconds
+    }, 2000);
+
+    // Fetch tickets and reset on unmount
     dispatch(fetchAllUsers());
     dispatch(getAllIssueTypes());
     dispatch(getAllProject());
-  }, [dispatch]);
+    return () => {
+        clearTimeout(loadingTimer); // Clear timeout on unmount
+        dispatch(reset());
+    };
+}, [dispatch]); 
 
   useEffect(() => {
     dispatch(getAllTickets());
@@ -375,6 +386,8 @@ const greetingMessage = assignedUser ? `Hey there ${assignedUser}! Below are the
       </div>
     );
   }
+
+  if (isLoading ) return <Spinner />;
 
       return (
     <div className="mt-4">

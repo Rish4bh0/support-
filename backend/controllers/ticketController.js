@@ -226,6 +226,7 @@ const createTicket = asyncHandler(async (req, res) => {
     type: 1,
     text: `Ticket assigned at ${new Date()} (ID: ${ticketID})`,
     read: false,
+    id: ticketId
   })
     }
 
@@ -252,6 +253,7 @@ const createTicket = asyncHandler(async (req, res) => {
           type: 1,
           text: `New ticket CC at ${new Date()} (ID: ${ticketID})`,
           read: false,
+          id: ticketId
         });
       }
     }

@@ -34,7 +34,6 @@ function NewTicket() {
   );
 
   const users = useSelector((state) => state.auth.users);
-  const issues = useSelector((state) => state.issueTypes.issueTypes);
   const projects = useSelector((state) => state.project.project);
 
   const organizations = useSelector(
@@ -42,11 +41,6 @@ function NewTicket() {
   );
 
   const [title, setTitle] = useState("");
-  const [customerName, setCustomerName] = useState("");
-  const [customerEmail, setCustomerEmail] = useState("");
-  const [isEmailValid, setIsEmailValid] = useState(false);
-  const [customerContact, setCustomerContact] = useState("");
-  const [product, setProduct] = useState("");
   const [cc, setCC] = useState([]);
   const [priority, setPriority] = useState("");
   const [issueType, setIssueType] = useState("");
@@ -62,14 +56,29 @@ function NewTicket() {
   const [uploadProgress, setUploadProgress] = useState(0);
   const dispatch = useDispatch();
   const navigate = useNavigate();
-
+  const issueTypesData = useSelector((state) => state.issueTypes.issueTypes);
+  console.log("1", issueTypesData);
+  const issues = issueTypesData.issueTypes;
+  console.log("2", issues);
+  const count = issueTypesData.count;
+  console.log("3", count);
+   
   useEffect(() => {
-    dispatch(fetchAllUsers());
-    dispatch(getAllOrganization());
-    dispatch(getAllIssueTypes());
-    dispatch(getAllProject());
-
-    // Set organization based on user's role
+    // Fetch users only if the users array is empty
+    if (users.length === 0) {
+      dispatch(fetchAllUsers());
+    }
+    
+    // Fetch organizations only if the organizations array is empty
+    if (organizations.length === 0) {
+      dispatch(getAllOrganization());
+    }
+  
+    // Fetch projects only if the projects array is empty
+    if (projects.length === 0) {
+      dispatch(getAllProject());
+    }
+  
     if (user && user.role === "ADMIN") {
       // If user is ADMIN, set organization based on selected dropdown value or default to the first organization
       setOrganization(
@@ -79,7 +88,13 @@ function NewTicket() {
       // If user is not ADMIN, set organization based on user's organization ID
       setOrganization(user?.organization || "");
     }
-  }, [dispatch, user, organization, organizations]);
+  }, [dispatch, user, organization, organizations, projects, users]);
+  
+
+  // Fetch issue types when page loads
+useEffect(() => {
+  dispatch(getAllIssueTypes({ page: 1, pageSize: count }));
+}, [dispatch, count]);
 
   const handleFileChange = (e) => {
     const files = e.target.files;
@@ -139,10 +154,7 @@ function NewTicket() {
     }
   };
 
-  useEffect(() => {
-    // Load the draft data when the component mounts
-    loadDraftFromLocalStorage();
-  }, []);
+ 
 
   const handleInputChange = (e) => {
     // Update the state and save the draft to local storage when the input changes
