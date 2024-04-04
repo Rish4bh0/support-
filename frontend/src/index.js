@@ -7,6 +7,7 @@ import { store } from './app/store';
 import { Provider } from 'react-redux';
 import * as serviceWorker from './serviceWorker';
 import { ContextProvider } from './contexts/ContextProvider'
+import "./i18n";
 
 ReactDOM.render(
   <React.StrictMode>

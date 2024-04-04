@@ -35,8 +35,12 @@ function Tickets({ tickets, isLoading, filteredTic, greetingMessage, title }) {
   const organizations = useSelector(
     (state) => state.organizations.organizations
   );
-  const issues = useSelector((state) => state.issueTypes.issueTypes.issueTypes);
-  
+  const issueTypesData = useSelector((state) => state.issueTypes.issueTypes);
+  console.log("1", issueTypesData);
+  const issues = issueTypesData.issueTypes || [];
+  console.log("2", issues);
+  const count = issueTypesData.count || 0;
+  console.log("3", count);
   console.log(issues)
   const users = useSelector((state) => state.auth.users);
   const projects = useSelector((state) => state.project.project);
@@ -71,7 +75,7 @@ function Tickets({ tickets, isLoading, filteredTic, greetingMessage, title }) {
 
   useEffect(() => {
     dispatch(fetchAllUsers());
-    dispatch(getAllIssueTypes());
+    dispatch(getAllIssueTypes({ page: 1, pageSize: count }));
     dispatch(getAllOrganization());
     dispatch(getAllProject());
   }, [dispatch]);

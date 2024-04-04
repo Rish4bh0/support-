@@ -1,3 +1,4 @@
+import React, { Suspense } from "react";
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
@@ -47,6 +48,9 @@ import MyTickets from "./pages/Tickets/MyTickets.jsx";
 import AllTickets from "./pages/Tickets/AllTicket.jsx";
 import Unassigned from "./pages/Tickets/unassigned.jsx";
 import OfficeTicket from "./pages/Office/OfficeTickets.jsx";
+import Spinner from "./components/Spinner.jsx";
+
+
 const theme = createTheme({
   typography: {
     fontFamily: "Inter, sans-serif",
@@ -59,6 +63,9 @@ const theme = createTheme({
 });
 
 function App() {
+  const Loader = () => (
+    <Spinner />
+  );
   const { activeMenu, setactiveMenu } = useStateContext();
   const { user } = useSelector((state) => state.auth);
   return (
@@ -94,7 +101,9 @@ function App() {
             }
           >
             <div className="navbar sticky top-0 left-0 right-0 bg-white w-full z-10">
+            <Suspense fallback={<Loader />}>
               <NavBar />
+              </Suspense>
             </div>
             <div
               className={

@@ -12,6 +12,7 @@ import { getAllProject } from "../../features/project/projectSlice";
 import { Link } from "react-router-dom";
 import VisibilityIcon from "@mui/icons-material/Visibility";
 import Button from "@mui/material/Button";
+import { Stack } from "@mui/material";
 
 const getRandomColor = () =>
   `#${Math.floor(Math.random() * 16777215).toString(16)}`;
@@ -244,8 +245,21 @@ const Report = ({ organzationName }) => {
           <div>
             <div className="timespent">
               <DataGrid
+              sx={{height: "180px"}}
                 rows={filteredReportArray}
                 columns={columns}
+                components={{
+                  NoRowsOverlay: () => (
+                    <Stack className="flex justify-center text-center font-semibold py-4 ">
+                      No closed tickets
+                    </Stack>
+                  ),
+                  NoResultsOverlay: () => (
+                    <Stack height="100%" alignItems="center" justifyContent="center">
+                      Local filter returns no result
+                    </Stack>
+                  )
+                }}
                 pageSize={5}
                 checkboxSelection
                 onSelectionModelChange={(newSelection) => {}}
@@ -253,6 +267,7 @@ const Report = ({ organzationName }) => {
                 slots={{
                   toolbar: GridToolbar,
                 }}
+               
                 //checkboxSelection
               />
             </div>

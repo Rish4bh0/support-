@@ -10,7 +10,13 @@ function AllTickets() {
     const dispatch = useDispatch();
     const user = useSelector((state) => state.auth.user);
     const [isLoading, setIsLoading] = useState(true); // Track loading state
-
+    const issueTypesData = useSelector((state) => state.issueTypes.issueTypes);
+    console.log("1", issueTypesData);
+    const issues = issueTypesData.issueTypes || [];
+    console.log("2", issues);
+    const count = issueTypesData.count || 0;
+    console.log("3", count);
+    
     useEffect(() => {
         // Simulate 2-second loading delay
         const loadingTimer = setTimeout(() => {
@@ -20,7 +26,7 @@ function AllTickets() {
         // Fetch tickets and reset on unmount
         dispatch(getAllTickets());
         dispatch(getTickets());
-        dispatch(getAllIssueTypes())
+        dispatch(getAllIssueTypes({ page: 1, pageSize: count }))
         return () => {
             clearTimeout(loadingTimer); // Clear timeout on unmount
             dispatch(reset());

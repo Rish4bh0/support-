@@ -20,7 +20,7 @@ const PORT = process.env.PORT || 5000;
 
 // Enable Cross-Origin Resource Sharing (CORS)
 app.use(cors());
-
+app.use("/locales", express.static(path.join(__dirname, "locales")));
 // Define a Mongoose schema for media (images and videos)
 
 // Set up Multer for media uploads

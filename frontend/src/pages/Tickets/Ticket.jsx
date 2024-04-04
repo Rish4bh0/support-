@@ -30,7 +30,7 @@ import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 import { DemoContainer } from "@mui/x-date-pickers/internals/demo";
 import { TimePicker } from "@mui/x-date-pickers/TimePicker";
 import { DataGrid } from "@mui/x-data-grid";
-import { Button } from "@mui/material";
+import { Button, Stack } from "@mui/material";
 import SendIcon from "@mui/icons-material/Send";
 import "react-responsive-carousel/lib/styles/carousel.min.css";
 import CloudUploadIcon from "@mui/icons-material/CloudUpload";
@@ -546,11 +546,26 @@ function Ticket() {
         </Modal>
 
         <div className="p-4">
+       
           <DataGrid
+          sx={{ height: "160px" }}
             rows={rows}
             columns={columns}
-            pageSize={5} // You can adjust the number of rows per page
+            pageSize={5} 
+            components={{
+              NoRowsOverlay: () => (
+                <Stack className="flex justify-center text-center font-semibold py-4 ">
+                  No task added
+                </Stack>
+              ),
+              NoResultsOverlay: () => (
+                <Stack height="100%" alignItems="center" justifyContent="center">
+                  Local filter returns no result
+                </Stack>
+              )
+            }}
           />
+          
         </div>
 
         <div className="p-4">
