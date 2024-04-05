@@ -49,6 +49,8 @@ import AllTickets from "./pages/Tickets/AllTicket.jsx";
 import Unassigned from "./pages/Tickets/unassigned.jsx";
 import OfficeTicket from "./pages/Office/OfficeTickets.jsx";
 import Spinner from "./components/Spinner.jsx";
+import NotFound from "./pages/mics/404.jsx"
+import Open from './pages/openai.js'
 
 
 const theme = createTheme({
@@ -119,6 +121,7 @@ function App() {
               ></div>
               <Routes>
                 <Route path="/" element={<Home />} />
+                <Route path="/opwn" element={<Open />} />
                 <Route path="/report" element={<Report />} />
                 <Route path="/login" element={<Login />} />
                 <Route path="/register" element={<Register />} />
@@ -239,6 +242,7 @@ function App() {
               element={<PrivateRoute requiredRole="ADMIN" element={<Dashboard />} />}
             />
            */}
+              <Route path="*" element={<NotFound />} />
               </Routes>
             </div>
             {/* <Footer /> */}

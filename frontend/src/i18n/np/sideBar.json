@@ -1,0 +1,23 @@
+{
+    "Admin Dashboard":"व्यवस्थापक ड्यासबोर्ड",
+    "Admin Analytics":"प्रशासक एनालिटिक्स",
+    "Dashboard":"ड्यासबोर्ड",
+    "Office Analytics":"कार्यालय विश्लेषण",
+    "New":"नयाँ",
+    "Create Ticket":"टिकट सिर्जना गर्नुहोस्",
+    "Tickets":"टिकटहरू",
+    "Assigned":"तोकिएको",
+    "CC":"CC",
+    "All":"सबै",
+    "Unassigned":"तोकिएको छैन",
+    "My tickets":"मेरो टिकटहरू",
+    "Manage":"व्यवस्थापन गर्नुहोस्",
+    "User":"प्रयोगकर्ता",
+    "Office":"कार्यालय",
+    "Issue":"समस्या",
+    "Project":"परियोजना",
+    "My Office":"मेरो कार्यालय",
+    "Office Tickets":"कार्यालय टिकटहरू",
+    "Office Unassigned Tickets":"अफिस अनअसाइन गरिएको टिकटहरू"
+
+}

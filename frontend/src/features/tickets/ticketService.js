@@ -1,6 +1,12 @@
 import axios from 'axios'
 import { environment } from '../../lib/environment'
 
+// eslint-disable-next-line no-unused-vars
+const page = undefined;
+// eslint-disable-next-line no-unused-vars
+const pageSize = undefined;
+
+
 const API_URL = environment.SERVER_URL+'/api/tickets/'
 // Create new ticket
 const createTicket = async (ticketData, token) => {

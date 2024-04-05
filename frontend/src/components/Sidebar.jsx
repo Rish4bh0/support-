@@ -22,8 +22,10 @@ import SpellcheckIcon from "@mui/icons-material/Spellcheck";
 import ReportGmailerrorredIcon from "@mui/icons-material/ReportGmailerrorred";
 import PlaylistAddIcon from "@mui/icons-material/PlaylistAdd";
 import GroupAddIcon from "@mui/icons-material/GroupAdd";
+import { useTranslation } from "react-i18next";
 
 const Sidebar = () => {
+  const { t } = useTranslation();
   const { currentColor, activeMenu, setactiveMenu, screenSize } =
     useStateContext();
   const handleCloseSideBar = () => {
@@ -60,7 +62,7 @@ const Sidebar = () => {
             {userRole && allowedRoles.includes(userRole) && (
               <div className="mb-4">
                 <p className="text-gray-500 mb-2 text-xs font-normal">
-                  Admin Dashboard
+                  {t("Admin Dashboard")}
                 </p>
 
                 <NavLink
@@ -71,14 +73,14 @@ const Sidebar = () => {
                   }
                 >
                   <AdminPanelSettingsIcon />
-                  <span className="capitalize">Admin Analytics</span>
+                  <span className="capitalize">{t("Admin Analytics")}</span>
                 </NavLink>
               </div>
             )}
             {userRole && allowedRolesOrg.includes(userRole) && (
               <div className="mb-4">
                 <p className="text-gray-500 mb-2 text-xs font-normal">
-                  Dashboard
+                  {t("Dashboard")}
                 </p>
 
                 <NavLink
@@ -89,12 +91,12 @@ const Sidebar = () => {
                   }
                 >
                   <DashboardIcon />
-                  <span className="capitalize">Office Analytics</span>
+                  <span className="capitalize">{t("Office Analytics")}</span>
                 </NavLink>
               </div>
             )}
             <div className="mb-4">
-              <p className="text-gray-500 mb-2 text-xs font-normal">New</p>
+              <p className="text-gray-500 mb-2 text-xs font-normal">{t("New")}</p>
 
               <NavLink
                 to={`/new-ticket`}
@@ -104,11 +106,11 @@ const Sidebar = () => {
                 }
               >
                 <ConfirmationNumberIcon />
-                <span className="capitalize">Create Ticket</span>
+                <span className="capitalize">{t("Create Ticket")}</span>
               </NavLink>
             </div>
             <div className="mb-4">
-              <p className="text-gray-500 mb-2 text-xs font-normal">Tickets</p>
+              <p className="text-gray-500 mb-2 text-xs font-normal">{t("Tickets")}</p>
               {userRole && allowedRoles.includes(userRole) && (
                 <>
                   <NavLink
@@ -119,7 +121,7 @@ const Sidebar = () => {
                     }
                   >
                     <AssignmentTurnedInIcon />
-                    <span className="capitalize">Assigned</span>
+                    <span className="capitalize">{t("Assigned")}</span>
                   </NavLink>
                   <NavLink
                     to={`/cc`}
@@ -129,7 +131,7 @@ const Sidebar = () => {
                     }
                   >
                     <GroupAddIcon />
-                    <span className="capitalize">CC</span>
+                    <span className="capitalize">{t("CC")}</span>
                   </NavLink>
                   <NavLink
                     to={`all-tickets`}
@@ -139,7 +141,7 @@ const Sidebar = () => {
                     }
                   >
                     <ListAltIcon />
-                    <span className="capitalize">All </span>
+                    <span className="capitalize">{t("All")}</span>
                   </NavLink>
 
                   <NavLink
@@ -150,7 +152,7 @@ const Sidebar = () => {
                     }
                   >
                     <AssignmentLateIcon />
-                    <span className="capitalize">Unassigned</span>
+                    <span className="capitalize">{t("Unassigned")}</span>
                   </NavLink>
                 </>
               )}
@@ -162,12 +164,12 @@ const Sidebar = () => {
                 }
               >
                 <AssignmentIndIcon />
-                <span className="capitalize">My tickets</span>
+                <span className="capitalize">{t("My tickets")}</span>
               </NavLink>
             </div>
             {userRole && allowedRoles.includes(userRole) && (
               <div className="mb-4">
-                <p className="text-gray-500 mb-4 text-xs font-normal">Manage</p>
+                <p className="text-gray-500 mb-4 text-xs font-normal">{t("Manage")}</p>
 
                 <NavLink
                   to={`/createuser`}
@@ -177,7 +179,7 @@ const Sidebar = () => {
                   }
                 >
                   <PersonAddIcon />
-                  <span className="capitalize">User</span>
+                  <span className="capitalize">{t("User")}</span>
                 </NavLink>
                 <NavLink
                   to={`/organizations`}
@@ -187,7 +189,7 @@ const Sidebar = () => {
                   }
                 >
                   <DomainAddIcon />
-                  <span className="capitalize">Office</span>
+                  <span className="capitalize">{t("Office")}</span>
                 </NavLink>
                 <NavLink
                   to={`/issues`}
@@ -197,7 +199,7 @@ const Sidebar = () => {
                   }
                 >
                   <AddCircleIcon />
-                  <span className="capitalize">Issue</span>
+                  <span className="capitalize">{t("Issue")}</span>
                 </NavLink>
                 <NavLink
                   to={`/projects`}
@@ -207,13 +209,13 @@ const Sidebar = () => {
                   }
                 >
                   <PlaylistAddIcon />
-                  <span className="capitalize">Project</span>
+                  <span className="capitalize">{t("Project")}</span>
                 </NavLink>
               </div>
             )}
             {userRole && allowedRolesOrg.includes(userRole) && (
               <div className="mb-4">
-                <p className="text-gray-500 mb-4 text-xs font-normal">Office</p>
+                <p className="text-gray-500 mb-4 text-xs font-normal">{t("Office")}</p>
 
                 <NavLink
                   to={`/organization`}
@@ -223,7 +225,7 @@ const Sidebar = () => {
                   }
                 >
                   <RoomPreferencesIcon />
-                  <span className="capitalize">My Office</span>
+                  <span className="capitalize">{t("My Office")}</span>
                 </NavLink>
                 <NavLink
                   to={`/office-tickets`}
@@ -233,7 +235,7 @@ const Sidebar = () => {
                   }
                 >
                   <CorporateFareIcon />
-                  <span className="capitalize">Office Tickets</span>
+                  <span className="capitalize">{t("Office Tickets")}</span>
                 </NavLink>
                 <NavLink
                   to={`/office-unassigned`}
@@ -243,7 +245,7 @@ const Sidebar = () => {
                   }
                 >
                   <ReportGmailerrorredIcon />
-                  <span className="capitalize">Office Unassigned Tickets</span>
+                  <span className="capitalize">{t("Office Unassigned Tickets")}</span>
                 </NavLink>
               </div>
             )}

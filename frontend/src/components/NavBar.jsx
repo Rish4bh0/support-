@@ -10,7 +10,7 @@ import {
 import { useStateContext } from "../contexts/ContextProvider";
 import { useSelector, useDispatch } from "react-redux";
 import { logout, reset } from "../features/auth/authSlice";
-import { useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import LoginIcon from "@mui/icons-material/Login";
 
 import { getAllOrganization } from "../features/organization/organizationSlice";
@@ -58,9 +58,10 @@ const NavBar = () => {
   const handleChangeLanguage = (languageCode) => {
     setSelectedLanguage(languageCode);
     i18n.changeLanguage(languageCode);
-    localStorage.setItem("i18nextLng", languageCode);
+    localStorage.setItem("i18nextLng", languageCode); // Save selected language in local storage
     setIsLanguageMenuOpen(false); // Close the language menu after selection
   };
+  
   const languages = [
     { code: "en", name: "English" },
     { code: "np", name: "Nepali" },
@@ -185,6 +186,7 @@ const NavBar = () => {
 
   return (
     <nav className={"py-4" + (user ? " px-4" : " px-40")}>
+      
       <div class="relative flex items-center justify-between">
         <div>
           {user ? (
@@ -198,11 +200,13 @@ const NavBar = () => {
           ) : (
             // <AiOutlineMenu className="text-white" />
             <div class="flex flex-shrink-0 items-center">
+              <Link to="/">
               <img
                 class="h-8 w-auto"
                 src="/static/media/dryice-logo.4296ab853306efcf5617.png"
                 alt="Your Company"
               />
+              </Link>
             </div>
           )}
         </div>
@@ -313,7 +317,7 @@ const NavBar = () => {
                 >
                   <MenuItem onClick={handleClose}>
                     <NavButton
-                      title="Logout"
+                      title={t("Logout")}
                       color="black"
                       customFunc={onLogout}
                       icon={<PowerSettingsNewIcon className="mr-2" />}
@@ -328,7 +332,7 @@ const NavBar = () => {
           ) : (
             <div className="flex items-center gap-3 hover-bg-dark-gray rounded-lg">
               <NavButton
-                title="Login"
+                title={t("Login")}
                 color="white"
                 backgroundColor="blue"
                 className="p-2 rounded text-sm flex-2"
@@ -336,7 +340,7 @@ const NavBar = () => {
               />
 
               <NavButton
-                title="Register"
+                title={t("Register")}
                 color="white"
                 backgroundColor="blue"
                 className="p-2 rounded text-sm flex-2"

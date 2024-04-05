@@ -1,0 +1,19 @@
+{
+    "Create New Ticket":"नयाँ टिकट सिर्जना गर्नुहोस्",
+    "Ticket title":"टिकट शीर्षक",
+    "Organization":"संगठन",
+    "No organization available":"कुनै संस्था उपलब्ध छैन",
+    "Assign To":"लाई तोक्नुहोस्",
+    "No users available for the selected organization":"चयन गरिएको संगठनको लागि कुनै प्रयोगकर्ताहरू उपलब्ध छैनन्",
+    "CC":"CC",
+    "Priority":"प्राथमिकता",
+    "Issue Type":"समस्याको प्रकार",
+    "Description of the issue":"मुद्दाको विवरण",
+    "Click to Upload File.":"फाइल अपलोड गर्न क्लिक गर्नुहोस्।",
+    "Uploaded Files:":"अपलोड गरिएका फाइलहरू:",
+    "Number of Files :":"फाइल संख्या:",
+    "Save as Draft":"ड्राफ्ट को रुपमा संचित गर्नुहोस",
+    "Submit as New":"नयाँ रूपमा पेश गर्नुहोस्"
+
+
+}

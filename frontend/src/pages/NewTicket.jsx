@@ -26,8 +26,10 @@ import { getAllIssueTypes } from "../features/issues/issueSlice";
 import axios from "axios";
 import { getAllProject } from "../features/project/projectSlice";
 import { environment } from "../lib/environment";
+import { useTranslation } from "react-i18next";
 
 function NewTicket() {
+  const { t } = useTranslation();
   const { user } = useSelector((state) => state.auth);
   const { isLoading, isError, message, isSuccess } = useSelector(
     (state) => state.tickets
@@ -294,7 +296,7 @@ useEffect(() => {
     <>
       <div className="card bg-white rounded-lg border">
         <div className="card-header p-4 border-b-1 pb-3">
-          <Typography variant="h6">Create New Ticket</Typography>
+          <Typography variant="h6">{t("Create New Ticket")}</Typography>
         </div>
 
         <form onSubmit={onSubmit}>
@@ -302,7 +304,7 @@ useEffect(() => {
             <Grid container spacing={3}>
               <Grid item xs={6}>
                 <TextField
-                  label=" Ticket title"
+                  label={t("Ticket title")}
                   placeholder="Ticket title"
                   name="title"
                   value={title}
@@ -313,7 +315,7 @@ useEffect(() => {
               {userRole && org.includes(userRole) && (
                 <Grid item xs={6}>
                   <FormControl fullWidth>
-                    <InputLabel htmlFor="organization">Organization</InputLabel>
+                    <InputLabel htmlFor="organization">{t("Organization")}</InputLabel>
                     <Select
                       name="organization"
                       id="organization"
@@ -350,7 +352,7 @@ useEffect(() => {
                       ) : (
                         // Render a disabled option if no organizations are available
                         <MenuItem value="" disabled>
-                          No organization available
+                         {t(" No organization available")}
                         </MenuItem>
                       )}
                     </Select>
@@ -361,7 +363,7 @@ useEffect(() => {
               {userRole && allowedRoles.includes(userRole) && (
                 <Grid item xs={3}>
                   <FormControl fullWidth>
-                    <InputLabel htmlFor="assignedTo">Assign To</InputLabel>
+                    <InputLabel htmlFor="assignedTo">{t("Assign To")}</InputLabel>
 
                     <Select
                       name="assignedTo"
@@ -378,7 +380,7 @@ useEffect(() => {
                         ))
                       ) : (
                         <MenuItem value="" disabled>
-                          No users available for the selected organization
+                         {t(" No users available for the selected organization")}
                         </MenuItem>
                       )}
                     </Select>
@@ -388,7 +390,7 @@ useEffect(() => {
               {userRole && allowedRoles.includes(userRole) && (
                 <Grid item xs={3}>
                   <FormControl fullWidth>
-                    <InputLabel htmlFor="cc">CC</InputLabel>
+                    <InputLabel htmlFor="cc">{t("CC")}</InputLabel>
                     <Select
                       name="cc"
                       id="cc"
@@ -404,7 +406,7 @@ useEffect(() => {
                         ))
                       ) : (
                         <MenuItem value="" disabled>
-                          No users available for the selected organization
+                          {t("No users available for the selected organization")}
                         </MenuItem>
                       )}
                     </Select>
@@ -415,7 +417,7 @@ useEffect(() => {
               {userRole && allowedRoles.includes(userRole) && (
                 <Grid item xs={3}>
                   <FormControl fullWidth>
-                    <InputLabel htmlFor="priority">Priority</InputLabel>
+                    <InputLabel htmlFor="priority">{t("Priority")}</InputLabel>
                     <Select
                       name="priority"
                       id="priority"
@@ -431,7 +433,7 @@ useEffect(() => {
               )}
               <Grid item xs={3}>
                 <FormControl fullWidth>
-                  <InputLabel htmlFor="issueType">Issue Type</InputLabel>
+                  <InputLabel htmlFor="issueType">{t("Issue Type")}</InputLabel>
                   <Select
                     name="issueType"
                     id="issueType"
@@ -455,7 +457,7 @@ useEffect(() => {
               </Grid>
               <Grid item xs={12}>
                 <TextField
-                  label="Description of the issue"
+                  label={t("Description of the issue")}
                   name="description"
                   placeholder="Description"
                   value={description}
@@ -486,7 +488,7 @@ useEffect(() => {
                       padding: "2rem",
                     }}
                   >
-                    Click to Upload File.
+                    {t("Click to Upload File.")}
                   </Button>
                 </label>
               </Grid>
@@ -499,7 +501,7 @@ useEffect(() => {
                         color="textSecondary"
                         fontWeight="bold"
                       >
-                        Uploaded Files:
+                        {t("Uploaded Files:")}
                       </Typography>
                       <ul className="mt-2">
                         {media.map((file, index) => (
@@ -529,7 +531,7 @@ useEffect(() => {
                       color="textSecondary"
                       className="flex w-full"
                     >
-                      <div className="font-semibold">Number of Files : </div>
+                      <div className="font-semibold">{t("Number of Files :")} </div>
                       <div>{media.length}</div>
                     </Typography>
                   </div>
@@ -544,7 +546,7 @@ useEffect(() => {
               startIcon={<DraftsIcon />}
               onClick={(e) => onSubmit(e, "draft")}
             >
-              Save as Draft
+              {t("Save as Draft")}
             </Button>
             <Button
               variant="contained"
@@ -553,7 +555,8 @@ useEffect(() => {
               onClick={(e) => onSubmit(e, "new")}
               disabled={uploading}
             >
-              {uploading ? "Uploading..." : "Submit as New"}
+              {t("Submit as New")}
+             {/* {uploading ? "Uploading..." : "Submit as New"}*/}
             </Button>
           </div>
         </form>
