@@ -128,7 +128,7 @@ h3 {
   margin: 0 auto;
 }
 
-.form-group {
+/* .form-group {
   margin-bottom: 10px;
 }
 
@@ -147,7 +147,7 @@ h3 {
   text-align: left;
   display: block;
   margin: 0 0 5px 3px;
-}
+} */
 
 /* .btn {
   padding: 10px 20px;
@@ -231,6 +231,7 @@ h3 {
   padding: 10px 15px;
   text-align: center;
   border: 1px solid #d8d8d8;
+  text-wrap: nowrap;
 }
 
 /* ListTickets.css */
@@ -394,21 +395,6 @@ h3 {
   text-align: left;
 }
 
-.ticket-page h2 {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-}
-
-.ticket-page .btn {
-  margin-bottom: 30px;
-}
-
-.ticket-page .btn-block {
-  width: 100%;
-  margin-top: 30px;
-}
-
 /* Add this CSS to your stylesheet */
 
 .pagination-row {
@@ -453,12 +439,18 @@ h3 {
   flex: 1; /* Make the icons share equal space within the container */
 }
 
-.ticket-desc {
+/* .ticket-desc {
   margin: 20px 0;
   font-size: 17px;
   background-color: #f4f4f4;
   border: 1px #ccc solid;
   padding: 10px 15px;
+  border-radius: 5px;
+} */
+
+.btn-custom {
+  border: 1px solid grey;
+  padding: 10px;
   border-radius: 5px;
 }
 

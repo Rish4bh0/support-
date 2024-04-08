@@ -18,28 +18,24 @@ import {
   FormControl,
   InputLabel,
   Typography,
-  Alert,
   IconButton,
-  Card,
-  CardContent,
-  CircularProgress,
 } from "@mui/material";
-import CreateIcon from "@mui/icons-material/Create";
 import CloseIcon from "@mui/icons-material/Close";
 import { getAllOrganization } from "../features/organization/organizationSlice";
 import { getAllIssueTypes } from "../features/issues/issueSlice";
 import axios from "axios";
 import { getAllProject } from "../features/project/projectSlice";
 import { environment } from "../lib/environment";
+import { useTranslation } from "react-i18next";
 
 function NewTicket() {
+  const { t } = useTranslation();
   const { user } = useSelector((state) => state.auth);
   const { isLoading, isError, message, isSuccess } = useSelector(
     (state) => state.tickets
   );
 
   const users = useSelector((state) => state.auth.users);
-  const issues = useSelector((state) => state.issueTypes.issueTypes);
   const projects = useSelector((state) => state.project.project);
 
   const organizations = useSelector(
@@ -47,11 +43,6 @@ function NewTicket() {
   );
 
   const [title, setTitle] = useState("");
-  const [customerName, setCustomerName] = useState("");
-  const [customerEmail, setCustomerEmail] = useState("");
-  const [isEmailValid, setIsEmailValid] = useState(false);
-  const [customerContact, setCustomerContact] = useState("");
-  const [product, setProduct] = useState("");
   const [cc, setCC] = useState([]);
   const [priority, setPriority] = useState("");
   const [issueType, setIssueType] = useState("");
@@ -67,14 +58,29 @@ function NewTicket() {
   const [uploadProgress, setUploadProgress] = useState(0);
   const dispatch = useDispatch();
   const navigate = useNavigate();
-
+  const issueTypesData = useSelector((state) => state.issueTypes.issueTypes);
+  console.log("1", issueTypesData);
+  const issues = issueTypesData.issueTypes;
+  console.log("2", issues);
+  const count = issueTypesData.count;
+  console.log("3", count);
+   
   useEffect(() => {
-    dispatch(fetchAllUsers());
-    dispatch(getAllOrganization());
-    dispatch(getAllIssueTypes());
-    dispatch(getAllProject());
-
-    // Set organization based on user's role
+    // Fetch users only if the users array is empty
+    if (users.length === 0) {
+      dispatch(fetchAllUsers());
+    }
+    
+    // Fetch organizations only if the organizations array is empty
+    if (organizations.length === 0) {
+      dispatch(getAllOrganization());
+    }
+  
+    // Fetch projects only if the projects array is empty
+    if (projects.length === 0) {
+      dispatch(getAllProject());
+    }
+  
     if (user && user.role === "ADMIN") {
       // If user is ADMIN, set organization based on selected dropdown value or default to the first organization
       setOrganization(
@@ -84,7 +90,13 @@ function NewTicket() {
       // If user is not ADMIN, set organization based on user's organization ID
       setOrganization(user?.organization || "");
     }
-  }, [dispatch, user, organization, organizations]);
+  }, [dispatch, user, organization, organizations, projects, users]);
+  
+
+  // Fetch issue types when page loads
+useEffect(() => {
+  dispatch(getAllIssueTypes({ page: 1, pageSize: count }));
+}, [dispatch]);
 
   const handleFileChange = (e) => {
     const files = e.target.files;
@@ -144,10 +156,7 @@ function NewTicket() {
     }
   };
 
-  useEffect(() => {
-    // Load the draft data when the component mounts
-    loadDraftFromLocalStorage();
-  }, []);
+ 
 
   const handleInputChange = (e) => {
     // Update the state and save the draft to local storage when the input changes
@@ -240,6 +249,7 @@ function NewTicket() {
         // Send a request to the media upload endpoint (http://localhost:5000/upload)
         const mediaResponse = await axios.post(
           "/v1/upload",
+
           formData,
           {
             headers: {
@@ -287,7 +297,7 @@ function NewTicket() {
     <>
       <div className="card bg-white rounded-lg border">
         <div className="card-header p-4 border-b-1 pb-3">
-          <Typography variant="h6">Create New Ticket</Typography>
+          <Typography variant="h6">{t("Create New Ticket")}</Typography>
         </div>
 
         <form onSubmit={onSubmit}>
@@ -295,7 +305,7 @@ function NewTicket() {
             <Grid container spacing={3}>
               <Grid item xs={6}>
                 <TextField
-                  label=" Ticket title"
+                  label={t("Ticket title")}
                   placeholder="Ticket title"
                   name="title"
                   value={title}
@@ -304,57 +314,57 @@ function NewTicket() {
                 />
               </Grid>
               {userRole && org.includes(userRole) && (
-              <Grid item xs={6}>
-                <FormControl fullWidth>
-                  <InputLabel htmlFor="organization">Organization</InputLabel>
-                  <Select
-                    name="organization"
-                    id="organization"
-                    value={
-                      user && user.role === "ADMIN"
-                        ? organization
-                        : user && user.role !== "ADMIN"
-                        ? user.organization
-                        : ""
-                    }
-                    onChange={handleInputChange}
-                    disabled={user && user.role !== "ADMIN"}
-                  >
-                    <MenuItem value="">Select One</MenuItem>
-                    {user && user.role === "ADMIN" ? (
-                      // Render all organizations if user's role is admin
-                      organizations.map((org) => (
-                        <MenuItem key={org._id} value={org._id}>
-                          {org.name}
-                        </MenuItem>
-                      ))
-                    ) : user &&
-                      user.organization &&
-                      organizations &&
-                      organizations.length > 0 ? (
-                      // Render organizations based on user's organization
-                      organizations
-                        .filter((org) => org._id === user.organization)
-                        .map((org) => (
+                <Grid item xs={6}>
+                  <FormControl fullWidth>
+                    <InputLabel htmlFor="organization">{t("Organization")}</InputLabel>
+                    <Select
+                      name="organization"
+                      id="organization"
+                      value={
+                        user && user.role === "ADMIN"
+                          ? organization
+                          : user && user.role !== "ADMIN"
+                          ? user.organization
+                          : ""
+                      }
+                      onChange={handleInputChange}
+                      disabled={user && user.role !== "ADMIN"}
+                    >
+                      <MenuItem value="">Select One</MenuItem>
+                      {user && user.role === "ADMIN" ? (
+                        // Render all organizations if user's role is admin
+                        organizations.map((org) => (
                           <MenuItem key={org._id} value={org._id}>
                             {org.name}
                           </MenuItem>
                         ))
-                    ) : (
-                      // Render a disabled option if no organizations are available
-                      <MenuItem value="" disabled>
-                        No organization available
-                      </MenuItem>
-                    )}
-                  </Select>
-                </FormControl>
-              </Grid>
+                      ) : user &&
+                        user.organization &&
+                        organizations &&
+                        organizations.length > 0 ? (
+                        // Render organizations based on user's organization
+                        organizations
+                          .filter((org) => org._id === user.organization)
+                          .map((org) => (
+                            <MenuItem key={org._id} value={org._id}>
+                              {org.name}
+                            </MenuItem>
+                          ))
+                      ) : (
+                        // Render a disabled option if no organizations are available
+                        <MenuItem value="" disabled>
+                         {t(" No organization available")}
+                        </MenuItem>
+                      )}
+                    </Select>
+                  </FormControl>
+                </Grid>
               )}
 
               {userRole && allowedRoles.includes(userRole) && (
                 <Grid item xs={3}>
                   <FormControl fullWidth>
-                    <InputLabel htmlFor="assignedTo">Assign To</InputLabel>
+                    <InputLabel htmlFor="assignedTo">{t("Assign To")}</InputLabel>
 
                     <Select
                       name="assignedTo"
@@ -371,7 +381,7 @@ function NewTicket() {
                         ))
                       ) : (
                         <MenuItem value="" disabled>
-                          No users available for the selected organization
+                         {t(" No users available for the selected organization")}
                         </MenuItem>
                       )}
                     </Select>
@@ -381,7 +391,7 @@ function NewTicket() {
               {userRole && allowedRoles.includes(userRole) && (
                 <Grid item xs={3}>
                   <FormControl fullWidth>
-                    <InputLabel htmlFor="cc">CC</InputLabel>
+                    <InputLabel htmlFor="cc">{t("CC")}</InputLabel>
                     <Select
                       name="cc"
                       id="cc"
@@ -397,7 +407,7 @@ function NewTicket() {
                         ))
                       ) : (
                         <MenuItem value="" disabled>
-                          No users available for the selected organization
+                          {t("No users available for the selected organization")}
                         </MenuItem>
                       )}
                     </Select>
@@ -408,7 +418,7 @@ function NewTicket() {
               {userRole && allowedRoles.includes(userRole) && (
                 <Grid item xs={3}>
                   <FormControl fullWidth>
-                    <InputLabel htmlFor="priority">Priority</InputLabel>
+                    <InputLabel htmlFor="priority">{t("Priority")}</InputLabel>
                     <Select
                       name="priority"
                       id="priority"
@@ -424,7 +434,7 @@ function NewTicket() {
               )}
               <Grid item xs={3}>
                 <FormControl fullWidth>
-                  <InputLabel htmlFor="issueType">Issue Type</InputLabel>
+                  <InputLabel htmlFor="issueType">{t("Issue Type")}</InputLabel>
                   <Select
                     name="issueType"
                     id="issueType"
@@ -448,7 +458,7 @@ function NewTicket() {
               </Grid>
               <Grid item xs={12}>
                 <TextField
-                  label="Description of the issue"
+                  label={t("Description of the issue")}
                   name="description"
                   placeholder="Description"
                   value={description}
@@ -479,7 +489,7 @@ function NewTicket() {
                       padding: "2rem",
                     }}
                   >
-                    Click to Upload File.
+                    {t("Click to Upload File.")}
                   </Button>
                 </label>
               </Grid>
@@ -492,7 +502,7 @@ function NewTicket() {
                         color="textSecondary"
                         fontWeight="bold"
                       >
-                        Uploaded Files:
+                        {t("Uploaded Files:")}
                       </Typography>
                       <ul className="mt-2">
                         {media.map((file, index) => (
@@ -522,7 +532,7 @@ function NewTicket() {
                       color="textSecondary"
                       className="flex w-full"
                     >
-                      <div className="font-semibold">Number of Files : </div>
+                      <div className="font-semibold">{t("Number of Files :")} </div>
                       <div>{media.length}</div>
                     </Typography>
                   </div>
@@ -537,7 +547,7 @@ function NewTicket() {
               startIcon={<DraftsIcon />}
               onClick={(e) => onSubmit(e, "draft")}
             >
-              Save as Draft
+              {t("Save as Draft")}
             </Button>
             <Button
               variant="contained"
@@ -546,7 +556,8 @@ function NewTicket() {
               onClick={(e) => onSubmit(e, "new")}
               disabled={uploading}
             >
-              {uploading ? "Uploading..." : "Submit as New"}
+              {t("Submit as New")}
+             {/* {uploading ? "Uploading..." : "Submit as New"}*/}
             </Button>
           </div>
         </form>

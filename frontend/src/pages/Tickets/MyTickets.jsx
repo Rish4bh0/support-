@@ -7,18 +7,29 @@ import {
     getTicketss,
   } from "../../features/tickets/ticketSlice";
   import TicketTable from '../../components/TicketTable'
+import { getAllIssueTypes } from '../../features/issues/issueSlice';
+import Spinner from '../../components/Spinner';
 
 function MyTickets  ()  {
-    const { ticketss, isLoading } = useSelector((state) => state.tickets)
+    const { ticketss } = useSelector((state) => state.tickets)
+    const [isLoading, setIsLoading] = useState(true);
     const dispatch = useDispatch();
     const user = useSelector((state) => state.auth.user)
     useEffect(() => {
-        dispatch(getAllTickets());
-        dispatch(getTicketss());
-        return () => {
+      // Simulate 2-second loading delay
+      const loadingTimer = setTimeout(() => {
+          setIsLoading(false); // Set loading to false after 2 seconds
+      }, 2000);
+
+      // Fetch tickets and reset on unmount
+      dispatch(getAllTickets());
+      dispatch(getTicketss());
+      dispatch(getAllIssueTypes())
+      return () => {
+          clearTimeout(loadingTimer); // Clear timeout on unmount
           dispatch(reset());
-        };
-      }, [dispatch, reset]);
+      };
+  }, [dispatch]); 
 
      
       const title = 'My Tickets'
@@ -30,12 +41,17 @@ function MyTickets  ()  {
   
   return (
     <div>
+       {isLoading ? (
+                <Spinner /> // Display spinner while loading
+            ) : (
           <TicketTable
         tickets={sortedTickets}
         isLoading={isLoading}
         greetingMessage={greetingMessages}
         title={title}
+            
       />
+            )}
     </div>
   )
 }

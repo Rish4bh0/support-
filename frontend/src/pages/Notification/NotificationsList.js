@@ -12,6 +12,7 @@ import useSocketIo from "../../hooks/useSocketio";
 import Spinner from "../../components/Spinner";
 import ConfirmationNumberIcon from "@mui/icons-material/ConfirmationNumber";
 import { environment } from "../../lib/environment";
+import { Link } from "react-router-dom";
 
 const NotificationsList = () => {
   const user = useSelector((state) => state.auth.user);
@@ -31,7 +32,9 @@ const NotificationsList = () => {
     const getNotifications = async () => {
       try {
         const result = await axios.post(
+
           "/api/notifications",
+
           {
             id: user._id,
             limit: 2,
@@ -61,7 +64,9 @@ const NotificationsList = () => {
   const handleMarkOneAsRead = async (notificationId) => {
     try {
       const result = await axios.patch(
+
         "/api/notifications",
+
         { id: notificationId }
       );
 
@@ -92,7 +97,8 @@ const NotificationsList = () => {
   const handleMarkAllAsRead = async () => {
     try {
       const result = await axios.patch(
-        "/api/notifications/all",
+         "/api/notifications/all",
+
         { id: user._id }
       );
 
@@ -120,6 +126,7 @@ const NotificationsList = () => {
     try {
       const result = await axios.delete(
         "/api/notifications",
+
         { data: { id: notificationId } }
       );
       const newNotifications = data?.notifications?.filter(
@@ -141,7 +148,9 @@ const NotificationsList = () => {
   const handleDeleteAll = async () => {
     try {
       const result = await axios.delete(
-        "/api/notifications/all",
+
+         "/api/notifications/all",
+
         { data: { id: user._id } }
       );
       setData(null);
@@ -186,6 +195,7 @@ const NotificationsList = () => {
             </button>
           </div>
         </div>
+        
         <div className="card-body">
           {data.notifications.map((notification) => (
             <div
@@ -195,6 +205,7 @@ const NotificationsList = () => {
                 (notification.read ? " bg-white" : " bg-blue-50")
               }
             >
+                <Link to={`/ticket/${notification.id}`} className="flex items-start gap-2">
               <div className={"flex items-start gap-2"}>
                 <div className="bg-blue-200 text-blue-950 flex items-center justify-center h-10 w-10 rounded-full">
                   <ConfirmationNumberIcon />
@@ -206,6 +217,7 @@ const NotificationsList = () => {
                   </p>
                 </div>
               </div>
+              </Link>
               <div className="flex gap-2">
                 <button
                   type="button"
@@ -232,8 +244,10 @@ const NotificationsList = () => {
   } else {
     content = (
       <>
-        <h1 className="text-2xl font-bold mb-4">Notifications list</h1>
-        <div>No data to show</div>
+        <div className="card-header border-b-2 p-4 flex justify-between items-center">
+          <div className="font-semibold">Notifications list</div>
+        </div>
+        <div className="card-body p-4">No data to show</div>
       </>
     );
   }
@@ -241,39 +255,41 @@ const NotificationsList = () => {
   return (
     <div>
       {content}
-
-      <div className="flex items-center justify-center space-x-2 my-4 font-semibold">
-        <button
-          type="button"
-          disabled={page === 0}
-          onClick={() => {
-            setPage((prev) => prev - 1);
-          }}
-          className={` px-4  ${page === 0 && "cursor-not-allowed"}`}
-        >
-          {"<"}
-        </button>
-        <div className="flex items-center">
-          <div className="mx-2 text-gray-500">
-            {page + 1} / {data?.totalpage ?? "-"}
+  
+      {data && data.notifications && data.notifications.length > 0 && (
+        <div className="flex items-center justify-center space-x-2 my-4 font-semibold">
+          <button
+            type="button"
+            disabled={page === 0}
+            onClick={() => {
+              setPage((prev) => prev - 1);
+            }}
+            className={`px-4 ${page === 0 && "cursor-not-allowed"}`}
+          >
+            {"<"}
+          </button>
+          <div className="flex items-center">
+            <div className="mx-2 text-gray-500">
+              {page + 1} / {data?.totalpage ?? "-"}
+            </div>
           </div>
+          <button
+            type="button"
+            disabled={data?.totalpage === page + 1}
+            onClick={() => {
+              setPage((prev) => prev + 1);
+            }}
+            className={`px-4 ${
+              data?.totalpage === page + 1 && "cursor-not-allowed"
+            }`}
+          >
+            {">"}
+          </button>
         </div>
-        <button
-          type="button"
-          disabled={data?.totalpage === page + 1}
-          onClick={() => {
-            setPage((prev) => prev + 1);
-          }}
-          className={` px-4  ${
-            data?.totalpage === page + 1 && "cursor-not-allowed"
-          }`}
-        >
-          {">"}
-        </button>
-      </div>
+      )}
     </div>
   );
+  
 };
 
 export default NotificationsList;
-

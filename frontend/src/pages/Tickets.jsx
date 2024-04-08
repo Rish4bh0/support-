@@ -15,11 +15,10 @@ import ModeEditIcon from "@mui/icons-material/ModeEdit";
 import { darken, lighten, styled } from "@mui/material/styles";
 import VisibilityIcon from "@mui/icons-material/Visibility";
 import { Link } from "react-router-dom";
-import Alert from '@mui/material/Alert';
-
+import Alert from "@mui/material/Alert";
 
 function Tickets() {
-  const { tickets, isLoading } = useSelector((state) => state.tickets);
+  const { tickets } = useSelector((state) => state.tickets);
   const dispatch = useDispatch();
   const [activeTab, setActiveTab] = useState("all"); // Set initial tab to "all"
   const [currentPage, setCurrentPage] = useState({
@@ -33,22 +32,30 @@ function Tickets() {
   const [endDate, setEndDate] = useState(null);
   const [rowsPerPage, setRowsPerPage] = useState(3);
 
-
   const userRole = useSelector((state) => state.auth.user.role);
   const organizations = useSelector(
     (state) => state.organizations.organizations
   );
-  const issues = useSelector((state) => state.issueTypes.issueTypes);
+  const issueTypesData = useSelector((state) => state.issueTypes.issueTypes);
+  console.log("1", issueTypesData);
+  const issues = issueTypesData.issueTypes || [];
+  console.log("2", issues);
+  const count = issueTypesData.count || 0;
+  console.log("3", count);
+  console.log(issues)
   const users = useSelector((state) => state.auth.users);
   const projects = useSelector((state) => state.project.project);
   const projectMap = {};
+  const [isLoading, setIsLoading] = useState(true);
   projects.forEach((project) => {
     projectMap[project._id] = project.projectName;
   });
-  const issueMap = {};
-  issues.forEach((issue) => {
-    issueMap[issue._id] = issue.name;
-  });
+  const issueMap = issues
+  ? issues.reduce((map, issue) => {
+      map[issue._id] = issue.name;
+      return map;
+    }, {})
+  : {};
   const organizationMap = {};
   organizations.forEach((organization) => {
     organizationMap[organization._id] = organization.name;
@@ -57,10 +64,34 @@ function Tickets() {
   users.forEach((user) => {
     userMap[user._id] = user.name;
   });
-  const allowedRolesOrg = ["ADMIN", "SUPERVISOR", "ORGAGENT","USER" ];
-  const  allowedRoles = ["ADMIN", "SUPERVISOR",  ];
-  const  allowedRolesor = ["ADMIN", "SUPERVISOR","EMPLOYEE"  ];
-  const org =["ORGAGENT","USER"]
+  const allowedRolesOrg = ["ADMIN", "SUPERVISOR", "ORGAGENT", "USER"];
+  const allowedRoles = ["ADMIN", "SUPERVISOR"];
+  const allowedRolesor = ["ADMIN", "SUPERVISOR", "EMPLOYEE"];
+  const org = ["ORGAGENT", "USER"];
+  
+
+  useEffect(() => {
+    dispatch(getAllIssueTypes({ page: 1, pageSize: count }));
+  }, [dispatch, count]);
+
+
+  useEffect(() => {
+
+    // Simulate 2-second loading delay
+    const loadingTimer = setTimeout(() => {
+      setIsLoading(false); // Set loading to false after 2 seconds
+  }, 2000);
+
+    dispatch(fetchAllUsers());
+    dispatch(getAllOrganization());
+    dispatch(getAllProject());
+    return () => {
+      clearTimeout(loadingTimer); // Clear timeout on unmount
+      dispatch(reset());
+  };
+  }, [dispatch]);
+
+
   useEffect(() => {
     dispatch(getAllTickets());
     dispatch(getTickets());
@@ -70,12 +101,7 @@ function Tickets() {
     };
   }, [dispatch, reset]);
 
-  useEffect(() => {
-    dispatch(fetchAllUsers());
-    dispatch(getAllIssueTypes());
-    dispatch(getAllOrganization());
-    dispatch(getAllProject());
-  }, [dispatch]);
+
 
   // Filter tickets based on active tab and date range
   const filteredTickets = tickets.filter((ticket) => {
@@ -84,8 +110,6 @@ function Tickets() {
     if (endDate && new Date(ticket.createdAt) > endDate) return false;
     return true;
   });
-  
-  
 
   const rows = filteredTickets.map((ticket) => ({
     ticketid: ticket._id,
@@ -168,17 +192,19 @@ function Tickets() {
           </Link>
           <Link to={`/ticket/${params.row.ticketid}`}>
             <button className="group">
-              < VisibilityIcon  className="text-blue-500 group-hover:text-blue-700 mr-8" />
+              <VisibilityIcon className="text-blue-500 group-hover:text-blue-700 mr-8" />
             </button>
           </Link>
         </div>
       ),
     },
   ];
-  const greetingMessages = filteredTickets.map(ticket => {
+  const greetingMessages = filteredTickets.map((ticket) => {
     const assignedUser = userMap[ticket.assignedTo];
     const remainingTickets = rows.length;
-    return assignedUser ? `Hey there ${assignedUser}! Below are the tickets assigned to you. ${remainingTickets} more 🎫 to go.` : null;
+    return assignedUser
+      ? `Hey there ${assignedUser}! Below are the tickets assigned to you. ${remainingTickets} more 🎫 to go.`
+      : null;
   });
   // Paginate the filtered tickets
   const startIndex = (currentPage[activeTab] - 1) * rowsPerPage;
@@ -191,7 +217,6 @@ function Tickets() {
     });
   };
 
- 
   // Generate an array of page numbers to display
   const pageButtons = [];
   for (let i = 1; i <= totalPages; i++) {
@@ -338,9 +363,13 @@ function Tickets() {
   const statusOptions = ["all", "new", "open", "review", "close"];
 
   return (
+    
     <div className="mt-4">
-       <div className="border border-gray-300 rounded-2xl bg-white w-full">
-       <div className="border-b-1 p-4 font-extrabold text-sm flex gap-2">
+        {isLoading ? (
+                <Spinner /> // Display spinner while loading
+            ) : (
+      <div className="border border-gray-300 rounded-2xl bg-white w-full">
+        <div className="border-b-1 p-4 font-extrabold text-sm flex gap-2">
           <div className="font-extrabold">Assigned Tickets</div>
         </div>
         <div className="p-4">
@@ -418,6 +447,7 @@ function Tickets() {
       </div>
       </div>
       </div>
+        )}
     </div>
   );
 }

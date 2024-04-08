@@ -7,6 +7,7 @@ const notificationSchema = new mongoose.Schema(
     type: { type: Number, required: true },
     text: { type: String, require: true },
     read: { type: Boolean, default: false },
+    id: { type: mongoose.Schema.Types.ObjectId, ref: "Ticket" },
   },
   {
     timestamps: true,

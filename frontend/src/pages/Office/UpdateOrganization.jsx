@@ -7,22 +7,7 @@ import {
 import { useNavigate, useParams } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import Spinner from "../../components/Spinner";
-import BackButton from "../../components/BackButton";
-import SendIcon from "@mui/icons-material/Send";
-import {
-  Button,
-  TextField,
-  Grid,
-  Select,
-  MenuItem,
-  FormControl,
-  InputLabel,
-  Typography,
-  Alert,
-  IconButton,
-  Card,
-  CardContent,
-} from "@mui/material";
+import { Button, TextField, Grid, Typography } from "@mui/material";
 import { toast } from "react-toastify";
 
 const UpdateOrganization = () => {
@@ -42,7 +27,6 @@ const UpdateOrganization = () => {
     dispatch(selectOrganizationById(id));
   }, [id, dispatch]);
 
- 
   // State to store form data
   const [formData, setFormData] = useState({
     name: "",
@@ -58,17 +42,14 @@ const UpdateOrganization = () => {
       toast.error(message);
     }
     if (isSuccess) {
-      
-      
-      navigate('/organization');
+      navigate("/organization");
       toast.success("Office updated!");
       dispatch(reset());
     }
   }, [dispatch, isError, isSuccess, navigate, message, reset]);
 
-
-   // Update formData with organization data when it's available
-   useEffect(() => {
+  // Update formData with organization data when it's available
+  useEffect(() => {
     if (organization) {
       setFormData({
         name: organization.name,
@@ -76,7 +57,7 @@ const UpdateOrganization = () => {
         contact: organization.contact,
         focalPersonName: organization.focalPersonName,
         focalPersonContact: organization.focalPersonContact,
-        focalPersonEmail: organization.focalPersonEmail
+        focalPersonEmail: organization.focalPersonEmail,
       });
     }
   }, [organization]);
@@ -102,8 +83,6 @@ const UpdateOrganization = () => {
     );
   };
 
-  
-
   // Display loading message if the organization is being fetched
   if (!organization) {
     return <Spinner />;
@@ -111,99 +90,90 @@ const UpdateOrganization = () => {
 
   return (
     <>
-
-
-      <section className="flex items-center justify-center ">
-        <div>
-          <Typography variant="h4" component="h1" gutterBottom>
-          Update Office
-          </Typography>
-          <Typography variant="body2">
-            Please fill out the form below
-          </Typography>
-          <Typography variant="body2">
-            Office ID: {organization._id}
+      <section className="card bg-white rounded-lg border">
+        <div className="card-header p-4 border-b-1 pb-3">
+          <Typography variant="h6">
+            <div className="flex justify-between">
+              <div>Update Office</div>
+              <div className="text-xs font-normal">
+                <label className="font-medium">Office ID: </label>{" "}
+                {organization._id}
+              </div>
+            </div>
           </Typography>
         </div>
-      </section>
-
-     
-      <form onSubmit={handleSubmit} className="p-6">
-      <Grid container spacing={3}>
-      <Grid item xs={6}>
-            <TextField
-              label=" Office Name"
-              placeholder="Office Name"
-              name="name"
-            value={formData.name}
-            onChange={handleChange}
-              fullWidth
-            />
-          </Grid>
-          <Grid item xs={6}>
-            <TextField
-              label=" Email"
-              placeholder="Email"
-              name="email"
-              value={formData.email}
-              onChange={handleChange}
-              fullWidth
-            />
-          </Grid>
-          <Grid item xs={6}>
-            <TextField
-              label=" Contact"
-              placeholder="Contact"
-              name="contact"
-            value={formData.contact}
-            onChange={handleChange}
-              fullWidth
-            />
-          </Grid>
-          <Grid item xs={6}>
-            <TextField
-              label=" Focal Person Name"
-              placeholder="Focal Person Name"
-              name="focalPersonName"
-              value={formData.focalPersonName}
-          onChange={handleChange}
-              fullWidth
-            />
-          </Grid>
-          <Grid item xs={6}>
-            <TextField
-              label=" Focal Person Email"
-              placeholder="Focal Person Email"
-              name="focalPersonEmail"
-              value={formData.focalPersonEmail}
-          onChange={handleChange}
-              fullWidth
-            />
-          </Grid>
-          <Grid item xs={6}>
-            <TextField
-              label=" Focal Person Contact"
-              placeholder="Focal Person Contact"
-              name="focalPersonContact"
-              value={formData.focalPersonContact}
-          onChange={handleChange}
-              fullWidth
-            />
-          </Grid>
-
+        <form onSubmit={handleSubmit}>
+          <div className="card-body px-4 py-6">
+            <Grid container spacing={3}>
+              <Grid item xs={5}>
+                <TextField
+                  label=" Office Name"
+                  placeholder="Office Name"
+                  name="name"
+                  value={formData.name}
+                  onChange={handleChange}
+                  fullWidth
+                />
+              </Grid>
+              <Grid item xs={4}>
+                <TextField
+                  label=" Email"
+                  placeholder="Email"
+                  name="email"
+                  value={formData.email}
+                  onChange={handleChange}
+                  fullWidth
+                />
+              </Grid>
+              <Grid item xs={3}>
+                <TextField
+                  label=" Contact"
+                  placeholder="Contact"
+                  name="contact"
+                  value={formData.contact}
+                  onChange={handleChange}
+                  fullWidth
+                />
+              </Grid>
+              <Grid item xs={5}>
+                <TextField
+                  label=" Focal Person Name"
+                  placeholder="Focal Person Name"
+                  name="focalPersonName"
+                  value={formData.focalPersonName}
+                  onChange={handleChange}
+                  fullWidth
+                />
+              </Grid>
+              <Grid item xs={4}>
+                <TextField
+                  label=" Focal Person Email"
+                  placeholder="Focal Person Email"
+                  name="focalPersonEmail"
+                  value={formData.focalPersonEmail}
+                  onChange={handleChange}
+                  fullWidth
+                />
+              </Grid>
+              <Grid item xs={3}>
+                <TextField
+                  label=" Focal Person Contact"
+                  placeholder="Focal Person Contact"
+                  name="focalPersonContact"
+                  value={formData.focalPersonContact}
+                  onChange={handleChange}
+                  fullWidth
+                />
+              </Grid>
             </Grid>
-
-            <div className="form-group mt-6 space-x-6">
-          <Button
-            variant="contained"
-            color="success"
-            endIcon={<SendIcon />}
-            type="submit"
-          >
-            Update Office
-          </Button>
-        </div>
-      </form>
+          </div>
+          <div className="card-footer p-4 border-t-1  space-x-6 text-end">
+            <Button variant="contained" color="primary" type="submit">
+              Update
+            </Button>
+          </div>
+        </form>
+      </section>
     </>
   );
 };

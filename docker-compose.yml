@@ -14,11 +14,12 @@ services:
       - ME_CONFIG_MONGODB_SERVER=mongo
       - ME_CONFIG_MONGODB_PORT=27017
     ports:
-      - "8081:8081"
+      - "443:443"
     depends_on:
       - mongo
 
   nginx:
+    image: hyp3rr/multi-nginx:latest
     container_name: nginx
     depends_on:
       - frontend
@@ -29,9 +30,10 @@ services:
       dockerfile: Dockerfile.dev
       context: ./nginx
     ports:
-      - "3050:80"
+      - "80:80"
 
   backend:
+    image: hyp3rr/multi-backend:latest
     container_name: backend
     build:
       dockerfile: Dockerfile.dev
@@ -54,8 +56,10 @@ services:
     
     depends_on:
       - mongo
+    
 
   frontend:
+    image: hyp3rr/multi-frontend:latest
     container_name: frontend
     build:
       dockerfile: Dockerfile.dev
@@ -63,7 +67,7 @@ services:
 
     environment:
       NODE_ENV: development
-      REACT_APP_SERVER_URL_DEV: http://backend
+      REACT_APP_SERVER_URL_DEV: 
       REACT_APP_SERVER_URL_PROD: https://dryicesupport.onrender.com
 
    

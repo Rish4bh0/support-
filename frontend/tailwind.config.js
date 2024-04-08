@@ -9,7 +9,8 @@ module.exports = {
     extend: {
       fontSize: {
         14: "14px",
-        "10xl": ["10rem", { lineHeight: "1" }],
+        // "10xl": ["10rem", { lineHeight: "1" }],
+        xs: ["0.795rem", { lineHeight: "1rem" }],
       },
 
       backgroundColor: {
@@ -47,8 +48,5 @@ module.exports = {
       },
     },
   },
-  plugins: [
-   
-    require('@tailwindcss/forms'),
-  ],
+  plugins: [require("@tailwindcss/forms")],
 };

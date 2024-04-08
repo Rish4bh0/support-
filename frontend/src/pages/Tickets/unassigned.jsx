@@ -34,13 +34,14 @@ const useStyles = makeStyles({
 });
 
 function UnassignedTickets() {
-  const { allTickets, isLoading } = useSelector((state) => state.tickets);
+  const { allTickets } = useSelector((state) => state.tickets);
   const organizations = useSelector(
     (state) => state.organizations.organizations
   );
-  const user = useSelector((state) => state.auth.user)
+  const [isLoading, setIsLoading] = useState(true);
+  const user = useSelector((state) => state.auth.user);
   const projects = useSelector((state) => state.project.project);
-  const issues = useSelector((state) => state.issueTypes.issueTypes);
+  const issues = useSelector((state) => state.issueTypes.issueTypes.issueTypes);
   const dispatch = useDispatch();
   const userRole = useSelector((state) => state.auth.user.role);
   const [activeTab, setActiveTab] = useState("unassigned");
@@ -48,7 +49,7 @@ function UnassignedTickets() {
   const [startDate, setStartDate] = useState(null);
   const [endDate, setEndDate] = useState(null);
   const [rowsPerPage, setRowsPerPage] = useState(3);
-  const greetingMessage = `Hello ${user.name}! Below are all the unassigned tickets.`
+  const greetingMessage = `Hello ${user.name}! Below are all the unassigned tickets.`;
   const classes = useStyles();
   const options = {
     //  weekday: "long",
@@ -171,19 +172,25 @@ function UnassignedTickets() {
   }));
 
   useEffect(() => {
+    // Simulate 2-second loading delay
+    const loadingTimer = setTimeout(() => {
+        setIsLoading(false); // Set loading to false after 2 seconds
+    }, 2000);
+
+    // Fetch tickets and reset on unmount
+    dispatch(getAllTickets());
     dispatch(fetchAllUsers());
-    dispatch(getAllIssueTypes());
+   
     dispatch(getAllOrganization());
     dispatch(getAllProject());
-  }, [dispatch]);
-
-  useEffect(() => {
-    dispatch(getAllTickets());
-
+    dispatch(getAllIssueTypes())
     return () => {
-      dispatch(reset());
+        clearTimeout(loadingTimer); // Clear timeout on unmount
+        dispatch(reset());
     };
-  }, [dispatch]);
+}, [dispatch]); 
+
+  
   const handleTabChange = (tab) => {
     setActiveTab(tab);
     setCurrentPage({
@@ -210,7 +217,8 @@ function UnassignedTickets() {
   });
 
   const filteredTickets = allTickets.filter((ticket) => {
-    if (activeTab === "unassigned") return !ticket.assignedTo; return false;
+    if (activeTab === "unassigned") return !ticket.assignedTo;
+    return false;
   });
 
   const filteredTicketss = filteredTickets.filter((ticket) => {
@@ -219,7 +227,9 @@ function UnassignedTickets() {
     return true;
   });
 
-  const sortedTickets = [...filteredTicketss].sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
+  const sortedTickets = [...filteredTicketss].sort(
+    (a, b) => new Date(b.createdAt) - new Date(a.createdAt)
+  );
 
   const rows = sortedTickets.map((ticket) => ({
     ticketid: ticket._id,
@@ -305,22 +315,14 @@ function UnassignedTickets() {
 
   return (
     <div className="mt-4">
-      <div className="border border-gray-300 rounded-2xl bg-white w-full">
+      <div className="border border-gray-300 rounded-2xl bg-white w-full mb-4">
         <div className="border-b-1 p-4 font-extrabold text-sm flex gap-2">
           <div className="font-extrabold">Unassigned</div>
         </div>
         <div className="p-4">
-        <div className="bg-white flex justify-end gap-3 mb-7 ">
-            <div className="w-full mt-6">
-              <Alert
-                className="block text-gray-700 text-sm font-semibold mb-2"
-                severity="info"
-              >
-                <p> {greetingMessage}</p>
-              </Alert>
-            </div>
+          <div className="bg-white flex gap-3">
             <div className="w-48">
-              <label className="block text-gray-700 text-sm font-semibold mb-2">
+              <label className="block text-sm font-semibold mb-2">
                 Start Date:
               </label>
               <input
@@ -330,7 +332,7 @@ function UnassignedTickets() {
               />
             </div>
             <div className="w-48">
-              <label className="block text-gray-700 text-sm font-semibold mb-2 mr-2">
+              <label className="block text-sm font-semibold mb-2 mr-2">
                 End Date:
               </label>
               <input
@@ -340,21 +342,30 @@ function UnassignedTickets() {
               />
             </div>
           </div>
-        <StyledDataGrid
-          getRowClassName={(params) => `super-app-theme--${params.row.status}`}
-          rows={rows}
-          columns={columns}
-          initialState={{
-            ...rows.initialState,
-            pagination: { paginationModel: { pageSize: 5 } },
-          }}
-          pageSizeOptions={[5, 10, 25]}
-          page={currentPage}
-          onPageChange={(newPage) => setCurrentPage(newPage)}
-          disableSelectionOnClick
-        />
+        </div>
       </div>
-    </div>
+      <div className="border border-gray-300 rounded-2xl bg-white w-full">
+        <div className="border-b-1 p-4 font-extrabold text-sm flex justify-between items-center">
+          <div className="font-extrabold">Tickets</div>
+        </div>
+        <div className="p-4">
+          <StyledDataGrid
+            getRowClassName={(params) =>
+              `super-app-theme--${params.row.status}`
+            }
+            rows={rows}
+            columns={columns}
+            initialState={{
+              ...rows.initialState,
+              pagination: { paginationModel: { pageSize: 5 } },
+            }}
+            pageSizeOptions={[5, 10, 25]}
+            page={currentPage}
+            onPageChange={(newPage) => setCurrentPage(newPage)}
+            disableSelectionOnClick
+          />
+        </div>
+      </div>
     </div>
   );
 }

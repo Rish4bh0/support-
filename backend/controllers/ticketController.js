@@ -137,10 +137,8 @@ const createTicket = asyncHandler(async (req, res) => {
     description,
     cc,
     organization,
-    //media,
     title,
     status,
-    
   } = req.body;
   try {
 
@@ -185,8 +183,7 @@ const createTicket = asyncHandler(async (req, res) => {
       description,
       cc: cc || [],
       user: req.user.id,
-      status,
-      //media: mediaPromises,
+      status: status || null,
       organization: org ? org._id : null,
       title,
    
@@ -226,6 +223,7 @@ const createTicket = asyncHandler(async (req, res) => {
     type: 1,
     text: `Ticket assigned at ${new Date()} (ID: ${ticketID})`,
     read: false,
+    id: ticketId
   })
     }
 
@@ -252,6 +250,7 @@ const createTicket = asyncHandler(async (req, res) => {
           type: 1,
           text: `New ticket CC at ${new Date()} (ID: ${ticketID})`,
           read: false,
+          id: ticketId
         });
       }
     }

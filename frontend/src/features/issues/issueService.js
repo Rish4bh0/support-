@@ -3,6 +3,8 @@ import { environment } from '../../lib/environment'
 
 const API_URL = '/api/issues/';
 
+const URL = environment.SERVER_URL;
+
 const createIssueType = async (issueData, token) => {
   const config = {
     headers: {
@@ -15,22 +17,21 @@ const createIssueType = async (issueData, token) => {
   return response.data;
 };
 
-const getAllIssueTypes = async token => {
-  try{
-  const config = {
-    headers: {
-      Authorization: `Bearer ${token}`
-    }
+const getAllIssueTypes = async (token, page, pageSize) => {
+  try {
+    const config = {
+      headers: {
+        Authorization: `Bearer ${token}`
+      }
+    };
+    
+    const response = await axios.get(`/api/issues?page=${page}&pageSize=${pageSize}`, config);
+    return response.data;
+  } catch (error) {
+    console.error("Error fetching all tickets:", error);
+    return [];
   }
-  
-  const response = await axios.get(API_URL, config);
-  return response.data;
-} catch (error) {
-  console.error("Error fetching all tickets:", error);
-  return [];
-}
 };
-
 
 const updateIssueType = async (id, issueData, token) => {
     const config = {

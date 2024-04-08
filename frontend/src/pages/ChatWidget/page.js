@@ -1,20 +1,21 @@
-import React, { useEffect } from 'react';
-import { useSelector } from 'react-redux';
-import io from 'socket.io-client';
-import { environment } from '../../lib/environment';
+import React, { useEffect } from "react";
+import { useSelector } from "react-redux";
+import io from "socket.io-client";
+import { environment } from "../../lib/environment";
 
 const ChatPage = () => {
-    const user = useSelector((state) => state.auth.user);
+  const user = useSelector((state) => state.auth.user);
   useEffect(() => {
-    const socket = io();
-   
-    const chatButton = document.createElement('div');
-    chatButton.id = 'chat-button';
-    chatButton.innerHTML = '&#9993;';
+    const socket = io(environment.SERVER_URL);
+
+    const chatButton = document.createElement("div");
+    chatButton.id = "chat-button";
+    chatButton.innerHTML = "&#9993;";
+
     document.body.appendChild(chatButton);
 
-    const chatWidget = document.createElement('div');
-    chatWidget.id = 'chat-widget';
+    const chatWidget = document.createElement("div");
+    chatWidget.id = "chat-widget";
     chatWidget.innerHTML = `
       <div id="chat-header">
         <div id="header-text">Chat with Us</div>
@@ -34,56 +35,68 @@ const ChatPage = () => {
       </div>
     `;
 
-   { /*
+    {
+      /*
     
 
     
-  */}
+  */
+    }
     document.body.appendChild(chatWidget);
 
-    chatWidget.style.display = 'none';
+    chatWidget.style.display = "none";
 
-    chatButton.addEventListener('click', function () {
-      chatButton.style.display = 'none';
-      chatWidget.style.display = 'block';
+    chatButton.addEventListener("click", function () {
+      chatButton.style.display = "none";
+      chatWidget.style.display = "block";
     });
 
-    document.getElementById('close-button').addEventListener('click', function () {
-      chatWidget.style.display = 'none';
-      chatButton.style.display = 'block';
-    });
+    document
+      .getElementById("close-button")
+      .addEventListener("click", function () {
+        chatWidget.style.display = "none";
+        chatButton.style.display = "block";
+      });
 
-    const chatMessages = document.getElementById('chat-messages');
-    const messageInput = document.getElementById('message-input');
-    const sendButton = document.getElementById('send-button');
-    const startChatForm = document.getElementById('start-chat-form');
-    const messageSection = document.getElementById('message-section');
+    const chatMessages = document.getElementById("chat-messages");
+    const messageInput = document.getElementById("message-input");
+    const sendButton = document.getElementById("send-button");
+    const startChatForm = document.getElementById("start-chat-form");
+    const messageSection = document.getElementById("message-section");
 
     let messages = [];
     let userId = "";
     let chatId = "";
 
-    socket.on('chat initialized', (data) => {
+    socket.on("chat initialized", (data) => {
       messages = [...data.messages];
       userId = data.userId;
       chatId = data.chatId;
       for (const entry of messages) {
-        appendMessage(entry.createdBy === "user" ? "You" : "Support", entry.content, entry.createdBy);
+        appendMessage(
+          entry.createdBy === "user" ? "You" : "Support",
+          entry.content,
+          entry.createdBy
+        );
       }
     });
 
-    socket.on('chat received', (msg) => {
-      appendMessage(msg.createdBy === "user" ? "You" : "Support", msg.message, msg.createdBy);
+    socket.on("chat received", (msg) => {
+      appendMessage(
+        msg.createdBy === "user" ? "You" : "Support",
+        msg.message,
+        msg.createdBy
+      );
     });
 
     function appendMessage(user, message, sender) {
-      const newMessage = document.createElement('div');
-      newMessage.className = 'message';
-      
-      if (sender === 'system' || sender === "host") {
-        newMessage.classList.add('system-message');
+      const newMessage = document.createElement("div");
+      newMessage.className = "message";
+
+      if (sender === "system" || sender === "host") {
+        newMessage.classList.add("system-message");
       } else if (sender === "user") {
-        newMessage.classList.add('user-message');
+        newMessage.classList.add("user-message");
       }
 
       newMessage.innerHTML = `<strong>${user}:</strong> ${message}`;
@@ -93,9 +106,14 @@ const ChatPage = () => {
 
     function sendMessage() {
       const message = messageInput.value.trim();
-      if (message !== '') {
-        socket.emit('chat message', { message, userId: userId, chatId: chatId, sentBy: "user"});
-        messageInput.value = '';
+      if (message !== "") {
+        socket.emit("chat message", {
+          message,
+          userId: userId,
+          chatId: chatId,
+          sentBy: "user",
+        });
+        messageInput.value = "";
       }
     }
 
@@ -105,17 +123,21 @@ const ChatPage = () => {
       const phone = user._id;
 
       if (name && email && phone) {
-        appendMessage('System', `Welcome, ${name}! An admin will contact you shortly.`, 'system');
-        socket.emit('start chat', { name, email, phone });
-        chatWidget.removeChild(document.getElementById('chat-form'));
-        messageSection.style.display = 'block';
+        appendMessage(
+          "System",
+          `Welcome, ${name}! An admin will contact you shortly.`,
+          "system"
+        );
+        socket.emit("start chat", { name, email, phone });
+        chatWidget.removeChild(document.getElementById("chat-form"));
+        messageSection.style.display = "block";
       } else {
-        alert('Please provide all necessary information.');
+        alert("Please provide all necessary information.");
       }
     }
 
-    sendButton.addEventListener('click', sendMessage);
-    startChatForm.addEventListener('submit', startChat);
+    sendButton.addEventListener("click", sendMessage);
+    startChatForm.addEventListener("submit", startChat);
 
     return () => {
       socket.disconnect();
@@ -259,11 +281,7 @@ const ChatPage = () => {
     }
   `;
 
-  return (
-    <style>
-      {externalStyles}
-    </style>
-  );
+  return <style>{externalStyles}</style>;
 };
 
 export default ChatPage;

@@ -28,11 +28,11 @@ export const createIssueType = createAsyncThunk(
 // Get all issue types
 export const getAllIssueTypes = createAsyncThunk(
   'issues/getAll',
-  async (_, thunkAPI) => {
+  async ({ page, pageSize }, thunkAPI) => {
     try {
       const token = thunkAPI.getState().auth.user.token;
-     
-      return await issueTypeService.getAllIssueTypes(token);
+      const response = await issueTypeService.getAllIssueTypes(token, page, pageSize);
+      return response;
     } catch (error) {
       return thunkAPI.rejectWithValue(error.message);
     }
@@ -138,7 +138,7 @@ export const issueTypeSlice = createSlice({
         state.isLoading = false;
         
         // Update the issue type in the state with the updated data
-        state.issueTypes = state.issueTypes.map((issueType) =>
+        state.issueTypes = state.issueTypes.issueTypes.map((issueType) =>
           issueType._id === action.payload._id ? action.payload : issueType
         );
       })
@@ -154,7 +154,7 @@ export const issueTypeSlice = createSlice({
       .addCase(deleteIssueType.fulfilled, (state, action) => {
         state.isLoading = false;
         // Remove the deleted issue type from the state
-        state.issueTypes = state.issueTypes.filter((issueType) => issueType._id !== action.payload);
+        state.issueTypes = state.issueTypes.issueTypes.filter((issueType) => issueType._id !== action.payload);
         
       })
       .addCase(deleteIssueType.rejected, (state) => {

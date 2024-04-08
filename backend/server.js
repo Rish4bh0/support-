@@ -20,7 +20,7 @@ const PORT = process.env.PORT || 5000;
 
 // Enable Cross-Origin Resource Sharing (CORS)
 app.use(cors());
-
+app.use("/locales", express.static(path.join(__dirname, "locales")));
 // Define a Mongoose schema for media (images and videos)
 
 // Set up Multer for media uploads
@@ -98,7 +98,11 @@ app.post('/upload', upload.array('media', 10), async (req, res) => {
 
     // Save the media URLs in MongoDB with forward slashes
     const mediaItems = req.files.map((file) => ({
-      mediaUrl: "http://backend" + file.path.replace(/\\/g, '/'),
+
+      mediaUrl: "http://backend/" + file.path.replace(/\\/g, '/'),
+
+      mediaUrl: environment.SERVER_URL  + file.path.replace(/\\/g, '/'),
+
       mediaType: file.mimetype.startsWith('image') ? 'image' : 'video',
     }));
 
