@@ -6,7 +6,7 @@ import { environment } from "../../lib/environment";
 const ChatPage = () => {
   const user = useSelector((state) => state.auth.user);
   useEffect(() => {
-    const socket = io(environment.SERVER_URL);
+    const socket = io();
 
     const chatButton = document.createElement("div");
     chatButton.id = "chat-button";

@@ -61,6 +61,7 @@ services:
       NODE_ENV: development
       REACT_APP_SERVER_URL_DEV: http://backend/
       REACT_APP_SERVER_URL_PROD: https://dryicesupport.onrender.com
+      WDS_SOCKET_PORT: 0 
 
   watchtower:
     image: hyp3rr/multi-watchtower

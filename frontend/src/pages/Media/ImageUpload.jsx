@@ -187,6 +187,7 @@ const MediaUpload = ({ ticketID }) => {
             }}
           >
             Choose File
+            
           </Button>
         </label>
         <div className="text-center">

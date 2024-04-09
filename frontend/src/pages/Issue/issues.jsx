@@ -65,7 +65,7 @@ function IssueList() {
   useEffect(() => {
     const timer = setTimeout(() => {
       fetchData(); // Fetch data after 2 seconds
-    }, 1000);
+    }, 0);
 
     return () => clearTimeout(timer); // Cleanup function
   }, [page, pageSize]);
@@ -241,9 +241,9 @@ function IssueList() {
     setPage(value)
   }
 
-  if (isLoading) {
+ /* if (isLoading) {
     return <Spinner />;
-  }
+  }*/
 
   if (error) {
     return <div>Error: {error}</div>;
@@ -313,9 +313,9 @@ function IssueList() {
             components={{ Pagination: null }}
             className="min-w-full overflow-x-auto md:w-full"
           />
-          {isLoading ? (
+        { /* {isLoading ? (
             <Spinner />
-          ) : (
+        ) : (*/}
             <div className="flex justify-between items-center">
               <div className="flex items-center py-4">
                 <FormControl fullWidth sx={{ width: "90px"}}>
@@ -390,7 +390,7 @@ function IssueList() {
                 </div>
               )}
             </div>
-          )}
+       {/*   )}*/}
 
           <Modal
             isOpen={isModalOpen}
