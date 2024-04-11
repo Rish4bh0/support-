@@ -315,7 +315,7 @@ function UnassignedTickets() {
 
   return (
     <div className="mt-4">
-      <div className="border border-gray-300 rounded-2xl bg-white w-full mb-4">
+      <div className="shadow-xl border-gray-300 rounded-2xl bg-white w-full mb-4">
         <div className="border-b-1 p-4 font-extrabold text-sm flex gap-2">
           <div className="font-extrabold">Unassigned</div>
         </div>
@@ -344,7 +344,7 @@ function UnassignedTickets() {
           </div>
         </div>
       </div>
-      <div className="border border-gray-300 rounded-2xl bg-white w-full">
+      <div className="shadow-xl border-gray-300 rounded-2xl bg-white w-full">
         <div className="border-b-1 p-4 font-extrabold text-sm flex justify-between items-center">
           <div className="font-extrabold">Tickets</div>
         </div>

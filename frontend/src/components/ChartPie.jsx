@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState } from "react";
+import React, { useRef } from "react";
 import {
   BarChart,
   Bar,
@@ -70,22 +70,18 @@ const getShortMonth = (fullMonth) => {
   return `${year}-${shortMonth}`;
 };
 
-const TicketStatusChart = ({ allTicket }) => {
+const ChartPie = ({ allTicket }) => {
   const ref = useRef(null);
-  const ref2 = useRef(null);
 
   const x = useMotionValue(0);
-  const x2 = useMotionValue(0);
+
   const y = useMotionValue(0);
-  const y2 = useMotionValue(0);
 
   const xSpring = useSpring(x);
-  const xSpring2 = useSpring(x2);
+
   const ySpring = useSpring(y);
-  const ySpring2 = useSpring(y2);
 
   const transform = useMotionTemplate`rotateX(${xSpring}deg) rotateY(${ySpring}deg)`;
-  const transform2 = useMotionTemplate`rotateX(${xSpring2}deg) rotateY(${ySpring2}deg)`;
 
   const handleMouseMove = (e) => {
     if (!ref.current) return [0, 0];
@@ -109,27 +105,7 @@ const TicketStatusChart = ({ allTicket }) => {
     x.set(0);
     y.set(0);
   };
-  const [selectedYear, setSelectedYear] = useState(null);
-  const [yearOptions, setYearOptions] = useState([]);
-
-  useEffect(() => {
-    const currentYear = new Date().getFullYear();
-    const options = [];
-    for (let i = currentYear - 2; i <= currentYear + 2; i++) {
-      options.push(i.toString());
-    }
-    setYearOptions(options);
-  }, []);
-  const handleYearChange = (e) => {
-    setSelectedYear(e.target.value);
-  };
-
-  // Filter data based on selected year
-  const filteredData = selectedYear
-    ? allTicket.filter((ticket) => ticket.createdAt.startsWith(selectedYear))
-    : allTicket;
-
-  const transformedData = filteredData.reduce((acc, ticket) => {
+  const transformedData = allTicket.reduce((acc, ticket) => {
     const month = ticket.createdAt.substring(0, 7);
     const shortMonth = getShortMonth(month);
     console.log("mon" + shortMonth);
@@ -164,85 +140,78 @@ const TicketStatusChart = ({ allTicket }) => {
 
   return (
     <>
-      <motion.div className="relative h-80 min-h-80 w-full rounded-xl bg-gradient-to-br ">
-        <div className="absolute inset-4 grid  rounded-xl bg-white shadow-xl">
-          <div className="flex p-4 px-8 py-8 font-extrabold text-sm justify-between ">
+      <div className="flex justify-between items-center gap-4">
+        {/*
+      <motion.div
+      ref={ref}
+      onMouseMove={handleMouseMove}
+      onMouseLeave={handleMouseLeave}
+      style={{
+        transformStyle: "preserve-3d",
+        transform,
+      }}
+      className="relative h-80 min-h-80 w-full rounded-xl bg-gradient-to-br from-green-300 to-yellow-300"
+    >
+      <div
+        style={{
+          transform: "translateZ(75px)",
+          transformStyle: "preserve-3d",
+        }}
+        className="absolute inset-4 grid  rounded-xl bg-white shadow-lg"
+      >
+         <div
+           style={{
+            transform: "translateZ(75px)",
+            transformStyle: "preserve-3d",
+          }}
+           className=" p-4 px-8 py-8 font-extrabold text-sm">
             <Box display="flex">Bar Chart</Box>
-            <select
-              className="h-8 text-xs z-50 rounded-xl shadow-xl"
-              value={selectedYear}
-              onChange={handleYearChange}
-              style={{ border: "none", outline: "none" }}
+          </div>
+          <div 
+           style={{
+            transform: "translateZ(75px)",
+            transformStyle: "preserve-3d",
+          }}
+          className="p-4 pt-16 place-content-center absolute inset-4 grid  ">
+            <BarChart
+              width={450}
+              height={220}
+              data={transformedData}
+              margin={{ top: 20, right: 30, left: 20, bottom: 2 }}
             >
-              <option value="">All Years</option>
-              {yearOptions.map((year) => (
-                <option key={year} value={year}>
-                  {year}
-                </option>
-              ))}
-            </select>
-          </div>
-          <div
-            style={{
-              transform: "translateZ(75px)",
-              transformStyle: "preserve-3d",
-            }}
-            className="p-4 pt-16 place-content-center absolute inset-4 grid  "
-          >
-            {transformedData.length === 0 ? (
-              <div
-                style={{
-                  display: "flex",
-                  justifyContent: "center",
-                  alignItems: "center",
-                  height: "100%",
-                }}
-              >
-                <span>No data available</span>
-              </div>
-            ) : (
-              <BarChart
-                width={450}
-                height={220}
-                data={transformedData}
-                margin={{ top: 20, right: 30, left: 20, bottom: 2 }}
-              >
-                <XAxis dataKey="shortMonth" />
-                <YAxis />
-                <Tooltip />
-                <Legend />
+              <XAxis dataKey="shortMonth" />
+              <YAxis />
+              <Tooltip />
+              <Legend />
 
-                {filteredTotalTicketsByStatus.map((status, index) => (
-                  <Bar
-                    key={status.name}
-                    dataKey={status.name}
-                    stackId="a"
-                    fill={statusColors[status.name]}
-                    barSize={30}
-                  >
-                    <Label
-                      content={({ value }) => `${value} tickets`}
-                      position="top"
-                    />
-                  </Bar>
-                ))}
-
-                {filteredTotalTicketsByStatus.map((status, index) => (
-                  <Line
-                    key={status.name}
-                    type="monotone"
-                    dataKey={status.name}
-                    stroke={statusColors[status.name]} // Unique color for each status
-                    yAxisId={0}
+              {filteredTotalTicketsByStatus.map((status, index) => (
+                <Bar
+                  key={status.name}
+                  dataKey={status.name}
+                  stackId="a"
+                  fill={statusColors[status.name]} // Unique color for each status
+                >
+                  <Label
+                    content={({ value }) => `${value} tickets`}
+                    position="top"
                   />
-                ))}
-              </BarChart>
-            )}
-          </div>
-        </div>
-      </motion.div>
+                </Bar>
+              ))}
 
-      {/*
+              {filteredTotalTicketsByStatus.map((status, index) => (
+                <Line
+                  key={status.name}
+                  type="monotone"
+                  dataKey={status.name}
+                  stroke={statusColors[status.name]} // Unique color for each status
+                  yAxisId={0}
+                />
+              ))}
+            </BarChart>
+          </div>
+      </div>
+    </motion.div>
+    
         <div className="border border-gray-300 rounded-2xl bg-white w-full">
           <div className="border-b-1 p-4 font-extrabold text-sm">
             <Box display="flex">Bar Chart</Box>
@@ -285,62 +254,79 @@ const TicketStatusChart = ({ allTicket }) => {
             </BarChart>
           </div>
         </div>
-        
-          <motion.div
-      ref={ref2}
-      onMouseMove={handleMouseMove}
-      onMouseLeave={handleMouseLeave}
-      style={{
-        transformStyle: "preserve-3d",
-        transform,
-      }}
-      className="relative h-80 min-h-80 w-full rounded-xl bg-gradient-to-br from-yellow-300 to-green-300"
-    >
-      <div
-        style={{
-          transform: "translateZ(75px)",
-          transformStyle: "preserve-3d",
-        }}
-        className="absolute inset-4 grid  rounded-xl bg-white shadow-lg"
-      >
-         <div
-           style={{
-            transform: "translateZ(75px)",
+        */}
+        <motion.div
+          ref={ref}
+          onMouseMove={handleMouseMove}
+          onMouseLeave={handleMouseLeave}
+          style={{
             transformStyle: "preserve-3d",
+            transform,
           }}
-           className=" p-4 px-8 py-8 font-extrabold text-sm">
-            <Box display="flex">Pie Chart</Box>
+          className="relative h-80 min-h-80 w-full rounded-xl bg-gradient-to-br "
+        >
+          <div
+            style={{
+              transform: "translateZ(75px)",
+              transformStyle: "preserve-3d",
+            }}
+            className="absolute inset-4 grid  rounded-xl bg-white shadow-xl"
+          >
+            <div
+              style={{
+                transform: "translateZ(75px)",
+                transformStyle: "preserve-3d",
+              }}
+              className=" p-4 px-8 py-8 font-extrabold text-sm"
+            >
+              <Box display="flex">Pie Chart</Box>
+            </div>
+            <div
+              style={{
+                transform: "translateZ(75px)",
+                transformStyle: "preserve-3d",
+              }}
+              className="p-4 pt-16 place-content-center absolute inset-4 grid  "
+            >
+              {transformedData.length === 0 ? (
+                <div
+                  style={{
+                    display: "flex",
+                    justifyContent: "center",
+                    alignItems: "center",
+                    height: "100%",
+                  }}
+                >
+                  <span>No data available</span>
+                </div>
+              ) : (
+                <PieChart width={450} height={220}>
+                  <Pie
+                    dataKey="value"
+                    nameKey="name"
+                    data={filteredTotalTicketsByStatus}
+                    cx="50%"
+                    cy="50%"
+                    outerRadius={80}
+                    label={({ name, percent }) =>
+                      `${name} ${(percent * 100).toFixed(0)}%`
+                    }
+                  >
+                    {filteredTotalTicketsByStatus.map((entry, index) => (
+                      <Cell
+                        key={`cell-${index}`}
+                        fill={statusColors[entry.name]}
+                      />
+                    ))}
+                  </Pie>
+                  <Tooltip />
+                  <Legend />
+                </PieChart>
+              )}
+            </div>
           </div>
-          <div 
-           style={{
-            transform: "translateZ(75px)",
-            transformStyle: "preserve-3d",
-          }}
-          className="p-4 pt-16 place-content-center absolute inset-4 grid  ">
-            <PieChart width={450} height={220}>
-              <Tooltip />
-              <Legend />
-              <Pie
-                dataKey="value"
-                nameKey="name"
-                data={filteredTotalTicketsByStatus}
-                cx="50%"
-                cy="50%"
-                outerRadius={80}
-                label={({ name, percent }) =>
-                  `${name} ${(percent * 100).toFixed(0)}%`
-                }
-              >
-                {filteredTotalTicketsByStatus.map((entry, index) => (
-                  <Cell key={`cell-${index}`} fill={statusColors[entry.name]} />
-                ))}
-              </Pie>
-            </PieChart>
-          </div>
+        </motion.div>
       </div>
-    </motion.div>
-    */}
-
       {/*
         <div className="border border-gray-300 rounded-2xl bg-white w-full">
           <div className="border-b-1 p-4 font-extrabold text-sm">
@@ -428,7 +414,7 @@ const TicketStatusChart = ({ allTicket }) => {
   );
 };
 
-export default TicketStatusChart;
+export default ChartPie;
 
 {
   /*

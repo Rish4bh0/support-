@@ -361,7 +361,7 @@ function Tickets({ tickets, isLoading, filteredTic, greetingMessage, title }) {
 
   return (
     <div>
-      <div className="border border-gray-300 rounded-2xl bg-white w-full mb-8">
+      <div className="shadow-xl border-gray-300 rounded-2xl bg-white w-full mb-8">
         <div className="border-b-1 p-4 font-extrabold text-sm flex gap-2">
           <div className="font-extrabold">Filter {title}</div>
         </div>
@@ -391,7 +391,7 @@ function Tickets({ tickets, isLoading, filteredTic, greetingMessage, title }) {
                 ))}
               </select>
             </div>
-            <div className="w-full">
+            <div className="w-full ">
               <label className="block text-gray-700 text-sm font-semibold mb-2">
                 Start Date:
               </label>
@@ -414,7 +414,7 @@ function Tickets({ tickets, isLoading, filteredTic, greetingMessage, title }) {
           </div>
         </div>
       </div>
-      <div className="border border-gray-300 rounded-2xl bg-white w-full">
+      <div className="shadow-xl rounded-2xl bg-white w-full">
         <div className="border-b-1 p-4 font-extrabold text-sm flex justify-between items-center">
           <div className="font-extrabold">{title}</div>
         </div>

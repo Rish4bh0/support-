@@ -277,7 +277,9 @@ function UserList() {
                 ),
               },
             ]}
-            pageSize={5}
+            autoPageSize pagination
+            sx={{height: "450px"}}
+            pageSizeOptions={[5, 10, 25, 50, 100]}
             checkboxSelection
             onSelectionModelChange={(newSelection) => {}}
             getRowId={(row) => row.id}

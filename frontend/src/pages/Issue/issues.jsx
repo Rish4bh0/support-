@@ -30,6 +30,13 @@ import {
   TextField,
   Typography,
 } from "@mui/material";
+import { AnimatePresence, motion } from "framer-motion";
+import { FiAlertCircle } from "react-icons/fi";
+import { FiPlusCircle } from "react-icons/fi";
+import { FiPenTool } from "react-icons/fi";
+import { FiDelete } from "react-icons/fi";
+import BarLoader from "../../components/Loader";
+
 
 
 const customStyles = {
@@ -46,6 +53,13 @@ const customStyles = {
   },
 };
 
+const CustomLoader = () => (
+  
+  <div className="grid place-content-center bg-violet-600 px-4 py-24">
+  <BarLoader />
+</div>
+);
+
 function IssueList() {
   const issueTypesData = useSelector((state) => state.issueTypes.issueTypes);
   console.log("1", issueTypesData);
@@ -53,6 +67,7 @@ function IssueList() {
   console.log("2", issue);
   const count = issueTypesData.count || 0;
   console.log("3", count);
+
 
   const dispatch = useDispatch();
   const [isLoading, setIsLoading] = useState(true); // Initially set loading to true
@@ -109,6 +124,7 @@ function IssueList() {
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
   const [issueIdToDelete, setIssueIdToDelete] = useState(null);
   const [selectedIssueId, setSelectedIssueId] = useState("");
+  const [isOpen, setIsOpen] = useState(false);
 /*
   useEffect(() => {
     if (isError) {
@@ -241,9 +257,7 @@ function IssueList() {
     setPage(value)
   }
 
-  if (isLoading) {
-    return <Spinner />;
-  }
+  
 
   if (error) {
     return <div>Error: {error}</div>;
@@ -263,10 +277,12 @@ function IssueList() {
       <div className="border border-gray-300 rounded-2xl bg-white w-full mb-48">
         <div className="border-b-1 p-4 text-sm flex justify-between">
           <div className="font-extrabold">Issue List</div>
-
-          <Button variant="contained" color="primary" onClick={openModal}>
-            <AddCircleOutlineIcon className="me-2" /> Add Issue
-          </Button>
+          <button
+        onClick={() => setIsOpen(true)}
+        className="bg-gradient-to-r from-blue-600 to-indigo-600 text-white font-medium px-4 py-2 rounded hover:opacity-90 transition-opacity"
+      >
+        <AddCircleOutlineIcon className="me-2" /> Add issue
+      </button>
         </div>
 
         <div className="p-4">
@@ -309,13 +325,13 @@ function IssueList() {
                 ),
               },
             ]}
+            sx={{ height: "370px" }}
             loading={isLoading}
+          
             components={{ Pagination: null }}
             className="min-w-full overflow-x-auto md:w-full"
           />
-          {isLoading ? (
-            <Spinner />
-          ) : (
+         
             <div className="flex justify-between items-center">
               <div className="flex items-center py-4">
                 <FormControl fullWidth sx={{ width: "90px"}}>
@@ -390,124 +406,195 @@ function IssueList() {
                 </div>
               )}
             </div>
-          )}
+          
 
-          <Modal
-            isOpen={isModalOpen}
-            onRequestClose={closeModal}
-            contentLabel="Add Issue Modal"
-            className={"border text-xs rounded-lg bg-white overflow-hidden"}
-            style={{
-              ...customStyles,
-              zIndex: 1,
-              position: "absolute",
-            }}
+          <AnimatePresence>
+      {isOpen && (
+        <motion.div
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          exit={{ opacity: 0 }}
+          onClick={() => setIsOpen(false)}
+          className="bg-slate-900/20 backdrop-blur p-8 fixed inset-0 z-50 grid place-items-center overflow-y-scroll cursor-pointer"
+        >
+          <motion.div
+            initial={{ scale: 0, rotate: "12.5deg" }}
+            animate={{ scale: 1, rotate: "0deg" }}
+            exit={{ scale: 0, rotate: "0deg" }}
+            onClick={(e) => e.stopPropagation()}
+            className="bg-gradient-to-br from-blue-600 to-indigo-600 text-white p-6 rounded-lg w-full max-w-lg shadow-xl cursor-default relative overflow-hidden"
           >
-            <div className="p-4 flex justify-between items-center bg-blue-600 text-white">
-              <label className="font-semibold uppercase ">Add Issue</label>
-              <button onClick={closeModal}>
-                <CloseIcon />
-              </button>
-            </div>
+           <FiPlusCircle className="text-white/10 rotate-12 text-[250px] absolute z-0 -top-24 -left-24" />
+            <div className="relative z-10">
+              <div className="bg-white w-16 h-16 mb-2 rounded-full text-3xl text-indigo-600 grid place-items-center mx-auto">
+                <FiPlusCircle />
+                </div>
+                <h3 className="text-3xl font-bold text-center mb-2">
+                Add issue
+              </h3>
             <form onSubmit={handleFormSubmit}>
-              <div className="p-4">
+              <div className="p-4 pb-10">
                 <div className="form-group">
                   <label htmlFor="name" className="mb-2 block font-semibold">
                     New Issue Name
                   </label>
                   <TextField
+                 
                     id="name"
                     name="name"
                     placeholder="Name"
-                    className="text-sm w-full"
+                    className="bg-white hover:opacity-90 transition-opacity text-indigo-600 font-semibold w-full py-2 rounded"
                     size="small"
                     value={newIssueName}
                     onChange={(e) => setNewIssueName(e.target.value)}
                   />
                 </div>
               </div>
-              <div className="card-footer p-4 border-t-1 space-x-6 text-end">
-                <Button type="submit" variant="contained" color="primary">
+              <div className="flex gap-2">
+              
+                <button
+                type="button"
+                  onClick={() => setIsOpen(false)}
+                  className="bg-transparent hover:bg-white/10 transition-colors text-white font-semibold w-full py-2 rounded"
+                >
+                  No, go back
+                </button>
+                <button
+              type="submit"
+                  onClick={() => setIsOpen(false)}
+                  className="bg-white hover:opacity-90 transition-opacity text-indigo-600 font-semibold w-full py-2 rounded"
+                >
                   Create Issue
-                </Button>
+                </button>
               </div>
             </form>
-          </Modal>
-
-          {/* Update issue Modal */}
-          <Modal
-            isOpen={!!(isUpdateModalOpen && selectedIssueId)}
-            onRequestClose={closeUpdateModal}
-            contentLabel="Update Issue Modal"
-            className={"border text-xs rounded-lg bg-white overflow-hidden"}
-            style={{
-              ...customStyles,
-              zIndex: 1,
-              position: "absolute",
-            }}
-          >
-            <div className="p-4 flex justify-between items-center bg-blue-600 text-white">
-              <label className="font-semibold uppercase ">Update Issue</label>
-              <button onClick={closeModal}>
-                <CloseIcon />
-              </button>
             </div>
-            <form onSubmit={handleFormSubmit}>
-              <div className="p-4">
-                <div className="form-group">
-                  <label htmlFor="name" className="mb-2 block font-semibold">
-                    Issue Name
-                  </label>
-                  <TextField
-                    id="name"
-                    name="name"
-                    className="text-sm w-full"
-                    size="small"
-                    placeholder="Enter new issue name"
-                    value={updateName}
-                    onChange={(e) => setUpdateName(e.target.value)}
-                  />
+          </motion.div>
+        </motion.div>
+      )}
+    
+
+         {/* Update issue Modal */}
+         {isUpdateModalOpen && (
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            className="bg-slate-900/20 backdrop-blur p-8 fixed inset-0 z-50 grid place-items-center overflow-y-scroll cursor-pointer"
+            onClick={closeUpdateModal}
+          >
+            <motion.div
+              initial={{ scale: 0, rotate: "12.5deg" }}
+              animate={{ scale: 1, rotate: "0deg" }}
+              exit={{ scale: 0, rotate: "0deg" }}
+              onClick={(e) => e.stopPropagation()}
+              className="bg-gradient-to-br from-blue-600 to-indigo-600 text-white p-6 rounded-lg w-full max-w-lg shadow-xl cursor-default relative overflow-hidden"
+            >
+              <FiPenTool className="text-white/10 rotate-12 text-[250px] absolute z-0 -top-24 -left-24" />
+              <div className="relative z-10">
+                <div className="bg-white w-16 h-16 mb-2 rounded-full text-3xl text-indigo-600 grid place-items-center mx-auto">
+                  <FiPenTool />
+                </div>
+                <h3 className="text-3xl font-bold text-center mb-2">
+                  Update Issue
+                </h3>
+                <form onSubmit={handleFormSubmit}>
+                  <div className="p-4 pb-10">
+                    <div className="form-group">
+                      <label
+                        htmlFor="name"
+                        className="mb-2 block font-semibold"
+                      >
+                        Issue Name
+                      </label>
+                      <TextField
+                        id="name"
+                        name="name"
+                        className="bg-white hover:opacity-90 transition-opacity text-indigo-600 font-semibold w-full py-2 rounded"
+                        size="small"
+                        placeholder="Enter new issue name"
+                        value={updateName}
+                        onChange={(e) => setUpdateName(e.target.value)}
+                      />
+                    </div>
+                  </div>
+                  <div className="flex gap-2">
+                    
+                    <button
+                      type="button"
+                      onClick={closeUpdateModal}
+                      className="bg-transparent hover:bg-white/10 transition-colors text-white font-semibold w-full py-2 rounded"
+                    >
+                      No go back
+                    </button>
+                    <button
+                      type="submit"
+                      className="bg-white hover:opacity-90 transition-opacity text-indigo-600 font-semibold w-full py-2 rounded"
+                    >
+                      Update Issue
+                    </button>
+                  </div>
+                </form>
+              </div>
+            </motion.div>
+          </motion.div>
+        )}
+
+
+         {/* Delete Confirmation Modal */}
+         {isDeleteModalOpen && (
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            className="bg-slate-900/20 backdrop-blur p-8 fixed inset-0 z-50 grid place-items-center overflow-y-scroll cursor-pointer"
+            onClick={cancelDelete}
+          >
+            <motion.div
+              initial={{ scale: 0, rotate: "12.5deg" }}
+              animate={{ scale: 1, rotate: "0deg" }}
+              exit={{ scale: 0, rotate: "0deg" }}
+              onClick={(e) => e.stopPropagation()}
+              className="bg-gradient-to-br from-blue-600 to-indigo-600 text-white p-6 rounded-lg w-full max-w-lg shadow-xl cursor-default relative overflow-hidden"
+            >
+              <FiDelete className="text-white/10 rotate-12 text-[250px] absolute z-0 -top-24 -left-24" />
+              <div className="relative z-10">
+                <div className="bg-white w-16 h-16 mb-2 rounded-full text-3xl text-indigo-600 grid place-items-center mx-auto">
+                  <FiDelete />
+                </div>
+                <h3 className="text-3xl font-bold text-center mb-2">
+                  Confirm Delete
+                </h3>
+                <div className="p-4 pb-10 text-center">
+                  <p>Are you sure you want to delete the issue?</p>
+                </div>
+                <div className="flex gap-2">
+                  
+                  <button
+                    onClick={cancelDelete}
+                    className="bg-transparent hover:bg-white/10 transition-colors text-white font-semibold w-full py-2 rounded"
+                  >
+                    No, go back
+                  </button>
+                  <button
+                    onClick={confirmDelete}
+                    className="bg-red-400 hover:bg-red-500 text-white font-semibold w-full py-2 rounded"
+                  >
+                    Delete
+                  </button>
                 </div>
               </div>
-              <div className="card-footer p-4 border-t-1 space-x-6 text-end">
-                <Button type="submit" variant="contained" color="primary">
-                  Update Issue
-                </Button>
-              </div>
-            </form>
-          </Modal>
-
-          {/* Delete Confirmation Modal */}
-          <Modal
-            isOpen={!!isDeleteModalOpen}
-            onRequestClose={cancelDelete}
-            contentLabel="Delete User Confirmation Modal"
-            className={"border text-xs rounded-lg bg-white overflow-hidden"}
-            style={{
-              ...customStyles,
-              zIndex: 1,
-              position: "absolute",
-            }}
-          >
-            <div className="p-4 flex justify-between items-center bg-blue-600 text-white">
-              <label className="font-semibold uppercase ">Confirm Delete</label>
-              <button onClick={cancelDelete}>
-                <CloseIcon />
-              </button>
-            </div>
-            <div className="card-body p-4">
-              <p>Are you sure you want to delete issue?</p>
-            </div>
-            <div className="card-footer p-4 border-t-1 space-x-6 text-end">
-              <Button onClick={confirmDelete} variant="contained" color="error">
-                Delete
-              </Button>
-            </div>
-          </Modal>
+            </motion.div>
+          </motion.div>
+        )}
+        </AnimatePresence>
+      
         </div>
       </div>
     </>
   );
 }
+
+
 
 export default IssueList;

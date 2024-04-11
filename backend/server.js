@@ -11,6 +11,10 @@ const mongoose = require('mongoose');
 const fs = require('fs').promises; 
 const Media = require('./models/mediaModel.js');
 const environment = require('./utils/environment.js');
+const qrcode = require('qrcode-terminal');
+const { Client, LocalAuth, AuthStrategy }= require ('whatsapp-web.js');
+
+
 // Connect to the database
 connectDB();
 
@@ -56,6 +60,8 @@ const io = require('socket.io')(server, {
   transports: ['polling'],
   cors: { origin: '*' },
 });
+
+
 
 // Socket.io initialization
 require('./socketio.js')(io);

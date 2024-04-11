@@ -271,7 +271,7 @@ useEffect(() => {
 
       // Reset form, navigate to tickets page, and show success toast
       dispatch(reset());
-      navigate("/assigned");
+      navigate(`/ticket/${newTicketID}`);
       toast.success("New ticket created!");
       localStorage.removeItem("ticketDraft");
     } catch (error) {
@@ -294,7 +294,7 @@ useEffect(() => {
 
   return (
     <>
-      <div className="card bg-white rounded-lg border">
+      <div className="card bg-white rounded-lg shadow-xl">
         <div className="card-header p-4 border-b-1 pb-3">
           <Typography variant="h6">{t("Create New Ticket")}</Typography>
         </div>
@@ -464,6 +464,7 @@ useEffect(() => {
                   onChange={handleInputChange}
                   fullWidth
                   multiline
+                  InputProps={{ disableUnderline: true }}
                   rows={4}
                 />
               </Grid>

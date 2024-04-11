@@ -10,6 +10,8 @@ import RateReviewIcon from "@mui/icons-material/RateReview";
 import DraftsIcon from "@mui/icons-material/Drafts";
 import FiberNewIcon from "@mui/icons-material/FiberNew";
 import { getAllOrganization } from "../../features/organization/organizationSlice";
+import TiltCard from "../../components/AnimatedCard";
+import ChartPie from "../../components/ChartPie";
 
 const getRandomColor = () =>
   `#${Math.floor(Math.random() * 16777215).toString(16)}`;
@@ -85,6 +87,25 @@ const Ecommerce = () => {
       </div>
       <div>
         <div className="flex flex-wrap justify-between items-center mb-5">
+        <div className="relative h-36 w-48 rounded-xl bg-gradient-to-br ">
+        <TiltCard count={allTicketsCount} title={"All Ticket"} icon={<ConfirmationNumberIcon />} link={"/"} color="gray"/>
+        </div>
+        <div className="relative h-36 w-48 rounded-xl bg-gradient-to-br ">
+   <TiltCard count={draftTicketCount} title={"Draft"} icon={ <DraftsIcon />} link={"/"} color="#fbe032"/>
+ </div>
+ <div className="relative h-36 w-48 rounded-xl bg-gradient-to-br ">
+   <TiltCard count={newTicketsCount} title={"New Ticket"} icon={ <FiberNewIcon />} link={"/"} color="#008000"/>
+ </div>
+ <div className="relative h-36 w-48 rounded-xl bg-gradient-to-br ">
+           <TiltCard count={openTicketsCount} title={"Open Ticket"} icon={ <ConfirmationNumberIcon />} link={"/"} color="#4682b4"/>
+           </div>
+           <div className="relative h-36 w-48 rounded-xl bg-gradient-to-br ">
+          <TiltCard count={reviewTicketsCount} title={"Review"} icon={ <DraftsIcon />} link={"/"} color="#f8a54c"/>
+          </div>
+          <div className="relative h-36 w-48 rounded-xl bg-gradient-to-br ">
+          <TiltCard count={closedTicketsCount} title={"Closed Ticket"} icon={ <CloseIcon />} link={"/"} color="#8b0000"/>
+          </div>
+         {/*
           <div className="bg-white dark:text-gray-200 dark:bg-secondary-dark-bg md:w-48 p-4 rounded border flex flex-col items-center">
             <Link to="/ticketss">
               <button
@@ -166,8 +187,16 @@ const Ecommerce = () => {
             <div className="text-lg font-semibold"> {closedTicketsCount} </div>
             <div className="text-sm font-semibold">Closed Ticket</div>
           </div>
+  */}
         </div>
-        <TicketStatusPie allTicket={organizationTickets} className="mt-2" />
+        <div className="flex flex-col md:flex-row">
+  <div className="flex-1 md:mr-4 mb-4 md:mb-0">
+    <TicketStatusPie allTicket={allTickets} />
+  </div>
+  <div className="flex-1">
+    <ChartPie allTicket={allTickets} />
+  </div>
+</div>
       </div>
     </>
   );

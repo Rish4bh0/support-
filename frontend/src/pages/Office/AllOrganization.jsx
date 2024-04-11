@@ -321,7 +321,7 @@ function OrganizationList() {
               focalPersonContact: organization.focalPersonContact,
             }))}
             columns={columns}
-            pageSize={5}
+            pageSizeOptions={[5, 10, 25, 50, 100]}
             checkboxSelection
             onSelectionModelChange={(newSelection) => {
               // Handle selection changes if needed
@@ -483,14 +483,14 @@ function OrganizationList() {
                       value={payment}
                       onChange={(e) => setPayment(e.target.value)}
                     >
-                      <option value="">Select One</option>
-                      <option value="Paid">Paid</option>
-                      <option value="PaidAmc">Paid AMC</option>
-                      <option value="FreeSupport">Free Support</option>
-                      <option value="FreeSupportPeriodUnderAMC">
+                      <MenuItem value="">Select One</MenuItem>
+                      <MenuItem value="Paid">Paid</MenuItem>
+                      <MenuItem value="PaidAmc">Paid AMC</MenuItem>
+                      <MenuItem value="FreeSupport">Free Support</MenuItem>
+                      <MenuItem value="FreeSupportPeriodUnderAMC">
                         Free Support Period Under AMC
-                      </option>
-                      <option value="SupportContract">Support Contract</option>
+                      </MenuItem>
+                      <MenuItem value="SupportContract">Support Contract</MenuItem>
                     </Select>
                   </div>
                 </div>
