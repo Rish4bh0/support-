@@ -27,12 +27,13 @@ whatsappClient.on("message", async (msg) => {
             // Respond to group messages
             if (messageContent.includes('hello')) {
                 // Reply to the entire group
-                await whatsappClient.sendText(msg.from, 'Hello everyone!');
+                await whatsappClient.sendText(msg.from, 'Hello!');
             }
+            
         } else {
 
-            if (msg.body.includes('hello')) {
-                await msg.reply('Hello! How can I assist you?');
+            if (msg.body.includes('.ticket')) {
+                await msg.reply('Hello! Please fill in the following details name, email, title and short description');
             } else if (msg.body.includes('bye')) {
                 await msg.reply('Goodbye! Take care.');
             }
@@ -48,7 +49,9 @@ whatsappClient.on("message", async (msg) => {
 
             // Respond to individual messages
             // Add your logic here
+            
         }
+        
     } catch (error) {
         console.error("Error handling message:", error);
     }
