@@ -321,7 +321,7 @@ function OrganizationList() {
               focalPersonContact: organization.focalPersonContact,
             }))}
             columns={columns}
-            pageSize={5}
+            pageSizeOptions={[5, 10, 25, 50, 100]}
             checkboxSelection
             onSelectionModelChange={(newSelection) => {
               // Handle selection changes if needed

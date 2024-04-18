@@ -214,14 +214,14 @@ function Ticket() {
   const onTicketClose = () => {
     dispatch(closeTicket(ticketId));
     toast.success("Ticket Closed");
-    navigate("/allticket");
+    navigate("/all-tickets");
   };
 
   // Close ticket
   const onTicketOpen = () => {
     dispatch(openTicket(ticketId));
     toast.success("Ticket Opened");
-    navigate("/allticket");
+    navigate("/all-tickets");
   };
   // Close ticket
   const onTicketSendForReview = () => {

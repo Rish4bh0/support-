@@ -318,7 +318,7 @@ function OfficeUnassignedTickets() {
 
   return (
     <>
-      <div className="border border-gray-300 rounded-2xl bg-white w-full mb-4 font-semibold">
+      <div className="shadow-xl border-gray-300 rounded-2xl bg-white w-full mb-4 font-semibold">
         <div className="border-b-1 p-4 text-sm">Select Date</div>
         <div className="p-4 text-xs">
           <div className="bg-white flex gap-3">
@@ -341,7 +341,7 @@ function OfficeUnassignedTickets() {
           </div>
         </div>
       </div>
-      <div className="border border-gray-300 rounded-2xl bg-white w-full">
+      <div className="shadow-xl border-gray-300 rounded-2xl bg-white w-full">
         <div className="border-b-1 p-4 font-semibold text-sm">
           {greetingMessage}
         </div>

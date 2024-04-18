@@ -10,7 +10,13 @@ const cors = require('cors');
 const mongoose = require('mongoose');
 const fs = require('fs').promises; 
 const Media = require('./models/mediaModel.js');
+const messageRouter = require('./routes/messageRouter.js')
 const environment = require('./utils/environment.js');
+const whatsappClient = require('./services/WhatsappClient.js')
+
+whatsappClient.initialize()
+
+ 
 // Connect to the database
 connectDB();
 
@@ -57,6 +63,8 @@ const io = require('socket.io')(server, {
   cors: { origin: '*' },
 });
 
+
+
 // Socket.io initialization
 require('./socketio.js')(io);
 
@@ -71,6 +79,7 @@ app.use(createUploadsDirectory);
 
 
 // API routes
+app.use(messageRouter)
 app.use('/api/users', require('./routes/userRoutes'));
 app.use('/api/tickets', require('./routes/ticketRoutes'));
 app.use('/api/issues', require('./routes/issueRoutes'));

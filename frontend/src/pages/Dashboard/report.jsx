@@ -176,8 +176,8 @@ const Report = ({ organzationName }) => {
   ];
 
   return (
-    <div className="mt-4">
-      <div className="border border-gray-300 rounded-2xl bg-white w-full">
+    <div className="mt-4 mb-20">
+      <div className="  rounded-2xl bg-white shadow-xl w-full">
         <div className="border-b-1 p-4 font-extrabold text-sm flex gap-2">
           <AccessTimeIcon fontSize="small" />
           <div className="font-extrabold">Time spent on support</div>

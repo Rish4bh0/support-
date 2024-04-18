@@ -10,6 +10,9 @@ import CloseIcon from "@mui/icons-material/Close";
 import RateReviewIcon from "@mui/icons-material/RateReview";
 import DraftsIcon from "@mui/icons-material/Drafts";
 import FiberNewIcon from "@mui/icons-material/FiberNew";
+import TiltCard from "../../components/AnimatedCard";
+import ChartPie from "../../components/ChartPie";
+
 
 const Dashboard = () => {
   const { currentColor, currentMode } = useStateContext();
@@ -75,12 +78,16 @@ const Dashboard = () => {
 
   return (
     <>
-      <div className="font-semibold text-lg mb-5">
+      <div className="font-semibold text-lg mb-5 ">
         Welcome to Dashboard , {user.name}{" "}
         {organizationMap[user.organization] || ""} !
       </div>
       <div>
         <div className="flex flex-wrap justify-between items-center mb-5">
+        <div className="relative h-36 w-48 rounded-xl bg-gradient-to-br ">
+        <TiltCard count={allTicketsCount} title={"All Ticket"} icon={<ConfirmationNumberIcon />} link={"/"} color="gray"/>
+        </div>
+        {/*
           <div className="bg-white dark:text-gray-200 dark:bg-secondary-dark-bg md:w-48 p-4 rounded border flex flex-col items-center">
             <Link to="/ticketss">
               <button
@@ -94,7 +101,11 @@ const Dashboard = () => {
             <div className="text-lg font-semibold">{allTicketsCount}</div>
             <div className="text-sm font-semibold">All Ticket</div>
           </div>
-
+  */}
+  <div className="relative h-36 w-48 rounded-xl bg-gradient-to-br ">
+   <TiltCard count={draftTicketCount} title={"Draft"} icon={ <DraftsIcon />} link={"/"} color="#fbe032"/>
+ </div>
+   {/*
           <div className="bg-white dark:text-gray-200 dark:bg-secondary-dark-bg md:w-48 p-4 rounded border flex flex-col items-center">
             <Link to="/ticketss">
               <button
@@ -108,7 +119,11 @@ const Dashboard = () => {
             <div className="text-lg font-semibold">{draftTicketCount}</div>
             <div className="text-sm font-semibold">Draft</div>
           </div>
-
+        */}
+       <div className="relative h-36 w-48 rounded-xl bg-gradient-to-br ">
+   <TiltCard count={newTicketsCount} title={"New Ticket"} icon={ <FiberNewIcon />} link={"/"} color="#008000"/>
+ </div>
+{/*
           <div className="bg-white dark:text-gray-200 dark:bg-secondary-dark-bg md:w-48 p-4 rounded border flex flex-col items-center">
             <button
               type="button"
@@ -120,7 +135,10 @@ const Dashboard = () => {
             <div className="text-lg font-semibold">{newTicketsCount}</div>
             <div className="text-sm font-semibold">New Ticket</div>
           </div>
-
+          */} <div className="relative h-36 w-48 rounded-xl bg-gradient-to-br ">
+           <TiltCard count={openTicketsCount} title={"Open Ticket"} icon={ <ConfirmationNumberIcon />} link={"/"} color="#4682b4"/>
+           </div>
+{/*
           <div className="bg-white dark:text-gray-200 dark:bg-secondary-dark-bg md:w-48 p-4 rounded border flex flex-col items-center">
             <Link to="/ticketss">
               <button
@@ -134,7 +152,10 @@ const Dashboard = () => {
             <div className="text-lg font-semibold">{openTicketsCount}</div>
             <div className="text-sm font-semibold">Open Ticket</div>
           </div>
-
+        */} <div className="relative h-36 w-48 rounded-xl bg-gradient-to-br ">
+          <TiltCard count={reviewTicketsCount} title={"Review"} icon={ <DraftsIcon />} link={"/"} color="#f8a54c"/>
+          </div>
+{/*
           <div className="bg-white dark:text-gray-200 dark:bg-secondary-dark-bg md:w-48 p-4 rounded border flex flex-col items-center">
             <Link to="/ticketss">
               <button
@@ -148,7 +169,10 @@ const Dashboard = () => {
             <div className="text-lg font-semibold">{reviewTicketsCount} </div>
             <div className="text-sm font-semibold">Review</div>
           </div>
-
+      */} <div className="relative h-36 w-48 rounded-xl bg-gradient-to-br ">
+          <TiltCard count={closedTicketsCount} title={"Closed Ticket"} icon={ <CloseIcon />} link={"/"} color="#8b0000"/>
+          </div>
+{/*
           <div className="bg-white dark:text-gray-200 dark:bg-secondary-dark-bg md:w-48 p-4 rounded border flex flex-col items-center">
             <Link to="/ticketss">
               <button
@@ -162,8 +186,21 @@ const Dashboard = () => {
             <div className="text-lg font-semibold"> {closedTicketsCount} </div>
             <div className="text-sm font-semibold">Closed Ticket</div>
           </div>
+          className="mt-20 border"
+    */}
         </div>
-        <TicketStatusPie allTicket={allTickets} className="mt-20 border" />
+      
+        <div className="flex flex-col md:flex-row">
+  <div className="flex-1 md:mr-4 mb-4 md:mb-0">
+    <TicketStatusPie allTicket={allTickets} />
+  </div>
+  <div className="flex-1">
+    <ChartPie allTicket={allTickets} />
+  </div>
+</div>
+
+
+       
         <Report className="mt-4" />
       </div>
     </>

@@ -6,7 +6,7 @@ import GitHubIcon from "@mui/icons-material/GitHub";
 export default function Footer() {
   return (
     <>
-      <footer className="fixed bottom-0 w-full">
+      <footer className="fixed bottom-0 w-full bg-inherit">
         {/* <div
           className="bottom-auto top-0 left-0 right-0 w-50% absolute pointer-events-none overflow-hidden -mt-20 h-20"
           style={{ transform: "translateZ(0)" }}
