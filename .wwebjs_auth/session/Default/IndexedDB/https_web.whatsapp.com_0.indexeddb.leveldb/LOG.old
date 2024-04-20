@@ -1,0 +1,12 @@
+2024/04/19-12:16:45.281 440c Reusing MANIFEST E:\support-react\support-react\.wwebjs_auth\session\Default\IndexedDB\https_web.whatsapp.com_0.indexeddb.leveldb/MANIFEST-000001
+2024/04/19-12:16:45.282 440c Recovering log #61
+2024/04/19-12:16:46.149 440c Reusing old log E:\support-react\support-react\.wwebjs_auth\session\Default\IndexedDB\https_web.whatsapp.com_0.indexeddb.leveldb/000061.log 
+2024/04/19-12:17:02.199 4268 Level-0 table #66: started
+2024/04/19-12:17:02.453 4268 Level-0 table #66: 1190667 bytes OK
+2024/04/19-12:17:02.495 4268 Delete type=0 #61
+2024/04/19-12:17:03.163 4268 Compacting 1@1 + 1@2 files
+2024/04/19-12:17:03.996 4268 Generated table #67@1: 49474 keys, 2222449 bytes
+2024/04/19-12:17:03.996 4268 Compacted 1@1 + 1@2 files => 2222449 bytes
+2024/04/19-12:17:04.108 4268 compacted to: files[ 0 0 1 0 0 0 0 ]
+2024/04/19-12:17:04.109 4268 Delete type=2 #63
+2024/04/19-12:17:04.109 4268 Delete type=2 #66

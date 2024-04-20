@@ -51,6 +51,7 @@ import OfficeTicket from "./pages/Office/OfficeTickets.jsx";
 import Spinner from "./components/Spinner.jsx";
 import NotFound from "./pages/mics/404.jsx"
 import Open from './pages/openai.js'
+import Chat from './pages/Chat.jsx'
 
 
 const theme = createTheme({
@@ -183,6 +184,9 @@ function App() {
                 </Route>
                 <Route path="/ticket/:ticketId" element={<PrivateRoute />}>
                   <Route path="/ticket/:ticketId" element={<Ticket />} />
+                </Route>
+                <Route path="/chat" element={<PrivateRoute />}>
+                  <Route path="/chat" element={<Chat />} />
                 </Route>
                 <Route path="/allticket" element={<PrivateRoute />}>
                   <Route path="/allticket" element={<ListTickets />} />

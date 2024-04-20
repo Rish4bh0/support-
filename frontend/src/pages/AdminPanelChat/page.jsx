@@ -8,7 +8,6 @@ import axios from "axios";
 import Sidebar from "../../components/UserList/sidebar";
 import { environment } from "../../lib/environment";
 
-
 export default function Home() {
   const user = useSelector((state) => state.auth.user);
 
@@ -16,25 +15,20 @@ export default function Home() {
   const [value, setValue] = useState(""); //state for text input
   const [chats, setChats] = useState(null); //state for current chat messages
   const [chatInfo, setChatInfo] = useState(null); //state for current chat Info
-
   const [socket, setSocket] = useState(null);
 
   useEffect(() => {
-    
     getAllChats();
     setSocket(io());
-    
   }, []);
 
   // show selected user chat and fetch chat
   const showChat = async (data) => {
     if (chatInfo !== null) {
-       
       //leaving previous chat room
       socket.emit("leave chat", chatInfo);
     }
     await getChat(data._id);
-    console.log("pls" + data._id);
     //joining new chat room
     socket.emit("join chat", data.userId);
   };
@@ -44,7 +38,7 @@ export default function Home() {
     socket.emit("chat message", {
       message: value,
       userId: chatInfo._id,
-      sentBy: "host",
+      sentBy: user.role, // send message with the user's role
     });
     setValue("");
   };
@@ -67,35 +61,40 @@ export default function Home() {
 
     //socket listener in case new chat is added
     socket?.on("chat added", () => {
-      toast.success("New chat",{position: "top-center"});
+      toast.success("New chat", { position: "top-center" });
       getAllChats();
     });
   }, [socket]);
 
   const updateChats = (data) => {
     setChats((prev) => {
-      return [...prev, { content: data.message, createdBy: data.createdBy }];
+      return [
+        ...prev,
+        { content: data.message, createdBy: data.createdBy },
+      ];
     });
   };
 
   const getAllChats = async () => {
     try {
-      const response = await axios.get(environment.SERVER_URL+"/api/chat/");
-     
+      const response = await axios.get(
+        environment.SERVER_URL + "/api/chat/"
+      );
+
       if (response && response.data) {
         setData(response.data.data);
-        console.log(response.data.data);
       }
     } catch (error) {
       console.error("Error fetching chats:", error);
     }
   };
-  
 
   const getChat = async (id) => {
     try {
-      const response = await axios.get(environment.SERVER_URL+`/api/chat/${id}`);
-      console.log("chat:" + response.data);
+      const response = await axios.get(
+        environment.SERVER_URL + `/api/chat/${id}`
+      );
+
       if (response && response.data) {
         setChats(response.data.data.messages);
         setChatInfo(response.data.data.userId);
@@ -104,22 +103,19 @@ export default function Home() {
       console.error("Error fetching chat:", error);
     }
   };
-  
 
-  useEffect(()=>{
-    if(chats){
+  useEffect(() => {
+    if (chats) {
       //scrolling to current chat
       const chatMessages = document.getElementById("chat-messages");
       chatMessages.scrollTop = chatMessages.scrollHeight;
     }
-  },[chats])
+  }, [chats]);
 
   return (
     <main className={styles.main}>
-     
       <div className={styles.container}>
         <Sidebar showChat={showChat} data={data} />
-       { console.log(showChat, data)}
         {chatInfo ? (
           <div className={styles.chatBox}>
             <div className={styles.chatHeader}>Hyper</div>

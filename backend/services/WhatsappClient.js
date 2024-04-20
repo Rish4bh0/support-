@@ -4,6 +4,10 @@ const wwebVersion = '2.2407.3';
 
 const whatsappClient = new Client({
     authStrategy: new LocalAuth(),
+    puppeteer: {
+        headless: true,
+        args: ['--no-sandbox']
+    },
     webVersionCache: {
         type: 'remote',
         remotePath: `https://raw.githubusercontent.com/wppconnect-team/wa-version/main/html/${wwebVersion}.html`,
@@ -33,13 +37,19 @@ whatsappClient.on("message", async (msg) => {
         } else {
 
             if (msg.body.includes('.ticket')) {
-                await msg.reply('Hello! Please fill in the following details name, email, title and short description');
+                await msg.reply( msg.from,
+                    '*Dryice Solutions*' +
+                      '\n\nWelcome to dryice support desk' +
+                      '\nTo create a ticket please send message in the following structure' +
+                      '\n*Email*: Email id that we have provided to you.' +
+                      '\n*Title*: Short title of the issue you are facing.' +
+                      '\n\n\n *Description*: Description of the issue that you are facing upto 100 words' +
+                      '\n\n *Thank you* ');
+            } else if (msg.body.includes('description') || msg.body.includes('Description')) {
+                await msg.reply('Your ticket has been acknowledged.');
             } else if (msg.body.includes('bye')) {
                 await msg.reply('Goodbye! Take care.');
             }
-           
-            
-            
             // Message is from an individual contact
             const contact = await msg.getContact();
             const contactName = contact.name;
