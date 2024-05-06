@@ -4,6 +4,7 @@ services:
     container_name: mongo
     image: mongo:latest
     restart: always
+    
     volumes:
       - mongo_db:/data/db  
 
@@ -19,7 +20,7 @@ services:
       - mongo
 
   nginx:
-    image: hyp3rr/multi-nginx:latest
+    image: hyp3rr/multi-nginx:1.0
     container_name: nginx
     depends_on:
       - frontend
@@ -30,7 +31,7 @@ services:
       - "80:80"
 
   backend:
-    image: hyp3rr/multi-server:latest
+    image: hyp3rr/multi-server:1.1
     container_name: backend
 
 
@@ -54,7 +55,7 @@ services:
     
 
   frontend:
-    image: hyp3rr/multi-client:latest
+    image: hyp3rr/multi-client:1.0
     container_name: frontend
 
     environment:

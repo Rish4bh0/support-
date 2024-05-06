@@ -257,13 +257,7 @@ function IssueList() {
     setPage(value)
   }
 
-<<<<<<< HEAD
- /* if (isLoading) {
-    return <Spinner />;
-  }*/
-=======
-  
->>>>>>> 0b859646655f6c787c685d32cb48ed3cc24acc69
+
 
   if (error) {
     return <div>Error: {error}</div>;
@@ -337,13 +331,7 @@ function IssueList() {
             components={{ Pagination: null }}
             className="min-w-full overflow-x-auto md:w-full"
           />
-<<<<<<< HEAD
-        { /* {isLoading ? (
-            <Spinner />
-        ) : (*/}
-=======
-         
->>>>>>> 0b859646655f6c787c685d32cb48ed3cc24acc69
+
             <div className="flex justify-between items-center">
               <div className="flex items-center py-4">
                 <FormControl fullWidth sx={{ width: "90px"}}>
@@ -418,11 +406,7 @@ function IssueList() {
                 </div>
               )}
             </div>
-<<<<<<< HEAD
-       {/*   )}*/}
-=======
-          
->>>>>>> 0b859646655f6c787c685d32cb48ed3cc24acc69
+
 
           <AnimatePresence>
       {isOpen && (
