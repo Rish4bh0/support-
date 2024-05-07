@@ -1,3 +1,2 @@
-2024/04/19-12:47:05.297 1eb4 Reusing MANIFEST E:\support-react\support-react\.wwebjs_auth\session\Default\Session Storage/MANIFEST-000001
-2024/04/19-12:47:05.298 1eb4 Recovering log #3
-2024/04/19-12:47:05.298 1eb4 Reusing old log E:\support-react\support-react\.wwebjs_auth\session\Default\Session Storage/000003.log 
+2024/05/06-15:50:25.177 35d0 Creating DB E:\support-react\support-react\.wwebjs_auth\session\Default\Session Storage since it was missing.
+2024/05/06-15:50:25.389 35d0 Reusing MANIFEST E:\support-react\support-react\.wwebjs_auth\session\Default\Session Storage/MANIFEST-000001

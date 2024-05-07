@@ -201,14 +201,27 @@ const TicketStatusChart = ({ allTicket }) => {
                 <span>No data available</span>
               </div>
             ) : (
+              
               <BarChart
                 width={450}
                 height={220}
                 data={transformedData}
                 margin={{ top: 20, right: 30, left: 20, bottom: 2 }}
+                barCategoryGap={5}
               >
-                <XAxis dataKey="shortMonth" />
-                <YAxis />
+                <XAxis dataKey="shortMonth"
+                   stroke="#888888"
+                   fontSize={12}
+                   tickLine={false}
+                   axisLine={false}
+                   padding={{ left: 5, right: 5 }}
+                   />
+                <YAxis 
+                  stroke="#888888"
+                  fontSize={12}
+                 // tickLine={false}
+                  //axisLine={false}
+                  />
                 <Tooltip />
                 <Legend />
 
@@ -218,7 +231,7 @@ const TicketStatusChart = ({ allTicket }) => {
                     dataKey={status.name}
                     stackId="a"
                     fill={statusColors[status.name]}
-                    barSize={30}
+                    radius={4}
                   >
                     <Label
                       content={({ value }) => `${value} tickets`}
