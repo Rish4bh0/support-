@@ -344,6 +344,12 @@ function Ticket() {
           <div className="font-extrabold">Detail View</div>
         </div>
         <Grid container spacing={3}>
+        <Grid item xs={12}>
+            <div>
+              <label className="font-semibold">Ticket Title :</label>
+              <span>{ticket.title}</span>
+            </div>
+          </Grid>
           <Grid item xs={4}>
             <div className="flex gap-2 items-center">
               <div>
@@ -355,12 +361,7 @@ function Ticket() {
               </span>
             </div>
           </Grid>
-          <Grid item xs={4}>
-            <div>
-              <label className="font-semibold">Ticket Title :</label>
-              <span>{ticket.title}</span>
-            </div>
-          </Grid>
+          
           <Grid item xs={4}>
             <div>
               <label className="font-semibold">Date Submitted :</label>
@@ -389,7 +390,7 @@ function Ticket() {
               <span>{getUserNameById(ticket.assignedTo)}</span>
             </div>
           </Grid>
-          <Grid item xs={12}>
+          <Grid item xs={4}>
             {ccUsers.length > 0 && (
               <div className="cc-tags w-full">
                 <div className="w-full flex gap-2">
@@ -446,13 +447,6 @@ function Ticket() {
               <label className="font-semibold">Issue Description : </label>
               <p>{ticket.description}</p>
             </div>
-          </Grid>
-          <Grid item xs={12}>
-            {ticket.status !== "close" &&
-              userRole &&
-              allowedRoles.includes(userRole) && (
-                <label className="font-semibold">Notes : </label>
-              )}
           </Grid>
         </Grid>
       </div>

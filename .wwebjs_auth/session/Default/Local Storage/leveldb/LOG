@@ -1,2 +1,3 @@
-2024/05/06-15:50:16.687 35d0 Creating DB E:\support-react\support-react\.wwebjs_auth\session\Default\Local Storage\leveldb since it was missing.
-2024/05/06-15:50:17.012 35d0 Reusing MANIFEST E:\support-react\support-react\.wwebjs_auth\session\Default\Local Storage\leveldb/MANIFEST-000001
+2024/05/16-15:29:34.868 4fb0 Reusing MANIFEST E:\support-react\support-react\.wwebjs_auth\session\Default\Local Storage\leveldb/MANIFEST-000001
+2024/05/16-15:29:35.123 4fb0 Recovering log #4
+2024/05/16-15:29:35.124 4fb0 Reusing old log E:\support-react\support-react\.wwebjs_auth\session\Default\Local Storage\leveldb/000004.log 

@@ -2,15 +2,15 @@ import React, { Suspense } from "react";
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
-import { PrivateRoute } from "./components/PrivateRoute";
+import { PrivateRoute } from "./components/PrivateRoute.jsx";
 import Home from "./pages/Home/Home.jsx";
 import Login from "./pages/Auth/Login.jsx";
-import NewTicket from "./pages/NewTicket";
+import NewTicket from "./pages/NewTicket.jsx";
 import Register from "./pages/Auth/Register.jsx";
-import Tickets from "./pages/Tickets";
-import Ticketss from "./pages/Ticketss";
+import Tickets from "./pages/Tickets.jsx";
+import Ticketss from "./pages/Ticketss.jsx";
 import Ticket from "./pages/Tickets/Ticket.jsx";
-import ListTickets from "./pages/ListTickets";
+import ListTickets from "./pages/ListTickets.jsx";
 import Dashboard from "./pages/Dashboard/AdminDashboard.jsx";
 import IssueTypeList from "./pages/Issue/issues.jsx";
 import ProjectList from "./pages/Project/project.jsx";
@@ -24,12 +24,12 @@ import Updateuser from "./pages/User/UpdateUser.jsx";
 import OrganizationDetail from "./pages/Office/OrganizationDetail.jsx";
 import AllOrganization from "./pages/Office/AllOrganization.jsx";
 import Forget from "./pages/Auth/Forgotpassword.jsx";
-import ORGTICKET from "./pages/OrganizationTicket";
+import ORGTICKET from "./pages/OrganizationTicket.jsx";
 import CCTICKET from "./pages/CCticket.jsx";
 import "./App.css";
 import { TooltipComponent } from "@syncfusion/ej2-react-popups";
-import { NavBar, Footer, Sidebar } from "./components";
-import { useStateContext } from "./contexts/ContextProvider";
+import { NavBar, Footer, Sidebar } from "./components/index.jsx";
+import { useStateContext } from "./contexts/ContextProvider.js";
 import { useSelector } from "react-redux";
 import Report from "./pages/Dashboard/report.jsx";
 import Dash from "./pages/Dashboard/OfficeDashboard.jsx";
@@ -52,6 +52,7 @@ import Spinner from "./components/Spinner.jsx";
 import NotFound from "./pages/mics/404.jsx"
 import Open from './pages/openai.js'
 import Chat from './pages/Chat.jsx'
+import CustomKanban from './pages/KanbanBoard/kanbanBoard.jsx'
 
 
 const theme = createTheme({
@@ -136,6 +137,9 @@ function App() {
 
                 <Route path="/new-ticket" element={<PrivateRoute />}>
                   <Route path="/new-ticket" element={<NewTicket />} />
+                </Route>
+                <Route path="/kanbanBoard/:ticketId" element={<PrivateRoute />}>
+                  <Route path="/kanbanBoard/:ticketId" element={<CustomKanban/>} />
                 </Route>
                 <Route path="/assigned" element={<PrivateRoute />}>
                   <Route path="/assigned" element={<Assigned />} />

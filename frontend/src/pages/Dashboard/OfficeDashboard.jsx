@@ -12,6 +12,7 @@ import FiberNewIcon from "@mui/icons-material/FiberNew";
 import { getAllOrganization } from "../../features/organization/organizationSlice";
 import TiltCard from "../../components/AnimatedCard";
 import ChartPie from "../../components/ChartPie";
+import TreemapChart from '../../components/TreemapChart'
 
 const getRandomColor = () =>
   `#${Math.floor(Math.random() * 16777215).toString(16)}`;
@@ -189,12 +190,18 @@ const Ecommerce = () => {
           </div>
   */}
         </div>
-        <div className="flex flex-col md:flex-row">
+        <div className="flex flex-col">
+  
+  <div className="flex flex-col md:flex-row">
   <div className="flex-1 md:mr-4 mb-4 md:mb-0">
-    <TicketStatusPie allTicket={allTickets} />
+  <TreemapChart allTicket={allTickets} />
   </div>
   <div className="flex-1">
     <ChartPie allTicket={allTickets} />
+  </div>
+</div>
+<div className="flex-1 md:mr-4 mb-4 md:mb-0">
+    <TicketStatusPie allTicket={allTickets} />
   </div>
 </div>
       </div>

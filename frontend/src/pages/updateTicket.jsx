@@ -220,8 +220,10 @@ const UpdateProductPage = () => {
                   label=" Ticket title"
                   name="title"
                   value={formData.title}
+                  onChange={handleChange}
                   fullWidth
                 />
+              
               </Grid>
               <Grid item xs={6}>
                 <FormControl fullWidth>

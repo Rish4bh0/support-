@@ -164,7 +164,7 @@ const TicketStatusChart = ({ allTicket }) => {
 
   return (
     <>
-      <motion.div className="relative h-80 min-h-80 w-full rounded-xl bg-gradient-to-br ">
+      <motion.div className="relative h-90 min-h-80 w-full rounded-xl bg-gradient-to-br ">
         <div className="absolute inset-4 grid  rounded-xl bg-white shadow-xl">
           <div className="flex p-4 px-8 py-8 font-extrabold text-sm justify-between ">
             <Box display="flex">Bar Chart</Box>
@@ -203,11 +203,11 @@ const TicketStatusChart = ({ allTicket }) => {
             ) : (
               
               <BarChart
-                width={450}
+                width={1000}
                 height={220}
                 data={transformedData}
                 margin={{ top: 20, right: 30, left: 20, bottom: 2 }}
-                barCategoryGap={5}
+                barCategoryGap={50}
               >
                 <XAxis dataKey="shortMonth"
                    stroke="#888888"

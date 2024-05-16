@@ -12,6 +12,7 @@ import DraftsIcon from "@mui/icons-material/Drafts";
 import FiberNewIcon from "@mui/icons-material/FiberNew";
 import TiltCard from "../../components/AnimatedCard";
 import ChartPie from "../../components/ChartPie";
+import TreemapChart from '../../components/TreemapChart'
 
 
 const Dashboard = () => {
@@ -78,6 +79,7 @@ const Dashboard = () => {
 
   return (
     <>
+    
       <div className="font-semibold text-lg mb-5 ">
         Welcome to Dashboard , {user.name}{" "}
         {organizationMap[user.organization] || ""} !
@@ -190,13 +192,18 @@ const Dashboard = () => {
     */}
         </div>
       
-        <div className="flex flex-col md:flex-row">
+        <div className="flex flex-col">
   <div className="flex-1 md:mr-4 mb-4 md:mb-0">
     <TicketStatusPie allTicket={allTickets} />
+  </div>
+  <div className="flex flex-col md:flex-row">
+  <div className="flex-1 md:mr-4 mb-4 md:mb-0">
+  <TreemapChart allTicket={allTickets} />
   </div>
   <div className="flex-1">
     <ChartPie allTicket={allTickets} />
   </div>
+</div>
 </div>
 
 

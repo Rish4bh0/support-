@@ -1,4 +1,4 @@
-import React, { useRef } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import {
   BarChart,
   Bar,
@@ -38,7 +38,7 @@ import { FiMousePointer } from "react-icons/fi";
 const ROTATION_RANGE = 32.5;
 const HALF_ROTATION_RANGE = 32.5 / 2;
 
-const valueFormatter = (value) => `${value} tickets`;
+
 
 const statusColors = {
   draft: "#fbe032",
@@ -71,6 +71,22 @@ const getShortMonth = (fullMonth) => {
 };
 
 const ChartPie = ({ allTicket }) => {
+
+  const [selectedYear, setSelectedYear] = useState(null);
+  const [yearOptions, setYearOptions] = useState([]);
+
+
+  useEffect(() => {
+    const currentYear = new Date().getFullYear();
+    const options = [];
+    for (let i = currentYear - 2; i <= currentYear + 2; i++) {
+      options.push(i.toString());
+    }
+    setYearOptions(options);
+  }, []);
+  const handleYearChange = (e) => {
+    setSelectedYear(e.target.value);
+  };
   const ref = useRef(null);
 
   const x = useMotionValue(0);
@@ -105,7 +121,12 @@ const ChartPie = ({ allTicket }) => {
     x.set(0);
     y.set(0);
   };
-  const transformedData = allTicket.reduce((acc, ticket) => {
+
+  const filteredData = selectedYear
+  ? allTicket.filter((ticket) => ticket.createdAt.startsWith(selectedYear))
+  : allTicket;
+
+  const transformedData = filteredData.reduce((acc, ticket) => {
     const month = ticket.createdAt.substring(0, 7);
     const shortMonth = getShortMonth(month);
     console.log("mon" + shortMonth);
@@ -256,36 +277,32 @@ const ChartPie = ({ allTicket }) => {
         </div>
         */}
         <motion.div
-          ref={ref}
-          onMouseMove={handleMouseMove}
-          onMouseLeave={handleMouseLeave}
-          style={{
-            transformStyle: "preserve-3d",
-            transform,
-          }}
-          className="relative h-80 min-h-80 w-full rounded-xl bg-gradient-to-br "
+          className="relative h-96 min-h-80 w-full rounded-xl bg-gradient-to-br "
         >
           <div
-            style={{
-              transform: "translateZ(75px)",
-              transformStyle: "preserve-3d",
-            }}
             className="absolute inset-4 grid  rounded-xl bg-white shadow-xl"
           >
             <div
-              style={{
-                transform: "translateZ(75px)",
-                transformStyle: "preserve-3d",
-              }}
-              className=" p-4 px-8 py-8 font-extrabold text-sm"
+             
+              className=" flex p-4 px-8 py-8 font-extrabold text-sm justify-between"
             >
               <Box display="flex">Pie Chart</Box>
+              <select
+              className="h-8 text-xs z-50 rounded-xl shadow-xl"
+              value={selectedYear}
+              onChange={handleYearChange}
+              style={{ border: "none", outline: "none" }}
+            >
+              <option value="">All Years</option>
+              {yearOptions.map((year) => (
+                <option key={year} value={year}>
+                  {year}
+                </option>
+              ))}
+            </select>
             </div>
             <div
-              style={{
-                transform: "translateZ(75px)",
-                transformStyle: "preserve-3d",
-              }}
+             
               className="p-4 pt-16 place-content-center absolute inset-4 grid  "
             >
               {transformedData.length === 0 ? (
@@ -300,7 +317,7 @@ const ChartPie = ({ allTicket }) => {
                   <span>No data available</span>
                 </div>
               ) : (
-                <PieChart width={450} height={220}>
+                <PieChart width={450} height={300}>
                   <Pie
                     dataKey="value"
                     nameKey="name"

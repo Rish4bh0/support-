@@ -1,5 +1,3 @@
-2024/05/06-15:50:28.764 35d0 Log #3: 3 ops saved to Table #4 OK
-2024/05/06-15:50:28.765 35d0 Archiving E:\support-react\support-react\.wwebjs_auth\session\Default\File System\Origins/000003.log: OK
-2024/05/06-15:50:28.765 35d0 Table #4: 3 entries OK
-2024/05/06-15:50:28.766 35d0 Archiving E:\support-react\support-react\.wwebjs_auth\session\Default\File System\Origins/MANIFEST-000001: OK
-2024/05/06-15:50:28.834 35d0 **** Repaired leveldb E:\support-react\support-react\.wwebjs_auth\session\Default\File System\Origins; recovered 1 files; 181 bytes. Some data may have been lost. ****
+2024/05/16-13:20:04.369 48dc Reusing MANIFEST E:\support-react\support-react\.wwebjs_auth\session\Default\File System\Origins/MANIFEST-000001
+2024/05/16-13:20:04.369 48dc Recovering log #3
+2024/05/16-13:20:04.369 48dc Reusing old log E:\support-react\support-react\.wwebjs_auth\session\Default\File System\Origins/000003.log 

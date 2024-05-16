@@ -111,6 +111,18 @@ function TicketItem({ ticket }) {
             <EditIcon />
           </IconButton>
         )}
+        {userRole &&
+          allowedRolesOrg.includes(userRole) &&
+          ticket.status !== "draft" && (
+            <IconButton
+              component={Link}
+              to={`/ticket/${ticket._id}`}
+              className="btn btn-reverse btn-sm"
+            >
+              <VisibilityIcon />
+            </IconButton>
+          )}
+
       </div>
     </div>
   );

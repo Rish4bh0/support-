@@ -16,8 +16,28 @@ import { darken, lighten, styled } from "@mui/material/styles";
 import VisibilityIcon from "@mui/icons-material/Visibility";
 import { Link } from "react-router-dom";
 import Alert from "@mui/material/Alert";
+import { BiDetail } from "react-icons/bi";
+import { BiEdit } from "react-icons/bi";
+import { BiInfoSquare } from "react-icons/bi";
+import Tooltip, { TooltipProps, tooltipClasses } from '@mui/material/Tooltip';
+
+const BootstrapTooltip = styled(({ className, ...props }) => (
+  <Tooltip {...props} arrow classes={{ popper: className }} />
+))(({ theme }) => ({
+  [`& .${tooltipClasses.arrow}`]: {
+    color: theme.palette.common.white,
+  },
+  [`& .${tooltipClasses.tooltip}`]: {
+    backgroundColor: theme.palette.common.white,
+    color: 'rgba(0, 0, 0, 0.87)',
+    boxShadow: theme.shadows[1],
+    fontSize: 11,
+  },
+}));
 
 function Tickets({ tickets, isLoading, filteredTic, greetingMessage, title }) {
+
+  
   const dispatch = useDispatch();
   const [activeTab, setActiveTab] = useState("all"); // Set initial tab to "all"
   const [currentPage, setCurrentPage] = useState({
@@ -41,7 +61,7 @@ function Tickets({ tickets, isLoading, filteredTic, greetingMessage, title }) {
   console.log("2", issues);
   const count = issueTypesData.count || 0;
   console.log("3", count);
-  console.log(issues)
+  console.log(issues);
   const users = useSelector((state) => state.auth.users);
   const projects = useSelector((state) => state.project.project);
   const projectMap = {};
@@ -185,18 +205,35 @@ function Tickets({ tickets, isLoading, filteredTic, greetingMessage, title }) {
           {(tickets.status === "draft" ||
             (userRole && allowedRoles.includes(userRole))) && (
             <Link to={`/ticket/${params.row.ticketid}/update`}>
+              <BootstrapTooltip title="Edit">
               <button className="group">
-                <ModeEditIcon className="text-green-500 group-hover:text-green-700 mr-8" />
+                <BiEdit className="text-green-500 text-lg group-hover:text-green-700 mr-8" />
               </button>
+              </BootstrapTooltip>
             </Link>
           )}
+
+         
           {userRole &&
             allowedRolesOrg.includes(userRole) &&
             tickets.status !== "draft" && (
               <Link to={`/ticket/${params.row.ticketid}`}>
+                 <BootstrapTooltip title="Ticket Info">
                 <button className="group">
-                  <VisibilityIcon className="text-blue-500 group-hover:text-blue-700 mr-8" />
+                  <BiInfoSquare className="text-gray-500 text-xl group-hover:text-gray-700 mr-8" />
                 </button>
+                </BootstrapTooltip>
+              </Link>
+            )}
+          {userRole &&
+            allowedRolesOrg.includes(userRole) &&
+            tickets.status !== "draft" && (
+              <Link to={`/kanbanBoard/${params.row.ticketid}`}>
+                 <BootstrapTooltip title="Board View">
+                <button className="group">
+                  <BiDetail className="text-blue-500 group-hover:text-blue-700 text-lg transform rotate-90" />
+                </button>
+                </BootstrapTooltip>
               </Link>
             )}
         </div>
@@ -253,47 +290,72 @@ function Tickets({ tickets, isLoading, filteredTic, greetingMessage, title }) {
   const StyledDataGrid = styled(DataGrid)(({ theme }) => ({
     "& .super-app-theme--open": {
       backgroundColor: getBackgroundColor(
-        theme.palette.info.main,
+        "#81d4fa",
         theme.palette.mode
       ),
       "&:hover": {
         backgroundColor: getHoverBackgroundColor(
-          theme.palette.info.main,
+          "#81d4fa",
           theme.palette.mode
         ),
       },
       "&.Mui-selected": {
         backgroundColor: getSelectedBackgroundColor(
-          theme.palette.info.main,
+          "#81d4fa",
           theme.palette.mode
         ),
         "&:hover": {
           backgroundColor: getSelectedHoverBackgroundColor(
-            theme.palette.info.main,
+            "#81d4fa",
             theme.palette.mode
           ),
         },
       },
     },
-    "& .super-app-theme--new": {
+    "& .super-app-theme--draft": {
       backgroundColor: getBackgroundColor(
-        theme.palette.success.main,
+        "#fff59d", 
         theme.palette.mode
       ),
       "&:hover": {
         backgroundColor: getHoverBackgroundColor(
-          theme.palette.success.main,
+          "#fff59d", 
           theme.palette.mode
         ),
       },
       "&.Mui-selected": {
         backgroundColor: getSelectedBackgroundColor(
-          theme.palette.success.main,
+          "#fff59d", 
           theme.palette.mode
         ),
         "&:hover": {
           backgroundColor: getSelectedHoverBackgroundColor(
-            theme.palette.success.main,
+            "#fff59d", 
+            theme.palette.mode
+          ),
+        },
+      },
+    },
+
+    "& .super-app-theme--new": {
+      backgroundColor: getBackgroundColor(
+        "#a5d6a7",
+        theme.palette.mode
+      ),
+      "&:hover": {
+        backgroundColor: getHoverBackgroundColor(
+          "#a5d6a7",
+          theme.palette.mode
+        ),
+      },
+      "&.Mui-selected": {
+        backgroundColor: getSelectedBackgroundColor(
+          "#a5d6a7",
+          theme.palette.mode
+        ),
+        "&:hover": {
+          backgroundColor: getSelectedHoverBackgroundColor(
+            "#a5d6a7",
             theme.palette.mode
           ),
         },
@@ -301,23 +363,23 @@ function Tickets({ tickets, isLoading, filteredTic, greetingMessage, title }) {
     },
     "& .super-app-theme--review": {
       backgroundColor: getBackgroundColor(
-        theme.palette.warning.main,
+       "#ffcc80",
         theme.palette.mode
       ),
       "&:hover": {
         backgroundColor: getHoverBackgroundColor(
-          theme.palette.warning.main,
+          "#ffcc80",
           theme.palette.mode
         ),
       },
       "&.Mui-selected": {
         backgroundColor: getSelectedBackgroundColor(
-          theme.palette.warning.main,
+          "#ffcc80",
           theme.palette.mode
         ),
         "&:hover": {
           backgroundColor: getSelectedHoverBackgroundColor(
-            theme.palette.warning.main,
+            "#ffcc80",
             theme.palette.mode
           ),
         },
@@ -325,23 +387,23 @@ function Tickets({ tickets, isLoading, filteredTic, greetingMessage, title }) {
     },
     "& .super-app-theme--close": {
       backgroundColor: getBackgroundColor(
-        theme.palette.error.main,
+        "#ef9a9a",
         theme.palette.mode
       ),
       "&:hover": {
         backgroundColor: getHoverBackgroundColor(
-          theme.palette.error.main,
+          "#ef9a9a",
           theme.palette.mode
         ),
       },
       "&.Mui-selected": {
         backgroundColor: getSelectedBackgroundColor(
-          theme.palette.error.main,
+          "#ef9a9a",
           theme.palette.mode
         ),
         "&:hover": {
           backgroundColor: getSelectedHoverBackgroundColor(
-            theme.palette.error.main,
+            "#ef9a9a",
             theme.palette.mode
           ),
         },
@@ -357,7 +419,7 @@ function Tickets({ tickets, isLoading, filteredTic, greetingMessage, title }) {
     // minute: "2-digit",
   };
 
-  const statusOptions = ["all", "new", "open", "review", "close"];
+  const statusOptions = ["all", "new", "open", "review", "close", "draft"];
 
   return (
     <div>
